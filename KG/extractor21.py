@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-OpenBLAS知识图谱实体抽取器 - (V13 - Embedding生成逻辑最终修复)
+OpenBLAS知识图谱实体抽取器 - (V14 - 为optimization_strategy添加related_patterns独立字段)
 - "analysis_results_dir" 现在是基准目录。
 - JSON文件从基准目录下的 "analysis_results" 子目录读取。
 - 输出文件 (relations, checkpoints) 直接保存在基准目录下。
@@ -12,6 +12,7 @@ OpenBLAS知识图谱实体抽取器 - (V13 - Embedding生成逻辑最终修复)
 - 新增：为硬件特征实体填充架构信息。
 - 修正：确保在生成embedding时，entity_data中不包含uid。
 - 新增：丰富optimization_strategy和computational_pattern的entity_data字段。
+- 修改 (V14): 为 optimization_strategy 添加独立的 related_patterns 字段，并将其从 entity_data 和向量化内容中移除。
 """
 
 import os
@@ -89,6 +90,8 @@ class KnowledgeGraphExtractor:
                 FieldSchema(name="implementation", dtype=DataType.VARCHAR, max_length=5000),
                 FieldSchema(name="impact", dtype=DataType.VARCHAR, max_length=2000),
                 FieldSchema(name="trade_offs", dtype=DataType.VARCHAR, max_length=2000),
+                # NEW (V14): 添加独立的 related_patterns 字段, 用于存储关联模式列表的JSON字符串
+                FieldSchema(name="related_patterns", dtype=DataType.VARCHAR, max_length=2000),
                 FieldSchema(name="entity_data", dtype=DataType.VARCHAR, max_length=65535),
                 FieldSchema(name="embedding", dtype=DataType.FLOAT_VECTOR, dim=dimension)
             ],
@@ -196,15 +199,19 @@ class KnowledgeGraphExtractor:
         """从不含UID的entity_data字典生成用于embedding的文本"""
         return json.dumps(entity_data_without_uid, ensure_ascii=False, sort_keys=True)
 
-    # <<< MODIFIED: Corrected the logic to remove uid BEFORE embedding
     def _save_entity(self, collection_name: str, entity_data: Dict[str, Any]) -> str:
         # 1. 提取UID
         uid = entity_data["uid"]
         
-        # 2. 创建一个干净的副本用于embedding和存储
+        # 2. 创建一个干净的副本用于embedding和存储在 entity_data 字段
         data_for_processing = entity_data.copy()
         data_for_processing.pop("uid", None)
         
+        # MODIFIED (V14): 如果是优化策略，额外移除 related_patterns，
+        # 确保它不参与向量化，也不存入 entity_data 字段。
+        if collection_name == "optimization_strategy":
+            data_for_processing.pop("related_patterns", None)
+
         # 3. 基于干净的数据生成embedding
         embedding_text = self._get_embedding_text(data_for_processing)
         embedding = self._get_embedding(embedding_text)
@@ -220,8 +227,13 @@ class KnowledgeGraphExtractor:
             elif name == "embedding":
                 insert_data.append([embedding])
             elif name == "entity_data":
-                # 存储不含uid的entity_data
+                # 存储不含uid和related_patterns的entity_data
                 insert_data.append([json.dumps(data_for_processing, ensure_ascii=False)])
+            # NEW (V14): 为新的 related_patterns 独立字段准备数据
+            elif name == "related_patterns":
+                # 从原始 entity_data 中获取 list，并序列化为 JSON 字符串
+                patterns_list = entity_data.get("related_patterns", [])
+                insert_data.append([json.dumps(patterns_list, ensure_ascii=False)])
             else:
                 # 从原始的entity_data中获取其他字段值
                 if name in ["numeric_kind", "numeric_precision", "structural_properties", "storage_layout"]:

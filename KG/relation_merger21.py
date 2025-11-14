@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-实体关系合并器v10 (信息持久化修复版)
+实体关系合并器v11 (适配独立的related_patterns字段)
 - 根据 refine 后的聚类结果，合并实体并重定向关系。
 - 支持多轮次迭代，通过 --round 参数控制。
 - 状态化管理 optimization_strategy 的上下文信息，并在多轮合并中累积。
 - 调用大模型融合实体字段内容。
-- 修复了在合并实体时 related_patterns 等关键信息丢失的问题。
 - 在写入数据库前，对超长的 entity_data 字段进行智能截断。
 - 输出文件均带有轮次号。
+- 修改 (V11): 适配 extractor 的更新，直接从独立的 'related_patterns' 字段读取数据，而不是从 'entity_data' 中解析。
 """
 
 import os
@@ -304,8 +304,13 @@ class EntityRelationMerger:
                         all_member_uids.update(context.get("members", []))
                     else:
                         cluster_size = 1
-                        primary_entity_data = json.loads(primary_details.get("entity_data", "{}"))
-                        pattern_counts = Counter(primary_entity_data.get("related_patterns", []))
+                        # MODIFIED (V11): 直接从独立的 related_patterns 字段读取信息
+                        # 该字段存储的是JSON字符串，需要解析
+                        try:
+                            related_patterns_list = json.loads(primary_details.get("related_patterns", "[]"))
+                        except (json.JSONDecodeError, TypeError):
+                            related_patterns_list = []
+                        pattern_counts = Counter(related_patterns_list)
                 
                 for member in members_to_merge:
                     member_details = self._get_entity_details(member['uid'], entity_type)
@@ -325,8 +330,12 @@ class EntityRelationMerger:
                             all_member_uids.add(member['uid'])
                         else:
                             cluster_size += 1
-                            member_entity_data = json.loads(member_details.get("entity_data", "{}"))
-                            pattern_counts.update(member_entity_data.get("related_patterns", []))
+                            # MODIFIED (V11): 为被合并的实体也从独立字段读取 related_patterns
+                            try:
+                                member_patterns_list = json.loads(member_details.get("related_patterns", "[]"))
+                            except (json.JSONDecodeError, TypeError):
+                                member_patterns_list = []
+                            pattern_counts.update(member_patterns_list)
                             all_member_uids.add(member['uid'])
                     
                     try:
@@ -336,11 +345,10 @@ class EntityRelationMerger:
                         print(f"    ❌ 删除实体 {member['uid']} 失败: {e}")
                 
                 try:
-                    # <<< MODIFIED: Correctly build the new entity_data for re-insertion
-                    # 1. Start with the original entity_data from the database
+                    # 1. 从数据库原始记录中开始构建新的 entity_data
                     new_entity_data = json.loads(primary_details.get("entity_data", "{}"))
 
-                    # 2. Update it with the LLM-merged fields
+                    # 2. 用LLM融合后的新字段内容更新它
                     for key, value in primary_details.items():
                         if key in ["rationale", "implementation", "impact", "trade_offs", "description"]:
                             new_entity_data[key] = value
@@ -366,14 +374,15 @@ class EntityRelationMerger:
                         }
                         current_context_list.append(context_to_save)
                     
-                    # 3. Truncate if necessary (this dictionary does NOT contain uid or embedding)
+                    # 3. 如有必要，对 entity_data 进行截断
                     truncated_data = self._truncate_entity_data(new_entity_data)
                     
-                    # 4. Prepare the final record for insertion
+                    # 4. 准备最终要插入的完整记录
+                    # primary_details 包含了所有原始字段 (包括未被修改的 related_patterns) 和LLM更新后的字段
                     record_to_insert = primary_details.copy()
                     record_to_insert["entity_data"] = json.dumps(truncated_data, ensure_ascii=False)
 
-                    # 5. Delete old and insert new
+                    # 5. 删除旧记录并插入更新后的记录
                     Collection(entity_type).delete(f'uid == "{primary_info["uid"]}"')
                     Collection(entity_type).insert([record_to_insert])
                     print(f"  ✅ 主实体已更新: {primary_info['uid'][:8]}")
@@ -461,13 +470,13 @@ class EntityRelationMerger:
 
 def main():
     """主函数"""
-    parser = argparse.ArgumentParser(description="实体关系合并器v9")
+    parser = argparse.ArgumentParser(description="实体关系合并器v11")
     parser.add_argument("--config", type=str, default="kg_config.json", help="配置文件路径")
     parser.add_argument("--round", type=int, required=True, help="当前的合并轮次 (例如: 1, 2, ...)")
     
     args = parser.parse_args()
     
-    print("🔗 实体关系合并器v9")
+    print("🔗 实体关系合并器v11")
     print("=" * 50)
     
     config = EntityRelationMerger._load_config(args.config)
