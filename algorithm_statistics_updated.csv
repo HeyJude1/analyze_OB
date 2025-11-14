@@ -1,0 +1,38 @@
+算子名称,文件数量,分类,示例文件
+gemm,176,level3,"dgemm_small_kernel_nn.clean.c, strsm_kernel_RT.clean.c, cgemm_kernel_l.clean.c (共176个)"
+trsm,120,level3,"qtrsm_iunucopy.clean.c, strsm_kernel_RT.clean.c, ztrsm_ounncopy.clean.c (共120个)"
+trmm,120,level3,"xtrmm_ounncopy.clean.c, strmm_oltucopy.clean.c, strmm_iltncopy.clean.c (共120个)"
+symm,60,level3,"qsymm_outcopy.clean.c, xsymm_outcopy.clean.c, xsymm3m_olcopyr.clean.c (共60个)"
+gemv,44,level2,"qsymv_U.clean.c, zgemv_n.clean.c, zgemv_r.clean.c (共44个)"
+hemm3m,24,unknown,"zhemm3m_iucopyb.clean.c, zhemm3m_olcopyi.clean.c, chemm3m_oucopyb.clean.c (共24个)"
+imatcopy,24,unknown,"simatcopy_k_ct.clean.c, dimatcopy_k_rn.clean.c, cimatcopy_k_rn.clean.c (共24个)"
+omatcopy,24,unknown,"domatcopy_k_cn.clean.c, comatcopy_k_cnc.clean.c, zomatcopy_k_cnc.clean.c (共24个)"
+axpy,21,level1,"daxpy_k.clean.c, cgerc_k.clean.c, caxpyc_k.clean.c (共21个)"
+ger,15,level2,"cgerc_k.clean.c, cgerd_k.clean.c, xgerc_k.clean.c (共15个)"
+symv,12,level2,"qsymv_U.clean.c, zsymv_L.clean.c, zsymv_U.clean.c (共12个)"
+max,12,utility,"idamax_k.clean.c, samax_k.clean.c, camax_k.clean.c (共12个)"
+min,12,utility,"izamin_k.clean.c, samin_k.clean.c, isamin_k.clean.c (共12个)"
+xhemm3m,12,unknown,"xhemm3m_iucopyr.clean.c, xhemm3m_ilcopyb.clean.c, xhemm3m_oucopyb.clean.c (共12个)"
+hemm,8,unknown,"chemm_oltcopy.clean.c, zhemm_outcopy.clean.c, chemm_iutcopy.clean.c (共8个)"
+scal,8,level1,"sgeadd_k.clean.c, zgeadd_k.clean.c, cgeadd_k.clean.c (共8个)"
+dot,8,level1,"zdotc_k.clean.c, sdsdot_k.clean.c, zdotu_k.clean.c (共8个)"
+hemv,8,unknown,"chemv_L.clean.c, chemv_M.clean.c, chemv_V.clean.c (共8个)"
+rot,7,level1,"drot_k.clean.c, zdrot_k.clean.c, qrotm_k.clean.c (共7个)"
+asum,4,level1,"zasum_k.clean.c, dasum_k.clean.c, sasum_k.clean.c (共4个)"
+geadd,4,unknown,"sgeadd_k.clean.c, zgeadd_k.clean.c, cgeadd_k.clean.c (共4个)"
+xhemm,4,unknown,"xhemm_oltcopy.clean.c, xhemm_iltcopy.clean.c, xhemm_outcopy.clean.c (共4个)"
+copy,4,unknown,"scopy_k.clean.c, dcopy_k.clean.c, ccopy_k.clean.c (共4个)"
+laswp,4,unknown,"slaswp_ncopy.clean.c, claswp_ncopy.clean.c, dlaswp_ncopy.clean.c (共4个)"
+swap,4,level1,"zswap_k.clean.c, cswap_k.clean.c, sswap_k.clean.c (共4个)"
+axpby,4,unknown,"saxpby_k.clean.c, daxpby_k.clean.c, zaxpby_k.clean.c (共4个)"
+nrm2,4,level1,"cnrm2_k.clean.c, znrm2_k.clean.c, snrm2_k.clean.c (共4个)"
+neg,4,unknown,"zneg_tcopy.clean.c, dneg_tcopy.clean.c, sneg_tcopy.clean.c (共4个)"
+xhemv,4,unknown,"xhemv_L.clean.c, xhemv_M.clean.c, xhemv_U.clean.c (共4个)"
+cabs1.clean,2,unknown,"dcabs1.clean.c, scabs1.clean.c"
+sum,2,utility,"dsum_k.clean.c, ssum_k.clean.c"
+xneg,1,unknown,xneg_tcopy.clean.c
+lsame.clean,1,unknown,lsame.clean.c
+xlaswp,1,unknown,xlaswp_ncopy.clean.c
+qcabs1.clean,1,unknown,qcabs1.clean.c
+qlaswp,1,unknown,qlaswp_ncopy.clean.c
+qneg,1,unknown,qneg_tcopy.clean.c

@@ -1,0 +1,19 @@
+﻿entry_id,title,authors,summary
+2508.12345,Advancements in Large Language Models for Code Generation,"Alice Smith, Bob Johnson","As technology scales, nano-scale digital circuits face heightened
+susceptibility to single event upsets (SEUs) and transients (SETs) due to
+shrinking feature sizes and reduced operating voltages. While logical,
+electrical, and timing masking effects influence soft error probability (SEP),
+the combined impact of process variation (PV) and aging-induced degradation
+further complicates SEP estimation. Existing approaches often address PV or
+aging in isolation, or rely on computationally intensive methods like Monte
+Carlo simulations, limiting their practicality for large-scale circuit
+optimization. This paper introduces a novel framework for SEP analysis that
+holistically integrates PV and aging effects. We propose an enhanced electrical
+masking model and a statistical methodology to quantify soft error probability
+under process and aging variations. Experimental results demonstrate that the
+proposed approach achieves high accuracy while reducing computational overhead
+by approximately 2.5% compared to Monte Carlo-based methods. This work advances
+the design of reliable nano-scale circuits by enabling efficient, accurate SEP
+estimation in the presence of manufacturing variability and long-term
+transistor degradation."
+2508.23456,Understanding Bias in Large Language Models,"Carol Davis, Eve Wilson, Frank Brown",摘要未找到。

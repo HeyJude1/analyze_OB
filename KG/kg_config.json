@@ -1,0 +1,33 @@
+{
+  "milvus": {
+    "host": "localhost",
+    "port": 19530,
+    "database": "code_op"
+  },
+  "model": {
+    "name": "qwen-plus-2025-09-11",
+    "temperature": 0.3,
+    "max_tokens": 8192,
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1"
+  },
+  "dashscope_embeddings": {
+    "name": "text-embedding-v3",
+    "dimension": 1024
+  },
+  "neo4j": {
+    "uri": "bolt://localhost:7687",
+    "username": "neo4j",
+    "password": "mjs"
+  },
+  "clustering": {
+    "similarity_threshold": 0.85,
+    "max_clusters": 1000
+  },
+  "entity_alignment": {
+    "rounds": 3,
+    "t_core": 0.6
+  },
+  "data_source": {
+    "analysis_results_dir": "dgc/mjs/project/analyze_OB/results/20251112_162400"
+  }
+}

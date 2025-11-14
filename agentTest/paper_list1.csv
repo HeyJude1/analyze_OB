@@ -1,0 +1,52 @@
+﻿entry_id,title,authors,summary
+2212.10275,MultiPL-E: A Scalable and Extensible Approach to Benchmarking Neural Code Generation,"Federico Cassano, John Gouwar, Daniel Nguyen, Sydney Nguyen, Luna Phipps-Costin, Donald Pinckney, Ming-Ho Yee, Yangtian Zi, Carolyn Jane Anderson, Molly Q Feldman, Arjun Guha, Michael Greenberg, Abhinav Jangda","We introduce anchored radial observations (ARO), a novel shape encoding for
+learning implicit field representation of 3D shapes that is category-agnostic
+and generalizable amid significant shape variations. The main idea behind our
+work is to reason about shapes through partial observations from a set of
+viewpoints, called anchors. We develop a general and unified shape
+representation by employing a fixed set of anchors, via Fibonacci sampling, and
+designing a coordinate-based deep neural network to predict the occupancy value
+of a query point in space. Differently from prior neural implicit models that
+use global shape feature, our shape encoder operates on contextual,
+query-specific features. To predict point occupancy, locally observed shape
+information from the perspective of the anchors surrounding the input query
+point are encoded and aggregated through an attention module, before implicit
+decoding is performed. We demonstrate the quality and generality of our
+network, coined ARO-Net, on surface reconstruction from sparse point clouds,
+with tests on novel and unseen object categories, ""one-shape"" training, and
+comparisons to state-of-the-art neural and classical methods for reconstruction
+and tessellation."
+2505.04567,CodeMixBench: Evaluating Large Language Models on Code Generation with Code-Mixed Prompts,"Manik Sheokand, Parth Sawant","This paper presents a methodology for automatically generating processors
+that support a subset of the RISC-V instruction set for a new class of
+applications at Extreme Edge. The electronics used in extreme edge applications
+must be power-efficient, but also provide additional qualities, such as low
+cost, conformability, comfort and sustainability. Flexible electronics, rather
+than silicon-based electronics, will be capable of meeting these qualities. For
+this purpose, we propose a methodology to generate RISPs (RISC-V instruction
+subset processors) customised to extreme edge applications and to implement
+them as flexible integrated circuits (FlexICs). The methodology is unique in
+the sense that verification is an integral part of design. The RISP methodology
+treats each instruction in the ISA as a discrete, fully functional,
+pre-verified hardware block. It automatically builds a custom processor by
+stitching together the hardware blocks of the instructions required by an
+application or a set of applications in a specific domain. This approach
+significantly reduces the processor verification and its time-to-market. We
+generate RISPs using this methodology for three extreme edge applications, and
+embedded applications from the Embench benchmark suite, synthesize them as
+FlexICs, and compare their power, performance and area to the baselines. Our
+results show that RISPs generated using this methodology achieve, on average,
+30% reductions in power and area compared to a RISC-V processor supporting the
+full instruction set when synthesized, and are nearly 30 times more energy
+efficient with respect to Serv - the world's smallest 32-bit RISC-V processor.
+In addition, the full physical implementation of RISPs show up to 21% and 26%
+less area and power than Serv."
+2502.03456,CodeSCM: Causal Analysis for Multi-Modal Code Generation,"Mukur Gupta, Noopur Bhatt, Suman Jana","To make predictions or design control, information on local sensitivity of
+initial conditions and state-space contraction is both central, and often
+instrumental. However, it is not always simple to reliably determine
+instability fields or local dissipation rates, due to computational challenges
+or ignorance of the governing equations. Here, we construct an alternative
+route towards that goal, by estimating the Jacobian of a discrete-time
+dynamical system locally from the entries of the transition matrix that
+approximates the Perron-Frobenius operator for a given state-space partition.
+Numerical tests on one- and two-dimensional chaotic maps show promising
+results."

@@ -1,0 +1,49 @@
+def naive_matmul(A, B):
+    """
+    使用纯Python的三层循环实现矩阵乘法 C = A * B。
+    
+    Args:
+        A: M x K 的矩阵 (表示为列表的列表)
+        B: K x N 的矩阵 (表示为列表的列表)
+        
+    Returns:
+        C: M x N 的结果矩阵
+    """
+    # 获取矩阵维度
+    M = len(A)
+    K = len(A[0])
+    N = len(B[0])
+
+    # 确保矩阵可以相乘
+    if len(B) != K:
+        raise ValueError("矩阵A的列数必须等于矩阵B的行数")
+
+    # 初始化一个 M x N 的零矩阵
+    C = [[0 for _ in range(N)] for _ in range(M)]
+
+    # 三层循环计算
+    for i in range(M):      # 遍历A的每一行
+        for j in range(N):  # 遍历B的每一列
+            for k in range(K): # 遍历A的列和B的行
+                C[i][j] += A[i][k] * B[k][j]
+    
+    return C
+
+# --- 示例 ---
+if __name__ == "__main__":
+    # 定义矩阵 A (2x3)
+    A = [[1, 2, 3],
+         [4, 5, 6]]
+
+    # 定义矩阵 B (3x2)
+    B = [[7, 8],
+         [9, 10],
+         [11, 12]]
+
+    # 计算 C = A * B
+    C = naive_matmul(A, B)
+
+    # 预期结果: [[58, 64], [139, 154]]
+    print("纯Python循环计算结果:")
+    for row in C:
+        print(row)

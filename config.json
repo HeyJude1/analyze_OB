@@ -1,0 +1,16 @@
+{
+  "model": {
+    "name": "qwen-plus-2025-09-11",
+    "temperature": 0.1,
+    "max_tokens": 8192,
+    "timeout": 60,
+    "max_retries": 3
+  },
+  "paths": {
+    "openblas_path": "./openblas-output/GENERIC/kernel",
+    "output_dir": "./analysis_results"
+  },
+  "prompts": {
+    "system_message": "你是一位高性能计算和算子优化专家，专门分析OpenBLAS算子库中的优化策略。"
+  }
+}
