@@ -155,7 +155,7 @@ class KnowledgeGraphExtractor:
                 schema = CollectionSchema(fields, f"{collection_name} collection")
                 collection = Collection(collection_name, schema)
                 print(f"✅ 创建集合: {collection_name}")
-            else:
+        else:
                 print(f"✅ 集合已存在: {collection_name}")
         
         # 为所有集合创建索引并加载

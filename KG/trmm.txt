@@ -1,0 +1,135 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// --- 宏定义，用于简化矩阵元素访问 ---
+#define A(i, j) a[ (j)*lda + (i) ]
+#define B(i, j) b[ (j)*ldb + (i) ]
+#define min(a, b) ((a) < (b) ? (a) : (b))
+
+// --- 声明外部函数 (模拟) ---
+// 模拟微内核：计算 C_mc*kc += A_mc*kc * B_kc*nc
+void gemm_micro_kernel(int mc, int nc, int kc, float alpha, float *pack_a, float *pack_b, float *c, int ldc);
+
+// 模拟打包函数：将 A 的一个 mc*kc 块打包到连续内存
+void pack_matrix_A(int mc, int kc, float *a, int lda, float *buffer);
+
+// 模拟打包函数：将 B 的一个 kc*nc 块打包到连续内存
+void pack_matrix_B(int nc, int kc, float *b, int ldb, float *buffer);
+
+
+/**
+ * @brief 概念性的高性能 TRMM 实现
+ * 
+ * 计算: B := alpha * A * B
+ * 约束: A 是 M x M 的下三角矩阵 (unit or non-unit)
+ *       B 是 M x N 的通用矩阵
+ *       alpha 是一个标量
+ *       UPLO = 'L', TRANS = 'N', SIDE = 'L'
+ */
+void trmm_lower_nontrans_multiply(int M, int N, float alpha, float *a, int lda, float *b, int ldb) {
+    
+    // --- 阶段一: 计算准备 (Computation Preparation) ---
+
+    // 1. prep.parameter_validation: 参数合法性校验
+    // 检查维度是否有效，如果无效则提前返回，避免无效计算。
+    if (M == 0 || N == 0) {
+        return;
+    }
+
+    // 如果 alpha 为 0，则将 B 矩阵清零并返回。
+    if (alpha == 0.0f) {
+        for (int j = 0; j < N; ++j) {
+            for (int i = 0; i < M; ++i) {
+                B(i, j) = 0.0f;
+            }
+        }
+        return;
+    }
+
+    // 2. prep.loop_invariant_calc: 循环不变量计算
+    // 定义分块大小，这些是在循环外确定的常量，用于指导核心计算的步进。
+    // 在实际的OpenBLAS中，这些值会根据CPU架构动态确定。
+    const int MC = 256; // 块大小 M-dimension
+    const int KC = 128; // 块大小 K-dimension
+    const int NC = 4096; // 块大小 N-dimension
+
+    // --- 阶段二: 数据转换 (Data Transformation) ---
+
+    // 为打包后的数据分配连续内存缓冲区
+    float *packed_a = (float*)malloc(MC * KC * sizeof(float));
+    float *packed_b = (float*)malloc(KC * NC * sizeof(float));
+
+    // --- 阶段三: 核心计算 (Core Computation) ---
+    
+    // 3. core.tiled_loop: 分块矩阵处理循环
+    // 使用三层循环遍历矩阵 B 和 A 的分块，以提高缓存利用率。
+    // 循环顺序 (j, p, i) 经过精心设计以优化数据复用。
+    for (int j = 0; j < N; j += NC) {
+        int nc = min(N - j, NC); // 当前N方向的块大小
+
+        for (int p = 0; p < M; p += KC) {
+            int kc = min(M - p, KC); // 当前K方向的块大小
+
+            // 4. transform.packing: 连续化拷贝/打包
+            // 将 B 矩阵的一个 kc x nc 的子块打包到 packed_b 缓冲区。
+            // 原始数据 B(p, j) 是按列存储且跨步为 ldb 的，打包后变为连续内存。
+            pack_matrix_B(nc, kc, &B(p, j), ldb, packed_b);
+
+            for (int i = p; i < M; i += MC) {
+                int mc = min(M - i, MC); // 当前M方向的块大小
+                
+                // 5. transform.unpacking_special: 特殊结构处理 (隐式)
+                // 因为 A 是下三角矩阵，所以我们只处理 A 的下三角部分的块。
+                // A(i, p) 块只有当 i >= p 时才参与计算。
+                // 对角线上的块 (i == p) 是三角块，其他块是矩形块。
+                // 这里的 pack_matrix_A 函数内部会处理这种情况，
+                // 对于对角块，只打包下三角部分，上三角部分用0填充。
+                pack_matrix_A(mc, kc, &A(i, p), lda, packed_a);
+
+                // 6. core.mm_microkernel: 矩阵乘法微内核
+                // 调用高度优化的微内核，在寄存器层面完成一个小的矩阵乘法：
+                // C_block += A_block * B_block
+                // B(i, j) 的子块会在这里被更新。
+                gemm_micro_kernel(mc, nc, kc, 1.0f, packed_a, &B(i, j), ldb);
+            }
+        }
+    }
+
+    // --- 阶段四: 后处理与写回 (Post-processing) ---
+
+    // 7. post.scale_accumulation: 结果缩放
+    // 如果 alpha 不为 1，则需要对整个 B 矩阵进行缩放。
+    if (alpha != 1.0f) {
+        for (int j = 0; j < N; ++j) {
+            for (int i = 0; i < M; ++i) {
+                B(i, j) *= alpha;
+            }
+        }
+    }
+    
+    // 释放内存
+    free(packed_a);
+    free(packed_b);
+}
+
+// 模拟函数的简单实现，仅用于演示结构
+void gemm_micro_kernel(int mc, int nc, int kc, float alpha, float *pack_a, float *c, int ldc) {
+    // 这是一个高度简化的版本。
+    // 实际的微内核会使用SIMD指令、循环展开和寄存器分块。
+    for (int j = 0; j < nc; ++j) {
+        for (int i = 0; i < mc; ++i) {
+            for (int p = 0; p < kc; ++p) {
+                c[j * ldc + i] += pack_a[p * mc + i] * B(p,j); // 假设 B 此时也已打包
+            }
+        }
+    }
+}
+
+void pack_matrix_A(int mc, int kc, float *a, int lda, float *buffer) {
+    // 模拟将 A 的一个子块打包到 buffer
+    // 实际实现会考虑转置和三角填充
+}
+
+void pack_matrix_B(int nc, int kc, float *b, int ldb, float *buffer) {
+    // 模拟将 B 的一个子块打包到 buffer
+}
