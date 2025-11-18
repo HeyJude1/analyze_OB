@@ -150,19 +150,35 @@ class KnowledgeGraphExtractor:
             if not utility.has_collection(collection_name):
                 Collection(collection_name, CollectionSchema(fields, f"{collection_name} collection"))
 
+    def _normalize_vector(self, vec: List[float]) -> List[float]:
+        """L2 归一化向量，避免零向量被除零。"""
+        try:
+            s = sum(v * v for v in vec)
+            if s <= 0:
+                return vec
+            inv = 1.0 / (s ** 0.5)
+            return [v * inv for v in vec]
+        except Exception:
+            return vec
+
     def _build_index_for_collection(self, collection_name: str):
         try:
             collection = Collection(collection_name)
             collection.flush()
             num_entities = collection.num_entities
             if num_entities == 0: return
-            if not collection.has_index():
-                if num_entities < 1000:
-                    index_params = {"index_type": "FLAT", "metric_type": "L2"}
-                else:
-                    nlist = max(128, min(1024, int((num_entities ** 0.5) * 2)))
-                    index_params = {"index_type": "IVF_FLAT", "metric_type": "L2", "params": {"nlist": nlist}}
-                collection.create_index(field_name="embedding", index_params=index_params)
+            # 无论是否已有索引，都统一改用 COSINE（删除旧索引后重建）
+            try:
+                if collection.has_index():
+                    collection.drop_index()  # 删除默认索引（若存在多个，默认字段索引会被删除）
+            except Exception:
+                pass
+            if num_entities < 1000:
+                index_params = {"index_type": "FLAT", "metric_type": "COSINE"}
+            else:
+                nlist = max(128, min(1024, int((num_entities ** 0.5) * 2)))
+                index_params = {"index_type": "IVF_FLAT", "metric_type": "COSINE", "params": {"nlist": nlist}}
+            collection.create_index(field_name="embedding", index_params=index_params)
             collection.load()
         except Exception as e:
             print(f"⚠️ 处理集合 {collection_name} 时出错: {e}")
@@ -190,7 +206,9 @@ class KnowledgeGraphExtractor:
 
     def _get_embedding(self, text: str) -> List[float]:
         try:
-            return self.embedding_model.embed_query(text)
+            vec = self.embedding_model.embed_query(text)
+            # 单位化向量，配合 COSINE 度量
+            return self._normalize_vector(vec)
         except Exception as e:
             print(f"⚠️ 向量化失败: {e}")
             return [0.0] * self.embedding_config.get("dimension", 1024)

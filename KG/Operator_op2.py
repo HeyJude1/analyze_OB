@@ -424,29 +424,48 @@ class OptimizationStrategyOperator:
 
         collection = Collection("computational_pattern")
         collection.load()
-        
+
+        # 归一化搜索向量，配合 COSINE 检索
+        def _normalize(v: List[float]) -> List[float]:
+            try:
+                s = sum(x * x for x in v)
+                if s <= 0:
+                    return v
+                inv = 1.0 / (s ** 0.5)
+                return [x * inv for x in v]
+            except Exception:
+                return v
+
         embedding_texts = [json.dumps(p, ensure_ascii=False, sort_keys=True) for p in detected_patterns]
-        vectors_to_search = self.embedding_model.embed_documents(embedding_texts)
-        
-        search_params = {"metric_type": "L2", "params": {"nprobe": 10}}
+        vectors_to_search_raw = self.embedding_model.embed_documents(embedding_texts)
+        vectors_to_search = [_normalize(v) for v in vectors_to_search_raw]
+
+        # 使用 COSINE 度量；这里直接把返回的 score(distance 字段)作为相似度使用
+        search_params = {"metric_type": "COSINE", "params": {"nprobe": 10}}
         all_hits = []
 
         results = collection.search(
             data=vectors_to_search,
             anns_field="embedding",
             param=search_params,
-            limit=10,
+            limit=50,
             output_fields=["uid", "name", "type"]
         )
         
         for i, hits in enumerate(results):
-            for hit in hits:
-                if 1 - hit.distance >= 0.6:
+            for rank, hit in enumerate(hits):
+                # 直接使用 Milvus 返回的 score（pymilvus 暴露为 distance 字段）
+                similarity = float(hit.distance)
+                # Top-2 模式（保留注释）：
+                # if rank < 2:
+                #     all_hits.append({...})
+                # 当前采用：相似度阈值模式（>= 0.8）
+                if similarity >= 0.8:
                     all_hits.append({
                         "uid": hit.entity.get("uid"),
                         "name": hit.entity.get("name"),
                         "type": hit.entity.get("type"),
-                        "similarity": 1 - hit.distance,
+                        "similarity": similarity,
                         "query_pattern": detected_patterns[i]['name']
                     })
         return all_hits
@@ -567,7 +586,7 @@ class OptimizationStrategyOperator:
         print(f"✅ 步骤1完成: 检测到 {len(patterns_detected_types)} 个计算流程: {patterns_detected_types}")
         
         similar_patterns = self._search_similar_patterns(patterns_detected_full)
-        print(f"✅ 步骤2完成: 检索到 {len(similar_patterns)} 个相似计算流程 (相似度 >= 0.6)")
+        print(f"✅ 步骤2完成: 检索到 {len(similar_patterns)} 个相似计算流程 (相似度 >= 0.8)")
 
         top_patterns = self._filter_top_patterns(similar_patterns)
         print(f"✅ 步骤3完成: 筛选出 {len(top_patterns)} 个最高分计算流程")
@@ -667,7 +686,7 @@ def main():
     operator = OptimizationStrategyOperator(config=config)
     
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    source_file = os.path.join(script_dir, "trmm.txt")
+    source_file = os.path.join(script_dir, "gemm.txt")
 
     base_dir_str = config.get("data_source", {}).get("analysis_results_dir")
     if not base_dir_str:
