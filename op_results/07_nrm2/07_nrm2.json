@@ -1,0 +1,302 @@
+{
+  "source_file": "/home/dgc/mjs/project/analyze_OB/KG/../Morph/openblas_output/07_nrm2.c",
+  "patterns_detected": [
+    {
+      "pattern_type": "prep.parameter_validation",
+      "name": "参数合法性校验",
+      "description": "检查 n 是否小于等于 0 或 inc_x 是否为 0，满足条件时提前返回 0.0。",
+      "code": "if (n <= 0 || inc_x == 0) return(0.0);",
+      "data_object_features": {
+        "numeric_kind": "N/A",
+        "numeric_precision": "N/A",
+        "structural_properties": "N/A",
+        "storage_layout": "N/A"
+      }
+    },
+    {
+      "pattern_type": "prep.index_pointer_init",
+      "name": "索引与指针初始化",
+      "description": "初始化循环索引 i 为 0，累加器 scale、ssq、absxi 分别为 0.0、1.0、0.0，用于后续数值计算。",
+      "code": "BLASLONG i=0;\ndouble scale = 0.0;\ndouble ssq = 1.0;\ndouble absxi = 0.0;",
+      "data_object_features": {
+        "numeric_kind": "实数",
+        "numeric_precision": "双精度",
+        "structural_properties": "N/A",
+        "storage_layout": "N/A"
+      }
+    },
+    {
+      "pattern_type": "prep.loop_invariant_calc",
+      "name": "循环不变量计算",
+      "description": "在循环外计算 n *= inc_x，用于后续循环边界判断，避免在循环内重复乘法。",
+      "code": "n *= inc_x;",
+      "data_object_features": {
+        "numeric_kind": "N/A",
+        "numeric_precision": "N/A",
+        "structural_properties": "N/A",
+        "storage_layout": "跨步"
+      }
+    },
+    {
+      "pattern_type": "core.vector_reduction",
+      "name": "向量归约",
+      "description": "计算向量的2-范数（nrm2），通过累积平方和实现，采用缩放机制避免溢出：当元素绝对值大于当前缩放因子时，更新缩放因子并调整平方和；否则直接累加归一化后的平方项。",
+      "code": "double scale = 0.0;\ndouble ssq = 1.0;\ndouble absxi = 0.0;\nif (n <= 0 || inc_x == 0) return(0.0);\nif ( n == 1 ) return( fabs(x[0]) );\nn *= inc_x;\nwhile(abs(i) < abs(n))\n{\n if ( x[i] != 0.0 )\n {\n  absxi = fabs( x[i] );\n  if ( scale < absxi )\n  {\n   ssq = 1 + ssq * ( scale / absxi ) * ( scale / absxi );\n   scale = absxi ;\n  }\n  else\n  {\n   ssq += ( absxi/scale ) * ( absxi/scale );\n  }\n }\n i += inc_x;\n}\nscale = scale * sqrt( ssq );\nreturn(scale);",
+      "data_object_features": {
+        "numeric_kind": "实数",
+        "numeric_precision": "双精度",
+        "structural_properties": "通用",
+        "storage_layout": "跨步"
+      }
+    }
+  ],
+  "similar_patterns_found": [
+    {
+      "uid": "f690e473606770fdc7189a8f350c576a",
+      "name": "参数合法性校验",
+      "type": "prep.parameter_validation",
+      "similarity": 0.8756082653999329,
+      "query_pattern": "参数合法性校验"
+    },
+    {
+      "uid": "0b0fcd148b2b3a7911a757b63ed21798",
+      "name": "参数合法性校验",
+      "type": "prep.parameter_validation",
+      "similarity": 0.8747807145118713,
+      "query_pattern": "参数合法性校验"
+    },
+    {
+      "uid": "0eb3710c428a985e8dd7df936a9fe3ff",
+      "name": "参数合法性校验",
+      "type": "prep.parameter_validation",
+      "similarity": 0.8473325371742249,
+      "query_pattern": "参数合法性校验"
+    },
+    {
+      "uid": "0b5754e12e992e54c2abddb1a0b4cd72",
+      "name": "参数合法性校验",
+      "type": "prep.parameter_validation",
+      "similarity": 0.8447720408439636,
+      "query_pattern": "参数合法性校验"
+    },
+    {
+      "uid": "4a9b9b431c359a403967348d5ef51e3d",
+      "name": "参数合法性校验",
+      "type": "prep.parameter_validation",
+      "similarity": 0.8142396807670593,
+      "query_pattern": "参数合法性校验"
+    },
+    {
+      "uid": "fcdad0436072b53b552d2a852923857c",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8723064661026001,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "6d72ecdc3a11119c9c7b090a5d194023",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8684502840042114,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "60c3bf7daa6a79bdb3608f6fb8e55578",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8671140074729919,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "1044b34ee293bff47562fe6d1631ace7",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8650623559951782,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "d4cfe972f6f54684c36d658a4ab1377c",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8521934151649475,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "e9e452e1a3b290bd50e3ddc31b0c9221",
+      "name": "循环不变量计算",
+      "type": "prep.loop_invariant_calc",
+      "similarity": 0.8870313763618469,
+      "query_pattern": "循环不变量计算"
+    },
+    {
+      "uid": "02ab7e3f04cb581b5ca81df41d56bac8",
+      "name": "循环不变量计算",
+      "type": "prep.loop_invariant_calc",
+      "similarity": 0.8819863796234131,
+      "query_pattern": "循环不变量计算"
+    },
+    {
+      "uid": "48a19504c2449cb8050692405d036bdd",
+      "name": "循环不变量计算",
+      "type": "prep.loop_invariant_calc",
+      "similarity": 0.8805317878723145,
+      "query_pattern": "循环不变量计算"
+    },
+    {
+      "uid": "0203503d38c50b1a0200ecf73e20da38",
+      "name": "循环不变量计算",
+      "type": "prep.loop_invariant_calc",
+      "similarity": 0.835831880569458,
+      "query_pattern": "循环不变量计算"
+    },
+    {
+      "uid": "2f4ec400a95f4d7580eb1bfa0e718258",
+      "name": "循环不变量计算",
+      "type": "prep.loop_invariant_calc",
+      "similarity": 0.8294607996940613,
+      "query_pattern": "循环不变量计算"
+    },
+    {
+      "uid": "ba02f62a10444a1e4b62f12a2a6e91ed",
+      "name": "循环不变量计算",
+      "type": "prep.loop_invariant_calc",
+      "similarity": 0.828985869884491,
+      "query_pattern": "循环不变量计算"
+    },
+    {
+      "uid": "876ed2f3779c245079e4e0e235236152",
+      "name": "循环不变量计算",
+      "type": "prep.loop_invariant_calc",
+      "similarity": 0.828768253326416,
+      "query_pattern": "循环不变量计算"
+    },
+    {
+      "uid": "0493ba05d24b11ccf121349a62030da9",
+      "name": "循环不变量计算",
+      "type": "prep.loop_invariant_calc",
+      "similarity": 0.8260728120803833,
+      "query_pattern": "循环不变量计算"
+    },
+    {
+      "uid": "1b06e06bbe911997a50bb45913217083",
+      "name": "循环不变量计算",
+      "type": "prep.loop_invariant_calc",
+      "similarity": 0.8258918523788452,
+      "query_pattern": "循环不变量计算"
+    },
+    {
+      "uid": "599e57440cbc8bad5698580f5fce38fc",
+      "name": "循环不变量计算",
+      "type": "prep.loop_invariant_calc",
+      "similarity": 0.8208956122398376,
+      "query_pattern": "循环不变量计算"
+    },
+    {
+      "uid": "2b6fe36880d831367bbc254499769929",
+      "name": "循环不变量计算",
+      "type": "prep.loop_invariant_calc",
+      "similarity": 0.8206040263175964,
+      "query_pattern": "循环不变量计算"
+    },
+    {
+      "uid": "81f5c72bf1561ddf054564dddaec9d7a",
+      "name": "循环不变量计算",
+      "type": "prep.loop_invariant_calc",
+      "similarity": 0.8200855851173401,
+      "query_pattern": "循环不变量计算"
+    }
+  ],
+  "top_patterns_per_type": [
+    {
+      "uid": "f690e473606770fdc7189a8f350c576a",
+      "name": "参数合法性校验",
+      "type": "prep.parameter_validation",
+      "similarity": 0.8756082653999329,
+      "query_pattern": "参数合法性校验"
+    },
+    {
+      "uid": "fcdad0436072b53b552d2a852923857c",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8723064661026001,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "e9e452e1a3b290bd50e3ddc31b0c9221",
+      "name": "循环不变量计算",
+      "type": "prep.loop_invariant_calc",
+      "similarity": 0.8870313763618469,
+      "query_pattern": "循环不变量计算"
+    }
+  ],
+  "search_strategies": [
+    {
+      "strategy_uid": "b7905437f874d22735cb33368840a5b1",
+      "canonical_name": "循环不变量外提",
+      "cluster_size": 7,
+      "pattern_counts": {
+        "prep.loop_invariant_calc": 7,
+        "core.elementwise_update": 6
+      },
+      "core_patterns": [
+        "prep.loop_invariant_calc",
+        "core.elementwise_update"
+      ],
+      "contextual_patterns": {},
+      "score": 0.25
+    },
+    {
+      "strategy_uid": "0ad5432f7acf2b2e2e618d310216dad8",
+      "canonical_name": "内存访问与算术操作重叠设计",
+      "cluster_size": 1,
+      "pattern_counts": {
+        "core.elementwise_update": 1,
+        "prep.loop_invariant_calc": 1
+      },
+      "core_patterns": [
+        "core.elementwise_update",
+        "prep.loop_invariant_calc"
+      ],
+      "contextual_patterns": {},
+      "score": 0.25
+    },
+    {
+      "strategy_uid": "02c3072945af12c082997f8c97ce5d6d",
+      "canonical_name": "分支消除与短路返回",
+      "cluster_size": 10,
+      "pattern_counts": {
+        "prep.parameter_validation": 10
+      },
+      "core_patterns": [
+        "prep.parameter_validation"
+      ],
+      "contextual_patterns": {},
+      "score": 0.25
+    },
+    {
+      "strategy_uid": "00009e903cbc1119cc3b6824eb36f756",
+      "canonical_name": "循环内索引增量展开",
+      "cluster_size": 13,
+      "pattern_counts": {
+        "core.elementwise_update": 5,
+        "prep.index_pointer_init": 8,
+        "transform.packing": 5,
+        "core.gemv_like": 2,
+        "core.tiled_loop": 2,
+        "core.mm_microkernel": 2
+      },
+      "core_patterns": [
+        "prep.index_pointer_init"
+      ],
+      "contextual_patterns": {
+        "core.elementwise_update": "0.384615",
+        "transform.packing": "0.384615",
+        "core.gemv_like": "0.153846",
+        "core.tiled_loop": "0.153846",
+        "core.mm_microkernel": "0.153846"
+      },
+      "score": 0.25
+    }
+  ],
+  "final_strategies": []
+}

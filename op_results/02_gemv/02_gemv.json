@@ -1,0 +1,150 @@
+{
+  "source_file": "/home/dgc/mjs/project/analyze_OB/KG/../Morph/openblas_output/02_gemv.c",
+  "patterns_detected": [
+    {
+      "pattern_type": "core.gemv_like",
+      "name": "矩阵-向量乘",
+      "description": "实现矩阵A与向量x的乘法，外层循环遍历列j，内层循环对每一行i执行y[i] += alpha * x[j] * A[i,j]的点积累积操作，其中a_ptr指向矩阵的列，inc_x和inc_y控制向量的跨步访问。",
+      "code": "for (j=0; j<n; j++)\n{\n    temp = alpha * x[ix];\n    iy = 0;\n    for (i=0; i<m; i++)\n    {\n        y[iy] += temp * a_ptr[i];\n        iy += inc_y;\n    }\n    a_ptr += lda;\n    ix += inc_x;\n}",
+      "data_object_features": {
+        "numeric_kind": "实数",
+        "numeric_precision": "双精度",
+        "structural_properties": "通用",
+        "storage_layout": "跨步"
+      }
+    }
+  ],
+  "similar_patterns_found": [
+    {
+      "uid": "e8540ae59a7df9d27d3abfe457d635e7",
+      "name": "矩阵-向量乘",
+      "type": "core.gemv_like",
+      "similarity": 0.8463883399963379,
+      "query_pattern": "矩阵-向量乘"
+    },
+    {
+      "uid": "f80057c9e498ea2b85a09d8eea78b5d4",
+      "name": "矩阵-向量乘",
+      "type": "core.gemv_like",
+      "similarity": 0.8450615406036377,
+      "query_pattern": "矩阵-向量乘"
+    },
+    {
+      "uid": "91cd869edb385f0b1702fed967bf8dbd",
+      "name": "矩阵-向量乘",
+      "type": "core.gemv_like",
+      "similarity": 0.8282347321510315,
+      "query_pattern": "矩阵-向量乘"
+    }
+  ],
+  "top_patterns_per_type": [
+    {
+      "uid": "e8540ae59a7df9d27d3abfe457d635e7",
+      "name": "矩阵-向量乘",
+      "type": "core.gemv_like",
+      "similarity": 0.8463883399963379,
+      "query_pattern": "矩阵-向量乘"
+    }
+  ],
+  "search_strategies": [
+    {
+      "strategy_uid": "7be432bf626f1d6d628493ba477a61ff",
+      "canonical_name": "内联汇编手工调度复数乘法",
+      "cluster_size": 1,
+      "pattern_counts": {
+        "core.gemv_like": 1,
+        "core.vector_reduction": 1
+      },
+      "core_patterns": [
+        "core.gemv_like",
+        "core.vector_reduction"
+      ],
+      "contextual_patterns": {},
+      "score": 1.0
+    },
+    {
+      "strategy_uid": "10ed13b3de63ecfeca4dee46eef7d56f",
+      "canonical_name": "内存访问对齐强制以支持SIMD加载",
+      "cluster_size": 8,
+      "pattern_counts": {
+        "transform.packing": 8,
+        "prep.index_pointer_init": 2,
+        "transform.unpacking_special": 3,
+        "core.gemv_like": 1,
+        "prep.loop_invariant_calc": 1
+      },
+      "core_patterns": [
+        "transform.packing"
+      ],
+      "contextual_patterns": {
+        "prep.index_pointer_init": "0.250000",
+        "transform.unpacking_special": "0.375000",
+        "core.gemv_like": "0.125000",
+        "prep.loop_invariant_calc": "0.125000"
+      },
+      "score": 0.0625
+    },
+    {
+      "strategy_uid": "024ab9bd43b00181959bcae8b44bed4e",
+      "canonical_name": "循环分块与固定大小迭代",
+      "cluster_size": 4,
+      "pattern_counts": {
+        "core.gemv_like": 3,
+        "transform.unpacking_special": 3,
+        "core.vector_reduction": 1,
+        "transform.packing": 1
+      },
+      "core_patterns": [
+        "core.gemv_like",
+        "transform.unpacking_special"
+      ],
+      "contextual_patterns": {
+        "core.vector_reduction": "0.250000",
+        "transform.packing": "0.250000"
+      },
+      "score": 1.0
+    },
+    {
+      "strategy_uid": "78c7fba8c57a8964bff8cb93e7700d26",
+      "canonical_name": "SIMD向量化复数数据处理",
+      "cluster_size": 7,
+      "pattern_counts": {
+        "transform.packing": 3,
+        "core.mm_microkernel": 3,
+        "core.tiled_loop": 3,
+        "core.gemv_like": 1,
+        "core.vector_reduction": 1
+      },
+      "core_patterns": [],
+      "contextual_patterns": {
+        "transform.packing": "0.428571",
+        "core.mm_microkernel": "0.428571",
+        "core.tiled_loop": "0.428571",
+        "core.gemv_like": "0.142857",
+        "core.vector_reduction": "0.142857"
+      },
+      "score": 0.0714285
+    },
+    {
+      "strategy_uid": "0ed6bb2411785cc48e7f030b3594ae01",
+      "canonical_name": "对称结构感知计算",
+      "cluster_size": 7,
+      "pattern_counts": {
+        "transform.unpacking_special": 7,
+        "core.rank1_update": 1,
+        "core.gemv_like": 5,
+        "transform.packing": 1
+      },
+      "core_patterns": [
+        "transform.unpacking_special",
+        "core.gemv_like"
+      ],
+      "contextual_patterns": {
+        "core.rank1_update": "0.142857",
+        "transform.packing": "0.142857"
+      },
+      "score": 1.0
+    }
+  ],
+  "final_strategies": []
+}

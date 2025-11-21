@@ -1,0 +1,197 @@
+{
+  "source_file": "/home/dgc/mjs/project/analyze_OB/KG/../Morph/openblas_output/04_dot.c",
+  "patterns_detected": [
+    {
+      "pattern_type": "prep.parameter_validation",
+      "name": "参数合法性校验",
+      "description": "检查参数n是否小于0，若成立则提前返回dot值，实现早退机制。",
+      "code": "if ( n < 0 ) return(dot);",
+      "data_object_features": {
+        "numeric_kind": "N/A",
+        "numeric_precision": "N/A",
+        "structural_properties": "N/A",
+        "storage_layout": "N/A"
+      }
+    },
+    {
+      "pattern_type": "prep.index_pointer_init",
+      "name": "索引与指针初始化",
+      "description": "初始化循环变量i、指针偏移ix和iy，以及累加器dot，分别为i=0、ix=0、iy=0、dot=0.0。",
+      "code": "BLASLONG i=0;\nBLASLONG ix=0,iy=0;\ndouble dot = 0.0 ;",
+      "data_object_features": {
+        "numeric_kind": "实数",
+        "numeric_precision": "双精度",
+        "structural_properties": "N/A",
+        "storage_layout": "N/A"
+      }
+    },
+    {
+      "pattern_type": "core.vector_reduction",
+      "name": "向量归约",
+      "description": "对两个向量x和y执行点积运算，通过累加乘积实现归约操作，使用inc_x和inc_y处理非连续存储的向量元素。",
+      "code": "double ddot_k(BLASLONG n, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y)\n{\n BLASLONG i=0;\n BLASLONG ix=0,iy=0;\n double dot = 0.0 ;\n if ( n < 0 ) return(dot);\n while(i < n)\n {\n  dot += y[iy] * x[ix] ;\n  ix += inc_x ;\n  iy += inc_y ;\n  i++ ;\n }\n return(dot);\n}",
+      "data_object_features": {
+        "numeric_kind": "实数",
+        "numeric_precision": "双精度",
+        "structural_properties": "通用",
+        "storage_layout": "跨步"
+      }
+    }
+  ],
+  "similar_patterns_found": [
+    {
+      "uid": "0b0fcd148b2b3a7911a757b63ed21798",
+      "name": "参数合法性校验",
+      "type": "prep.parameter_validation",
+      "similarity": 0.859473705291748,
+      "query_pattern": "参数合法性校验"
+    },
+    {
+      "uid": "f690e473606770fdc7189a8f350c576a",
+      "name": "参数合法性校验",
+      "type": "prep.parameter_validation",
+      "similarity": 0.8575543165206909,
+      "query_pattern": "参数合法性校验"
+    },
+    {
+      "uid": "0eb3710c428a985e8dd7df936a9fe3ff",
+      "name": "参数合法性校验",
+      "type": "prep.parameter_validation",
+      "similarity": 0.8411211967468262,
+      "query_pattern": "参数合法性校验"
+    },
+    {
+      "uid": "0b5754e12e992e54c2abddb1a0b4cd72",
+      "name": "参数合法性校验",
+      "type": "prep.parameter_validation",
+      "similarity": 0.8377869725227356,
+      "query_pattern": "参数合法性校验"
+    },
+    {
+      "uid": "4a9b9b431c359a403967348d5ef51e3d",
+      "name": "参数合法性校验",
+      "type": "prep.parameter_validation",
+      "similarity": 0.816788911819458,
+      "query_pattern": "参数合法性校验"
+    },
+    {
+      "uid": "60c3bf7daa6a79bdb3608f6fb8e55578",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.9003880023956299,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "1044b34ee293bff47562fe6d1631ace7",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.893887996673584,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "6d72ecdc3a11119c9c7b090a5d194023",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8831411600112915,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "fcdad0436072b53b552d2a852923857c",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8822216391563416,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "d4cfe972f6f54684c36d658a4ab1377c",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.871173083782196,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "026531709730020fdf4d40dfbd6f000c",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8128337860107422,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "656cdc291467e780a076477dcddbf20d",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8044237494468689,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "791f766e32ca9e9b5a8636ca06372be2",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.802878201007843,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "29f52dd95c109cc3c18b2e55ae3e54ce",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8002572059631348,
+      "query_pattern": "索引与指针初始化"
+    }
+  ],
+  "top_patterns_per_type": [
+    {
+      "uid": "0b0fcd148b2b3a7911a757b63ed21798",
+      "name": "参数合法性校验",
+      "type": "prep.parameter_validation",
+      "similarity": 0.859473705291748,
+      "query_pattern": "参数合法性校验"
+    },
+    {
+      "uid": "60c3bf7daa6a79bdb3608f6fb8e55578",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.9003880023956299,
+      "query_pattern": "索引与指针初始化"
+    }
+  ],
+  "search_strategies": [
+    {
+      "strategy_uid": "02c3072945af12c082997f8c97ce5d6d",
+      "canonical_name": "分支消除与短路返回",
+      "cluster_size": 10,
+      "pattern_counts": {
+        "prep.parameter_validation": 10
+      },
+      "core_patterns": [
+        "prep.parameter_validation"
+      ],
+      "contextual_patterns": {},
+      "score": 0.3333333333333333
+    },
+    {
+      "strategy_uid": "00009e903cbc1119cc3b6824eb36f756",
+      "canonical_name": "循环内索引增量展开",
+      "cluster_size": 13,
+      "pattern_counts": {
+        "core.elementwise_update": 5,
+        "prep.index_pointer_init": 8,
+        "transform.packing": 5,
+        "core.gemv_like": 2,
+        "core.tiled_loop": 2,
+        "core.mm_microkernel": 2
+      },
+      "core_patterns": [
+        "prep.index_pointer_init"
+      ],
+      "contextual_patterns": {
+        "core.elementwise_update": "0.384615",
+        "transform.packing": "0.384615",
+        "core.gemv_like": "0.153846",
+        "core.tiled_loop": "0.153846",
+        "core.mm_microkernel": "0.153846"
+      },
+      "score": 0.3333333333333333
+    }
+  ],
+  "final_strategies": []
+}

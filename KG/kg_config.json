@@ -29,5 +29,8 @@
   },
   "data_source": {
     "analysis_results_dir": "dgc/mjs/project/analyze_OB/results/20251114_153700"
+  },
+  "optimization_results": {
+    "output_dir": "/home/dgc/mjs/project/analyze_OB/op_results"
   }
 }

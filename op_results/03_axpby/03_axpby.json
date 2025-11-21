@@ -1,0 +1,356 @@
+{
+  "source_file": "/home/dgc/mjs/project/analyze_OB/KG/../Morph/openblas_output/03_axpby.c",
+  "patterns_detected": [
+    {
+      "pattern_type": "prep.parameter_validation",
+      "name": "参数合法性校验",
+      "description": "检查参数 n 是否小于 0，若满足则提前返回 0，属于典型的边界校验与早退逻辑。",
+      "code": "if ( n < 0 ) return(0);",
+      "data_object_features": {
+        "numeric_kind": "N/A",
+        "numeric_precision": "N/A",
+        "structural_properties": "N/A",
+        "storage_layout": "N/A"
+      }
+    },
+    {
+      "pattern_type": "prep.index_pointer_init",
+      "name": "索引与指针初始化",
+      "description": "初始化循环变量 i 为 0，以及指针偏移量 ix 和 iy 为 0，用于后续数组访问的索引计算。",
+      "code": "BLASLONG i=0;\nBLASLONG ix,iy;\nix = 0;\niy = 0;",
+      "data_object_features": {
+        "numeric_kind": "N/A",
+        "numeric_precision": "N/A",
+        "structural_properties": "N/A",
+        "storage_layout": "N/A"
+      }
+    },
+    {
+      "pattern_type": "core.elementwise_update",
+      "name": "元素级向量更新",
+      "description": "对向量y进行逐元素的线性组合更新：y[i] = alpha * x[i] + beta * y[i]，涉及标量乘法与累加，适用于一般情况下的AXPBY操作。",
+      "code": "while(i < n)\n{\n    y[iy] = alpha * x[ix] + beta * y[iy] ;\n    ix += inc_x ;\n    iy += inc_y ;\n    i++ ;\n}",
+      "data_object_features": {
+        "numeric_kind": "实数",
+        "numeric_precision": "双精度",
+        "structural_properties": "通用",
+        "storage_layout": "跨步"
+      }
+    }
+  ],
+  "similar_patterns_found": [
+    {
+      "uid": "f690e473606770fdc7189a8f350c576a",
+      "name": "参数合法性校验",
+      "type": "prep.parameter_validation",
+      "similarity": 0.8724274635314941,
+      "query_pattern": "参数合法性校验"
+    },
+    {
+      "uid": "0b0fcd148b2b3a7911a757b63ed21798",
+      "name": "参数合法性校验",
+      "type": "prep.parameter_validation",
+      "similarity": 0.8662830591201782,
+      "query_pattern": "参数合法性校验"
+    },
+    {
+      "uid": "0eb3710c428a985e8dd7df936a9fe3ff",
+      "name": "参数合法性校验",
+      "type": "prep.parameter_validation",
+      "similarity": 0.8482717275619507,
+      "query_pattern": "参数合法性校验"
+    },
+    {
+      "uid": "0b5754e12e992e54c2abddb1a0b4cd72",
+      "name": "参数合法性校验",
+      "type": "prep.parameter_validation",
+      "similarity": 0.8405438661575317,
+      "query_pattern": "参数合法性校验"
+    },
+    {
+      "uid": "4a9b9b431c359a403967348d5ef51e3d",
+      "name": "参数合法性校验",
+      "type": "prep.parameter_validation",
+      "similarity": 0.8283695578575134,
+      "query_pattern": "参数合法性校验"
+    },
+    {
+      "uid": "60c3bf7daa6a79bdb3608f6fb8e55578",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.9201272130012512,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "6d72ecdc3a11119c9c7b090a5d194023",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.915952205657959,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "1044b34ee293bff47562fe6d1631ace7",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.9147121906280518,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "fcdad0436072b53b552d2a852923857c",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.9057614803314209,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "d4cfe972f6f54684c36d658a4ab1377c",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8972007036209106,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "656cdc291467e780a076477dcddbf20d",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8207032680511475,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "29f52dd95c109cc3c18b2e55ae3e54ce",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8187402486801147,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "243b2fd5174b0f79b6f0ed5556a4bed7",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.817577600479126,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "f7ecd71c191cb5bb12295fd92a1edce0",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8102583885192871,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "8ae22ba904ac76cba2b0f66d9cd27b34",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8063502311706543,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "026531709730020fdf4d40dfbd6f000c",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8040456771850586,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "791f766e32ca9e9b5a8636ca06372be2",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.803165078163147,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "c833feacda6958e38906c52ab9a8f364",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8023521900177002,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "9468c7d2f98aa065d5074b638be14dfe",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8008829951286316,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "e658ff1ef0d6ac8ad5f7002f0bb7ec4a",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8007937669754028,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "dc1087bdef357bd5182bed32cf9ccbe0",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8001803159713745,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "966c9c4c2dbe91de3b0186c51a0f401c",
+      "name": "元素级向量更新",
+      "type": "core.elementwise_update",
+      "similarity": 0.8943921327590942,
+      "query_pattern": "元素级向量更新"
+    },
+    {
+      "uid": "51bd9a5ecb4f608ee351f12ebc66df55",
+      "name": "元素级向量更新",
+      "type": "core.elementwise_update",
+      "similarity": 0.890825629234314,
+      "query_pattern": "元素级向量更新"
+    },
+    {
+      "uid": "d02927182636e1de3f1cbb789b6f40bc",
+      "name": "元素级向量更新",
+      "type": "core.elementwise_update",
+      "similarity": 0.8854203224182129,
+      "query_pattern": "元素级向量更新"
+    },
+    {
+      "uid": "791aed7584cdf1db6112199d3db1b119",
+      "name": "元素级向量更新",
+      "type": "core.elementwise_update",
+      "similarity": 0.8842689990997314,
+      "query_pattern": "元素级向量更新"
+    },
+    {
+      "uid": "a2672efa3562155e363db566b9514ddb",
+      "name": "元素级向量更新",
+      "type": "core.elementwise_update",
+      "similarity": 0.8798370957374573,
+      "query_pattern": "元素级向量更新"
+    }
+  ],
+  "top_patterns_per_type": [
+    {
+      "uid": "f690e473606770fdc7189a8f350c576a",
+      "name": "参数合法性校验",
+      "type": "prep.parameter_validation",
+      "similarity": 0.8724274635314941,
+      "query_pattern": "参数合法性校验"
+    },
+    {
+      "uid": "60c3bf7daa6a79bdb3608f6fb8e55578",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.9201272130012512,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "966c9c4c2dbe91de3b0186c51a0f401c",
+      "name": "元素级向量更新",
+      "type": "core.elementwise_update",
+      "similarity": 0.8943921327590942,
+      "query_pattern": "元素级向量更新"
+    }
+  ],
+  "search_strategies": [
+    {
+      "strategy_uid": "02c3072945af12c082997f8c97ce5d6d",
+      "canonical_name": "分支消除与短路返回",
+      "cluster_size": 10,
+      "pattern_counts": {
+        "prep.parameter_validation": 10
+      },
+      "core_patterns": [
+        "prep.parameter_validation"
+      ],
+      "contextual_patterns": {},
+      "score": 0.3333333333333333
+    },
+    {
+      "strategy_uid": "dcea9d6e2bab82279344a45d5074726c",
+      "canonical_name": "无显式指令级优化（标量回退路径）",
+      "cluster_size": 1,
+      "pattern_counts": {
+        "core.elementwise_update": 1
+      },
+      "core_patterns": [
+        "core.elementwise_update"
+      ],
+      "contextual_patterns": {},
+      "score": 0.3333333333333333
+    },
+    {
+      "strategy_uid": "00009e903cbc1119cc3b6824eb36f756",
+      "canonical_name": "循环内索引增量展开",
+      "cluster_size": 13,
+      "pattern_counts": {
+        "core.elementwise_update": 5,
+        "prep.index_pointer_init": 8,
+        "transform.packing": 5,
+        "core.gemv_like": 2,
+        "core.tiled_loop": 2,
+        "core.mm_microkernel": 2
+      },
+      "core_patterns": [
+        "prep.index_pointer_init"
+      ],
+      "contextual_patterns": {
+        "core.elementwise_update": "0.384615",
+        "transform.packing": "0.384615",
+        "core.gemv_like": "0.153846",
+        "core.tiled_loop": "0.153846",
+        "core.mm_microkernel": "0.153846"
+      },
+      "score": 0.5256408333333333
+    },
+    {
+      "strategy_uid": "7cfefb39f3d2468e581dc204223135e2",
+      "canonical_name": "索引步长解耦访问",
+      "cluster_size": 2,
+      "pattern_counts": {
+        "prep.index_pointer_init": 2,
+        "core.elementwise_update": 2
+      },
+      "core_patterns": [
+        "prep.index_pointer_init",
+        "core.elementwise_update"
+      ],
+      "contextual_patterns": {},
+      "score": 0.6666666666666666
+    }
+  ],
+  "final_strategies": [
+    {
+      "strategy_uid": "7cfefb39f3d2468e581dc204223135e2",
+      "canonical_name": "索引步长解耦访问",
+      "cluster_size": 2,
+      "pattern_counts": {
+        "prep.index_pointer_init": 2,
+        "core.elementwise_update": 2
+      },
+      "core_patterns": [
+        "prep.index_pointer_init",
+        "core.elementwise_update"
+      ],
+      "contextual_patterns": {},
+      "score": 0.6666666666666666
+    },
+    {
+      "strategy_uid": "00009e903cbc1119cc3b6824eb36f756",
+      "canonical_name": "循环内索引增量展开",
+      "cluster_size": 13,
+      "pattern_counts": {
+        "core.elementwise_update": 5,
+        "prep.index_pointer_init": 8,
+        "transform.packing": 5,
+        "core.gemv_like": 2,
+        "core.tiled_loop": 2,
+        "core.mm_microkernel": 2
+      },
+      "core_patterns": [
+        "prep.index_pointer_init"
+      ],
+      "contextual_patterns": {
+        "core.elementwise_update": "0.384615",
+        "transform.packing": "0.384615",
+        "core.gemv_like": "0.153846",
+        "core.tiled_loop": "0.153846",
+        "core.mm_microkernel": "0.153846"
+      },
+      "score": 0.5256408333333333
+    }
+  ]
+}

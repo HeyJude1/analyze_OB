@@ -1,0 +1,230 @@
+{
+  "source_file": "/home/dgc/mjs/project/analyze_OB/KG/../Morph/openblas_output/10_iamin.c",
+  "patterns_detected": [
+    {
+      "pattern_type": "prep.parameter_validation",
+      "name": "参数合法性校验",
+      "description": "检查参数 n 和 inc_x 是否满足最小边界条件，若 n <= 0 或 inc_x <= 0 则直接返回 min（初始值0）以提前退出。",
+      "code": "if (n <= 0 || inc_x <= 0) return(min);",
+      "data_object_features": {
+        "numeric_kind": "N/A",
+        "numeric_precision": "N/A",
+        "structural_properties": "N/A",
+        "storage_layout": "N/A"
+      }
+    },
+    {
+      "pattern_type": "prep.index_pointer_init",
+      "name": "索引与指针初始化",
+      "description": "初始化循环变量 i=0、指针偏移 ix=0、最小值 minf=0.0 和最小索引 min=0，为后续循环计算做准备。",
+      "code": "BLASLONG i=0;\nBLASLONG ix=0;\ndouble minf=0.0;\nBLASLONG min=0;",
+      "data_object_features": {
+        "numeric_kind": "N/A",
+        "numeric_precision": "N/A",
+        "structural_properties": "N/A",
+        "storage_layout": "N/A"
+      }
+    }
+  ],
+  "similar_patterns_found": [
+    {
+      "uid": "0b0fcd148b2b3a7911a757b63ed21798",
+      "name": "参数合法性校验",
+      "type": "prep.parameter_validation",
+      "similarity": 0.823746919631958,
+      "query_pattern": "参数合法性校验"
+    },
+    {
+      "uid": "f690e473606770fdc7189a8f350c576a",
+      "name": "参数合法性校验",
+      "type": "prep.parameter_validation",
+      "similarity": 0.8179503083229065,
+      "query_pattern": "参数合法性校验"
+    },
+    {
+      "uid": "60c3bf7daa6a79bdb3608f6fb8e55578",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8921734094619751,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "1044b34ee293bff47562fe6d1631ace7",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.868122935295105,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "fcdad0436072b53b552d2a852923857c",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8666330575942993,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "6d72ecdc3a11119c9c7b090a5d194023",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8634177446365356,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "d4cfe972f6f54684c36d658a4ab1377c",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8486548662185669,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "29f52dd95c109cc3c18b2e55ae3e54ce",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8372933864593506,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "656cdc291467e780a076477dcddbf20d",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8269435167312622,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "243b2fd5174b0f79b6f0ed5556a4bed7",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8257057070732117,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "c833feacda6958e38906c52ab9a8f364",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8234498500823975,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "026531709730020fdf4d40dfbd6f000c",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8203052282333374,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "791f766e32ca9e9b5a8636ca06372be2",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8186286091804504,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "f7ecd71c191cb5bb12295fd92a1edce0",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8147438764572144,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "8ae22ba904ac76cba2b0f66d9cd27b34",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.810585618019104,
+      "query_pattern": "索引与指针初始化"
+    }
+  ],
+  "top_patterns_per_type": [
+    {
+      "uid": "0b0fcd148b2b3a7911a757b63ed21798",
+      "name": "参数合法性校验",
+      "type": "prep.parameter_validation",
+      "similarity": 0.823746919631958,
+      "query_pattern": "参数合法性校验"
+    },
+    {
+      "uid": "60c3bf7daa6a79bdb3608f6fb8e55578",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8921734094619751,
+      "query_pattern": "索引与指针初始化"
+    }
+  ],
+  "search_strategies": [
+    {
+      "strategy_uid": "02c3072945af12c082997f8c97ce5d6d",
+      "canonical_name": "分支消除与短路返回",
+      "cluster_size": 10,
+      "pattern_counts": {
+        "prep.parameter_validation": 10
+      },
+      "core_patterns": [
+        "prep.parameter_validation"
+      ],
+      "contextual_patterns": {},
+      "score": 0.5
+    },
+    {
+      "strategy_uid": "00009e903cbc1119cc3b6824eb36f756",
+      "canonical_name": "循环内索引增量展开",
+      "cluster_size": 13,
+      "pattern_counts": {
+        "core.elementwise_update": 5,
+        "prep.index_pointer_init": 8,
+        "transform.packing": 5,
+        "core.gemv_like": 2,
+        "core.tiled_loop": 2,
+        "core.mm_microkernel": 2
+      },
+      "core_patterns": [
+        "prep.index_pointer_init"
+      ],
+      "contextual_patterns": {
+        "core.elementwise_update": "0.384615",
+        "transform.packing": "0.384615",
+        "core.gemv_like": "0.153846",
+        "core.tiled_loop": "0.153846",
+        "core.mm_microkernel": "0.153846"
+      },
+      "score": 0.5
+    }
+  ],
+  "final_strategies": [
+    {
+      "strategy_uid": "02c3072945af12c082997f8c97ce5d6d",
+      "canonical_name": "分支消除与短路返回",
+      "cluster_size": 10,
+      "pattern_counts": {
+        "prep.parameter_validation": 10
+      },
+      "core_patterns": [
+        "prep.parameter_validation"
+      ],
+      "contextual_patterns": {},
+      "score": 0.5
+    },
+    {
+      "strategy_uid": "00009e903cbc1119cc3b6824eb36f756",
+      "canonical_name": "循环内索引增量展开",
+      "cluster_size": 13,
+      "pattern_counts": {
+        "core.elementwise_update": 5,
+        "prep.index_pointer_init": 8,
+        "transform.packing": 5,
+        "core.gemv_like": 2,
+        "core.tiled_loop": 2,
+        "core.mm_microkernel": 2
+      },
+      "core_patterns": [
+        "prep.index_pointer_init"
+      ],
+      "contextual_patterns": {
+        "core.elementwise_update": "0.384615",
+        "transform.packing": "0.384615",
+        "core.gemv_like": "0.153846",
+        "core.tiled_loop": "0.153846",
+        "core.mm_microkernel": "0.153846"
+      },
+      "score": 0.5
+    }
+  ]
+}

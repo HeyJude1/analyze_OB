@@ -1,0 +1,108 @@
+{
+  "source_file": "/home/dgc/mjs/project/analyze_OB/KG/../Morph/openblas_output/01_gemm.c",
+  "patterns_detected": [
+    {
+      "pattern_type": "prep.index_pointer_init",
+      "name": "索引与指针初始化",
+      "description": "初始化累加器 result 为 0.0，并在 for 循环中初始化循环变量 i、j、k 为 0。",
+      "code": " BLASLONG i,j,k;\n double result=0.0;\n for(i=0; i<M; i++){\n  for(j=0; j<N; j++){\n   result=0.0;\n   for(k=0; k<K; k++){",
+      "data_object_features": {
+        "numeric_kind": "实数",
+        "numeric_precision": "双精度",
+        "structural_properties": "N/A",
+        "storage_layout": "N/A"
+      }
+    }
+  ],
+  "similar_patterns_found": [
+    {
+      "uid": "fcdad0436072b53b552d2a852923857c",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8265594244003296,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "60c3bf7daa6a79bdb3608f6fb8e55578",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8235508799552917,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "1044b34ee293bff47562fe6d1631ace7",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8167159557342529,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "6d72ecdc3a11119c9c7b090a5d194023",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8088208436965942,
+      "query_pattern": "索引与指针初始化"
+    }
+  ],
+  "top_patterns_per_type": [
+    {
+      "uid": "fcdad0436072b53b552d2a852923857c",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8265594244003296,
+      "query_pattern": "索引与指针初始化"
+    }
+  ],
+  "search_strategies": [
+    {
+      "strategy_uid": "00009e903cbc1119cc3b6824eb36f756",
+      "canonical_name": "循环内索引增量展开",
+      "cluster_size": 13,
+      "pattern_counts": {
+        "core.elementwise_update": 5,
+        "prep.index_pointer_init": 8,
+        "transform.packing": 5,
+        "core.gemv_like": 2,
+        "core.tiled_loop": 2,
+        "core.mm_microkernel": 2
+      },
+      "core_patterns": [
+        "prep.index_pointer_init"
+      ],
+      "contextual_patterns": {
+        "core.elementwise_update": "0.384615",
+        "transform.packing": "0.384615",
+        "core.gemv_like": "0.153846",
+        "core.tiled_loop": "0.153846",
+        "core.mm_microkernel": "0.153846"
+      },
+      "score": 1.0
+    }
+  ],
+  "final_strategies": [
+    {
+      "strategy_uid": "00009e903cbc1119cc3b6824eb36f756",
+      "canonical_name": "循环内索引增量展开",
+      "cluster_size": 13,
+      "pattern_counts": {
+        "core.elementwise_update": 5,
+        "prep.index_pointer_init": 8,
+        "transform.packing": 5,
+        "core.gemv_like": 2,
+        "core.tiled_loop": 2,
+        "core.mm_microkernel": 2
+      },
+      "core_patterns": [
+        "prep.index_pointer_init"
+      ],
+      "contextual_patterns": {
+        "core.elementwise_update": "0.384615",
+        "transform.packing": "0.384615",
+        "core.gemv_like": "0.153846",
+        "core.tiled_loop": "0.153846",
+        "core.mm_microkernel": "0.153846"
+      },
+      "score": 1.0
+    }
+  ]
+}

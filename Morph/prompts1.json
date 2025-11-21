@@ -1,0 +1,142 @@
+[
+    {
+        "problem_type": "blas",
+        "language": "cpp",
+        "name": "01_gemm",
+        "parallelism_model": "serial",
+        "prompt": "typedef long BLASLONG;\n\n/* Matrix-Matrix Multiplication: C = alpha * A * B + beta * C\n   A is M x K matrix (row-major)\n   B is K x N matrix (row-major)\n   C is M x N matrix (row-major)\n   \n   Example:\n   A = [[1, 2], [3, 4]], B = [[5, 6], [7, 8]], alpha = 1.0, beta = 0.0\n   Result: C = [[19, 22], [43, 50]]\n*/\nvoid gemm(BLASLONG M, BLASLONG N, BLASLONG K, double alpha,\n          const std::vector<double>& A, BLASLONG lda,\n          const std::vector<double>& B, BLASLONG ldb,\n          double beta, std::vector<double>& C, BLASLONG ldc) {"
+    },
+    {
+        "problem_type": "blas",
+        "language": "cpp",
+        "name": "01_gemm",
+        "parallelism_model": "omp",
+        "prompt": "#include <omp.h>\n\ntypedef long BLASLONG;\n\n/* Matrix-Matrix Multiplication: C = alpha * A * B + beta * C\n   A is M x K matrix (row-major)\n   B is K x N matrix (row-major)\n   C is M x N matrix (row-major)\n   Use OpenMP to compute in parallel.\n   \n   Example:\n   A = [[1, 2], [3, 4]], B = [[5, 6], [7, 8]], alpha = 1.0, beta = 0.0\n   Result: C = [[19, 22], [43, 50]]\n*/\nvoid gemm(BLASLONG M, BLASLONG N, BLASLONG K, double alpha,\n          const std::vector<double>& A, BLASLONG lda,\n          const std::vector<double>& B, BLASLONG ldb,\n          double beta, std::vector<double>& C, BLASLONG ldc) {"
+    },
+    {
+        "problem_type": "blas",
+        "language": "cpp",
+        "name": "02_gemv",
+        "parallelism_model": "serial",
+        "prompt": "typedef long BLASLONG;\n\n/* Matrix-Vector Multiplication: y = alpha * A * x + beta * y\n   A is M x N matrix (row-major)\n   x is N-element vector\n   y is M-element vector\n   \n   Example:\n   A = [[1, 2, 3], [4, 5, 6]], x = [1, 2, 3], alpha = 1.0, beta = 0.0\n   Result: y = [14, 32]\n*/\nvoid gemv(BLASLONG m, BLASLONG n, double alpha,\n          const std::vector<double>& A, BLASLONG lda,\n          const std::vector<double>& x, BLASLONG inc_x,\n          double beta, std::vector<double>& y, BLASLONG inc_y) {"
+    },
+    {
+        "problem_type": "blas",
+        "language": "cpp",
+        "name": "02_gemv",
+        "parallelism_model": "omp",
+        "prompt": "#include <omp.h>\n\ntypedef long BLASLONG;\n\n/* Matrix-Vector Multiplication: y = alpha * A * x + beta * y\n   A is M x N matrix (row-major)\n   x is N-element vector\n   y is M-element vector\n   Use OpenMP to compute in parallel.\n   \n   Example:\n   A = [[1, 2, 3], [4, 5, 6]], x = [1, 2, 3], alpha = 1.0, beta = 0.0\n   Result: y = [14, 32]\n*/\nvoid gemv(BLASLONG m, BLASLONG n, double alpha,\n          const std::vector<double>& A, BLASLONG lda,\n          const std::vector<double>& x, BLASLONG inc_x,\n          double beta, std::vector<double>& y, BLASLONG inc_y) {"
+    },
+    {
+        "problem_type": "blas",
+        "language": "cpp",
+        "name": "03_axpby",
+        "parallelism_model": "serial",
+        "prompt": "typedef long BLASLONG;\n\n/* Vector Scale and Add: y = alpha * x + beta * y\n   x and y are n-element vectors\n   \n   Example:\n   x = [1, 2, 3], y = [4, 5, 6], alpha = 2.0, beta = 0.5\n   Result: y = [4, 6.5, 9]\n*/\nvoid axpby(BLASLONG n, double alpha, const std::vector<double>& x, BLASLONG inc_x,\n           double beta, std::vector<double>& y, BLASLONG inc_y) {"
+    },
+    {
+        "problem_type": "blas",
+        "language": "cpp",
+        "name": "03_axpby",
+        "parallelism_model": "omp",
+        "prompt": "#include <omp.h>\n\ntypedef long BLASLONG;\n\n/* Vector Scale and Add: y = alpha * x + beta * y\n   x and y are n-element vectors\n   Use OpenMP to compute in parallel.\n   \n   Example:\n   x = [1, 2, 3], y = [4, 5, 6], alpha = 2.0, beta = 0.5\n   Result: y = [4, 6.5, 9]\n*/\nvoid axpby(BLASLONG n, double alpha, const std::vector<double>& x, BLASLONG inc_x,\n           double beta, std::vector<double>& y, BLASLONG inc_y) {"
+    },
+    {
+        "problem_type": "blas",
+        "language": "cpp",
+        "name": "04_dot",
+        "parallelism_model": "serial",
+        "prompt": "typedef long BLASLONG;\n\n/* Vector Dot Product: result = x^T * y = sum(x[i] * y[i])\n   x and y are n-element vectors\n   \n   Example:\n   x = [1, 2, 3], y = [4, 5, 6]\n   Result: 32.0 (1*4 + 2*5 + 3*6)\n*/\ndouble dot(BLASLONG n, const std::vector<double>& x, BLASLONG inc_x,\n           const std::vector<double>& y, BLASLONG inc_y) {"
+    },
+    {
+        "problem_type": "blas",
+        "language": "cpp",
+        "name": "04_dot",
+        "parallelism_model": "omp",
+        "prompt": "#include <omp.h>\n\ntypedef long BLASLONG;\n\n/* Vector Dot Product: result = x^T * y = sum(x[i] * y[i])\n   x and y are n-element vectors\n   Use OpenMP reduction to compute in parallel.\n   \n   Example:\n   x = [1, 2, 3], y = [4, 5, 6]\n   Result: 32.0 (1*4 + 2*5 + 3*6)\n*/\ndouble dot(BLASLONG n, const std::vector<double>& x, BLASLONG inc_x,\n           const std::vector<double>& y, BLASLONG inc_y) {"
+    },
+    {
+        "problem_type": "blas",
+        "language": "cpp",
+        "name": "05_swap",
+        "parallelism_model": "serial",
+        "prompt": "typedef long BLASLONG;\n\n/* Vector Swap: swap(x, y)\n   Swap the contents of vectors x and y\n   \n   Example:\n   x = [1, 2, 3], y = [4, 5, 6]\n   Result: x = [4, 5, 6], y = [1, 2, 3]\n*/\nvoid swap(BLASLONG n, std::vector<double>& x, BLASLONG inc_x,\n          std::vector<double>& y, BLASLONG inc_y) {"
+    },
+    {
+        "problem_type": "blas",
+        "language": "cpp",
+        "name": "05_swap",
+        "parallelism_model": "omp",
+        "prompt": "#include <omp.h>\n\ntypedef long BLASLONG;\n\n/* Vector Swap: swap(x, y)\n   Swap the contents of vectors x and y\n   Use OpenMP to compute in parallel.\n   \n   Example:\n   x = [1, 2, 3], y = [4, 5, 6]\n   Result: x = [4, 5, 6], y = [1, 2, 3]\n*/\nvoid swap(BLASLONG n, std::vector<double>& x, BLASLONG inc_x,\n          std::vector<double>& y, BLASLONG inc_y) {"
+    },
+    {
+        "problem_type": "blas",
+        "language": "cpp",
+        "name": "06_copy",
+        "parallelism_model": "serial",
+        "prompt": "typedef long BLASLONG;\n\n/* Vector Copy: y = x\n   Copy n elements from vector x to vector y\n   \n   Example:\n   x = [1, 2, 3, 4, 5]\n   Result: y = [1, 2, 3, 4, 5]\n*/\nvoid copy(BLASLONG n, const std::vector<double>& x, BLASLONG inc_x,\n          std::vector<double>& y, BLASLONG inc_y) {"
+    },
+    {
+        "problem_type": "blas",
+        "language": "cpp",
+        "name": "06_copy",
+        "parallelism_model": "omp",
+        "prompt": "#include <omp.h>\n\ntypedef long BLASLONG;\n\n/* Vector Copy: y = x\n   Copy n elements from vector x to vector y\n   Use OpenMP to compute in parallel.\n   \n   Example:\n   x = [1, 2, 3, 4, 5]\n   Result: y = [1, 2, 3, 4, 5]\n*/\nvoid copy(BLASLONG n, const std::vector<double>& x, BLASLONG inc_x,\n          std::vector<double>& y, BLASLONG inc_y) {"
+    },
+    {
+        "problem_type": "blas",
+        "language": "cpp",
+        "name": "07_nrm2",
+        "parallelism_model": "serial",
+        "prompt": "typedef long BLASLONG;\n\n/* Vector 2-Norm: result = ||x||_2 = sqrt(sum(x[i]^2))\n   Compute the Euclidean norm of vector x\n   \n   Example:\n   x = [3, 4]\n   Result: 5.0 (sqrt(3^2 + 4^2))\n*/\ndouble nrm2(BLASLONG n, const std::vector<double>& x, BLASLONG inc_x) {"
+    },
+    {
+        "problem_type": "blas",
+        "language": "cpp",
+        "name": "07_nrm2",
+        "parallelism_model": "omp",
+        "prompt": "#include <omp.h>\n\ntypedef long BLASLONG;\n\n/* Vector 2-Norm: result = ||x||_2 = sqrt(sum(x[i]^2))\n   Compute the Euclidean norm of vector x\n   Use OpenMP reduction to compute in parallel.\n   \n   Example:\n   x = [3, 4]\n   Result: 5.0 (sqrt(3^2 + 4^2))\n*/\ndouble nrm2(BLASLONG n, const std::vector<double>& x, BLASLONG inc_x) {"
+    },
+    {
+        "problem_type": "blas",
+        "language": "cpp",
+        "name": "08_asum",
+        "parallelism_model": "serial",
+        "prompt": "typedef long BLASLONG;\n\n/* Vector Absolute Sum: result = sum(|x[i]|)\n   Compute the sum of absolute values of vector x\n   \n   Example:\n   x = [-1, 2, -3, 4]\n   Result: 10.0 (1 + 2 + 3 + 4)\n*/\ndouble asum(BLASLONG n, const std::vector<double>& x, BLASLONG inc_x) {"
+    },
+    {
+        "problem_type": "blas",
+        "language": "cpp",
+        "name": "08_asum",
+        "parallelism_model": "omp",
+        "prompt": "#include <omp.h>\n\ntypedef long BLASLONG;\n\n/* Vector Absolute Sum: result = sum(|x[i]|)\n   Compute the sum of absolute values of vector x\n   Use OpenMP reduction to compute in parallel.\n   \n   Example:\n   x = [-1, 2, -3, 4]\n   Result: 10.0 (1 + 2 + 3 + 4)\n*/\ndouble asum(BLASLONG n, const std::vector<double>& x, BLASLONG inc_x) {"
+    },
+    {
+        "problem_type": "blas",
+        "language": "cpp",
+        "name": "09_iamax",
+        "parallelism_model": "serial",
+        "prompt": "typedef long BLASLONG;\n\n/* Index of Maximum Absolute Value: result = argmax(|x[i]|)\n   Find the index of the element with maximum absolute value\n   Returns 0-based index\n   \n   Example:\n   x = [1, -5, 3, -2]\n   Result: 1 (index of -5, which has maximum absolute value 5)\n*/\nBLASLONG iamax(BLASLONG n, const std::vector<double>& x, BLASLONG inc_x) {"
+    },
+    {
+        "problem_type": "blas",
+        "language": "cpp",
+        "name": "09_iamax",
+        "parallelism_model": "omp",
+        "prompt": "#include <omp.h>\n\ntypedef long BLASLONG;\n\n/* Index of Maximum Absolute Value: result = argmax(|x[i]|)\n   Find the index of the element with maximum absolute value\n   Returns 0-based index\n   Use OpenMP to compute in parallel.\n   \n   Example:\n   x = [1, -5, 3, -2]\n   Result: 1 (index of -5, which has maximum absolute value 5)\n*/\nBLASLONG iamax(BLASLONG n, const std::vector<double>& x, BLASLONG inc_x) {"
+    },
+    {
+        "problem_type": "blas",
+        "language": "cpp",
+        "name": "10_iamin",
+        "parallelism_model": "serial",
+        "prompt": "typedef long BLASLONG;\n\n/* Index of Minimum Absolute Value: result = argmin(|x[i]|)\n   Find the index of the element with minimum absolute value\n   Returns 0-based index\n   \n   Example:\n   x = [5, -1, 3, -2]\n   Result: 1 (index of -1, which has minimum absolute value 1)\n*/\nBLASLONG iamin(BLASLONG n, const std::vector<double>& x, BLASLONG inc_x) {"
+    },
+    {
+        "problem_type": "blas",
+        "language": "cpp",
+        "name": "10_iamin",
+        "parallelism_model": "omp",
+        "prompt": "#include <omp.h>\n\ntypedef long BLASLONG;\n\n/* Index of Minimum Absolute Value: result = argmin(|x[i]|)\n   Find the index of the element with minimum absolute value\n   Returns 0-based index\n   Use OpenMP to compute in parallel.\n   \n   Example:\n   x = [5, -1, 3, -2]\n   Result: 1 (index of -1, which has minimum absolute value 1)\n*/\nBLASLONG iamin(BLASLONG n, const std::vector<double>& x, BLASLONG inc_x) {"
+    }
+]

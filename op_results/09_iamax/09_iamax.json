@@ -1,0 +1,197 @@
+{
+  "source_file": "/home/dgc/mjs/project/analyze_OB/KG/../Morph/openblas_output/09_iamax.c",
+  "patterns_detected": [
+    {
+      "pattern_type": "prep.parameter_validation",
+      "name": "参数合法性校验",
+      "description": "检查参数n和inc_x是否小于等于0，若满足条件则直接返回max（初始值为0），实现早退优化。",
+      "code": "if (n <= 0 || inc_x <= 0) return(max);",
+      "data_object_features": {
+        "numeric_kind": "N/A",
+        "numeric_precision": "N/A",
+        "structural_properties": "N/A",
+        "storage_layout": "N/A"
+      }
+    },
+    {
+      "pattern_type": "prep.index_pointer_init",
+      "name": "索引与指针初始化",
+      "description": "初始化循环变量i=0、索引指针ix=0、最大值maxf=0.0、最大索引max=0，为后续循环计算做准备。",
+      "code": "BLASLONG i=0;\nBLASLONG ix=0;\ndouble maxf=0.0;\nBLASLONG max=0;",
+      "data_object_features": {
+        "numeric_kind": "N/A",
+        "numeric_precision": "N/A",
+        "structural_properties": "N/A",
+        "storage_layout": "N/A"
+      }
+    },
+    {
+      "pattern_type": "core.vector_reduction",
+      "name": "向量归约",
+      "description": "对向量x进行逐元素绝对值比较，寻找最大值的索引，采用累加式极值归约（maxf = max(maxf, fabs(x[ix]))），并记录对应索引。",
+      "code": "maxf=fabs(x[0]);\nix += inc_x;\ni++;\nwhile(i < n)\n{\n if( fabs(x[ix]) > maxf )\n {\n  max = i;\n  maxf = fabs(x[ix]);\n }\n ix += inc_x;\n i++;\n}",
+      "data_object_features": {
+        "numeric_kind": "实数",
+        "numeric_precision": "双精度",
+        "structural_properties": "通用",
+        "storage_layout": "跨步"
+      }
+    }
+  ],
+  "similar_patterns_found": [
+    {
+      "uid": "0b0fcd148b2b3a7911a757b63ed21798",
+      "name": "参数合法性校验",
+      "type": "prep.parameter_validation",
+      "similarity": 0.803284764289856,
+      "query_pattern": "参数合法性校验"
+    },
+    {
+      "uid": "60c3bf7daa6a79bdb3608f6fb8e55578",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8963533639907837,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "fcdad0436072b53b552d2a852923857c",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8760900497436523,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "6d72ecdc3a11119c9c7b090a5d194023",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8718736171722412,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "1044b34ee293bff47562fe6d1631ace7",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8706107139587402,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "d4cfe972f6f54684c36d658a4ab1377c",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8547008633613586,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "243b2fd5174b0f79b6f0ed5556a4bed7",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8248602151870728,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "656cdc291467e780a076477dcddbf20d",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8248336315155029,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "29f52dd95c109cc3c18b2e55ae3e54ce",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8199757933616638,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "026531709730020fdf4d40dfbd6f000c",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8158859610557556,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "791f766e32ca9e9b5a8636ca06372be2",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8153688311576843,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "c833feacda6958e38906c52ab9a8f364",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8107681274414062,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "f7ecd71c191cb5bb12295fd92a1edce0",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8091368675231934,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "8ae22ba904ac76cba2b0f66d9cd27b34",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8028233647346497,
+      "query_pattern": "索引与指针初始化"
+    }
+  ],
+  "top_patterns_per_type": [
+    {
+      "uid": "0b0fcd148b2b3a7911a757b63ed21798",
+      "name": "参数合法性校验",
+      "type": "prep.parameter_validation",
+      "similarity": 0.803284764289856,
+      "query_pattern": "参数合法性校验"
+    },
+    {
+      "uid": "60c3bf7daa6a79bdb3608f6fb8e55578",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8963533639907837,
+      "query_pattern": "索引与指针初始化"
+    }
+  ],
+  "search_strategies": [
+    {
+      "strategy_uid": "02c3072945af12c082997f8c97ce5d6d",
+      "canonical_name": "分支消除与短路返回",
+      "cluster_size": 10,
+      "pattern_counts": {
+        "prep.parameter_validation": 10
+      },
+      "core_patterns": [
+        "prep.parameter_validation"
+      ],
+      "contextual_patterns": {},
+      "score": 0.3333333333333333
+    },
+    {
+      "strategy_uid": "00009e903cbc1119cc3b6824eb36f756",
+      "canonical_name": "循环内索引增量展开",
+      "cluster_size": 13,
+      "pattern_counts": {
+        "core.elementwise_update": 5,
+        "prep.index_pointer_init": 8,
+        "transform.packing": 5,
+        "core.gemv_like": 2,
+        "core.tiled_loop": 2,
+        "core.mm_microkernel": 2
+      },
+      "core_patterns": [
+        "prep.index_pointer_init"
+      ],
+      "contextual_patterns": {
+        "core.elementwise_update": "0.384615",
+        "transform.packing": "0.384615",
+        "core.gemv_like": "0.153846",
+        "core.tiled_loop": "0.153846",
+        "core.mm_microkernel": "0.153846"
+      },
+      "score": 0.3333333333333333
+    }
+  ],
+  "final_strategies": []
+}

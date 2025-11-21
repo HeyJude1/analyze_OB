@@ -671,10 +671,83 @@ class OptimizationStrategyOperator:
         print(f"💾 结果已保存: {output_file}")
 
 
+def process_single_file(operator, source_file, base_dir):
+    """处理单个源文件"""
+    if not os.path.exists(source_file):
+        print(f"❌ 错误：源文件不存在: {source_file}")
+        return False
+    
+    # 从源文件名提取算子名称
+    source_filename = os.path.basename(source_file)
+    if source_filename.endswith('.c'):
+        operator_name = source_filename[:-2]  # 去掉.c后缀
+    elif source_filename.endswith('.txt'):
+        operator_name = source_filename[:-4]  # 去掉.txt后缀
+    else:
+        operator_name = os.path.splitext(source_filename)[0]
+    
+    # 创建算子专用目录
+    operator_dir = os.path.join(base_dir, operator_name)
+    os.makedirs(operator_dir, exist_ok=True)
+    
+    # 输出文件名基于源文件名
+    output_file = os.path.join(operator_dir, f"{operator_name}.json")
+    
+    print(f"🔄 处理算子: {operator_name}")
+    print(f"📁 输出目录: {operator_dir}")
+    print(f"📄 输出文件: {output_file}")
+    
+    try:
+        results = operator.process_source_code(source_file)
+        operator.save_results(results, output_file)
+        print(f"✅ 完成: {operator_name}")
+        return True
+    except Exception as e:
+        print(f"❌ 错误: 处理 {operator_name} 时出错: {e}")
+        return False
+
+def process_batch_files(operator, openblas_dir, base_dir):
+    """批量处理openblas_output目录中的所有.c文件"""
+    if not os.path.exists(openblas_dir):
+        print(f"❌ 错误：OpenBLAS输出目录不存在: {openblas_dir}")
+        return
+    
+    # 查找所有.c文件
+    c_files = []
+    for file in os.listdir(openblas_dir):
+        if file.endswith('.c'):
+            c_files.append(os.path.join(openblas_dir, file))
+    
+    if not c_files:
+        print(f"⚠️ 警告：在 {openblas_dir} 中未找到.c文件")
+        return
+    
+    print(f"📋 找到 {len(c_files)} 个算子文件:")
+    for file in c_files:
+        print(f"   - {os.path.basename(file)}")
+    
+    print(f"\n🚀 开始批量处理...")
+    
+    success_count = 0
+    total_count = len(c_files)
+    
+    for i, source_file in enumerate(c_files, 1):
+        print(f"\n[{i}/{total_count}] " + "="*50)
+        if process_single_file(operator, source_file, base_dir):
+            success_count += 1
+    
+    print(f"\n🎉 批量处理完成!")
+    print(f"📊 处理结果: {success_count}/{total_count} 成功")
+    print(f"📁 结果保存在: {base_dir}")
+
 def main():
     """主函数"""
     parser = argparse.ArgumentParser(description="优化策略检索与评分系统v5")
     parser.add_argument("--config", type=str, default="kg_config.json", help="配置文件路径")
+    parser.add_argument("--source", type=str, help="源代码文件路径")
+    parser.add_argument("--output_dir", type=str, help="输出目录路径（可选）")
+    parser.add_argument("--batch", action="store_true", help="批量处理openblas_output目录中的所有.c文件")
+    parser.add_argument("--openblas_dir", type=str, help="OpenBLAS输出目录路径（用于批量处理）")
     
     args = parser.parse_args()
     
@@ -686,12 +759,20 @@ def main():
     operator = OptimizationStrategyOperator(config=config)
     
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    source_file = os.path.join(script_dir, "gemm.txt")
-
-    base_dir_str = config.get("data_source", {}).get("analysis_results_dir")
-    if not base_dir_str:
-        print("❌ 错误: 未能在 kg_config.json 中找到 'analysis_results_dir'。")
-        return
+    
+    # 确定输出目录
+    if args.output_dir:
+        base_dir_str = args.output_dir
+    else:
+        # 优先使用optimization_results配置
+        base_dir_str = config.get("optimization_results", {}).get("output_dir")
+        if not base_dir_str:
+            # 回退到原来的analysis_results_dir
+            base_dir_str = config.get("data_source", {}).get("analysis_results_dir")
+        
+        if not base_dir_str:
+            print("❌ 错误: 未能在 kg_config.json 中找到输出目录配置。")
+            return
 
     base_dir = Path(base_dir_str)
     if not base_dir.is_absolute():
@@ -708,14 +789,36 @@ def main():
                  except ValueError: pass
         base_dir = resolved_path.resolve()
 
-    if not base_dir.exists():
-        print(f"❌ 错误：基准目录不存在: {base_dir}")
-        return
+    # 创建输出目录（如果不存在）
+    os.makedirs(base_dir, exist_ok=True)
 
-    output_file = os.path.join(base_dir, "opinfo2.json")
-    
-    results = operator.process_source_code(source_file)
-    operator.save_results(results, output_file)
+    # 判断是批量处理还是单文件处理
+    if args.batch:
+        # 批量处理模式
+        if args.openblas_dir:
+            openblas_dir = args.openblas_dir
+        else:
+            # 默认使用相对路径
+            openblas_dir = os.path.join(script_dir, "..", "Morph", "openblas_output")
+        
+        print(f"🔄 批量处理模式")
+        print(f"📂 OpenBLAS目录: {openblas_dir}")
+        print(f"📁 输出目录: {base_dir}")
+        
+        process_batch_files(operator, openblas_dir, str(base_dir))
+        
+    else:
+        # 单文件处理模式
+        if args.source:
+            source_file = args.source
+        else:
+            source_file = os.path.join(script_dir, "gemm.txt")
+        
+        print(f"🔄 单文件处理模式")
+        print(f"📄 源文件: {source_file}")
+        print(f"📁 输出目录: {base_dir}")
+        
+        process_single_file(operator, source_file, str(base_dir))
 
 
 if __name__ == "__main__":

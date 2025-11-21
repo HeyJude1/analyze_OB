@@ -1,0 +1,162 @@
+{
+  "source_file": "/home/dgc/mjs/project/analyze_OB/KG/../Morph/openblas_output/08_asum.c",
+  "patterns_detected": [
+    {
+      "pattern_type": "prep.parameter_validation",
+      "name": "参数合法性校验",
+      "description": "检查参数n和inc_x是否小于等于0，若满足条件则提前返回sumf值，实现早退优化。",
+      "code": "if (n <= 0 || inc_x <= 0) return(sumf);",
+      "data_object_features": {
+        "numeric_kind": "N/A",
+        "numeric_precision": "N/A",
+        "structural_properties": "N/A",
+        "storage_layout": "N/A"
+      }
+    },
+    {
+      "pattern_type": "prep.index_pointer_init",
+      "name": "索引与指针初始化",
+      "description": "初始化循环变量i为0，累加器sumf为0.0，用于后续累加绝对值计算。",
+      "code": "BLASLONG i=0;\ndouble sumf = 0.0;",
+      "data_object_features": {
+        "numeric_kind": "实数",
+        "numeric_precision": "双精度",
+        "structural_properties": "N/A",
+        "storage_layout": "N/A"
+      }
+    },
+    {
+      "pattern_type": "core.vector_reduction",
+      "name": "向量归约",
+      "description": "对向量x的每个元素取绝对值后进行累加求和，使用inc_x作为步长遍历非连续存储的向量元素，实现L1范数计算。",
+      "code": "double dasum_k(BLASLONG n, double *x, BLASLONG inc_x)\n{\n BLASLONG i=0;\n double sumf = 0.0;\n if (n <= 0 || inc_x <= 0) return(sumf);\n n *= inc_x;\n while(i < n)\n {\n  sumf += fabs(x[i]);\n  i += inc_x;\n }\n return(sumf);\n}",
+      "data_object_features": {
+        "numeric_kind": "实数",
+        "numeric_precision": "双精度",
+        "structural_properties": "通用",
+        "storage_layout": "跨步"
+      }
+    }
+  ],
+  "similar_patterns_found": [
+    {
+      "uid": "0b0fcd148b2b3a7911a757b63ed21798",
+      "name": "参数合法性校验",
+      "type": "prep.parameter_validation",
+      "similarity": 0.8261222839355469,
+      "query_pattern": "参数合法性校验"
+    },
+    {
+      "uid": "f690e473606770fdc7189a8f350c576a",
+      "name": "参数合法性校验",
+      "type": "prep.parameter_validation",
+      "similarity": 0.8176230192184448,
+      "query_pattern": "参数合法性校验"
+    },
+    {
+      "uid": "0b5754e12e992e54c2abddb1a0b4cd72",
+      "name": "参数合法性校验",
+      "type": "prep.parameter_validation",
+      "similarity": 0.8035521507263184,
+      "query_pattern": "参数合法性校验"
+    },
+    {
+      "uid": "0eb3710c428a985e8dd7df936a9fe3ff",
+      "name": "参数合法性校验",
+      "type": "prep.parameter_validation",
+      "similarity": 0.8002901077270508,
+      "query_pattern": "参数合法性校验"
+    },
+    {
+      "uid": "60c3bf7daa6a79bdb3608f6fb8e55578",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8470315933227539,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "1044b34ee293bff47562fe6d1631ace7",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8443547487258911,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "6d72ecdc3a11119c9c7b090a5d194023",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.841225266456604,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "fcdad0436072b53b552d2a852923857c",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8391345143318176,
+      "query_pattern": "索引与指针初始化"
+    },
+    {
+      "uid": "d4cfe972f6f54684c36d658a4ab1377c",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8231492042541504,
+      "query_pattern": "索引与指针初始化"
+    }
+  ],
+  "top_patterns_per_type": [
+    {
+      "uid": "0b0fcd148b2b3a7911a757b63ed21798",
+      "name": "参数合法性校验",
+      "type": "prep.parameter_validation",
+      "similarity": 0.8261222839355469,
+      "query_pattern": "参数合法性校验"
+    },
+    {
+      "uid": "60c3bf7daa6a79bdb3608f6fb8e55578",
+      "name": "索引与指针初始化",
+      "type": "prep.index_pointer_init",
+      "similarity": 0.8470315933227539,
+      "query_pattern": "索引与指针初始化"
+    }
+  ],
+  "search_strategies": [
+    {
+      "strategy_uid": "02c3072945af12c082997f8c97ce5d6d",
+      "canonical_name": "分支消除与短路返回",
+      "cluster_size": 10,
+      "pattern_counts": {
+        "prep.parameter_validation": 10
+      },
+      "core_patterns": [
+        "prep.parameter_validation"
+      ],
+      "contextual_patterns": {},
+      "score": 0.3333333333333333
+    },
+    {
+      "strategy_uid": "00009e903cbc1119cc3b6824eb36f756",
+      "canonical_name": "循环内索引增量展开",
+      "cluster_size": 13,
+      "pattern_counts": {
+        "core.elementwise_update": 5,
+        "prep.index_pointer_init": 8,
+        "transform.packing": 5,
+        "core.gemv_like": 2,
+        "core.tiled_loop": 2,
+        "core.mm_microkernel": 2
+      },
+      "core_patterns": [
+        "prep.index_pointer_init"
+      ],
+      "contextual_patterns": {
+        "core.elementwise_update": "0.384615",
+        "transform.packing": "0.384615",
+        "core.gemv_like": "0.153846",
+        "core.tiled_loop": "0.153846",
+        "core.mm_microkernel": "0.153846"
+      },
+      "score": 0.3333333333333333
+    }
+  ],
+  "final_strategies": []
+}
