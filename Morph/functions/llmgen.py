@@ -16,87 +16,58 @@ import time
 from typing import Optional, Dict, List
 # tpl imports
 from tqdm import tqdm
-from openai import OpenAI
-# agent imports
-import asyncio
-from agents import Agent, AsyncOpenAI, ModelSettings, OpenAIChatCompletionsModel, Runner, RunConfig
-from base_agents import CodeGenerate, PromptGenerate
+# langchain imports
+from base_agents import AgentFactory
 # 工具函数
 import tiktoken
 from utils import get_env_var, get_function_name, postprocess, cpu_info, gpu_info
 # Milvus imports
 from pymilvus import connections, Collection
 
-hard_info = cpu_info() + gpu_info()
-# 创建agent
-external_client = AsyncOpenAI(
-    api_key="sk-1b0daa78e21d42509a094cec569b94f3",
-    base_url="https://dashscope.aliyuncs.com/compatible-mode/v1"
-)
-model = OpenAIChatCompletionsModel(
-    model="qwen-plus-2025-04-28",
-    openai_client=external_client
-)
-model_settings=ModelSettings(temperature=0, max_tokens=1024, top_p=0.9)
-code_agent = PromptGenerate(model, model_settings)
-
-# 定义异步主函数以运行 Agent
-async def run_agent(agent: Agent, input: str):
-    result = await Runner.run(agent, input=input, run_config=RunConfig(tracing_disabled=True))
-    return result.final_output
-
-hard_info = asyncio.run(run_agent(code_agent, hard_info))
-hard_info_json = json.loads(hard_info)
-
-PROMPT_TEMPLATE = """Complete the C++ function {function_name}. Only write the body of the function {function_name}.
+PROMPT_TEMPLATE = """请补全 C++ 函数 {function_name}。仅编写函数 {function_name} 的函数体。
 
 ```cpp
 {prompt}
 ```
-Below are some potential optimization strategies you can use for code generation on this platform:
-{op_strategy}
+目标硬件信息：
+{hard_info}
 
-Additional optimization recommendations from analysis:
+来自分析的额外优化建议：
 {optimization_strategies}
 """
 
 class MilvusEntityQuerier:
     """Milvus实体查询器"""
     
-    def __init__(self, config_path: str = "../../KG/kg_config.json"):
+    def __init__(self, config_path: str = "config.json"):
         """初始化Milvus连接"""
         self.config = self._load_config(config_path)
-        self.connection_alias = "llmgenv4_connection"
+        self.connection_alias = "llmgen_connection"
         self._connect_to_milvus()
         
     def _load_config(self, config_path: str) -> Dict:
         """加载配置文件"""
-        try:
-            # 尝试多个可能的配置文件路径
-            possible_paths = [
-                config_path,
-                "../../KG/kg_config.json",
-                "../KG/kg_config.json",
-                "kg_config.json"
-            ]
-            
-            for path in possible_paths:
-                if os.path.exists(path):
-                    with open(path, 'r', encoding='utf-8') as f:
-                        return json.load(f)
-            
-            # 如果找不到配置文件，使用默认配置
-            print("⚠️ 警告: 未找到配置文件，使用默认Milvus配置")
-            return {
-                "milvus": {
-                    "host": "localhost",
-                    "port": 19530,
-                    "database": "code_op"
-                }
+        # 尝试多个可能的配置文件路径
+        possible_paths = [
+            config_path,
+            os.path.join(os.path.dirname(__file__), config_path),
+            "config.json",
+        ]
+        
+        for path in possible_paths:
+            if os.path.exists(path):
+                with open(path, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+        
+        # 如果找不到配置文件，使用默认配置
+        print("⚠️ 警告: 未找到配置文件，使用默认Milvus配置")
+        return {
+            "milvus": {
+                "host": "localhost",
+                "port": 19530,
+                "database": "code_op"
             }
-        except Exception as e:
-            print(f"❌ 错误: 加载配置文件失败: {e}")
-            return {}
+        }
     
     def _connect_to_milvus(self):
         """连接到Milvus"""
@@ -189,7 +160,7 @@ def load_optimization_strategies(strategy_file_path: str, milvus_querier: Option
     """
     if not os.path.exists(strategy_file_path):
         print(f"⚠️ 警告: 优化策略文件不存在: {strategy_file_path}")
-        return "No specific optimization strategies available."
+        return "没有可用的特定优化策略。"
     
     try:
         with open(strategy_file_path, 'r', encoding='utf-8') as f:
@@ -198,19 +169,19 @@ def load_optimization_strategies(strategy_file_path: str, milvus_querier: Option
         final_strategies = strategy_data.get('final_strategies', [])
         
         if not final_strategies:
-            return "No final optimization strategies found."
+            return "未找到最终优化策略。"
         
         # 格式化优化策略
         strategy_text = []
-        strategy_text.append("Recommended optimization strategies:")
+        strategy_text.append("推荐的优化策略：")
         
         for i, strategy in enumerate(final_strategies, 1):
             # final_strategies 中的字段结构
-            strategy_name = strategy.get('canonical_name', strategy.get('name', 'Unknown Strategy'))
+            strategy_name = strategy.get('canonical_name', strategy.get('name', '未知策略'))
             strategy_uid = strategy.get('strategy_uid', strategy.get('uid', ''))
             score = strategy.get('score', 0)
             
-            strategy_text.append(f"\n{i}. **{strategy_name}** (Score: {score:.3f})")
+            strategy_text.append(f"\n{i}. **{strategy_name}** (得分: {score:.3f})")
             
             # 如果有Milvus查询器且有UID，查询详细信息
             detailed_info = {}
@@ -222,60 +193,72 @@ def load_optimization_strategies(strategy_file_path: str, milvus_querier: Option
                 # 优化级别
                 level = detailed_info.get('level', '')
                 if level:
-                    strategy_text.append(f"   - Level: {level}")
+                    strategy_text.append(f"   - 优化级别: {level}")
                 
                 # 策略原理
                 rationale = detailed_info.get('rationale', '')
                 if rationale:
-                    strategy_text.append(f"   - Rationale: {rationale}")
+                    strategy_text.append(f"   - 原理: {rationale}")
                 
                 # 实现方法
                 implementation = detailed_info.get('implementation', '')
                 if implementation:
-                    strategy_text.append(f"   - Implementation: {implementation}")
+                    strategy_text.append(f"   - 实现方法: {implementation}")
                 
                 # 预期影响
                 impact = detailed_info.get('impact', '')
                 if impact:
-                    strategy_text.append(f"   - Impact: {impact}")
+                    strategy_text.append(f"   - 预期影响: {impact}")
                 
                 # 权衡考虑
                 trade_offs = detailed_info.get('trade_offs', '')
                 if trade_offs:
-                    strategy_text.append(f"   - Trade-offs: {trade_offs}")
-            
-            # 添加集群大小信息
-            cluster_size = strategy.get('cluster_size', 0)
-            if cluster_size > 0:
-                strategy_text.append(f"   - Cluster size: {cluster_size}")
+                    strategy_text.append(f"   - 权衡: {trade_offs}")
         
         return '\n'.join(strategy_text)
         
     except Exception as e:
         print(f"❌ 错误: 无法加载优化策略文件 {strategy_file_path}: {e}")
-        return "Error loading optimization strategies."
+        return "加载优化策略时出错。"
 
 def CodeGenv4(
-    model: str = "qwen-plus-2025-04-28", # "qwen-turbo"
-    input_path: str = "prompts1.json",
-    output_path: str = "results/prompts_code.json",
+    input_path: str = "../prompts1.json",
+    output_path: str = "../results/prompts_code.json",
     strategy_dir: str = "/home/dgc/mjs/project/analyze_OB/op_results",
-    config_path: str = "../../KG/kg_config.json",
-    api_key: str = "sk-1b0daa78e21d42509a094cec569b94f3",
-    openai_base_url: str = "https://dashscope.aliyuncs.com/compatible-mode/v1",
-    max_requests: int = 10000,
-    max_tokens_per_second: int = 1000,
-    max_requests_per_second: int = 10,
+    config_path: str = "config.json",
+    # 可选覆盖参数
+    model: Optional[str] = None,
+    temperature: Optional[float] = None,
+    top_p: Optional[float] = None,
+    max_new_tokens: Optional[int] = None,
+    
     dry: bool = False,
     overwrite: bool = False,
-    temperature: float = 0,
-    top_p: float = 0.9,
-    max_new_tokens: int = 1024,
-    num_samples_per_prompt: int = 1, # 智能体目前不支持生成多个输出，后续可以考虑修改prompt
+    num_samples_per_prompt: int = 1, 
     use_milvus: bool = True  # 是否使用Milvus查询详细信息
     )-> None:
 
-    # 初始化Milvus查询器
+    # 1. 初始化 Agent Factory
+    print(f"🔧 加载配置: {config_path}")
+    factory = AgentFactory(config_path)
+    
+    # 解析默认参数 (如果未传入，则使用Config中的值)
+    model_config = factory.config.get("model", {})
+    if model is None:
+        model = model_config.get("name", "qwen-plus-2025-09-11")
+    if temperature is None:
+        temperature = model_config.get("temperature", 0.1)
+    if top_p is None:
+        top_p = model_config.get("top_p", 0.9)
+    if max_new_tokens is None:
+        max_new_tokens = model_config.get("max_tokens", 8192)
+
+    # 2. 获取硬件信息
+    print("🖥️ 获取硬件信息...")
+    hard_info = cpu_info() + gpu_info()
+    # 移除 PromptGenerate Agent 调用，直接使用字符串
+
+    # 3. 初始化Milvus查询器
     milvus_querier = None
     if use_milvus:
         try:
@@ -325,31 +308,22 @@ def CodeGenv4(
                    o["name"] == prompt["name"] and \
                    o["parallelism_model"] == prompt["parallelism_model"] and \
                    "outputs" in o and \
-                   len(o["outputs"]) == num_samples_per_prompt and \
-                   o["temperature"] == temperature and \
-                   o["top_p"] == top_p:
-                    for col in ["temperature", "top_p", "do_sample", "max_new_tokens", "outputs"]:
+                   len(o["outputs"]) == num_samples_per_prompt:
+                    for col in ["outputs"]:
                         prompt[col] = o[col]
                     copy_count += 1
                     break
         print(f"Copied {copy_count} existing outputs.")
 
-    # 创建agent
-    external_client = AsyncOpenAI(
-        api_key=api_key,
-        base_url=openai_base_url
+    # 创建代码生成Agent (允许覆盖参数)
+    code_agent = factory.create_code_generate_agent(
+        temperature=temperature,
+        top_p=top_p,
+        max_tokens=max_new_tokens
     )
-    model_obj = OpenAIChatCompletionsModel(
-        model=model,
-        openai_client=external_client
-    )
-    model_settings=ModelSettings(temperature=temperature, max_tokens=max_new_tokens, top_p=top_p)
-    code_agent = CodeGenerate(model_obj, model_settings)
 
-    # 定义异步主函数以运行 Agent
-    async def run_agent(agent: Agent, input: str):
-        result = await Runner.run(agent, input=input, run_config=RunConfig(tracing_disabled=True))
-        return result.final_output
+    # 用于保存生成的完整prompt
+    generated_prompts = []
 
     # 处理每个prompt
     for prompt in tqdm(prompts):
@@ -371,16 +345,24 @@ def CodeGenv4(
         # 加载优化策略（包含Milvus查询）
         optimization_strategies = load_optimization_strategies(strategy_file, milvus_querier)
         
-        # 获取函数名
-        function_name = get_function_name(prompt["prompt"])
+        # 获取函数名（根据并行模型确定执行模型）
+        execution_model = "cuda" if prompt["parallelism_model"] == "cuda" else "cpu"
+        function_name = get_function_name(prompt["prompt"], execution_model)
         
         # 构建完整的prompt
         full_prompt = PROMPT_TEMPLATE.format(
             function_name=function_name,
             prompt=prompt["prompt"],
-            op_strategy=json.dumps(hard_info_json, indent=2),
+            hard_info=hard_info,
             optimization_strategies=optimization_strategies
         )
+        
+        # 保存完整的prompt到列表
+        generated_prompts.append({
+            "name": prompt["name"],
+            "parallelism_model": prompt["parallelism_model"],
+            "full_prompt": full_prompt
+        })
         
         if dry:
             print(f"Dry run for {prompt['name']} ({prompt['parallelism_model']}):")
@@ -394,16 +376,13 @@ def CodeGenv4(
             print(f"🔄 生成代码: {prompt['name']} ({prompt['parallelism_model']})")
             print(f"📁 策略文件: {strategy_file}")
             
-            generated_code = asyncio.run(run_agent(code_agent, full_prompt))
+            result = code_agent.invoke({"input": full_prompt})
+            generated_code = result.content
             
             # 后处理生成的代码
-            processed_code = postprocess(generated_code)
+            processed_code = postprocess(prompt["prompt"], generated_code)
             
-            # 添加结果到prompt
-            prompt["temperature"] = temperature
-            prompt["top_p"] = top_p
-            prompt["do_sample"] = temperature > 0
-            prompt["max_new_tokens"] = max_new_tokens
+            # 添加结果到结果json文件中的output字段
             prompt["outputs"] = [processed_code]
             
             print(f"✅ 完成: {prompt['name']} ({prompt['parallelism_model']})")
@@ -416,6 +395,12 @@ def CodeGenv4(
         with open(output_path, 'w') as output_json:
             json.dump(prompts, output_json, indent=2)
 
+    # 保存所有生成的prompt到prompts_gen.json
+    prompts_gen_path = os.path.join(os.path.dirname(output_path), "prompts_gen.json")
+    with open(prompts_gen_path, 'w', encoding='utf-8') as f:
+        json.dump(generated_prompts, f, indent=2, ensure_ascii=False)
+    print(f"💾 已保存生成的prompt到: {prompts_gen_path}")
+
     # 关闭Milvus连接
     if milvus_querier:
         milvus_querier.close_connection()
@@ -425,16 +410,17 @@ def CodeGenv4(
 def main():
     """主函数"""
     parser = ArgumentParser(description="基于优化策略的代码生成器 v4")
-    parser.add_argument("--model", type=str, default="qwen-plus-2025-04-28", help="模型名称")
-    parser.add_argument("--input", type=str, default="prompts1.json", help="输入prompt文件")
-    parser.add_argument("--output", type=str, default="results/prompts_code_v4.json", help="输出文件")
+    parser.add_argument("--config", type=str, default="config.json", help="配置文件路径")
+    parser.add_argument("--input", type=str, default="../prompts1.json", help="输入prompt文件")
+    parser.add_argument("--output", type=str, default="../results/prompts_code.json", help="输出文件")
     parser.add_argument("--strategy_dir", type=str, default="/home/dgc/mjs/project/analyze_OB/op_results", help="优化策略目录")
-    parser.add_argument("--config", type=str, default="../../KG/kg_config.json", help="配置文件路径")
-    parser.add_argument("--api_key", type=str, default="sk-1b0daa78e21d42509a094cec569b94f3", help="API密钥")
-    parser.add_argument("--base_url", type=str, default="https://dashscope.aliyuncs.com/compatible-mode/v1", help="API基础URL")
-    parser.add_argument("--temperature", type=float, default=0.0, help="生成温度")
-    parser.add_argument("--top_p", type=float, default=0.9, help="Top-p采样")
-    parser.add_argument("--max_tokens", type=int, default=1024, help="最大生成token数")
+    
+    # 可选覆盖参数 (默认None，使用Config中的值)
+    parser.add_argument("--model", type=str, default=None, help="模型名称 (覆盖Config)")
+    parser.add_argument("--temperature", type=float, default=None, help="生成温度 (覆盖Config)")
+    parser.add_argument("--top_p", type=float, default=None, help="Top-p采样 (覆盖Config)")
+    parser.add_argument("--max_tokens", type=int, default=None, help="最大生成token数 (覆盖Config)")
+    
     parser.add_argument("--dry", action="store_true", help="干运行模式")
     parser.add_argument("--overwrite", action="store_true", help="覆盖现有输出")
     parser.add_argument("--no-milvus", action="store_true", help="不使用Milvus查询详细信息")
@@ -443,26 +429,20 @@ def main():
     
     print("🚀 基于优化策略的代码生成器 v4")
     print("=" * 50)
-    print(f"📄 输入文件: {args.input}")
-    print(f"📁 策略目录: {args.strategy_dir}")
     print(f"⚙️ 配置文件: {args.config}")
+    print(f"📄 输入文件: {args.input}")
     print(f"💾 输出文件: {args.output}")
-    print(f"🤖 模型: {args.model}")
-    print(f"🌡️ 温度: {args.temperature}")
-    print(f"🔗 使用Milvus: {not args.no_milvus}")
     print("=" * 50)
     
     # 创建输出目录
     os.makedirs(os.path.dirname(args.output), exist_ok=True)
     
     CodeGenv4(
-        model=args.model,
+        config_path=args.config,
         input_path=args.input,
         output_path=args.output,
         strategy_dir=args.strategy_dir,
-        config_path=args.config,
-        api_key=args.api_key,
-        openai_base_url=args.base_url,
+        model=args.model,
         temperature=args.temperature,
         top_p=args.top_p,
         max_new_tokens=args.max_tokens,

@@ -5,7 +5,11 @@ import os
 import re
 # 读取硬件信息需要的库
 import cpuinfo
-from py3nvml import py3nvml
+try:
+    from py3nvml import py3nvml
+    PY3NVML_AVAILABLE = True
+except ImportError:
+    PY3NVML_AVAILABLE = False
 def get_env_var(name: str) -> str:
     """ 从环境变量中获取值，如果没有设置则报错 """
     if name not in os.environ:
@@ -16,11 +20,13 @@ def get_function_name(prompt: str, execution_model: str) -> str:
     """ 根据执行模型选择对应正则表达式来提取函数名 """
     # 匹配 GPU 和 CPU 函数的正则表达式
     GPU_FUNCTION_NAME_PATTERN = re.compile(r"__global__ void ([a-zA-Z0-9_]+)\(")
-    CPU_FUNCTION_NAME_PATTERN = re.compile(r"\s*[a-zA-Z_]+ ([a-zA-Z0-9_]+)\(")
+    CPU_FUNCTION_NAME_PATTERN = re.compile(r"(?:void|int|double|float|BLASLONG)\s+([a-zA-Z0-9_]+)\s*\(", re.MULTILINE)
+    
     if execution_model in ['cuda']:
-        match = GPU_FUNCTION_NAME_PATTERN.match(prompt.splitlines()[-1])
+        match = GPU_FUNCTION_NAME_PATTERN.search(prompt)
     else:
-        match = CPU_FUNCTION_NAME_PATTERN.match(prompt.splitlines()[-1])
+        match = CPU_FUNCTION_NAME_PATTERN.search(prompt)
+    
     if match is None:
         raise ValueError(f"Could not find function name in prompt: {prompt}")
     return match.group(1)
