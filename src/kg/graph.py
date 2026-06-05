@@ -244,5 +244,58 @@ class KnowledgeGraph:
         ranked = sorted(scores.items(), key=lambda x: x[1], reverse=True)
         return ranked
 
+    # ==== v2 增强: 类型过滤遍历 ====
+
+    def get_neighbors_of_type(self, uid: str, rel_type: str, direction: str = "out") -> List[Dict]:
+        """获取指定关系类型的邻居"""
+        neighbors = self.get_neighbors(uid, direction)
+        return [n for n in neighbors if n.get("relation_type") == rel_type]
+
+    def traverse_typed(self, start_uid: str, rel_types: List[str],
+                       direction: str = "out", max_depth: int = 3) -> List[tuple]:
+        """BFS 仅跟随指定关系类型, 返回 (uid, depth, path) 列表"""
+        visited = {start_uid}
+        results = []
+        queue = deque([(start_uid, 0, [start_uid])])
+        while queue:
+            current, depth, path = queue.popleft()
+            if depth >= max_depth:
+                continue
+            for rtype, neighbor, desc in self._adj_out.get(current, []):
+                if rtype in rel_types and neighbor not in visited:
+                    visited.add(neighbor)
+                    new_path = path + [neighbor]
+                    results.append((neighbor, depth + 1, new_path))
+                    queue.append((neighbor, depth + 1, new_path))
+            for rtype, neighbor, desc in self._adj_in.get(current, []):
+                if rtype in rel_types and neighbor not in visited:
+                    visited.add(neighbor)
+                    new_path = path + [neighbor]
+                    results.append((neighbor, depth + 1, new_path))
+                    queue.append((neighbor, depth + 1, new_path))
+        return results
+
+    def get_entities_by_type(self, uids: List[str], entity_type: str) -> List[str]:
+        """从 _entity_index 筛选指定类型的 UID"""
+        return [u for u in uids if self._entity_index.get(u, {}).get("type") == entity_type]
+
+    def has_relation(self, from_uid: str, to_uid: str, rel_type: str = None) -> bool:
+        """检查两节点间是否存在指定类型边"""
+        for rtype, target, _ in self._adj_out.get(from_uid, []):
+            if target == to_uid:
+                if rel_type is None or rtype == rel_type:
+                    return True
+        return False
+
+    def check_conflict(self, principle_uids: List[str]) -> List[tuple]:
+        """找出 principle 之间 CONFLICTS_WITH 的冲突对"""
+        conflicts = []
+        for i, a in enumerate(principle_uids):
+            for b in principle_uids[i+1:]:
+                if self.has_relation(a, b, "CONFLICTS_WITH") or \
+                   self.has_relation(b, a, "CONFLICTS_WITH"):
+                    conflicts.append((a, b))
+        return conflicts
+
     def is_loaded(self) -> bool:
         return self._loaded
