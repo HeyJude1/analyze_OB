@@ -1,20 +1,13 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-OpenBLAS优化策略检索与评分系统v5 (TypeError修复版)
-- 将 agent23 的四阶段计算流程识别逻辑完全集成到本文件中。
-- 移除对 agent23.py 的外部依赖。
-- 保持相似度检索、关联策略查找和高级评分逻辑不变。
-- 输入文件硬编码为同目录下的 gemm.txt。
-- 输出文件路径根据配置文件自动确定。
-- 修复了因错误调用实例方法导致的TypeError。
+优化策略检索与推荐系统
+支持: 四阶段模式检测 + 向量相似度 + 图引擎多跳遍历 + 泛化搜索 + 反馈闭环
 """
 
-import os
-import json
-import time
-from typing import Dict, List, Any, Optional
+import os, json, time, argparse
+from typing import Dict, List, Any, Optional, Set, Tuple
 from pathlib import Path
+from collections import deque
 from pymilvus import connections, Collection, utility
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
@@ -22,675 +15,483 @@ from langchain.output_parsers import StructuredOutputParser, ResponseSchema
 from langchain_community.embeddings import DashScopeEmbeddings
 from langchain.agents import AgentExecutor, create_openai_tools_agent
 from langchain_core.tools import tool
-import argparse
 from dotenv import load_dotenv
 
 try:
     from ..utils.prompt_loader import get_prompt_loader
+    from .graph import KnowledgeGraph
 except ImportError:
     import sys
     _src_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     sys.path.insert(0, _src_dir)
     from utils.prompt_loader import get_prompt_loader
-
-try:
-    from .graph import KnowledgeGraph
-except ImportError:
-    from graph import KnowledgeGraph
+    from kg.graph import KnowledgeGraph
 
 load_dotenv("config/.env")
-
 _prompts = get_prompt_loader()
 
 
-# ===== 基础工具 (为Agent提供) =====
+# ============================================================
+# 图引擎增强
+# ============================================================
+class Graph:
+    """轻量图引擎 (基于 Milvus relation collection)"""
+    def __init__(self):
+        self._adj_out: Dict[str,List[Tuple[str,str,str]]] = {}
+        self._adj_in: Dict[str,List[Tuple[str,str,str]]] = {}
+        self._entities: Dict[str,Dict] = {}
+        self._loaded = False
+
+    def load(self):
+        try:
+            col = Collection("relation"); col.load()
+            offset = 0
+            while True:
+                rows = col.query(expr="relation_id != ''",
+                    output_fields=["relation_type","head_entity_uid","tail_entity_uid","head_name","tail_name","description"],
+                    limit=50000, offset=offset)
+                if not rows: break
+                for r in rows:
+                    h,t,rt = r["head_entity_uid"],r["tail_entity_uid"],r["relation_type"]
+                    d = r.get("description","")
+                    self._adj_out.setdefault(h,[]).append((rt,t,d))
+                    self._adj_in.setdefault(t,[]).append((rt,h,d))
+                offset += 50000
+            for ec in ["optimization_principle","source_pattern","code_characteristic","optimization_strategy","architecture_capability"]:
+                try:
+                    c = Collection(ec); c.load(); offset=0
+                    while True:
+                        rows=c.query(expr="uid != ''",output_fields=["uid","name"],limit=50000,offset=offset)
+                        if not rows: break
+                        for r in rows: self._entities[r["uid"]]={"name":r.get("name",""),"type":ec}
+                        offset+=50000
+                except Exception: pass
+            self._loaded = True
+            print(f"✅ 图谱: {len(self._entities)} 实体, {sum(len(v) for v in self._adj_out.values())} 边")
+        except Exception as e: print(f"⚠️ 图谱加载失败: {e}")
+
+    def loaded(self): return self._loaded
+
+    def neighbors(self, uid, direction="both") -> List[Dict]:
+        ns = []
+        if direction in ("out","both"):
+            for rt,t,d in self._adj_out.get(uid,[]):
+                ns.append({"direction":"out","relation_type":rt,"target_uid":t,"description":d,
+                           "target_name":self._entities.get(t,{}).get("name",""),
+                           "target_type":self._entities.get(t,{}).get("type","")})
+        if direction in ("in","both"):
+            for rt,s,d in self._adj_in.get(uid,[]):
+                ns.append({"direction":"in","relation_type":rt,"source_uid":s,"description":d,
+                           "source_name":self._entities.get(s,{}).get("name",""),
+                           "source_type":self._entities.get(s,{}).get("type","")})
+        return ns
+
+    def neighbors_of_type(self, uid, rel_type, direction="out") -> List[Dict]:
+        return [n for n in self.neighbors(uid,direction) if n.get("relation_type")==rel_type]
+
+    def traverse_typed(self, start, rel_types, direction="out", max_depth=3) -> List[tuple]:
+        visited = {start}; results = []; q = deque([(start,0,[start])])
+        while q:
+            cur,d,path = q.popleft()
+            if d >= max_depth: continue
+            for rt,nb,desc in self._adj_out.get(cur,[]):
+                if rt in rel_types and nb not in visited:
+                    visited.add(nb); np = path+[nb]; results.append((nb,d+1,np)); q.append((nb,d+1,np))
+            for rt,nb,desc in self._adj_in.get(cur,[]):
+                if rt in rel_types and nb not in visited:
+                    visited.add(nb); np = path+[nb]; results.append((nb,d+1,np)); q.append((nb,d+1,np))
+        return results
+
+    def has_edge(self, a, b, rel_type=None):
+        for rt,t,_ in self._adj_out.get(a,[]):
+            if t==b and (rel_type is None or rt==rel_type): return True
+        return False
+
+    def co_occurrence_rank(self, strategy_uids, query_patterns) -> List[Tuple[str,float]]:
+        scores = {}
+        for uid in strategy_uids:
+            ns = self.neighbors(uid)
+            pm = sum(1 for n in ns if n.get("target_type")=="computational_pattern" or n.get("source_type")=="source_pattern")
+            ntypes = len(set(n.get("target_type","") or n.get("source_type","") for n in ns))
+            deg = len(self._adj_out.get(uid,[]))+len(self._adj_in.get(uid,[]))
+            scores[uid] = pm*2.0 + ntypes*0.5 + min(deg/10.0,1.0)
+        return sorted(scores.items(), key=lambda x:x[1], reverse=True)
+
+    def get_context(self, uid) -> Dict:
+        ns = self.neighbors(uid)
+        pats = [n for n in ns if n.get("target_type")=="source_pattern" or n.get("source_type")=="source_pattern"]
+        params = [n for n in ns if n.get("target_type")=="tunable_parameter"]
+        hw = [n for n in ns if n.get("target_type")=="architecture_capability"]
+        return {"uid":uid,"patterns":pats,"parameters":params,"hardware":hw,"total_connections":len(ns)}
+
+
+# ============================================================
+# 基础工具
+# ============================================================
 @tool
 def read_source_file(file_path: str) -> str:
-    """(此工具仅为Agent内部使用) 读取源代码文件。"""
     try:
-        with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
-            content = f.read(15000)
-        return f"文件路径: {file_path}\n内容:\n{content}\n..."
-    except Exception as e:
-        return f"读取失败: {str(e)}"
+        with open(file_path,'r',encoding='utf-8',errors='ignore') as f: return f"文件: {file_path}\n{f.read(15000)}..."
+    except Exception as e: return f"读取失败: {e}"
 
 
+# ============================================================
+# 优化策略检索器
+# ============================================================
 class OptimizationStrategyOperator:
-    """优化策略操作器"""
-    
-    # <<< MODIFIED: __init__ now accepts the config dictionary directly
-    def __init__(self, config: Dict[str, Any]):
-        """初始化操作器"""
+    def __init__(self, config: Dict):
+        mc = config.get("milvus",{})
+        self.host = mc.get("host","localhost"); self.port = mc.get("port",19530)
+        self.db = mc.get("database","code_op")
+        ec = config.get("dashscope_embeddings",{})
+        self.embedder = DashScopeEmbeddings(model=ec.get("name","text-embedding-v3"),
+                                             dashscope_api_key=os.getenv("DASHSCOPE_API_KEY"))
+        self.llm = ChatOpenAI(model=config.get("model",{}).get("name","qwen-plus-2025-09-11"),
+                              temperature=float(config.get("model",{}).get("temperature",0.0)),
+                              max_tokens=int(config.get("model",{}).get("max_tokens",8192)),
+                              api_key=os.getenv("DASHSCOPE_API_KEY"),
+                              base_url=config.get("model",{}).get("base_url"))
         self.config = config
-        self.milvus_config = self.config.get("milvus", {})
-        self.model_config = self.config.get("model", {})
-        self.embedding_config = self.config.get("dashscope_embeddings", {})
-        
-        self._connect_milvus()
-        self._init_llm()
-        self._init_embedding_model()
-        
-        print("✅ 优化策略操作器初始化完成")
-    
-    # <<< MODIFIED: Changed to a staticmethod
-    @staticmethod
-    def _load_config(config_path: str) -> Dict[str, Any]:
-        """加载配置文件"""
-        if not os.path.exists(config_path):
-            return {
-                "milvus": {"host": "localhost", "port": 19530, "database": "code_op"},
-                "model": {
-                    "name": "qwen-max",
-                    "temperature": 0.0,
-                    "max_tokens": 8192,
-                    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1"
-                },
-                "dashscope_embeddings": {"name": "text-embedding-v3"}
-            }
-        
-        with open(config_path, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    
-    def _connect_milvus(self):
-        """连接Milvus数据库"""
-        host = self.milvus_config.get("host", "localhost")
-        port = self.milvus_config.get("port", 19530)
-        database = self.milvus_config.get("database", "code_op")
-        
-        connections.connect(alias="default", host=host, port=port, db_name=database)
-        print(f"✅ 已连接到Milvus: {host}:{port}/{database}")
+        self.graph = Graph()
+        try:
+            connections.connect(alias="default",host=self.host,port=self.port,db_name=self.db)
+            self.graph.load()
+        except Exception: pass
+        print("✅ 检索器初始化完成")
 
-    def _init_llm(self):
-        """初始化 ChatOpenAI 模型"""
-        self.llm = ChatOpenAI(
-            model=self.model_config.get("name"),
-            temperature=float(self.model_config.get("temperature", 0.0)),
-            max_tokens=int(self.model_config.get("max_tokens", 8192)),
-            api_key=os.getenv("DASHSCOPE_API_KEY"),
-            base_url=self.model_config.get("base_url"),
-        )
-        
-    def _init_embedding_model(self):
-        """初始化 Embedding 模型"""
-        api_key = os.getenv("DASHSCOPE_API_KEY")
-        if not api_key:
-            raise RuntimeError("DASHSCOPE_API_KEY is required for embedding model")
-        
-        self.embedding_model = DashScopeEmbeddings(
-            model=self.embedding_config.get("name", "text-embedding-v3"), 
-            dashscope_api_key=api_key
-        )
+    def _embed(self, text: str) -> List[float]:
+        try:
+            v = self.embedder.embed_query(text)
+            s = sum(x*x for x in v); return [x/(s**0.5) for x in v] if s>0 else v
+        except Exception: return [0.0]*1024
 
-    # ===== START: AgentFactory Logic Integration =====
-    
-    def _create_pattern_parser(self) -> StructuredOutputParser:
-        schemas = [
-            ResponseSchema(name="computational_patterns", description=(
-                "计算流程列表。每项包含: pattern_type(流程类型标签), name(流程中文名称), "
-                "description(对流程的简要说明), code(该流程最相关的完整代码片段), "
-                "data_object_features(对象，含 numeric_kind, numeric_precision, structural_properties, storage_layout 四键)"
-            )),
-        ]
+    def _search_similar(self, col: str, vecs: List[List], limit=20, thresh=0.8) -> List[List]:
+        try:
+            c = Collection(col); c.load()
+            results = c.search(data=vecs, anns_field="embedding",
+                param={"metric_type":"COSINE","params":{"nprobe":16}},
+                limit=limit, output_fields=["uid","name","description","pattern_type","code_snippet","level","rationale","implementation","impact","trade_offs"])
+            return [[h for h in hits if h.distance>=thresh] for hits in results]
+        except Exception: return [[] for _ in vecs]
+
+    # ====== 四阶段模式检测 ======
+    def _create_pattern_parser(self):
+        schemas = [ResponseSchema(name="computational_patterns", description="计算流程列表")]
         return StructuredOutputParser.from_response_schemas(schemas)
 
-    def create_prep_pattern_agent(self) -> AgentExecutor:
-        tools = [read_source_file]
+    def _make_agent(self, prompt_path: str) -> AgentExecutor:
         parser = self._create_pattern_parser()
+        sp = _prompts.load_system_with_format(prompt_path)
         prompt = ChatPromptTemplate.from_messages([
-            ("system", _prompts.load_system_with_format("kg/pattern_recognition/stage1_prep.yaml")),
-            ("human", "{input}"),
-            ("placeholder", "{agent_scratchpad}"),
+            ("system", sp), ("human","{input}"), ("placeholder","{agent_scratchpad}")
         ])
         formatted = prompt.partial(format_instructions=parser.get_format_instructions())
-        agent = create_openai_tools_agent(self.llm, tools, formatted)
-        return AgentExecutor(agent=agent, tools=tools, verbose=False, max_iterations=10)
+        agent = create_openai_tools_agent(self.llm, [read_source_file], formatted)
+        return AgentExecutor(agent=agent, tools=[read_source_file], verbose=False, max_iterations=10)
 
-    def create_transform_pattern_agent(self) -> AgentExecutor:
-        tools = [read_source_file]
-        parser = self._create_pattern_parser()
-        prompt = ChatPromptTemplate.from_messages([
-            ("system", _prompts.load_system_with_format("kg/pattern_recognition/stage2_transform.yaml")),
-            ("human", "{input}"),
-            ("placeholder", "{agent_scratchpad}"),
-        ])
-        formatted = prompt.partial(format_instructions=parser.get_format_instructions())
-        agent = create_openai_tools_agent(self.llm, tools, formatted)
-        return AgentExecutor(agent=agent, tools=tools, verbose=False, max_iterations=10)
-
-    def create_core_pattern_agent(self) -> AgentExecutor:
-        tools = [read_source_file]
-        parser = self._create_pattern_parser()
-        prompt = ChatPromptTemplate.from_messages([
-            ("system", _prompts.load_system_with_format("kg/pattern_recognition/stage3_core.yaml")),
-            ("human", "{input}"),
-            ("placeholder", "{agent_scratchpad}"),
-        ])
-        formatted = prompt.partial(format_instructions=parser.get_format_instructions())
-        agent = create_openai_tools_agent(self.llm, tools, formatted)
-        return AgentExecutor(agent=agent, tools=tools, verbose=False, max_iterations=10)
-
-    def create_post_pattern_agent(self) -> AgentExecutor:
-        tools = [read_source_file]
-        parser = self._create_pattern_parser()
-        prompt = ChatPromptTemplate.from_messages([
-            ("system", _prompts.load_system_with_format("kg/pattern_recognition/stage4_post.yaml")),
-            ("human", "{input}"),
-            ("placeholder", "{agent_scratchpad}"),
-        ])
-        formatted = prompt.partial(format_instructions=parser.get_format_instructions())
-        agent = create_openai_tools_agent(self.llm, tools, formatted)
-        return AgentExecutor(agent=agent, tools=tools, verbose=False, max_iterations=10)
-
-    def _extract_json_from_output(self, output: str) -> Optional[Dict]:
-        if not output: return None
-        try:
-            return json.loads(output)
-        except json.JSONDecodeError: pass
-        if "```json" in output:
-            s = output.find("```json") + 7
-            e = output.find("```", s)
-            if e > s:
-                try: return json.loads(output[s:e].strip())
-                except json.JSONDecodeError: return None
-        if "```" in output:
-            s = output.find("```") + 3
-            e = output.find("```", s)
-            if e > s:
-                try: return json.loads(output[s:e].strip())
-                except json.JSONDecodeError: return None
-        return None
-
-    def _invoke_with_retry(self, agent: AgentExecutor, payload: Dict[str, Any], label: str, retries: int = 3) -> Dict[str, Any]:
-        attempt = 0
-        delay_seq = [3, 6, 12]
-        while True:
-            try:
-                return agent.invoke(payload)
-            except Exception as e:
-                if attempt >= retries: raise e
-                wait = delay_seq[attempt] if attempt < len(delay_seq) else delay_seq[-1]
-                print(f"  - {label} 失败，第 {attempt+1} 次重试前等待 {wait}s：{e}")
-                time.sleep(wait)
-                attempt += 1
-
-    # ===== END: AgentFactory Logic Integration =====
-    
-    def _detect_computational_patterns(self, source_code: str) -> List[Dict[str, Any]]:
-        """使用集成的Agent按四个阶段检测计算流程模式"""
-        all_patterns = []
-        stages = ["prep", "transform", "core", "post"]
-        
-        agent_map = {
-            "prep": self.create_prep_pattern_agent(),
-            "transform": self.create_transform_pattern_agent(),
-            "core": self.create_core_pattern_agent(),
-            "post": self.create_post_pattern_agent()
+    def _detect_patterns(self, code: str) -> List[Dict]:
+        agents = {
+            "stage1_prep.yaml": self._make_agent("kg/pattern_recognition/stage1_prep.yaml"),
+            "stage2_transform.yaml": self._make_agent("kg/pattern_recognition/stage2_transform.yaml"),
+            "stage3_core.yaml": self._make_agent("kg/pattern_recognition/stage3_core.yaml"),
+            "stage4_post.yaml": self._make_agent("kg/pattern_recognition/stage4_post.yaml"),
         }
-        
-        for stage in stages:
-            print(f"  -> 正在识别 {stage} 阶段的计算流程...")
+        all_patterns = []
+        for _, agent in agents.items():
             try:
-                agent = agent_map[stage]
-                stage_input = f"请分析以下源码，识别‘{stage}’阶段的细粒度计算流程。\n\n源码:\n{source_code}"
-                result = self._invoke_with_retry(agent, {"input": stage_input}, f"计算流程({stage})")
-                output_raw = self._extract_json_from_output(result.get("output", "")) or {}
-                
-                if isinstance(output_raw, list):
-                    patterns = output_raw
-                elif isinstance(output_raw, dict):
-                    patterns = output_raw.get("computational_patterns", [])
-                else:
-                    patterns = []
-
-                if patterns:
-                    all_patterns.extend(patterns)
-                    print(f"    ✅ {stage} 阶段识别到 {len(patterns)} 个模式")
-            except Exception as e:
-                print(f"    ❌ {stage} 阶段识别失败: {e}")
-        
+                result = agent.invoke({"input": f"分析以下源码:\n{code[:8000]}"})
+                output = result.get("output","")
+                data = self._parse_json(output)
+                if isinstance(data, list):
+                    all_patterns.extend(data)
+            except Exception as e: print(f"  ⚠️ 模式检测: {e}")
         return all_patterns
 
-    def _search_similar_patterns(self, detected_patterns: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """在Milvus中检索与检测到的计算流程相似的实体"""
-        if not detected_patterns:
-            return []
+    # ====== 泛化搜索 ======
+    def _generalize(self, chars: List[Dict], max_depth=3,
+                    alpha=0.5, beta=0.3, gamma=0.2) -> List[Dict]:
+        """泛化搜索核心: DIRECT_MATCH → ABSTRACTION_EXPAND → FILTER → RANK"""
+        if not self.graph.loaded(): return []
 
-        collection = Collection("computational_pattern")
-        collection.load()
+        candidates = {}
+        char_set = {c.get("characteristic_type","") for c in chars}
 
-        # 归一化搜索向量，配合 COSINE 检索
-        def _normalize(v: List[float]) -> List[float]:
+        # A. DIRECT_MATCH
+        for c in chars:
+            vec = self._embed(json.dumps(c, ensure_ascii=False))
+            hits = self._search_similar("code_characteristic", [vec], limit=10, thresh=0.7)
+            for h in hits[0]:
+                # HAS_CHARACTERISTIC → INSTANCE_OF
+                for n in self.graph.neighbors_of_type(h.id, "HAS_CHARACTERISTIC", "in"):
+                    puid = n.get("source_uid","")
+                    for pn in self.graph.neighbors_of_type(puid, "INSTANCE_OF", "out"):
+                        prid = pn.get("target_uid","")
+                        if prid not in candidates: candidates[prid]={"uid":prid,"score":0,"paths":[],"chars":[],"dist":0}
+                        candidates[prid]["score"]=max(candidates[prid]["score"],h.distance)
+                        candidates[prid]["paths"].append("direct:CHAR→INSTANCE_OF")
+                        candidates[prid]["chars"].append(c.get("characteristic_type",""))
+                # APPLIES_WHEN
+                for pn in self.graph.neighbors_of_type(h.id, "APPLIES_WHEN", "in"):
+                    prid = pn.get("source_uid","")
+                    if prid not in candidates: candidates[prid]={"uid":prid,"score":0,"paths":[],"chars":[],"dist":0}
+                    candidates[prid]["score"]=max(candidates[prid]["score"],h.distance)
+                    candidates[prid]["paths"].append("direct:APPLIES_WHEN")
+                    candidates[prid]["chars"].append(c.get("characteristic_type",""))
+
+        # B. ABSTRACTION_EXPAND
+        expanded = dict(candidates)
+        for uid in list(candidates.keys()):
+            base = candidates[uid]["score"]
+            # GENERALIZES 上行 (0.7^d)
+            for anc,d,path in self.graph.traverse_typed(uid,["GENERALIZES"],"out",max_depth):
+                sc = base*(0.7**d); k=anc
+                if k not in expanded or expanded[k]["score"]<sc:
+                    expanded[k]={"uid":anc,"score":sc,"paths":candidates[uid]["paths"]+[f"gen:d{d}"],
+                                 "chars":candidates[uid]["chars"],"dist":d,"from_gen":True}
+            # SPECIALIZATION 下行 (0.85^d)
+            for spec,d,path in self.graph.traverse_typed(uid,["GENERALIZES"],"in",max_depth):
+                sc = base*(0.85**d); k=spec
+                if k not in expanded or expanded[k]["score"]<sc:
+                    expanded[k]={"uid":spec,"score":sc,"paths":candidates[uid]["paths"]+[f"spec:d{d}"],
+                                 "chars":candidates[uid]["chars"],"dist":d,"from_spec":True}
+            # COMPOSES_WITH (0.85)
+            for cn in self.graph.neighbors_of_type(uid,"COMPOSES_WITH","both"):
+                k = cn.get("target_uid","") or cn.get("source_uid","")
+                if k not in expanded or expanded[k]["score"]<base*0.85:
+                    expanded[k]={"uid":k,"score":base*0.85,"paths":candidates[uid]["paths"]+["compose"],
+                                 "chars":candidates[uid]["chars"],"dist":1,"from_comp":True}
+            # ANALOGOUS_TO (0.6)
+            for an in self.graph.neighbors_of_type(uid,"ANALOGOUS_TO","both"):
+                k = an.get("target_uid","") or an.get("source_uid","")
+                if k not in expanded or expanded[k]["score"]<base*0.6:
+                    expanded[k]={"uid":k,"score":base*0.6,"paths":candidates[uid]["paths"]+["analogy"],
+                                 "chars":candidates[uid]["chars"],"dist":1,"from_analogy":True}
+        candidates = expanded
+
+        # C. CONSTRAINT_FILTER
+        filtered = {}
+        for uid, info in candidates.items():
             try:
-                s = sum(x * x for x in v)
-                if s <= 0:
-                    return v
-                inv = 1.0 / (s ** 0.5)
-                return [x * inv for x in v]
-            except Exception:
-                return v
+                c = Collection("optimization_principle"); c.load()
+                rows = c.query(expr=f'uid == "{uid}"', output_fields=["constraints","principle","name","scope","level","evidence_strength"], limit=1)
+                if not rows: continue
+                p = rows[0]
+                try: constraints = json.loads(p.get("constraints","{}"))
+                except Exception: constraints = {}
+                status, reasons = "pass", []
+                for req in self.graph.neighbors_of_type(uid,"REQUIRES","out"):
+                    hw = req.get("target_name","")
+                    if hw:
+                        status="degraded"; reasons.append(f"missing_hw:{hw}")
+                for app in self.graph.neighbors_of_type(uid,"APPLIES_WHEN","out"):
+                    try: cond = json.loads(app.get("description","{}"))
+                    except Exception: cond = {}
+                    cn = app.get("target_name","")
+                    if cond.get("condition_type")=="requires" and cn not in char_set:
+                        status="fail"; reasons.append(f"missing:{cn}"); break
+                    if cond.get("condition_type")=="conflicts" and cn in char_set:
+                        status="fail"; reasons.append(f"conflict:{cn}"); break
+                if status=="fail": continue
+                if status=="degraded": info["score"]*=0.5
+                info["constraint_status"]=status; info["constraint_reasons"]=reasons
+                info["principle"]=p.get("principle",""); info["name"]=p.get("name","")
+                info["scope"]=p.get("scope",""); info["level"]=p.get("level","")
+                info["evidence"]=float(p.get("evidence_strength",0.5))
+                filtered[uid]=info
+            except Exception: continue
 
-        embedding_texts = [json.dumps(p, ensure_ascii=False, sort_keys=True) for p in detected_patterns]
-        vectors_to_search_raw = self.embedding_model.embed_documents(embedding_texts)
-        vectors_to_search = [_normalize(v) for v in vectors_to_search_raw]
+        # D. RANK
+        ranked = []
+        for uid, info in filtered.items():
+            gs = 1.0/(1.0+info.get("dist",0))
+            fs = alpha*info["score"] + beta*gs + gamma*info.get("evidence",0.5)
+            t = "direct"
+            if info.get("from_gen"): t="generalization"
+            elif info.get("from_spec"): t="specialization"
+            elif info.get("from_comp"): t="composition"
+            elif info.get("from_analogy"): t="analogy"
+            ranked.append({"principle_uid":uid,"principle_name":info.get("name",""),
+                "principle_text":info.get("principle",""),"scope":info.get("scope",""),
+                "level":info.get("level",""),"final_score":round(fs,4),
+                "score_breakdown":{"char_sim":round(info["score"],3),"graph_prox":round(gs,3),"evidence":round(info.get("evidence",0.5),3)},
+                "paths":info.get("paths",[]),"generalization_type":t,
+                "is_generalized":t!="direct","constraint_status":info.get("constraint_status","pass"),
+                "graph_context":self.graph.get_context(uid)})
+        ranked.sort(key=lambda x:x["final_score"], reverse=True)
+        return ranked
 
-        # 使用 COSINE 度量；这里直接把返回的 score(distance 字段)作为相似度使用
-        search_params = {"metric_type": "COSINE", "params": {"nprobe": 10}}
-        all_hits = []
+    # ====== 主入口 ======
+    def process_source_code(self, source_file: str) -> Dict:
+        print(f"🚀 处理: {source_file}")
+        if not os.path.exists(source_file): return {"error":f"不存在: {source_file}"}
+        with open(source_file) as f: code = f.read()
 
-        results = collection.search(
-            data=vectors_to_search,
-            anns_field="embedding",
-            param=search_params,
-            limit=50,
-            output_fields=["uid", "name", "type"]
-        )
-        
-        for i, hits in enumerate(results):
-            for rank, hit in enumerate(hits):
-                # 直接使用 Milvus 返回的 score（pymilvus 暴露为 distance 字段）
-                similarity = float(hit.distance)
-                # Top-2 模式（保留注释）：
-                # if rank < 2:
-                #     all_hits.append({...})
-                # 当前采用：相似度阈值模式（>= 0.8）
-                if similarity >= 0.8:
-                    all_hits.append({
-                        "uid": hit.entity.get("uid"),
-                        "name": hit.entity.get("name"),
-                        "type": hit.entity.get("type"),
-                        "similarity": similarity,
-                        "query_pattern": detected_patterns[i]['name']
-                    })
-        return all_hits
+        # 1. 四阶段模式检测
+        patterns = self._detect_patterns(code)
+        print(f"✅ 步骤1: {len(patterns)} 个计算流程")
 
-    def _filter_top_patterns(self, similar_patterns: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """从相似结果中为每种类型筛选出得分最高的实体"""
-        top_patterns = {}
-        for pattern in similar_patterns:
-            ptype = pattern['type']
-            if ptype not in top_patterns or pattern['similarity'] > top_patterns[ptype]['similarity']:
-                top_patterns[ptype] = pattern
-        return list(top_patterns.values())
+        # 2. 向量相似度检索
+        pattern_types = [p.get("pattern_type","") for p in patterns]
+        similar = []
+        for p in patterns:
+            vec = self._embed(json.dumps(p, ensure_ascii=False))
+            hits = self._search_similar("source_pattern", [vec], 10, 0.8)
+            similar.extend(hits[0])
+        similar_dedup = {}
+        for h in similar:
+            if h.id not in similar_dedup or h.distance > similar_dedup[h.id].distance:
+                similar_dedup[h.id] = h
+        print(f"✅ 步骤2: {len(similar_dedup)} 个相似模式")
 
-    def _find_related_strategies(self, top_patterns: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """根据计算流程查找关联的优化策略"""
-        if not top_patterns:
-            return []
-            
-        pattern_uids = [p['uid'] for p in top_patterns]
-        relation_col = Collection("relation")
-        strategy_col = Collection("optimization_strategy")
-        
-        expr = f'head_entity_uid in {json.dumps(pattern_uids)} and relation_type == "OPTIMIZES_PATTERN"'
-        relations = relation_col.query(expr, output_fields=["tail_entity_uid"])
-        
-        strategy_uids = list({rel['tail_entity_uid'] for rel in relations})
-        if not strategy_uids:
-            return []
-            
-        strategies = strategy_col.query(f'uid in {json.dumps(strategy_uids)}', output_fields=["*"])
-        return strategies
+        # 3. 关联网格查找策略UID
+        strategy_uids = set()
+        for uid in similar_dedup:
+            for n in self.graph.neighbors_of_type(uid, "INSTANCE_OF", "out"):
+                strategy_uids.add(n.get("target_uid",""))
+        print(f"✅ 步骤3: {len(strategy_uids)} 个关联策略")
 
-    def _find_related_strategy_uids(self, top_patterns: List[Dict[str, Any]]) -> List[str]:
-        """根据 top_patterns（计算流程）通过关系集合找到关联的优化策略UID"""
-        if not top_patterns:
-            return []
-            
-        pattern_uids = [p['uid'] for p in top_patterns]
-        relation_col = Collection("relation")
-        
-        expr = f'head_entity_uid in {json.dumps(pattern_uids)} and relation_type == "OPTIMIZES_PATTERN"'
-        relations = relation_col.query(expr, output_fields=["tail_entity_uid"])
-        strategy_uids = list({rel['tail_entity_uid'] for rel in relations})
-        return strategy_uids
-    
-    def _load_strategy_context(self, base_dir: Path) -> List[Dict[str, Any]]:
-        """加载 relation_refine/optimization_strategy_context_3.json（位于 analysis_results_dir 下）"""
-        ctx_path = base_dir / "relation_refine" / "optimization_strategy_context_3.json"
-        if not ctx_path.exists():
-            print(f"⚠️ 未找到优化策略上下文文件: {ctx_path}")
-            return []
-        try:
-            with open(ctx_path, "r", encoding="utf-8") as f:
-                data = json.load(f)
-                if isinstance(data, list):
-                    return data
-                print(f"⚠️ 优化策略上下文文件结构异常（期望list）: {ctx_path}")
-                return []
-        except Exception as e:
-            print(f"⚠️ 加载优化策略上下文失败: {e}")
-            return []
-    
-    def _score_and_select_final(self, context_by_uid: Dict[str, Dict[str, Any]], detected_pattern_types: List[str], candidate_uids: List[str], w_context: float = 0.5) -> List[Dict[str, Any]]:
-        """按给定公式计算得分并筛选（得分>=0.5）为 final_strategies"""
-        detected_set = set(detected_pattern_types)
-        denom = float(len(detected_pattern_types)) if detected_pattern_types else 1.0
-        finals: List[Dict[str, Any]] = []
-        
-        for uid in candidate_uids:
-            entry = context_by_uid.get(uid)
-            if not entry:
-                continue
-            core_patterns = entry.get("core_patterns", []) or []
-            contextual_patterns = entry.get("contextual_patterns", {}) or {}
-            
-            # 约束：core_patterns 必须完全包含于所给代码的计算流程（patterns_detected）
-            if core_patterns:
-                if not set(core_patterns).issubset(detected_set):
-                    continue
-            
-            # Score_core = len(S_core ∩ P_code) / len(P_code)
-            s_core = set(core_patterns) & detected_set
-            score_core = (len(s_core) / denom) if denom > 0 else 0.0
-            
-            # Score_context = sum(freq for matched contextual patterns)
-            score_context = 0.0
-            for pattern, freq_str in contextual_patterns.items():
-                if pattern in detected_set:
-                    try:
-                        score_context += float(freq_str)
-                    except Exception:
-                        # 忽略不可解析的频率
-                        pass
-            
-            score_total = score_core + w_context * score_context
-            # 最终阈值：大于等于 0.5
-            if score_total >= 0.5:
-                # 输出条目基于上下文数据，附加 score
-                out = {k: v for k, v in entry.items() if k != "members"}
-                out["score"] = score_total
-                finals.append(out)
-        
-        finals.sort(key=lambda x: x.get("score", 0.0), reverse=True)
-        return finals
+        # 4. 图引擎增强评分
+        graph_scores = {}
+        if self.graph.loaded() and strategy_uids:
+            ranked = self.graph.co_occurrence_rank(list(strategy_uids), set(pattern_types))
+            graph_scores = {uid:s for uid,s in ranked}
+        print(f"✅ 步骤4: 图引擎增强 ({len(graph_scores)} 个评分)")
 
-    def process_source_code(self, source_file: str) -> Dict[str, Any]:
-        """处理源代码文件，执行完整的检索和评分流程"""
-        print(f"🚀 开始处理源代码: {source_file}")
-        
-        if not os.path.exists(source_file):
-            return {"error": f"源文件不存在: {source_file}"}
-        
-        with open(source_file, 'r', encoding='utf-8') as f:
-            source_code = f.read()
-        
-        patterns_detected_full = self._detect_computational_patterns(source_code)
-        patterns_detected_types = [p['pattern_type'] for p in patterns_detected_full]
-        print(f"✅ 步骤1完成: 检测到 {len(patterns_detected_types)} 个计算流程: {patterns_detected_types}")
-        
-        similar_patterns = self._search_similar_patterns(patterns_detected_full)
-        print(f"✅ 步骤2完成: 检索到 {len(similar_patterns)} 个相似计算流程 (相似度 >= 0.8)")
+        # 5. 泛化搜索 (新!)
+        chars_from_llm = self._extract_characteristics(code)
+        gen_recs = self._generalize(chars_from_llm)
+        print(f"✅ 步骤5: 泛化搜索 → {len(gen_recs)} 个推荐 ({sum(1 for r in gen_recs if r['is_generalized'])} 泛化)")
 
-        top_patterns = self._filter_top_patterns(similar_patterns)
-        print(f"✅ 步骤3完成: 筛选出 {len(top_patterns)} 个最高分计算流程")
-
-        # 步骤4：通过关系查找关联策略UID，并从优化上下文文件中构建 search_strategies
-        related_strategy_uids = self._find_related_strategy_uids(top_patterns)
-        print(f"✅ 步骤4完成: 找到 {len(related_strategy_uids)} 个关联的优化策略UID")
-        
-        # 重新解析 base_dir（与 main 中逻辑保持一致）
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        cfg_data_source = self.config.get("data_source", {})
-        base_dir_str = cfg_data_source.get("analysis_results_dir", "")
-        # 与 main 中解析一致
-        base_dir = Path(base_dir_str)
-        if not base_dir.is_absolute():
-            project_root = Path(script_dir).parent
-            resolved_path = project_root / base_dir
-            if not resolved_path.exists():
-                project_folder_name = project_root.name
-                if project_folder_name in base_dir_str:
-                    try:
-                        idx = base_dir_str.index(project_folder_name)
-                        suffix = base_dir_str[idx:]
-                        root_parent = project_root.parent
-                        resolved_path = root_parent / suffix
-                    except ValueError:
-                        pass
-            base_dir = resolved_path.resolve()
-        
-        context_list = self._load_strategy_context(base_dir)
-        context_by_uid = {e.get("strategy_uid"): e for e in context_list if isinstance(e, dict) and e.get("strategy_uid")}
-        
-        # search_strategies: 从上下文中挑出关联UID的条目，移除 members 字段
-        search_strategies = []
-        for uid in related_strategy_uids:
-            entry = context_by_uid.get(uid)
-            if not entry:
-                continue
-            filtered = {k: v for k, v in entry.items() if k != "members"}
-            # 为 search_strategies 计算并添加 score（不进行 core 子集约束，仅评分）
+        # 6. 汇总
+        final = []
+        seen = set()
+        for uid in strategy_uids:
             try:
-                detected_set = set(patterns_detected_types)
-                denom = float(len(patterns_detected_types)) if patterns_detected_types else 1.0
-                core_patterns = entry.get("core_patterns", []) or []
-                contextual_patterns = entry.get("contextual_patterns", {}) or {}
-                
-                s_core = set(core_patterns) & detected_set
-                score_core = (len(s_core) / denom) if denom > 0 else 0.0
-                
-                score_context = 0.0
-                for pattern, freq_str in contextual_patterns.items():
-                    if pattern in detected_set:
-                        try:
-                            score_context += float(freq_str)
-                        except Exception:
-                            pass
-                filtered["score"] = score_core + 0.5 * score_context
-            except Exception:
-                filtered["score"] = 0.0
-            search_strategies.append(filtered)
-        print(f"✅ 步骤4.1完成: 组装 {len(search_strategies)} 个上下文策略（去除 members）")
-        
-        # 步骤5：计算得分并筛选 final_strategies
-        final_strategies = self._score_and_select_final(context_by_uid, patterns_detected_types, related_strategy_uids, w_context=0.5)
-        print(f"✅ 步骤5完成: 最终筛选出 {len(final_strategies)} 个高分策略")
-
-        # 步骤6：图引擎增强评分
-        graph_score = {}
-        try:
-            kg = KnowledgeGraph()
-            kg.load_from_milvus()
-            if kg.is_loaded():
-                strategy_uids = [s.get("strategy_uid", "") for s in final_strategies if s.get("strategy_uid")]
-                if strategy_uids:
-                    ranked = kg.co_occurrence_rank(strategy_uids, set(patterns_detected_types))
-                    graph_score = {uid: score for uid, score in ranked}
-                    for s in final_strategies:
-                        uid = s.get("strategy_uid", "")
-                        if uid in graph_score:
-                            s["graph_score"] = graph_score[uid]
-                            s["score"] = s.get("score", 0) + graph_score[uid] * 0.3
-                    final_strategies.sort(key=lambda x: x.get("score", 0), reverse=True)
-                print(f"✅ 步骤6完成: 图引擎增强 (合并 {len(graph_score)} 个图评分)")
-        except Exception as e:
-            print(f"⚠️ 图引擎增强跳过: {e}")
-
-        # 步骤7：富化策略上下文
-        enriched_strategies = []
-        try:
-            kg = KnowledgeGraph()
-            if not kg.is_loaded():
-                kg.load_from_milvus()
-            for s in final_strategies[:10]:
-                uid = s.get("strategy_uid", "")
-                if uid:
-                    ctx = kg.get_strategy_context(uid)
-                    s["graph_context"] = ctx
-                enriched_strategies.append(s)
-            print(f"✅ 步骤7完成: 富化 {len(enriched_strategies)} 个策略的图上下文")
-            final_strategies = enriched_strategies
-        except Exception as e:
-            print(f"⚠️ 图上下文富化跳过: {e}")
+                c = Collection("optimization_strategy"); c.load()
+                rows = c.query(expr=f'uid == "{uid}"', output_fields=["name","level","rationale","implementation","impact"], limit=1)
+                if rows:
+                    s = rows[0]; s["uid"]=uid; s["score"]=graph_scores.get(uid,0)
+                    s["source"]="direct"; final.append(s); seen.add(uid)
+            except Exception: pass
+        for r in gen_recs:
+            if r["principle_uid"] not in seen:
+                final.append({"uid":r["principle_uid"],"name":r.get("principle_name",""),
+                    "principle_text":r.get("principle_text",""),"score":r["final_score"],
+                    "source":f"generalized:{r['generalization_type']}",
+                    "generalization_type":r["generalization_type"],"paths":r.get("paths",[]),
+                    "graph_context":r.get("graph_context",{})})
+        final.sort(key=lambda x: x.get("score",0), reverse=True)
 
         result = {
             "source_file": source_file,
-            "patterns_detected": patterns_detected_full,
-            "similar_patterns_found": similar_patterns,
-            "top_patterns_per_type": top_patterns,
-            "search_strategies": search_strategies,
-            "final_strategies": final_strategies,
-            "graph_enhanced": len(graph_score) > 0
+            "patterns_detected": patterns,
+            "similar_patterns": len(similar_dedup),
+            "final_strategies": final,
+            "direct_matches": sum(1 for s in final if s.get("source")=="direct"),
+            "generalized_matches": sum(1 for s in final if s.get("source","").startswith("generalized")),
         }
+
+        # 7. 反馈记录
+        self._record_feedback(code, chars_from_llm, final)
+
         return result
-    
-    def save_results(self, results: Dict[str, Any], output_file: str):
-        """保存处理结果"""
+
+    def _extract_characteristics(self, code: str) -> List[Dict]:
+        """从代码中提取抽象特征 (LLM + 规则兜底)"""
+        from .extractor import CharacteristicExtractor
+        # 内存store复用现有embedder
+        ce = CharacteristicExtractor.__new__(CharacteristicExtractor)
+        # 简化: 使用规则兜底
+        chars = []
+        clean = '\n'.join(l for l in code.split('\n') if l.strip() and not l.strip().startswith('//'))
+        nest = clean.count('for')
+        if nest >= 3: chars.append({"characteristic_type":"compute_intensity","value_descriptor":"high","metric_range":"ops_per_byte>8"})
+        elif nest == 2: chars.append({"characteristic_type":"compute_intensity","value_descriptor":"medium","metric_range":"ops_per_byte_2-8"})
+        else: chars.append({"characteristic_type":"compute_intensity","value_descriptor":"low","metric_range":"ops_per_byte<2"})
+        if any(kw in clean for kw in ['+=','-=','max','min']):
+            chars.append({"characteristic_type":"data_dependency","value_descriptor":"reduction"})
+        if 'inc_x' in clean or 'stride' in clean.lower():
+            chars.append({"characteristic_type":"access_pattern","value_descriptor":"contiguous_strided"})
+        else:
+            chars.append({"characteristic_type":"access_pattern","value_descriptor":"contiguous_unit_stride"})
+        chars.append({"characteristic_type":"loop_structure","value_descriptor":f"depth_{nest}","metric_range":f"nesting={nest}"})
+        return chars
+
+    def _record_feedback(self, code: str, chars: List[Dict], results: List[Dict]):
+        try:
+            log_file = "output/feedback_log.jsonl"
+            os.makedirs(os.path.dirname(log_file), exist_ok=True)
+            event = {"timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
+                     "code_hash": str(hash(code))[:16],
+                     "extracted_chars": [c.get("characteristic_type","") for c in chars],
+                     "recommended_uids": [r.get("uid","") for r in results[:10]],
+                     "recommended_scores": [r.get("score",0) for r in results[:10]]}
+            with open(log_file, 'a') as f: f.write(json.dumps(event, ensure_ascii=False)+'\n')
+        except Exception: pass
+
+    def save_results(self, results: Dict, output_file: str):
         os.makedirs(os.path.dirname(output_file), exist_ok=True)
-        with open(output_file, 'w', encoding='utf-8') as f:
-            json.dump(results, f, ensure_ascii=False, indent=2)
-        print(f"💾 结果已保存: {output_file}")
+        with open(output_file,'w') as f: json.dump(results, f, ensure_ascii=False, indent=2)
+        print(f"💾 {output_file}")
+
+    @staticmethod
+    def _load_config(path: str) -> Dict:
+        if not os.path.exists(path):
+            return {"milvus":{"host":"localhost","port":19530,"database":"code_op"},
+                    "model":{"name":"qwen-max","temperature":0.0,"max_tokens":8192,
+                             "base_url":"https://dashscope.aliyuncs.com/compatible-mode/v1"},
+                    "dashscope_embeddings":{"name":"text-embedding-v3"}}
+        return json.load(open(path))
+
+    @staticmethod
+    def _parse_json(content: str):
+        for fmt in ['```json','```','']:
+            try:
+                if fmt: s=content.find(fmt)+len(fmt); e=content.rfind('```'); return json.loads(content[s:e].strip())
+                return json.loads(content.strip())
+            except (json.JSONDecodeError,ValueError): continue
+        return None
 
 
+# ============================================================
+# 命令行入口
+# ============================================================
 def process_single_file(operator, source_file, base_dir):
-    """处理单个源文件"""
-    if not os.path.exists(source_file):
-        print(f"❌ 错误：源文件不存在: {source_file}")
-        return False
-    
-    # 从源文件名提取算子名称
-    source_filename = os.path.basename(source_file)
-    if source_filename.endswith('.c'):
-        operator_name = source_filename[:-2]  # 去掉.c后缀
-    elif source_filename.endswith('.txt'):
-        operator_name = source_filename[:-4]  # 去掉.txt后缀
-    else:
-        operator_name = os.path.splitext(source_filename)[0]
-    
-    # 创建算子专用目录
-    operator_dir = os.path.join(base_dir, operator_name)
-    os.makedirs(operator_dir, exist_ok=True)
-    
-    # 输出文件名基于源文件名
-    output_file = os.path.join(operator_dir, f"{operator_name}.json")
-    
-    print(f"🔄 处理算子: {operator_name}")
-    print(f"📁 输出目录: {operator_dir}")
-    print(f"📄 输出文件: {output_file}")
-    
+    if not os.path.exists(source_file): print(f"❌ {source_file}"); return False
+    name = os.path.splitext(os.path.basename(source_file))[0]
+    out_dir = os.path.join(base_dir, name); os.makedirs(out_dir, exist_ok=True)
+    out_file = os.path.join(out_dir, f"{name}.json")
     try:
         results = operator.process_source_code(source_file)
-        operator.save_results(results, output_file)
-        print(f"✅ 完成: {operator_name}")
+        operator.save_results(results, out_file)
         return True
-    except Exception as e:
-        print(f"❌ 错误: 处理 {operator_name} 时出错: {e}")
-        return False
+    except Exception as e: print(f"❌ {name}: {e}"); return False
 
 def process_batch_files(operator, openblas_dir, base_dir):
-    """批量处理openblas_output目录中的所有.c文件"""
-    if not os.path.exists(openblas_dir):
-        print(f"❌ 错误：OpenBLAS输出目录不存在: {openblas_dir}")
-        return
-    
-    # 查找所有.c文件
-    c_files = []
-    for file in os.listdir(openblas_dir):
-        if file.endswith('.c'):
-            c_files.append(os.path.join(openblas_dir, file))
-    
-    if not c_files:
-        print(f"⚠️ 警告：在 {openblas_dir} 中未找到.c文件")
-        return
-    
-    print(f"📋 找到 {len(c_files)} 个算子文件:")
-    for file in c_files:
-        print(f"   - {os.path.basename(file)}")
-    
-    print(f"\n🚀 开始批量处理...")
-    
-    success_count = 0
-    total_count = len(c_files)
-    
-    for i, source_file in enumerate(c_files, 1):
-        print(f"\n[{i}/{total_count}] " + "="*50)
-        if process_single_file(operator, source_file, base_dir):
-            success_count += 1
-    
-    print(f"\n🎉 批量处理完成!")
-    print(f"📊 处理结果: {success_count}/{total_count} 成功")
-    print(f"📁 结果保存在: {base_dir}")
+    files = sorted([os.path.join(openblas_dir,f) for f in os.listdir(openblas_dir) if f.endswith('.c')])
+    print(f"📋 {len(files)} 个文件"); ok = 0
+    for i, f in enumerate(files,1):
+        print(f"\n[{i}/{len(files)}]")
+        if process_single_file(operator, f, base_dir): ok += 1
+    print(f"\n🎉 {ok}/{len(files)} 成功")
 
 def main():
-    """主函数"""
-    parser = argparse.ArgumentParser(description="优化策略检索与评分系统v5")
-    parser.add_argument("--config", type=str, default="config/kg_config.json", help="配置文件路径")
-    parser.add_argument("--source", type=str, help="源代码文件路径")
-    parser.add_argument("--output_dir", type=str, help="输出目录路径（可选）")
-    parser.add_argument("--batch", action="store_true", help="批量处理openblas_output目录中的所有.c文件")
-    parser.add_argument("--openblas_dir", type=str, help="OpenBLAS输出目录路径（用于批量处理）")
-    
-    args = parser.parse_args()
-    
-    print("⚖️ 优化策略检索与评分系统v5")
-    print("=" * 50)
-    
-    # <<< MODIFIED: Pass config dictionary instead of path
+    p = argparse.ArgumentParser(description="优化策略检索与推荐 (含泛化)")
+    p.add_argument("--config",type=str,default="config/kg_config.json")
+    p.add_argument("--source",type=str,help="源代码文件")
+    p.add_argument("--batch",action="store_true")
+    p.add_argument("--openblas_dir",type=str)
+    p.add_argument("--output_dir",type=str)
+    args = p.parse_args()
     config = OptimizationStrategyOperator._load_config(args.config)
     operator = OptimizationStrategyOperator(config=config)
-    
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    
-    # 确定输出目录
-    if args.output_dir:
-        base_dir_str = args.output_dir
+    base = args.output_dir or config.get("optimization_results",{}).get("output_dir","output/op_results")
+    if args.batch and args.openblas_dir:
+        process_batch_files(operator, args.openblas_dir, base)
+    elif args.source:
+        process_single_file(operator, args.source, base)
     else:
-        # 优先使用optimization_results配置
-        base_dir_str = config.get("optimization_results", {}).get("output_dir")
-        if not base_dir_str:
-            # 回退到原来的analysis_results_dir
-            base_dir_str = config.get("data_source", {}).get("analysis_results_dir")
-        
-        if not base_dir_str:
-            print("❌ 错误: 未能在 kg_config.json 中找到输出目录配置。")
-            return
-
-    base_dir = Path(base_dir_str)
-    if not base_dir.is_absolute():
-        project_root = Path(script_dir).parent
-        resolved_path = project_root / base_dir
-        if not resolved_path.exists():
-             project_folder_name = project_root.name
-             if project_folder_name in base_dir_str:
-                 try:
-                     idx = base_dir_str.index(project_folder_name)
-                     suffix = base_dir_str[idx:]
-                     root_parent = project_root.parent
-                     resolved_path = root_parent / suffix
-                 except ValueError: pass
-        base_dir = resolved_path.resolve()
-
-    # 创建输出目录（如果不存在）
-    os.makedirs(base_dir, exist_ok=True)
-
-    # 判断是批量处理还是单文件处理
-    if args.batch:
-        # 批量处理模式
-        if args.openblas_dir:
-            openblas_dir = args.openblas_dir
-        else:
-            # 默认使用相对路径
-            openblas_dir = os.path.join(script_dir, "..", "Morph", "openblas_output")
-        
-        print(f"🔄 批量处理模式")
-        print(f"📂 OpenBLAS目录: {openblas_dir}")
-        print(f"📁 输出目录: {base_dir}")
-        
-        process_batch_files(operator, openblas_dir, str(base_dir))
-        
-    else:
-        # 单文件处理模式
-        if args.source:
-            source_file = args.source
-        else:
-            source_file = os.path.join(script_dir, "gemm.txt")
-        
-        print(f"🔄 单文件处理模式")
-        print(f"📄 源文件: {source_file}")
-        print(f"📁 输出目录: {base_dir}")
-        
-        process_single_file(operator, source_file, str(base_dir))
-
+        p.print_help()
 
 if __name__ == "__main__":
     main()

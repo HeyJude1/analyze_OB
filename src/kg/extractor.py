@@ -1,538 +1,430 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-OpenBLAS知识图谱实体抽取器 - (V14 - 为optimization_strategy添加related_patterns独立字段)
-- "analysis_results_dir" 现在是基准目录。
-- JSON文件从基准目录下的 "analysis_results" 子目录读取。
-- 输出文件 (relations, checkpoints) 直接保存在基准目录下。
-- 每个提取的实体都被视为全新实体，UID根据其完整数据生成。
-- --fresh 参数用于强制从头开始处理。
-- 修正了所有已知的bug。
-- 新增：为关系实体自动生成描述。
-- 新增：为硬件特征实体填充架构信息。
-- 修正：确保在生成embedding时，entity_data中不包含uid。
-- 新增：丰富optimization_strategy和computational_pattern的entity_data字段。
-- 修改 (V14): 为 optimization_strategy 添加独立的 related_patterns 字段，并将其从 entity_data 和向量化内容中移除。
+OpenBLAS 知识图谱实体抽取器 (v2)
+支持: 优化原则抽象 + 代码特征提取 + 开放模式标签
+7 实体类型, 13 关系类型
 """
 
-import os
-import json
-import hashlib
-from typing import Dict, List, Any
+import os, json, hashlib, time, argparse
+from typing import Dict, List, Any, Optional
 from pathlib import Path
 from pymilvus import connections, Collection, FieldSchema, CollectionSchema, DataType, utility
 from langchain_community.embeddings import DashScopeEmbeddings
-import argparse
+from langchain_openai import ChatOpenAI
+from langchain_core.prompts import ChatPromptTemplate
 from dotenv import load_dotenv
 
+try:
+    from ..utils.prompt_loader import get_prompt_loader
+except ImportError:
+    import sys
+    _src_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    sys.path.insert(0, _src_dir)
+    from utils.prompt_loader import get_prompt_loader
+
 load_dotenv("config/.env")
+_prompts = get_prompt_loader()
+
+DIM = 1024
+
+# ============================================================
+# 关系类型
+# ============================================================
+class Rel:
+    OPTIMIZES_PATTERN  = "OPTIMIZES_PATTERN"
+    HAS_PARAMETER      = "HAS_PARAMETER"
+    IS_ILLUSTRATED_BY  = "IS_ILLUSTRATED_BY"
+    TARGETS            = "TARGETS"
+    APPLIES_WHEN       = "APPLIES_WHEN"
+    REQUIRES           = "REQUIRES"
+    GENERALIZES        = "GENERALIZES"
+    COMPOSES_WITH      = "COMPOSES_WITH"
+    INSTANCE_OF        = "INSTANCE_OF"
+    CONFLICTS_WITH     = "CONFLICTS_WITH"
+    ANALOGOUS_TO       = "ANALOGOUS_TO"
+    HAS_CHARACTERISTIC = "HAS_CHARACTERISTIC"
+
+    @classmethod
+    def all(cls): return [v for k, v in vars(cls).items() if not k.startswith("_") and isinstance(v, str)]
 
 
-class KnowledgeGraphExtractor:
-    """知识图谱实体抽取器"""
-    
-    def __init__(self, config: Dict[str, Any], checkpoint_path: str):
-        self.config = config
-        self.milvus_config = self.config.get("milvus", {})
-        self.embedding_config = self.config.get("dashscope_embeddings", {})
-        self.data_source_config = self.config.get("data_source", {})
-        
-        self.embedding_model_name = self.embedding_config.get("name", "text-embedding-v3")
+# ============================================================
+# 向量存储
+# ============================================================
+class VectorStore:
+    def __init__(self, host="localhost", port=19530, database="code_op", dim=1024):
+        self.dim = dim
         api_key = os.getenv("DASHSCOPE_API_KEY")
-        if not api_key:
-            raise RuntimeError("DASHSCOPE_API_KEY environment variable is required")
-        
-        self.embedding_model = DashScopeEmbeddings(
-            model=self.embedding_model_name, 
-            dashscope_api_key=api_key
-        )
-        
-        self._connect_milvus()
-        self._create_collections()
-        
-        self.checkpoint_file = checkpoint_path
-        self.processed_files = self._load_checkpoint()
-        
-        self.all_relations_for_txt = []
-        self.all_relations_for_json = []
+        if not api_key: raise RuntimeError("DASHSCOPE_API_KEY required")
+        self.embedder = DashScopeEmbeddings(model="text-embedding-v3", dashscope_api_key=api_key)
+        try: connections.connect(alias="default", host=host, port=port, db_name=database)
+        except Exception: pass
+        self._loaded = set()
 
-        self.code_counter = 1
-
-        print("✅ 知识图谱抽取器初始化完成")
-    
-    @staticmethod
-    def _load_config(config_path: str) -> Dict[str, Any]:
-        if not os.path.exists(config_path):
-            return {
-                "milvus": {"host": "localhost", "port": 19530, "database": "code_op"},
-                "dashscope_embeddings": {"name": "text-embedding-v3", "dimension": 1024}
-            }
-        
-        with open(config_path, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    
-    def _connect_milvus(self):
-        host = self.milvus_config.get("host", "localhost")
-        port = self.milvus_config.get("port", 19530)
-        database = self.milvus_config.get("database", "code_op")
-        
-        connections.connect(alias="default", host=host, port=port, db_name=database)
-        print(f"✅ 已连接到Milvus: {host}:{port}/{database}")
-    
-    def _create_collections(self):
-        dimension = self.embedding_config.get("dimension", 1024)
-        collections_schema = {
-            "optimization_strategy": [
-                FieldSchema(name="uid", dtype=DataType.VARCHAR, max_length=100, is_primary=True),
-                FieldSchema(name="name", dtype=DataType.VARCHAR, max_length=500),
-                FieldSchema(name="level", dtype=DataType.VARCHAR, max_length=50),
-                FieldSchema(name="rationale", dtype=DataType.VARCHAR, max_length=5000),
-                FieldSchema(name="implementation", dtype=DataType.VARCHAR, max_length=5000),
-                FieldSchema(name="impact", dtype=DataType.VARCHAR, max_length=2000),
-                FieldSchema(name="trade_offs", dtype=DataType.VARCHAR, max_length=2000),
-                # NEW (V14): 添加独立的 related_patterns 字段, 用于存储关联模式列表的JSON字符串
-                FieldSchema(name="related_patterns", dtype=DataType.VARCHAR, max_length=2000),
-                FieldSchema(name="entity_data", dtype=DataType.VARCHAR, max_length=65535),
-                FieldSchema(name="embedding", dtype=DataType.FLOAT_VECTOR, dim=dimension)
-            ],
-            "computational_pattern": [
-                FieldSchema(name="uid", dtype=DataType.VARCHAR, max_length=100, is_primary=True),
-                FieldSchema(name="name", dtype=DataType.VARCHAR, max_length=100),
-                FieldSchema(name="type", dtype=DataType.VARCHAR, max_length=100),
-                FieldSchema(name="description", dtype=DataType.VARCHAR, max_length=5000),
-                FieldSchema(name="code", dtype=DataType.VARCHAR, max_length=10000),
-                FieldSchema(name="numeric_kind", dtype=DataType.VARCHAR, max_length=100),
-                FieldSchema(name="numeric_precision", dtype=DataType.VARCHAR, max_length=100),
-                FieldSchema(name="structural_properties", dtype=DataType.VARCHAR, max_length=500),
-                FieldSchema(name="storage_layout", dtype=DataType.VARCHAR, max_length=500),
-                FieldSchema(name="entity_data", dtype=DataType.VARCHAR, max_length=65535),
-                FieldSchema(name="embedding", dtype=DataType.FLOAT_VECTOR, dim=dimension)
-            ],
-            "hardware_feature": [
-                FieldSchema(name="uid", dtype=DataType.VARCHAR, max_length=100, is_primary=True),
-                FieldSchema(name="name", dtype=DataType.VARCHAR, max_length=500),
-                FieldSchema(name="architecture", dtype=DataType.VARCHAR, max_length=100),
-                FieldSchema(name="description", dtype=DataType.VARCHAR, max_length=2000),
-                FieldSchema(name="entity_data", dtype=DataType.VARCHAR, max_length=65535),
-                FieldSchema(name="embedding", dtype=DataType.FLOAT_VECTOR, dim=dimension)
-            ],
-            "tunable_parameter": [
-                FieldSchema(name="uid", dtype=DataType.VARCHAR, max_length=100, is_primary=True),
-                FieldSchema(name="name", dtype=DataType.VARCHAR, max_length=500),
-                FieldSchema(name="description", dtype=DataType.VARCHAR, max_length=2000),
-                FieldSchema(name="impact", dtype=DataType.VARCHAR, max_length=2000),
-                FieldSchema(name="value_in_code", dtype=DataType.VARCHAR, max_length=500),
-                FieldSchema(name="typical_range", dtype=DataType.VARCHAR, max_length=500),
-                FieldSchema(name="entity_data", dtype=DataType.VARCHAR, max_length=65535),
-                FieldSchema(name="embedding", dtype=DataType.FLOAT_VECTOR, dim=dimension)
-            ],
-            "code_example": [
-                FieldSchema(name="uid", dtype=DataType.VARCHAR, max_length=100, is_primary=True),
-                FieldSchema(name="name", dtype=DataType.VARCHAR, max_length=100),
-                FieldSchema(name="snippet", dtype=DataType.VARCHAR, max_length=10000),
-                FieldSchema(name="explanation", dtype=DataType.VARCHAR, max_length=5000),
-                FieldSchema(name="source_file", dtype=DataType.VARCHAR, max_length=500),
-                FieldSchema(name="entity_data", dtype=DataType.VARCHAR, max_length=65535),
-                FieldSchema(name="embedding", dtype=DataType.FLOAT_VECTOR, dim=dimension)
-            ],
-            "relation": [
-                FieldSchema(name="relation_id", dtype=DataType.VARCHAR, max_length=100, is_primary=True),
-                FieldSchema(name="relation_type", dtype=DataType.VARCHAR, max_length=100),
-                FieldSchema(name="head_entity_uid", dtype=DataType.VARCHAR, max_length=100),
-                FieldSchema(name="tail_entity_uid", dtype=DataType.VARCHAR, max_length=100),
-                FieldSchema(name="head_name", dtype=DataType.VARCHAR, max_length=500),
-                FieldSchema(name="tail_name", dtype=DataType.VARCHAR, max_length=500),
-                FieldSchema(name="description", dtype=DataType.VARCHAR, max_length=2000),
-                FieldSchema(name="embedding", dtype=DataType.FLOAT_VECTOR, dim=dimension)
-            ]
-        }
-        for collection_name, fields in collections_schema.items():
-            if not utility.has_collection(collection_name):
-                Collection(collection_name, CollectionSchema(fields, f"{collection_name} collection"))
-
-    def _normalize_vector(self, vec: List[float]) -> List[float]:
-        """L2 归一化向量，避免零向量被除零。"""
+    def embed(self, text: str) -> List[float]:
         try:
-            s = sum(v * v for v in vec)
-            if s <= 0:
-                return vec
-            inv = 1.0 / (s ** 0.5)
-            return [v * inv for v in vec]
-        except Exception:
-            return vec
+            v = self.embedder.embed_query(text)
+            s = sum(x*x for x in v)
+            return [x/(s**0.5) for x in v] if s > 0 else v
+        except Exception: return [0.0]*self.dim
 
-    def _build_index_for_collection(self, collection_name: str):
+    def insert(self, col: str, data: List[List]): Collection(col).insert(data)
+
+    def search(self, col: str, vecs: List[List[float]], limit=20, threshold=0.75,
+               fields=None) -> List[List]:
+        if fields is None: fields = ["uid", "name"]
+        self._ensure_loaded(col)
+        c = Collection(col)
+        results = c.search(data=vecs, anns_field="embedding",
+                           param={"metric_type": "COSINE", "params": {"nprobe": 16}},
+                           limit=limit, output_fields=fields)
+        return [[h for h in hits if h.distance >= threshold] for hits in results]
+
+    def query(self, col: str, expr: str, fields=None, limit=1000, offset=0) -> List[Dict]:
+        self._ensure_loaded(col)
+        return Collection(col).query(expr=expr, output_fields=fields or ["*"], limit=limit, offset=offset)
+
+    def query_one(self, col: str, uid: str, fields=None) -> Optional[Dict]:
+        r = self.query(col, f'uid == "{uid}"', fields=fields, limit=1)
+        return r[0] if r else None
+
+    def count(self, col: str) -> int:
+        try: return Collection(col).num_entities
+        except Exception: return 0
+
+    def build_index(self, col: str):
         try:
-            collection = Collection(collection_name)
-            collection.flush()
-            num_entities = collection.num_entities
-            if num_entities == 0: return
-            # 无论是否已有索引，都统一改用 COSINE（删除旧索引后重建）
+            c = Collection(col); c.flush(); n = c.num_entities
+            if n == 0: return
             try:
-                if collection.has_index():
-                    collection.drop_index()  # 删除默认索引（若存在多个，默认字段索引会被删除）
-            except Exception:
-                pass
-            if num_entities < 1000:
-                index_params = {"index_type": "FLAT", "metric_type": "COSINE"}
-            else:
-                nlist = max(128, min(1024, int((num_entities ** 0.5) * 2)))
-                index_params = {"index_type": "IVF_FLAT", "metric_type": "COSINE", "params": {"nlist": nlist}}
-            collection.create_index(field_name="embedding", index_params=index_params)
-            collection.load()
-        except Exception as e:
-            print(f"⚠️ 处理集合 {collection_name} 时出错: {e}")
+                if c.has_index(): c.drop_index()
+            except Exception: pass
+            p = {"index_type": "FLAT", "metric_type": "COSINE"} if n < 1000 else \
+                {"index_type": "IVF_FLAT", "metric_type": "COSINE",
+                 "params": {"nlist": max(128, min(1024, int((n**0.5)*2)))}}
+            c.create_index(field_name="embedding", index_params=p); c.load()
+        except Exception as e: print(f"  ⚠️ index {col}: {e}")
 
-    def _build_indexes_for_all_collections(self):
-        collection_names = ["optimization_strategy", "computational_pattern", "hardware_feature", 
-                            "tunable_parameter", "code_example", "relation"]
-        for name in collection_names: self._build_index_for_collection(name)
+    def build_all(self, names=None):
+        for n in (names or ["optimization_principle","code_characteristic","source_pattern",
+                            "architecture_capability","optimization_strategy",
+                            "tunable_parameter","code_example","relation"]):
+            self.build_index(n)
 
-    def _load_checkpoint(self) -> set:
-        if os.path.exists(self.checkpoint_file):
-            with open(self.checkpoint_file, 'r', encoding='utf-8') as f:
-                return set(json.load(f).get("processed_files", []))
-        return set()
+    def _ensure_loaded(self, col: str):
+        if col not in self._loaded:
+            try: Collection(col).load(); self._loaded.add(col)
+            except Exception: pass
 
-    def _save_checkpoint(self):
-        with open(self.checkpoint_file, 'w', encoding='utf-8') as f:
-            json.dump({"processed_files": list(self.processed_files)}, f, ensure_ascii=False, indent=2)
+    @staticmethod
+    def generate_uid(data: Dict) -> str:
+        h = hashlib.md5(); h.update(json.dumps(data, sort_keys=True).encode()); return h.hexdigest()
 
-    def _generate_uid_from_dict(self, data: Dict[str, Any]) -> str:
-        dhash = hashlib.md5()
-        encoded = json.dumps(data, sort_keys=True).encode('utf-8')
-        dhash.update(encoded)
-        return dhash.hexdigest()
+    @staticmethod
+    def parse_json(content: str):
+        for fmt in ['```json', '```', '']:
+            try:
+                if fmt: s=content.find(fmt)+len(fmt); e=content.rfind('```'); return json.loads(content[s:e].strip())
+                return json.loads(content.strip())
+            except (json.JSONDecodeError,ValueError): continue
+        return None
 
-    def _get_embedding(self, text: str) -> List[float]:
-        try:
-            vec = self.embedding_model.embed_query(text)
-            # 单位化向量，配合 COSINE 度量
-            return self._normalize_vector(vec)
-        except Exception as e:
-            print(f"⚠️ 向量化失败: {e}")
-            return [0.0] * self.embedding_config.get("dimension", 1024)
 
-    def _get_embedding_text(self, entity_data_without_uid: Dict[str, Any]) -> str:
-        """从不含UID的entity_data字典生成用于embedding的文本"""
-        return json.dumps(entity_data_without_uid, ensure_ascii=False, sort_keys=True)
+# ============================================================
+# 代码特征提取器
+# ============================================================
+DOF_TO_CHAR = {
+    "numeric_kind": {"实数":("numeric_kind","real","N/A","实数"), "复数":("numeric_kind","complex","N/A","复数")},
+    "numeric_precision": {"单精度":("precision","single","N/A","单精度"), "双精度":("precision","double","N/A","双精度")},
+    "storage_layout": {"连续":("access_pattern","contiguous_unit_stride","N/A","连续访问"),
+                       "跨步":("access_pattern","contiguous_strided","inc_x>1","跨步访问"),
+                       "跨步 -> 连续":("access_pattern","blocked","跨步→连续","分块打包")},
+    "structural_properties": {"对称":("data_dependency","recurrence","对称","对称结构"),
+                              "三角":("data_dependency","recurrence","三角","三角结构"),
+                              "厄米特":("data_dependency","recurrence","厄米特","厄米特结构")},
+}
 
-    def _save_entity(self, collection_name: str, entity_data: Dict[str, Any]) -> str:
-        # 1. 提取UID
-        uid = entity_data["uid"]
-        
-        # 2. 创建一个干净的副本用于embedding和存储在 entity_data 字段
-        data_for_processing = entity_data.copy()
-        data_for_processing.pop("uid", None)
-        
-        # MODIFIED (V14): 如果是优化策略，额外移除 related_patterns，
-        # 确保它不参与向量化，也不存入 entity_data 字段。
-        if collection_name == "optimization_strategy":
-            data_for_processing.pop("related_patterns", None)
 
-        # 3. 基于干净的数据生成embedding
-        embedding_text = self._get_embedding_text(data_for_processing)
-        embedding = self._get_embedding(embedding_text)
-        
-        # 4. 准备插入数据
-        schema = Collection(collection_name).schema
-        field_names = [field.name for field in schema.fields]
-        
-        insert_data = []
-        for name in field_names:
-            if name == "uid":
-                insert_data.append([uid]) # 使用原始UID
-            elif name == "embedding":
-                insert_data.append([embedding])
-            elif name == "entity_data":
-                # 存储不含uid和related_patterns的entity_data
-                insert_data.append([json.dumps(data_for_processing, ensure_ascii=False)])
-            # NEW (V14): 为新的 related_patterns 独立字段准备数据
-            elif name == "related_patterns":
-                # 从原始 entity_data 中获取 list，并序列化为 JSON 字符串
-                patterns_list = entity_data.get("related_patterns", [])
-                insert_data.append([json.dumps(patterns_list, ensure_ascii=False)])
-            else:
-                # 从原始的entity_data中获取其他字段值
-                if name in ["numeric_kind", "numeric_precision", "structural_properties", "storage_layout"]:
-                    value = entity_data.get("data_object_features", {}).get(name, "")
-                else:
-                    value = entity_data.get(name, "")
-                insert_data.append([value])
+class CharacteristicExtractor:
+    def __init__(self, store: VectorStore, model_cfg: Dict = None):
+        self.store = store
+        mc = model_cfg or {}
+        self.llm = ChatOpenAI(model=mc.get("name","qwen-plus-2025-09-11"),
+                              temperature=0.1, max_tokens=4096,
+                              api_key=os.getenv("DASHSCOPE_API_KEY"),
+                              base_url=mc.get("base_url","https://dashscope.aliyuncs.com/compatible-mode/v1"))
 
-        Collection(collection_name).insert(insert_data)
-        print(f"    ✓ 保存新实体 {collection_name}: {entity_data.get('name', '')} -> {uid[:8]}...")
-        return uid
-    
-    def _save_relation(self, head_uid: str, tail_uid: str, relation_type: str,
-                       head_name: str, tail_name: str):
-        description = ""
-        if relation_type == "OPTIMIZES_PATTERN":
-            description = f"{head_name}可使用{tail_name}优化"
-        elif relation_type == "HAS_PARAMETER":
-            description = "该优化策略包含此可调参数"
-        elif relation_type == "IS_ILLUSTRATED_BY":
-            description = "该代码示例展示了此优化策略"
-        elif relation_type == "TARGETS":
-            description = "该优化策略针对此硬件特性"
-            
-        relation_content = {"type": relation_type, "head": head_uid, "tail": tail_uid, "desc": description}
-        relation_uid = self._generate_uid_from_dict(relation_content)
+    def from_dof(self, dof: Dict[str,str]) -> List[str]:
+        uids = []
+        for field, val in dof.items():
+            if not val or val == "N/A": continue
+            m = DOF_TO_CHAR.get(field,{}); e = m.get(val)
+            if not e: continue
+            ctype, vdesc, mrange, desc = e
+            ent = {"name":f"{ctype}:{vdesc}","characteristic_type":ctype,
+                   "value_descriptor":vdesc,"metric_range":mrange,"description":desc}
+            uid = VectorStore.generate_uid(ent); ent["uid"] = uid
+            self._save(ent); uids.append(uid)
+        return uids
 
-        embedding_text = f"{relation_type} from {head_name} to {tail_name}: {description}"
-        embedding = self._get_embedding(embedding_text)
-        
-        Collection("relation").insert([
-            [relation_uid], [relation_type], [head_uid], [tail_uid],
-            [head_name], [tail_name], [description], [embedding]
+    def from_code(self, code: str) -> List[Dict]:
+        sp = _prompts.load_system_prompt("kg/kg_v2/characteristic_extraction.yaml")
+        prompt = ChatPromptTemplate.from_messages([("system",sp),("human","分析代码:\n```c\n{code}\n```")])
+        for attempt in range(3):
+            try:
+                resp = self.llm.invoke(prompt.format_messages(code=code[:8000]))
+                content = resp.content if hasattr(resp,'content') else str(resp)
+                r = VectorStore.parse_json(content)
+                if r: return [c for c in r if isinstance(c,dict) and "characteristic_type" in c]
+            except Exception: pass
+            time.sleep(1)
+        return []
+
+    def extract_and_save(self, code: str, dof: Dict[str,str]=None) -> List[str]:
+        all_uids = list(set(self.from_dof(dof or {})))
+        for c in self.from_code(code):
+            c.setdefault("name",f"{c.get('characteristic_type','')}:{c.get('value_descriptor','')}")
+            uid = VectorStore.generate_uid(c); c["uid"] = uid; self._save(c); all_uids.append(uid)
+        return list(set(all_uids))
+
+    def _save(self, ent: Dict):
+        uid = ent["uid"]
+        if self.store.query_one("code_characteristic", uid): return
+        cleaned = {k:v for k,v in ent.items() if k!="uid"}
+        emb = self.store.embed(json.dumps(cleaned, ensure_ascii=False, sort_keys=True))
+        self.store.insert("code_characteristic", [
+            [uid],[ent.get("name","")],[ent.get("characteristic_type","")],
+            [ent.get("value_descriptor","")],[ent.get("metric_range","")],
+            [ent.get("description","")],[json.dumps(cleaned,ensure_ascii=False)],[emb]
         ])
-        print(f"    ✓ 保存新关系: {relation_type} ({head_name} -> {tail_name})")
 
-        self.all_relations_for_txt.append((head_name, relation_type, tail_name))
-        self.all_relations_for_json.append({
-            "relation_type": relation_type,
-            "relation_id": relation_uid,
-            "head": {"name": head_name, "uid": head_uid},
-            "tail": {"name": tail_name, "uid": tail_uid}
-        })
+
+# ============================================================
+# 实体抽取器
+# ============================================================
+class KnowledgeGraphExtractor:
+    def __init__(self, config: Dict, checkpoint_path: str):
+        mc = config.get("milvus",{})
+        self.store = VectorStore(mc.get("host","localhost"), mc.get("port",19530),
+                                 mc.get("database","code_op"),
+                                 config.get("dashscope_embeddings",{}).get("dimension",1024))
+        self.char_ext = CharacteristicExtractor(self.store, config.get("model",{}))
+        self.llm = ChatOpenAI(model=config.get("model",{}).get("name","qwen-plus-2025-09-11"),
+                              temperature=0.1, max_tokens=8192,
+                              api_key=os.getenv("DASHSCOPE_API_KEY"),
+                              base_url=config.get("model",{}).get("base_url","https://dashscope.aliyuncs.com/compatible-mode/v1"))
+        self._create_collections()
+        self.checkpoint_file = checkpoint_path
+        self.processed_files = set(json.load(open(checkpoint_path)).get("processed_files",[])) if os.path.exists(checkpoint_path) else set()
+        self.relations = []
+        self.code_counter = 1
+        print("✅ 抽取器初始化完成")
+
+    def _create_collections(self):
+        uid = lambda n=100: FieldSchema(name="uid",dtype=DataType.VARCHAR,max_length=n,is_primary=True)
+        emb = lambda: FieldSchema(name="embedding",dtype=DataType.FLOAT_VECTOR,dim=DIM)
+        edata = lambda: FieldSchema(name="entity_data",dtype=DataType.VARCHAR,max_length=65535)
+        nm = lambda n=500: FieldSchema(name="name",dtype=DataType.VARCHAR,max_length=n)
+        ds = lambda n=5000: FieldSchema(name="description",dtype=DataType.VARCHAR,max_length=n)
+        schemas = {
+            "optimization_principle": [uid(),nm(),FieldSchema(name="principle",dtype=DataType.VARCHAR,max_length=5000),
+                FieldSchema(name="scope",dtype=DataType.VARCHAR,max_length=100),
+                FieldSchema(name="level",dtype=DataType.VARCHAR,max_length=50),
+                FieldSchema(name="constraints",dtype=DataType.VARCHAR,max_length=5000),
+                FieldSchema(name="evidence_strength",dtype=DataType.FLOAT),
+                FieldSchema(name="source_count",dtype=DataType.INT64),edata(),emb()],
+            "code_characteristic": [uid(),nm(),
+                FieldSchema(name="characteristic_type",dtype=DataType.VARCHAR,max_length=100),
+                FieldSchema(name="value_descriptor",dtype=DataType.VARCHAR,max_length=500),
+                FieldSchema(name="metric_range",dtype=DataType.VARCHAR,max_length=500),ds(),edata(),emb()],
+            "source_pattern": [uid(),nm(),
+                FieldSchema(name="code_snippet",dtype=DataType.VARCHAR,max_length=10000),
+                FieldSchema(name="pattern_type",dtype=DataType.VARCHAR,max_length=100),ds(5000),
+                FieldSchema(name="data_object_features",dtype=DataType.VARCHAR,max_length=2000),
+                FieldSchema(name="source_algorithm",dtype=DataType.VARCHAR,max_length=500),
+                FieldSchema(name="source_file",dtype=DataType.VARCHAR,max_length=500),
+                FieldSchema(name="extracted_characteristics",dtype=DataType.VARCHAR,max_length=2000),edata(),emb()],
+            "architecture_capability": [uid(),nm(),
+                FieldSchema(name="architecture",dtype=DataType.VARCHAR,max_length=100),
+                FieldSchema(name="capability_type",dtype=DataType.VARCHAR,max_length=100),
+                FieldSchema(name="params",dtype=DataType.VARCHAR,max_length=500),ds(),edata(),emb()],
+            "optimization_strategy": [uid(),nm(),
+                FieldSchema(name="level",dtype=DataType.VARCHAR,max_length=50),
+                FieldSchema(name="rationale",dtype=DataType.VARCHAR,max_length=5000),
+                FieldSchema(name="implementation",dtype=DataType.VARCHAR,max_length=5000),
+                FieldSchema(name="impact",dtype=DataType.VARCHAR,max_length=2000),
+                FieldSchema(name="trade_offs",dtype=DataType.VARCHAR,max_length=2000),
+                FieldSchema(name="related_patterns",dtype=DataType.VARCHAR,max_length=2000),
+                FieldSchema(name="principle_links",dtype=DataType.VARCHAR,max_length=5000),
+                FieldSchema(name="applicability_conditions",dtype=DataType.VARCHAR,max_length=5000),edata(),emb()],
+            "tunable_parameter": [uid(),nm(),ds(),FieldSchema(name="impact",dtype=DataType.VARCHAR,max_length=2000),
+                FieldSchema(name="value_in_code",dtype=DataType.VARCHAR,max_length=500),
+                FieldSchema(name="typical_range",dtype=DataType.VARCHAR,max_length=500),edata(),emb()],
+            "code_example": [uid(),nm(),
+                FieldSchema(name="snippet",dtype=DataType.VARCHAR,max_length=10000),
+                FieldSchema(name="explanation",dtype=DataType.VARCHAR,max_length=5000),
+                FieldSchema(name="source_file",dtype=DataType.VARCHAR,max_length=500),edata(),emb()],
+            "relation": [FieldSchema(name="relation_id",dtype=DataType.VARCHAR,max_length=100,is_primary=True),
+                FieldSchema(name="relation_type",dtype=DataType.VARCHAR,max_length=100),
+                FieldSchema(name="head_entity_uid",dtype=DataType.VARCHAR,max_length=100),
+                FieldSchema(name="tail_entity_uid",dtype=DataType.VARCHAR,max_length=100),
+                FieldSchema(name="head_name",dtype=DataType.VARCHAR,max_length=500),
+                FieldSchema(name="tail_name",dtype=DataType.VARCHAR,max_length=500),ds(),emb()],
+        }
+        for name, fields in schemas.items():
+            if not utility.has_collection(name):
+                Collection(name, CollectionSchema(fields, f"{name} collection"))
+                print(f"  ✓ 创建 {name}")
+
+    def _save_entity(self, col: str, ent: Dict) -> str:
+        uid = ent["uid"]
+        cleaned = {k:v for k,v in ent.items() if k!="uid"}
+        if col == "optimization_principle":
+            cleaned.pop("related_patterns",None)
+        emb_text = json.dumps(cleaned, ensure_ascii=False, sort_keys=True)
+        emb = self.store.embed(emb_text)
+        schema = Collection(col).schema; field_names = [f.name for f in schema.fields]
+        row = []
+        for fn in field_names:
+            if fn == "uid": row.append([uid])
+            elif fn == "embedding": row.append([emb])
+            elif fn == "entity_data": row.append([json.dumps(cleaned,ensure_ascii=False)])
+            elif fn in ["related_patterns","principle_links","extracted_characteristics","data_object_features","constraints"]:
+                v = ent.get(fn,""); row.append([json.dumps(v,ensure_ascii=False) if not isinstance(v,str) else [v]])
+            elif fn in ["numeric_kind","numeric_precision","structural_properties","storage_layout"]:
+                row.append([ent.get("data_object_features",{}).get(fn,"")])
+            elif fn in ["evidence_strength","source_count"]:
+                row.append([ent.get(fn, 0.5 if fn=="evidence_strength" else 1)])
+            else:
+                row.append([str(ent.get(fn,""))[:10000]])
+        self.store.insert(col, row)
+        return uid
+
+    def _save_relation(self, head, rtype, tail, hname="", tname="", desc=""):
+        self.relations.append((head, rtype, tail, hname, tname, desc))
+
+    def _extract_principle(self, strategy: Dict, src_alg: str) -> Optional[Dict]:
+        desc = strategy.get("description",{})
+        text = json.dumps({"name":strategy.get("optimization_name",""),
+            "level":strategy.get("level",""),"rationale":desc.get("strategy_rationale",""),
+            "implementation":desc.get("implementation_pattern",""),
+            "impact":desc.get("performance_impact",""),"trade_offs":desc.get("trade_offs",""),
+            "conditions":strategy.get("applicability_conditions",""),"algorithm":src_alg},ensure_ascii=False)
+        sp = _prompts.load_system_prompt("kg/kg_v2/principle_extraction.yaml")
+        prompt = ChatPromptTemplate.from_messages([("system",sp),("human","从优化策略中提取抽象原则:\n{input}")])
+        for attempt in range(3):
+            try:
+                resp = self.llm.invoke(prompt.format_messages(input=text[:6000]))
+                content = resp.content if hasattr(resp,'content') else str(resp)
+                r = VectorStore.parse_json(content)
+                if r and isinstance(r,dict) and "principle" in r: return r
+            except Exception: pass
+            time.sleep(1)
+        return None
 
     def extract_from_file(self, file_path: str):
         if file_path in self.processed_files:
-            print(f"⏭️ 跳过已处理文件: {file_path}")
-            return
-        
-        print(f"📄 处理: {os.path.basename(file_path)}")
-        
-        with open(file_path, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-        
-        source_algorithm = data.get("algorithm", "unknown")
-
-        for analysis in data.get("individual_analyses", []):
-            operator_name = analysis.get("file_path", "").split("/")[-1]
-            architecture = analysis.get("architecture", "通用")
-            print(f"  🔍 算子: {operator_name} (算法: {source_algorithm}, 架构: {architecture})")
-            
-            entity_count = 0
-            relation_count = 0
-            
-            pattern_map = {}
-            for pattern in analysis.get("computational_patterns", []):
-                pattern_entity = {
-                    "name": pattern.get("name", ""),
-                    "type": pattern.get("pattern_type", "") or pattern.get("type", ""),
-                    "description": pattern.get("description", ""),
-                    "code": pattern.get("code", ""),
-                    "data_object_features": pattern.get("data_object_features", {}),
-                    "source_algorithm": source_algorithm,
-                    "source_file": operator_name,
-                    "architecture": architecture
-                }
-                uid = self._generate_uid_from_dict(pattern_entity)
-                pattern_entity["uid"] = uid
-                self._save_entity("computational_pattern", pattern_entity)
-                entity_count += 1
-                if pattern_entity["type"]:
-                    pattern_map[pattern_entity["type"]] = {"uid": uid, "name": pattern_entity["name"]}
-
-            for level in ["algorithm_level_optimizations", "code_level_optimizations", "instruction_level_optimizations"]:
-                for opt in analysis.get(level, []):
-                    desc = opt.get('description', {})
-                    strategy_entity = {
-                        "name": opt.get("optimization_name", ""),
-                        "level": opt.get("level", ""),
-                        "rationale": desc.get("strategy_rationale", ""),
-                        "implementation": desc.get("implementation_pattern", ""),
-                        "impact": desc.get("performance_impact", ""),
-                        "trade_offs": desc.get("trade_offs", ""),
-                        "related_patterns": opt.get("related_patterns", []),
-                        "source_algorithm": source_algorithm,
-                        "source_file": operator_name,
-                        "architecture": architecture
-                    }
-                    strategy_uid = self._generate_uid_from_dict(strategy_entity)
-                    strategy_entity["uid"] = strategy_uid
-                    self._save_entity("optimization_strategy", strategy_entity)
-                    entity_count += 1
-                    
-                    for pattern_type in opt.get("related_patterns", []):
-                        if pattern_type in pattern_map:
-                            head_info = pattern_map[pattern_type]
-                            self._save_relation(head_info["uid"], strategy_uid, "OPTIMIZES_PATTERN",
-                                              head_name=head_info["name"], tail_name=strategy_entity["name"])
-                            relation_count += 1
-                    
-                    hw_name = opt.get("target_hardware_feature_name")
-                    if hw_name:
-                        hw_entity = {
-                            "name": hw_name, 
-                            "architecture": architecture, 
-                            "description": opt.get("target_hardware_feature", ""),
-                            "source_algorithm": source_algorithm,
-                            "source_file": operator_name
-                        }
-                        hw_uid = self._generate_uid_from_dict(hw_entity)
-                        hw_entity["uid"] = hw_uid
-                        self._save_entity("hardware_feature", hw_entity)
-                        entity_count += 1
-                        self._save_relation(strategy_uid, hw_uid, "TARGETS",
-                                          head_name=strategy_entity["name"], tail_name=hw_name)
-                        relation_count += 1
-                    
-                    code_examples = []
-                    if 'code_example' in opt and isinstance(opt['code_example'], dict) and opt['code_example']:
-                        code_examples.append(opt['code_example'])
-                    elif 'code_examples' in opt and isinstance(opt['code_examples'], list) and opt['code_examples']:
-                        code_examples.extend(opt['code_examples'])
-
-                    for code_obj in code_examples:
-                        code_entity = {
-                            "name": f"code{self.code_counter}",
-                            "snippet": code_obj.get("snippet", "") if isinstance(code_obj, dict) else str(code_obj),
-                            "explanation": code_obj.get("explanation", "") if isinstance(code_obj, dict) else "",
-                            "source_file": operator_name,
-                            "source_algorithm": source_algorithm,
-                            "architecture": architecture
-                        }
-                        code_uid = self._generate_uid_from_dict(code_entity)
-                        code_entity["uid"] = code_uid
-                        self._save_entity("code_example", code_entity)
-                        entity_count += 1
-                        self._save_relation(strategy_uid, code_uid, "IS_ILLUSTRATED_BY",
-                                          head_name=strategy_entity["name"], tail_name=code_entity["name"])
-                        relation_count += 1
-                        self.code_counter += 1
-                    
-                    for param in opt.get("tunable_parameters", []):
-                        param_name = param.get("parameter_name") if isinstance(param, dict) else str(param)
-                        if not param_name: continue
-                        
-                        typical_range = param.get("typical_range", []) if isinstance(param, dict) else []
-                        param_entity = {
-                            "name": param_name,
-                            "description": param.get("description", "") if isinstance(param, dict) else f"Tunable parameter: {param_name}",
-                            "impact": param.get("impact", "") if isinstance(param, dict) else "",
-                            "value_in_code": str(param.get("value_in_code", "")) if isinstance(param, dict) else "",
-                            "typical_range": ",".join(map(str, typical_range)),
-                            "source_algorithm": source_algorithm,
-                            "source_file": operator_name,
-                            "architecture": architecture
-                        }
-                        param_uid = self._generate_uid_from_dict(param_entity)
-                        param_entity["uid"] = param_uid
-                        self._save_entity("tunable_parameter", param_entity)
-                        entity_count += 1
-                        self._save_relation(strategy_uid, param_uid, "HAS_PARAMETER",
-                                          head_name=strategy_entity["name"], tail_name=param_entity["name"])
-                        relation_count += 1
-            
-            print(f"  📊 完成: 新增实体={entity_count}, 新增关系={relation_count}")
-        
+            print(f"⏭️ 跳过: {os.path.basename(file_path)}"); return
+        print(f"📄 {os.path.basename(file_path)}")
+        with open(file_path) as f: data = json.load(f)
+        src_alg = data.get("algorithm","unknown")
+        pc = pp = pr = 0
+        for ana in data.get("individual_analyses",[]):
+            op = ana.get("file_path","").split("/")[-1]
+            arch = ana.get("architecture","通用")
+            info = {"source_algorithm":src_alg,"source_file":op,"architecture":arch}
+            # SourcePatterns
+            for pat in ana.get("computational_patterns",[]):
+                ent = {"name":pat.get("name",""),"code_snippet":(pat.get("code","") or "")[:10000],
+                    "pattern_type":pat.get("pattern_type","") or pat.get("type",""),
+                    "description":pat.get("description",""),
+                    "data_object_features":pat.get("data_object_features",{}),**info}
+                uid = VectorStore.generate_uid(ent)
+                if not self.store.query_one("source_pattern",uid):
+                    ent["uid"]=uid; self._save_entity("source_pattern",ent); pc+=1
+                    cuids = self.char_ext.extract_and_save(pat.get("code",""), pat.get("data_object_features",{}))
+                    for cid in cuids: self._save_relation(uid,Rel.HAS_CHARACTERISTIC,cid,pat.get("name",""),"","")
+            # Strategies + Principles
+            for lv in ["algorithm_level_optimizations","code_level_optimizations","instruction_level_optimizations"]:
+                for opt in ana.get(lv,[]):
+                    d = opt.get("description",{})
+                    # v1 strategy
+                    sent = {"name":opt.get("optimization_name",""),"level":opt.get("level",""),
+                        "rationale":d.get("strategy_rationale",""),"implementation":d.get("implementation_pattern",""),
+                        "impact":d.get("performance_impact",""),"trade_offs":d.get("trade_offs",""),
+                        "related_patterns":opt.get("related_patterns",[]),"principle_links":[],
+                        "applicability_conditions":opt.get("applicability_conditions",{}),**info}
+                    suid = VectorStore.generate_uid(sent)
+                    if not self.store.query_one("optimization_strategy",suid):
+                        sent["uid"]=suid; self._save_entity("optimization_strategy",sent)
+                    # Principle
+                    pdata = self._extract_principle(opt, src_alg)
+                    if pdata:
+                        pent = {"name":f"{pdata.get('scope','')}: {(pdata.get('principle','') or '')[:80]}",
+                            "principle":pdata.get("principle",""),"scope":pdata.get("scope",""),
+                            "level":pdata.get("level",""),"constraints":pdata.get("constraints",{}),
+                            "evidence_strength":0.5,"source_count":1,**info}
+                        puid = VectorStore.generate_uid(pent)
+                        if not self.store.query_one("optimization_principle",puid):
+                            pent["uid"]=puid; self._save_entity("optimization_principle",pent); pp+=1
+                            self._save_relation(suid,Rel.INSTANCE_OF,puid,opt.get("optimization_name",""),pdata.get("principle","")[:50],json.dumps({"abstraction_level":pdata.get("abstraction_level",3)}))
+                            for g in pdata.get("generalizes",[]):
+                                self._save_relation(puid,Rel.GENERALIZES,f"__reserved__:{g}",pdata.get("principle","")[:50],g,json.dumps({"type":"generalization"}))
+                            for c in pdata.get("composes_with",[]):
+                                self._save_relation(puid,Rel.COMPOSES_WITH,f"__reserved__:{c}",pdata.get("principle","")[:50],c,json.dumps({"type":"composition"}))
+                            for hw in pdata.get("constraints",{}).get("hardware_requirements",[]):
+                                self._save_relation(puid,Rel.REQUIRES,f"__hw__:{hw}",pdata.get("principle","")[:50],hw,json.dumps({"requirement":hw}))
+        print(f"  📊 patterns={pc}, principles={pp}")
         self.processed_files.add(file_path)
-        self._save_checkpoint()
-        print("💾 断点已保存")
+        os.makedirs(os.path.dirname(self.checkpoint_file),exist_ok=True)
+        json.dump({"processed_files":list(self.processed_files)},open(self.checkpoint_file,'w'),ensure_ascii=False)
 
-    def _write_relation_txt(self, output_directory: str):
-        output_path = os.path.join(output_directory, "relation.txt")
-        with open(output_path, 'w', encoding='utf-8') as f:
-            for head, rel_type, tail in self.all_relations_for_txt:
-                f.write(f"{head}\t{rel_type}\t{tail}\n")
-        print(f"✅ 关系文本文件已保存到: {output_path}")
+    def flush_relations(self):
+        if not self.relations: return
+        for h,r,t,hn,tn,desc in self.relations:
+            rd = {"type":r,"head":h,"tail":t,"desc":desc}
+            rid = VectorStore.generate_uid(rd)
+            emb = self.store.embed(f"{r} from {hn} to {tn}: {desc}")
+            self.store.insert("relation",[[rid],[r],[h],[t],[hn],[tn],[desc],[emb]])
+        print(f"💾 {len(self.relations)} 条关系已写入")
+        self.relations.clear()
 
-    def _write_relation_entity_json(self, output_directory: str):
-        output_path = os.path.join(output_directory, "relation_entity.json")
-        grouped_relations = {}
-        for relation in self.all_relations_for_json:
-            rel_type = relation["relation_type"]
-            if rel_type not in grouped_relations:
-                grouped_relations[rel_type] = []
-            grouped_relations[rel_type].append(relation)
-        with open(output_path, 'w', encoding='utf-8') as f:
-            json.dump(grouped_relations, f, ensure_ascii=False, indent=2)
-        print(f"✅ 关系JSON文件已保存到: {output_path}")
+    def extract_from_directory(self, json_dir: str, output_dir: str):
+        files = sorted(Path(json_dir).glob("*.json"))
+        print(f"📁 {len(files)} 个分析文件")
+        for i, fp in enumerate(files, 1):
+            print(f"\n{'='*50}\n[{i}/{len(files)}]")
+            self.extract_from_file(str(fp))
+        self.flush_relations()
+        self.store.build_all()
+        print(f"\n🎉 完成: {self.store.count('optimization_principle')} 原则, "
+              f"{self.store.count('source_pattern')} 模式, {self.store.count('relation')} 关系")
 
-    def extract_from_directory(self, json_input_dir: str, base_output_dir: str):
-        json_files = sorted(list(Path(json_input_dir).glob("*.json")))
-        print(f"📁 发现 {len(json_files)} 个JSON文件")
-        
-        for i, file_path in enumerate(json_files, 1):
-            print(f"\n{'='*60}\n进度: {i}/{len(json_files)}\n{'='*60}")
-            self.extract_from_file(str(file_path))
-        
-        print("\n🔧 数据插入完成，正在刷新和索引集合...")
-        self._build_indexes_for_all_collections()
-        
-        print("\n💾 正在写入关系文件...")
-        self._write_relation_txt(base_output_dir)
-        self._write_relation_entity_json(base_output_dir)
-        
-        print(f"\n{'='*60}\n📊 最终统计:")
-        total_entities, total_relations = 0, 0
-        all_collections = utility.list_collections()
-        for name in all_collections:
-            try:
-                count = Collection(name).num_entities
-                if name != "relation": total_entities += count
-                else: total_relations = count
-                print(f"  ✅ {name}: {count} 个")
-            except Exception as e:
-                print(f"  ⚠️ {name}: 统计失败 - {e}")
-        
-        print(f"\n📊 总计: 实体={total_entities}, 关系={total_relations}")
-        print(f"{'='*60}\n🎉 完成！")
+    @staticmethod
+    def _load_config(path: str) -> Dict:
+        if not os.path.exists(path): return {"milvus":{"host":"localhost","port":19530,"database":"code_op"},"dashscope_embeddings":{"dimension":1024}}
+        return json.load(open(path))
 
 
 def main():
-    parser = argparse.ArgumentParser(description="OpenBLAS知识图谱实体抽取器")
-    parser.add_argument("--config", type=str, default="config/kg_config.json", help="配置文件路径")
-    parser.add_argument("--data_dir", type=str, default=None, help="分析结果的基准目录")
-    parser.add_argument("--fresh", action="store_true", help="忽略断点文件，从头开始处理所有文件")
-    args = parser.parse_args()
-    
+    p = argparse.ArgumentParser(description="KG 实体抽取器")
+    p.add_argument("--config",type=str,default="config/kg_config.json")
+    p.add_argument("--data_dir",type=str,default=None)
+    p.add_argument("--fresh",action="store_true")
+    args = p.parse_args()
     config = KnowledgeGraphExtractor._load_config(args.config)
-    
-    base_dir = args.data_dir or config.get("data_source", {}).get("analysis_results_dir")
-    if not base_dir:
-        print("❌ 错误：未在配置或命令行中指定基准目录 (analysis_results_dir)")
-        return
-
-    if not os.path.isabs(base_dir):
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        project_root = os.path.dirname(script_dir)
-        
-        resolved_path = os.path.join(project_root, base_dir)
-        
-        if not os.path.exists(resolved_path):
-            project_folder_name = os.path.basename(project_root)
-            if project_folder_name in base_dir:
-                try:
-                    idx = base_dir.index(project_folder_name)
-                    suffix = base_dir[idx:]
-                    root_parent = os.path.dirname(project_root)
-                    resolved_path = os.path.join(root_parent, suffix)
-                except ValueError:
-                    pass
-        base_dir = os.path.abspath(resolved_path)
-
-    json_input_dir = os.path.join(base_dir, "analysis_results")
-
-    if not os.path.exists(json_input_dir):
-        print(f"❌ 错误：JSON输入目录不存在: {json_input_dir}")
-        return
-    
-    checkpoints_dir = os.path.join(base_dir, "checkpoints")
-    os.makedirs(checkpoints_dir, exist_ok=True)
-    checkpoint_file_path = os.path.join(checkpoints_dir, "extraction_checkpoint.json")
-
-    if args.fresh and os.path.exists(checkpoint_file_path):
-        os.remove(checkpoint_file_path)
-        print(f"🗑️ 已删除旧的断点文件 '{checkpoint_file_path}'，将从头开始处理。")
-    
-    extractor = KnowledgeGraphExtractor(config=config, checkpoint_path=checkpoint_file_path)
-    
-    print(f"📁 基准目录: {base_dir}")
-    print(f"📂 JSON输入目录: {json_input_dir}")
-    extractor.extract_from_directory(json_input_dir=json_input_dir, base_output_dir=base_dir)
+    base = args.data_dir or config.get("data_source",{}).get("analysis_results_dir","")
+    if not base: print("❌ 需要 --data_dir"); return
+    if not os.path.isabs(base):
+        sd = os.path.dirname(os.path.abspath(__file__))
+        base = os.path.abspath(os.path.join(os.path.dirname(sd), base))
+    jin = os.path.join(base,"analysis_results")
+    if not os.path.exists(jin): print(f"❌ {jin} 不存在"); return
+    ckpt_dir = os.path.join(base,"checkpoints"); os.makedirs(ckpt_dir,exist_ok=True)
+    ckpt = os.path.join(ckpt_dir,"extraction_checkpoint.json")
+    if args.fresh and os.path.exists(ckpt): os.remove(ckpt)
+    ext = KnowledgeGraphExtractor(config=config, checkpoint_path=ckpt)
+    ext.extract_from_directory(jin, base)
 
 
 if __name__ == "__main__":
