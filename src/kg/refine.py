@@ -47,7 +47,7 @@ class EntityClusterRefiner:
         self.config = config
         self.milvus_config = self.config.get("milvus", {})
         self.model_config = self.config.get("model", {})
-        self.entity_types = ["hardware_feature", "optimization_strategy", "tunable_parameter"]
+        self.entity_types = ["architecture_capability", "optimization_strategy", "tunable_parameter", "optimization_principle", "code_characteristic", "source_pattern"]
         
         self._connect_milvus()
         self._init_llm()
@@ -104,7 +104,7 @@ class EntityClusterRefiner:
             output_fields = ["uid", "name"]
             if entity_type == "optimization_strategy":
                 output_fields.extend(["level", "rationale", "implementation", "impact", "trade_offs"])
-            elif entity_type == "hardware_feature":
+            elif entity_type == "architecture_capability":
                 output_fields.extend(["architecture", "description"])
             elif entity_type == "tunable_parameter":
                 output_fields.extend(["description", "impact", "value_in_code", "typical_range"])
@@ -121,8 +121,8 @@ class EntityClusterRefiner:
         if entity_type == "optimization_strategy":
             parts = [f"策略名称: {name}", f"原理: {entity_details.get('rationale', 'N/A')}", f"实现: {entity_details.get('implementation', 'N/A')}", f"影响: {entity_details.get('impact', 'N/A')}", f"权衡: {entity_details.get('trade_offs', 'N/A')}"]
             return "；".join(p for p in parts if p.split(': ')[-1] not in ['N/A', ''])
-        elif entity_type == "hardware_feature":
-            return f"硬件特性: {name}；描述: {entity_details.get('description', 'N/A')}"
+        elif entity_type == "architecture_capability":
+            return f"架构能力: {name}；描述: {entity_details.get('description', 'N/A')}"
         elif entity_type == "tunable_parameter":
             parts = [f"可调参数: {name}", f"描述: {entity_details.get('description', 'N/A')}", f"影响: {entity_details.get('impact', 'N/A')}"]
             return "；".join(p for p in parts if p.split(': ')[-1] not in ['N/A', ''])

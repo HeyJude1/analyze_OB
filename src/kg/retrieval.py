@@ -111,7 +111,7 @@ class Graph:
         scores = {}
         for uid in strategy_uids:
             ns = self.neighbors(uid)
-            pm = sum(1 for n in ns if n.get("target_type")=="computational_pattern" or n.get("source_type")=="source_pattern")
+            pm = sum(1 for n in ns if n.get("target_type")=="source_pattern" or n.get("source_type")=="source_pattern")
             ntypes = len(set(n.get("target_type","") or n.get("source_type","") for n in ns))
             deg = len(self._adj_out.get(uid,[]))+len(self._adj_in.get(uid,[]))
             scores[uid] = pm*2.0 + ntypes*0.5 + min(deg/10.0,1.0)
@@ -176,7 +176,7 @@ class OptimizationStrategyOperator:
 
     # ====== 四阶段模式检测 ======
     def _create_pattern_parser(self):
-        schemas = [ResponseSchema(name="computational_patterns", description="计算流程列表")]
+        schemas = [ResponseSchema(name="source_patterns", description="计算流程列表")]
         return StructuredOutputParser.from_response_schemas(schemas)
 
     def _make_agent(self, prompt_path: str) -> AgentExecutor:

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 实体聚类检索器v4 (Milvus查询修复)
-- 对 hardware_feature, optimization_strategy, tunable_parameter 进行聚类。
+- 对 architecture_capability, optimization_strategy, tunable_parameter, optimization_principle, code_characteristic, source_pattern 进行聚类。
 - 严格遵循“一个实体只属于一个簇”的规则。
 - 簇中心按顺序从未聚类的实体中选取。
 - 输出文件 clusters_retrieved.json 保存到 analysis_results_dir。
@@ -32,9 +32,12 @@ class EntityClusterRetriever:
         
         print("✅ 实体聚类检索器初始化完成")
         self.entity_types_to_export = [
-            "hardware_feature",
+            "architecture_capability",
             "optimization_strategy",
             "tunable_parameter",
+            "optimization_principle",
+            "code_characteristic",
+            "source_pattern",
         ]
     
     @staticmethod

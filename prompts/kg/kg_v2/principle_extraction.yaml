@@ -14,6 +14,24 @@ messages:
       你将收到一个优化策略的分析结果（包含 strategy_rationale / implementation_pattern / performance_impact / trade_offs）。
       你的任务是将这个**具体实例**提炼为**可泛化的抽象原则**。
 
+      ## 两步提取法（Two-Phase Extraction）
+
+      你必须按以下两个阶段逐步完成提炼，不可跳过任一阶段：
+
+      **Phase 1 — 识别核心优化机制**
+      从具体策略中剥离算子/文件名/数据结构等具体细节，仅保留**发生了什么的因果逻辑**：
+      - 什么计算特性被利用了？
+      - 什么资源瓶颈被缓解了？
+      - 什么依赖关系被打破或重排了？
+      用一句不含具体名称的话表述这个机制。
+
+      **Phase 2 — 构造抽象原则**
+      将 Phase 1 的机制提升为**可跨算子、跨领域迁移的通用陈述**：
+      - 该机制适用的计算特征是什么（而非特定算子）？
+      - 触发该优化的充要条件是什么？
+      - 约束条件如何量化？
+      最终输出为一条可在其他代码库中复用的原则。
+
       ## 输出要求
 
       严格输出 JSON 对象：
@@ -26,23 +44,80 @@ messages:
         "constraints": {{
           "data_type": "real|complex|any",
           "precision": "single|double|any",
-          "aliasing_required": true|false|null,
-          "min_loop_depth": 1|2|3|null,
+          "aliasing_required": true|false|"any",
+          "min_loop_depth": 1|2|3|"any",
           "hardware_requirements": ["simd_width>=128", "cache_l2>=256KB", ...]
         }},
-        "abstraction_level": 1-5,
+        "abstraction_level": 3-5,
         "generalizes": ["相关但更通用的原则名称1", "..."],
         "composes_with": ["可与之组合的原则名称1", "..."],
-        "evidence": "从原始策略中提取的支持证据"
+        "evidence": "从原始策略中引用具体材料（引用原文片段或量化数据），而非简单复述"
       }}
       ```
 
+      ## 输出格式示例（伪代码参考）
+
+      以下为期望的输出风格示例，展示了原则的抽象层次和结构：
+
+      ```
+      Principle(
+        name="依赖链断裂法",
+        mechanism="当迭代间存在可分解的归约依赖时，通过部分和分解将串行依赖转换为可并行的局部归约树",
+        when_useful="归约操作的计算量远大于同步开销时",
+        constraints={
+          data_type: "any",
+          aliasing_required: false,
+          min_loop_depth: 2,
+          hardware_requirements: ["simd_width>=128"]
+        }
+      )
+
+      Principle(
+        name="缓存驻留分块",
+        mechanism="将工作集按缓存容量划分，使每个子集在完成前驻留在最近一级缓存中，消除容量缺失",
+        when_useful="工作集超过目标缓存级别且重用时",
+        constraints={
+          data_type: "any",
+          precision: "any",
+          hardware_requirements: ["cache_l2>=256KB"]
+        }
+      )
+      ```
+
+      ## 反例与正例对照（Anti-Patterns）
+
+      以下对比展示了**不合格**（过于具体）和**合格**（抽象可复用）的原则：
+
+      ### 不合格示例（BAD — 过于具体，包含算子/文件名）
+
+      - ❌ "使用 OpenBLAS 的 sgemm 内核中的 4x4 展开因子来加速矩阵乘法"
+        → 问题：绑定了具体库(OpenBLAS)、具体算子(sgemm)、具体参数(4x4)
+
+      - ❌ "在 file_axpy_kernel.cu 中用 256 线程的 grid-stride loop 处理 AXPY"
+        → 问题：绑定了具体文件名、具体函数、具体线程数
+
+      - ❌ "GEMM 中 A 矩阵按列优先存储以避免 TLB miss"
+        → 问题：绑定了具体算子名(GEMM)、特定变量名(A matrix)
+
+      - ❌ "if f_type == 'radix2' 时使用 twiddle factor 预计算"
+        → 问题：绑定了具体条件分支变量名和特定算法参数
+
+      ### 合格示例（GOOD — 抽象，可泛化）
+
+      - ✅ "当计算强度高且迭代间无依赖时，寄存器级分块可通过减少内存往返次数显著降低带宽压力"
+        → 适用特征：高计算强度、无迭代间依赖；机制：寄存器分块；效果：降低带宽需求
+
+      - ✅ "对于归约模式的计算，若归约维度无法向量化，则可通过累加器展开将串行依赖链打断，使指令级并行度匹配向量宽度"
+        → 适用特征：归约模式、向量化受阻；机制：累加器展开破坏依赖；效果：提升ILP
+
+      - ✅ "当工作集能按空间访问模式划分为互不重叠的子集时，循环分割可使每个子集在遍历期间驻留在低级缓存中，消除跨子集的容量驱逐"
+        → 适用特征：可分割工作集、空间局部性；机制：循环分割→缓存驻留；效果：消除容量缺失
+
+      - ✅ "对于访存密集且带有跨步读取模式的循环，若跨步为2的幂，应通过数组转置或填充消除缓存组关联冲突"
+        → 适用特征：跨步访存、幂次跨步；机制：布局变换消除冲突；效果：提升缓存利用率
+
       ## 抽象层级说明
 
-      - 1: 非常具体 (如 "GEMM中4x4展开因子对AVX-512有效")
-        - principle 示例: "特定矩阵乘法的展开因子选择"
-      - 2: 算子级泛化 (如 "矩阵乘法中利用寄存器分块")
-        - principle 示例: "矩阵乘法可通过寄存器级分块减少内存访问"
       - 3: 模式级泛化 (如 "收缩操作中利用寄存器分块")
         - principle 示例: "计算密集型收缩操作受益于寄存器分块以减少内存流量"
       - 4: 特征级泛化 (如 "高计算强度+无迭代间依赖→寄存器分块")
@@ -51,8 +126,11 @@ messages:
         - principle 示例: "在固定硬件资源下，最大化数据局部性是性能优化的核心原则"
 
       ## 关键要求
-      1. **禁止**在 principle 中包含具体算子名、文件名、函数名
-      2. constraints 字段必须可量化、可验证
-      3. generalizes 和 composes_with 提供的原则名称也必须是抽象的
-      4. evidence 保留与原始策略的链接以便溯源
-      5. abstraction_level 至少为 3，最好是 4
+
+      1. **禁止**在 principle 中包含具体算子名、文件名、函数名、库名、变量名
+      2. **禁止**在 principle 中包含具体数值参数（如"4x4"、"256 线程"），这些属于实例而非原则
+      3. constraints 字段必须可量化、可验证
+      4. generalizes 和 composes_with 提供的原则名称也必须是抽象的
+      5. evidence **必须直接引用原始策略中的具体材料**（原文片段或量化数据），不得仅为复述。目的是保持溯源链
+      6. abstraction_level **只允许 3、4 或 5**。级别 1 和 2 过于具体，不符合本提取任务的目标。目标是生成可在不同算子/领域间迁移的原则
+      7. aliasing_required 和 min_loop_depth 如不适用，使用 `"any"` 而非 `null`（JSON 不支持 null 字面量）

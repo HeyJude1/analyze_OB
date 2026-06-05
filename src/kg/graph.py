@@ -59,7 +59,7 @@ class KnowledgeGraph:
 
         # 加载实体元数据
         if entity_collections is None:
-            entity_collections = ["optimization_strategy", "computational_pattern",
+            entity_collections = ["optimization_strategy", "source_pattern",
                                   "hardware_feature", "tunable_parameter", "code_example"]
         for ec in entity_collections:
             try:
@@ -187,7 +187,7 @@ class KnowledgeGraph:
             if node["uid"] == strategy_uid:
                 continue
             ntype = node["type"]
-            if ntype == "computational_pattern":
+            if ntype == "source_pattern":
                 patterns.append(node)
             elif ntype == "tunable_parameter":
                 params.append(node)
@@ -216,10 +216,10 @@ class KnowledgeGraph:
             score = 0.0
             neighbors = self.get_neighbors(uid, direction="both")
 
-            # 1. 模式匹配分：直连的 computational_pattern 有多少匹配查询
+            # 1. 模式匹配分：直连的 source_pattern 有多少匹配查询
             pattern_match = 0
             for n in neighbors:
-                if n.get("target_type") == "computational_pattern":
+                if n.get("target_type") == "source_pattern":
                     pname = n.get("target_name", "")
                     for qp in query_pattern_types:
                         if qp.lower() in pname.lower():

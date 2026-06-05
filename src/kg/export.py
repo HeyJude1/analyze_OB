@@ -106,7 +106,7 @@ class MilvusToNeo4jExporter:
                             "related_patterns": json.dumps(entity_data.get("related_patterns", [])),
                             "optimization_context": json.dumps(entity_data.get("optimization_context", {}))
                         })
-                    elif collection_name == "computational_pattern":
+                    elif collection_name == "source_pattern":
                         properties.update({
                             "type": entity.get("type", ""),
                             "description": entity_data.get("description", "")
@@ -182,12 +182,12 @@ class MilvusToNeo4jExporter:
         """创建Neo4j索引"""
         indexes = [
             "CREATE INDEX IF NOT EXISTS FOR (n:OptimizationStrategy) ON (n.uid)",
-            "CREATE INDEX IF NOT EXISTS FOR (n:ComputationalPattern) ON (n.uid)",
-            "CREATE INDEX IF NOT EXISTS FOR (n:HardwareFeature) ON (n.uid)",
+            "CREATE INDEX IF NOT EXISTS FOR (n:SourcePattern) ON (n.uid)",
+            "CREATE INDEX IF NOT EXISTS FOR (n:ArchitectureCapability) ON (n.uid)",
             "CREATE INDEX IF NOT EXISTS FOR (n:TunableParameter) ON (n.uid)",
             "CREATE INDEX IF NOT EXISTS FOR (n:CodeExample) ON (n.uid)",
             "CREATE INDEX IF NOT EXISTS FOR (n:OptimizationStrategy) ON (n.level)",
-            "CREATE INDEX IF NOT EXISTS FOR (n:ComputationalPattern) ON (n.type)"
+            "CREATE INDEX IF NOT EXISTS FOR (n:SourcePattern) ON (n.type)"
         ]
         
         with self.neo4j_driver.session() as session:
@@ -207,8 +207,8 @@ class MilvusToNeo4jExporter:
         # 导出实体
         entity_mappings = [
             ("optimization_strategy", "OptimizationStrategy"),
-            ("computational_pattern", "ComputationalPattern"),
-            ("hardware_feature", "HardwareFeature"),
+            ("source_pattern", "SourcePattern"),
+            ("architecture_capability", "ArchitectureCapability"),
             ("tunable_parameter", "TunableParameter"),
             ("code_example", "CodeExample")
         ]

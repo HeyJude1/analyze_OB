@@ -156,7 +156,7 @@ class EntityRelationMerger:
         fields_to_merge = []
         if entity_type == "optimization_strategy":
             fields_to_merge = ["rationale", "implementation", "impact", "trade_offs"]
-        elif entity_type == "hardware_feature":
+        elif entity_type == "architecture_capability":
             fields_to_merge = ["description"]
         elif entity_type == "tunable_parameter":
             fields_to_merge = ["description", "impact"]
@@ -270,7 +270,7 @@ class EntityRelationMerger:
         current_context_list = []
 
         for entity_type, analyses in refined_data.items():
-            if entity_type not in ["hardware_feature", "optimization_strategy", "tunable_parameter"]:
+            if entity_type not in ["architecture_capability", "optimization_strategy", "tunable_parameter", "optimization_principle", "code_characteristic", "source_pattern"]:
                 continue
             
             print(f"\n🔗 开始合并实体类型: {entity_type}")

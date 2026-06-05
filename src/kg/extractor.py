@@ -333,7 +333,8 @@ class KnowledgeGraphExtractor:
             op = ana.get("file_path","").split("/")[-1]
             arch = ana.get("architecture","通用")
             info = {"source_algorithm":src_alg,"source_file":op,"architecture":arch}
-            # SourcePatterns
+            # SourcePatterns — also collect all characteristic UIDs for later APPLIES_WHEN linking
+            all_char_uids = set()
             for pat in ana.get("computational_patterns",[]):
                 ent = {"name":pat.get("name",""),"code_snippet":(pat.get("code","") or "")[:10000],
                     "pattern_type":pat.get("pattern_type","") or pat.get("type",""),
@@ -343,6 +344,7 @@ class KnowledgeGraphExtractor:
                 if not self.store.query_one("source_pattern",uid):
                     ent["uid"]=uid; self._save_entity("source_pattern",ent); pc+=1
                     cuids = self.char_ext.extract_and_save(pat.get("code",""), pat.get("data_object_features",{}))
+                    all_char_uids.update(cuids)
                     for cid in cuids: self._save_relation(uid,Rel.HAS_CHARACTERISTIC,cid,pat.get("name",""),"","")
             # Strategies + Principles
             for lv in ["algorithm_level_optimizations","code_level_optimizations","instruction_level_optimizations"]:
@@ -374,6 +376,52 @@ class KnowledgeGraphExtractor:
                                 self._save_relation(puid,Rel.COMPOSES_WITH,f"__reserved__:{c}",pdata.get("principle","")[:50],c,json.dumps({"type":"composition"}))
                             for hw in pdata.get("constraints",{}).get("hardware_requirements",[]):
                                 self._save_relation(puid,Rel.REQUIRES,f"__hw__:{hw}",pdata.get("principle","")[:50],hw,json.dumps({"requirement":hw}))
+                            # APPLIES_WHEN: link principle to the code characteristics that triggered it
+                            for cid in all_char_uids:
+                                self._save_relation(puid,Rel.APPLIES_WHEN,cid,pdata.get("principle","")[:50],"",json.dumps({"trigger":"characteristic_match"}))
+                    # Architecture Capability + TARGETS relation
+                    hw_feat_name = opt.get("target_hardware_feature_name", "")
+                    if hw_feat_name:
+                        arch_ent = {
+                            "name": hw_feat_name,
+                            "architecture": arch,
+                            "capability_type": "hardware_feature",
+                            "params": "",
+                            "description": opt.get("target_hardware_feature", hw_feat_name),
+                        }
+                        arch_uid = VectorStore.generate_uid(arch_ent)
+                        if not self.store.query_one("architecture_capability", arch_uid):
+                            arch_ent["uid"] = arch_uid
+                            self._save_entity("architecture_capability", arch_ent)
+                        self._save_relation(suid, Rel.TARGETS, arch_uid, opt.get("optimization_name",""), hw_feat_name, "")
+                    # Tunable Parameters + HAS_PARAMETER relations
+                    for tp in opt.get("tunable_parameters", []):
+                        tp_ent = {
+                            "name": tp.get("parameter_name", ""),
+                            "description": tp.get("description", ""),
+                            "impact": tp.get("impact", ""),
+                            "value_in_code": str(tp.get("value_in_code", "")),
+                            "typical_range": json.dumps(tp.get("typical_range", []), ensure_ascii=False),
+                        }
+                        tp_uid = VectorStore.generate_uid(tp_ent)
+                        if not self.store.query_one("tunable_parameter", tp_uid):
+                            tp_ent["uid"] = tp_uid
+                            self._save_entity("tunable_parameter", tp_ent)
+                        self._save_relation(suid, Rel.HAS_PARAMETER, tp_uid, opt.get("optimization_name",""), tp.get("parameter_name",""), "")
+                    # Code Example + IS_ILLUSTRATED_BY relation
+                    code_ex = opt.get("code_example")
+                    if code_ex and isinstance(code_ex, dict):
+                        ce_ent = {
+                            "name": f"{opt.get('optimization_name','')} - code example",
+                            "snippet": (code_ex.get("snippet", "") or "")[:10000],
+                            "explanation": code_ex.get("explanation", "") or "",
+                            "source_file": op,
+                        }
+                        ce_uid = VectorStore.generate_uid(ce_ent)
+                        if not self.store.query_one("code_example", ce_uid):
+                            ce_ent["uid"] = ce_uid
+                            self._save_entity("code_example", ce_ent)
+                        self._save_relation(suid, Rel.IS_ILLUSTRATED_BY, ce_uid, opt.get("optimization_name",""), ce_ent["name"], "")
         print(f"  📊 patterns={pc}, principles={pp}")
         self.processed_files.add(file_path)
         os.makedirs(os.path.dirname(self.checkpoint_file),exist_ok=True)
