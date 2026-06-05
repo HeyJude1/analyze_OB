@@ -59,8 +59,10 @@ class KnowledgeGraph:
 
         # 加载实体元数据
         if entity_collections is None:
-            entity_collections = ["optimization_strategy", "source_pattern",
-                                  "hardware_feature", "tunable_parameter", "code_example"]
+            entity_collections = ["optimization_principle", "source_pattern",
+                                  "code_characteristic", "optimization_strategy",
+                                  "architecture_capability", "tunable_parameter",
+                                  "code_example"]
         for ec in entity_collections:
             try:
                 col = Collection(ec)
@@ -191,7 +193,7 @@ class KnowledgeGraph:
                 patterns.append(node)
             elif ntype == "tunable_parameter":
                 params.append(node)
-            elif ntype == "hardware_feature":
+            elif ntype == "architecture_capability":
                 hw_features.append(node)
             elif ntype == "code_example":
                 code_examples.append(node)
