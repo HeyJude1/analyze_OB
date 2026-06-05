@@ -43,11 +43,57 @@ analyze_OB_v1/
 
 ## 流程
 
+### 1. 知识图谱构建
+
 ```
-openblas算子源码  →  LLM分析(算法/代码/指令三层)  →  实体抽取  →  消歧聚类  →  知识图谱(Milvus/Neo4j)
-                                                                              ↓
-新代码  →  特征提取  →  相似度检索  →  优化策略推荐
+OpenBLAS算子源码  →  LLM分析(算法/代码/指令三层)  →  实体抽取  →  消歧聚类  →  知识图谱(Milvus/Neo4j)
 ```
+
+**Step 1: 优化策略分析**
+```bash
+python -m src.analysis.workflow
+# 输入: data/openblas-output/ 下的算子源码
+# 输出: output/results/ 下的分析结果 JSON
+```
+
+**Step 2: 实体抽取**
+```bash
+python src/kg/extractor.py --config config/kg_config.json --data_dir output/results/<timestamp>
+# 从分析结果中提取实体和关系，写入 Milvus
+```
+
+**Step 3: 实体对齐(消歧)**
+```bash
+python src/kg/alignment.py --rounds 3 --config config/kg_config.json
+# 聚类 → 精炼 → 合并，3轮迭代消除重复实体
+```
+
+**Step 4: 导出 Neo4j**
+```bash
+python src/kg/export.py --config config/kg_config.json
+# 将 Milvus 中的图谱数据导出到 Neo4j 图数据库
+```
+
+### 2. 优化策略推荐
+
+对一段新的算子代码，从知识图谱中检索匹配的优化策略：
+
+```bash
+python src/kg/retrieval.py --source your_code.c --config config/kg_config.json
+```
+
+推荐流程：
+```
+新代码  →  四阶段计算流程识别  →  Milvus向量相似度检索  →  关联策略查找  →  评分排序  →  输出推荐策略
+```
+
+四阶段识别器（`retrieval.py` 内置）自动分析输入代码的：
+1. **计算准备** — 参数校验、索引初始化、循环不变量计算
+2. **数据转换** — 打包/解包、转置
+3. **核心计算** — 向量归约、矩阵乘法、微内核、分块循环、三角求解
+4. **后处理** — 结果缩放与写回
+
+每个识别到的计算流程会从 Milvus 中检索语义最相似的已知优化策略，并通过 LLM 评估适用性后按评分排序输出。
 
 ## 快速开始
 
