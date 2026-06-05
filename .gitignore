@@ -103,17 +103,17 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# Claude Code
+.claude/
+
 # Cursor IDE
 .cursor/
 .cursor-settings/
 
-# OpenBLAS output directories
-openblas-output/
-OpenBLAS-output/
-results/
-analysis_results/
-discovery_results/
-strategy_reports/
+# Data and output directories
+data/openblas-output/*
+!data/openblas-output/.gitkeep
+output/
 
 # Temporary files
 *.tmp

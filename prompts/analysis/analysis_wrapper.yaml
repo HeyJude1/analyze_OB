@@ -1,0 +1,21 @@
+# 分析包装模板 - 构建完整的分析提示
+# 用于: src/analysis/workflow.py → analyzer_work_node()
+name: analysis_wrapper
+version: "1.0"
+description: "包装系统提示词与源代码以构建完整分析请求"
+variables:
+  - system_prompt
+  - algorithm
+  - level
+  - source_content
+  - format_instructions
+template: |
+  {system_prompt}
+
+  请分析以下{algorithm}算子的源代码，识别{level}层的优化策略：
+
+  {source_content}
+
+  {format_instructions}
+
+  请以JSON数组格式返回所有识别到的优化策略。
