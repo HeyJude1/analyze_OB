@@ -33,6 +33,11 @@ except ImportError:
     sys.path.insert(0, _src_dir)
     from utils.prompt_loader import get_prompt_loader
 
+try:
+    from .graph import KnowledgeGraph
+except ImportError:
+    from graph import KnowledgeGraph
+
 load_dotenv("config/.env")
 
 _prompts = get_prompt_loader()
@@ -481,13 +486,51 @@ class OptimizationStrategyOperator:
         final_strategies = self._score_and_select_final(context_by_uid, patterns_detected_types, related_strategy_uids, w_context=0.5)
         print(f"✅ 步骤5完成: 最终筛选出 {len(final_strategies)} 个高分策略")
 
+        # 步骤6：图引擎增强评分
+        graph_score = {}
+        try:
+            kg = KnowledgeGraph()
+            kg.load_from_milvus()
+            if kg.is_loaded():
+                strategy_uids = [s.get("strategy_uid", "") for s in final_strategies if s.get("strategy_uid")]
+                if strategy_uids:
+                    ranked = kg.co_occurrence_rank(strategy_uids, set(patterns_detected_types))
+                    graph_score = {uid: score for uid, score in ranked}
+                    for s in final_strategies:
+                        uid = s.get("strategy_uid", "")
+                        if uid in graph_score:
+                            s["graph_score"] = graph_score[uid]
+                            s["score"] = s.get("score", 0) + graph_score[uid] * 0.3
+                    final_strategies.sort(key=lambda x: x.get("score", 0), reverse=True)
+                print(f"✅ 步骤6完成: 图引擎增强 (合并 {len(graph_score)} 个图评分)")
+        except Exception as e:
+            print(f"⚠️ 图引擎增强跳过: {e}")
+
+        # 步骤7：富化策略上下文
+        enriched_strategies = []
+        try:
+            kg = KnowledgeGraph()
+            if not kg.is_loaded():
+                kg.load_from_milvus()
+            for s in final_strategies[:10]:
+                uid = s.get("strategy_uid", "")
+                if uid:
+                    ctx = kg.get_strategy_context(uid)
+                    s["graph_context"] = ctx
+                enriched_strategies.append(s)
+            print(f"✅ 步骤7完成: 富化 {len(enriched_strategies)} 个策略的图上下文")
+            final_strategies = enriched_strategies
+        except Exception as e:
+            print(f"⚠️ 图上下文富化跳过: {e}")
+
         result = {
             "source_file": source_file,
             "patterns_detected": patterns_detected_full,
             "similar_patterns_found": similar_patterns,
             "top_patterns_per_type": top_patterns,
             "search_strategies": search_strategies,
-            "final_strategies": final_strategies
+            "final_strategies": final_strategies,
+            "graph_enhanced": len(graph_score) > 0
         }
         return result
     

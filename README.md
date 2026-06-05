@@ -17,6 +17,7 @@ analyze_OB_v1/
 │   │   ├── merger.py             # 关系合并
 │   │   ├── alignment.py          # 实体对齐调度
 │   │   ├── retrieval.py          # 优化策略检索与评分
+│   │   ├── graph.py              # 轻量图引擎 (多跳遍历/共现排序)
 │   │   ├── export.py             # Milvus → Neo4j 导出
 │   │   └── backup.py             # 数据库备份
 │   └── utils/                    # 共享工具
@@ -84,16 +85,20 @@ python src/kg/retrieval.py --source your_code.c --config config/kg_config.json
 
 推荐流程：
 ```
-新代码  →  四阶段计算流程识别  →  Milvus向量相似度检索  →  关联策略查找  →  评分排序  →  输出推荐策略
+新代码  →  四阶段计算流程识别  →  Milvus向量相似度检索  →  图引擎多跳遍历  →  共现排序  →  输出推荐策略(含图上下文)
 ```
+
+**图引擎增强** (`src/kg/graph.py`)：
+- 在 Milvus relation 之上构建邻接图，无需 Neo4j
+- 多跳遍历发现策略 → 参数 → 硬件 → 代码示例 的关联链路
+- 基于共现模式、邻居多样性和节点中心度进行二次排序
+- 推荐结果附带完整图上下文（关联模式、可调参数、硬件特征、参考代码）
 
 四阶段识别器（`retrieval.py` 内置）自动分析输入代码的：
 1. **计算准备** — 参数校验、索引初始化、循环不变量计算
 2. **数据转换** — 打包/解包、转置
 3. **核心计算** — 向量归约、矩阵乘法、微内核、分块循环、三角求解
 4. **后处理** — 结果缩放与写回
-
-每个识别到的计算流程会从 Milvus 中检索语义最相似的已知优化策略，并通过 LLM 评估适用性后按评分排序输出。
 
 ## 快速开始
 
@@ -104,20 +109,28 @@ pip install -r requirements.txt
 # 配置 API 密钥
 # 编辑 config/.env: DASHSCOPE_API_KEY=your_key
 
-# 运行完整分析
-bash scripts/run_full_analysis.sh
+# === 一键全流程 ===
+# 完整构建知识图谱 (分析 → 抽取 → 对齐)
+python run_pipeline.py --full
 
-# 单独运行分析工作流
+# 对新代码推荐优化策略
+python run_pipeline.py --recommend --source-file your_code.c
+
+# 推荐 + 对接 Morph 代码生成
+python run_pipeline.py --recommend --source-file your_code.c --morph
+
+# === 分步执行 ===
+# Step 1: 优化策略分析
 python -m src.analysis.workflow
 
-# 运行知识图谱提取
-python src/kg/extractor.py --config config/kg_config.json
+# Step 2: 实体抽取
+python src/kg/extractor.py --config config/kg_config.json --data_dir output/results/<timestamp>
 
-# 运行实体对齐
+# Step 3: 实体对齐
 python src/kg/alignment.py --rounds 3 --config config/kg_config.json
 
-# 导出到 Neo4j
-python src/kg/export.py --config config/kg_config.json
+# Step 4: 优化策略推荐 (含图引擎增强)
+python src/kg/retrieval.py --source your_code.c --config config/kg_config.json
 ```
 
 ## 配置

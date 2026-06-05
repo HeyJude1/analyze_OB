@@ -214,7 +214,26 @@ def load_optimization_strategies(strategy_file_path: str, milvus_querier: Option
                 trade_offs = detailed_info.get('trade_offs', '')
                 if trade_offs:
                     strategy_text.append(f"   - 权衡: {trade_offs}")
-        
+
+            # 图上下文：相关模式、参数、硬件
+            graph_ctx = strategy.get("graph_context", {})
+            if graph_ctx:
+                patterns = graph_ctx.get("related_patterns", [])
+                if patterns:
+                    strategy_text.append(f"   - 关联计算模式: {', '.join(p.get('name', '') for p in patterns[:5])}")
+                params = graph_ctx.get("tunable_parameters", [])
+                if params:
+                    strategy_text.append(f"   - 可调参数: {', '.join(p.get('name', '') for p in params[:5])}")
+                hw = graph_ctx.get("hardware_features", [])
+                if hw:
+                    strategy_text.append(f"   - 目标硬件: {', '.join(h.get('name', '') for h in hw[:3])}")
+                code_examples = graph_ctx.get("code_examples", [])
+                if code_examples:
+                    strategy_text.append(f"   - 参考代码: {len(code_examples)} 个示例")
+                total_conn = graph_ctx.get("total_connections", 0)
+                if total_conn:
+                    strategy_text.append(f"   - 图谱连接数: {total_conn}")
+
         return '\n'.join(strategy_text)
         
     except Exception as e:
