@@ -1,0 +1,44 @@
+{
+  "analogy_source": "gemm",
+  "card_ids": [],
+  "contract_sha256": "1998f1147530fbd0cb7b46f9e7ca4f7e60d20e9bb8cc625dfde2edb0d39aed1d",
+  "knowledge_bytes": 0,
+  "method": "no_knowledge",
+  "operator": "dsymm",
+  "profile": "x86_avx2",
+  "prompt": "dsymm/x86_avx2/no_knowledge.json",
+  "prompt_sha256": "cbb722e67f4d076dc65efdd732dfdcc82bf77abba00cfe59cc6906463fd1668b",
+  "repetition": 1,
+  "source_sha256": "2b054ea1fb3ef0c2781e028c6d754a08de7d41cf530fe1cbceb1efa19b540ffd",
+  "split": "near_transfer",
+  "status": "prepared",
+  "engine": "ollama",
+  "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+  "repair_attempted": true,
+  "initial": {
+    "status": "compile_failed",
+    "compile_ok": false,
+    "correct": null,
+    "failure_reason": "other_compiler_error",
+    "usage": {
+      "prompt_tokens": 1561,
+      "completion_tokens": 436,
+      "total_tokens": 1997
+    },
+    "diagnostic": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymm\\x86_avx2\\no_knowledge\\rep-1\\initial\\candidate.c: In function 'op_dsymm':\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymm\\x86_avx2\\no_knowledge\\rep-1\\initial\\candidate.c:28:30: error: 'i' undeclared (first use in this function)\n   28 |                     sum += b[i * ldb + p] * symmetric_at(a, lda, m - 1, p, uplo);\n      |                              ^\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymm\\x86_avx2\\no_knowledge\\rep-1\\initial\\candidate.c:28:30: note: each undeclared identifier is reported only once for each function it appears in\n",
+    "candidate_sha256": "5e93ca2ccca6f5008fff1b0a4acbdc6ba6b60c6cc962febeb36c126f1541557a"
+  },
+  "final": {
+    "status": "compile_failed",
+    "compile_ok": false,
+    "correct": null,
+    "failure_reason": "other_compiler_error",
+    "usage": {
+      "prompt_tokens": 2239,
+      "completion_tokens": 422,
+      "total_tokens": 2661
+    },
+    "diagnostic": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymm\\x86_avx2\\no_knowledge\\rep-1\\repair\\candidate.c: In function 'op_dsymm':\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymm\\x86_avx2\\no_knowledge\\rep-1\\repair\\candidate.c:18:75: error: 'j' undeclared (first use in this function)\n   18 |                     sum += symmetric_at(a, lda, i, p, uplo) * b[p * ldb + j];\n      |                                                                           ^\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymm\\x86_avx2\\no_knowledge\\rep-1\\repair\\candidate.c:18:75: note: each undeclared identifier is reported only once for each function it appears in\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymm\\x86_avx2\\no_knowledge\\rep-1\\repair\\candidate.c:28:30: error: 'i' undeclared (first use in this function)\n   28 |                     sum += b[i * ldb + p] * symmetric_at(a, lda, p, j, uplo);\n      |                              ^\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymm\\x86_avx2\\no_knowledge\\rep-1\\repair\\candidate.c:9:58: warning: parameter 'b' set but not used [-Wunused-but-set-parameter]\n    9 |               const double *a, size_t lda, const double *b, size_t ldb,\n      |                                            ~~~~~~~~~~~~~~^\n",
+    "candidate_sha256": "6d4e189bbcfb527557d325518df34830ae487715bddbc8cac63934e84bc902c2"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "raw": "```c\n#include \"opbench.h\"\n\nvoid op_daxpy(size_t n, double alpha, const double *x, ptrdiff_t incx,\n              double *y, ptrdiff_t incy) {\n    if (alpha == 0.0) return;\n\n    // Vectorize the loop for better performance\n    size_t i;\n    for (i = 0; i + 4 <= n; i += 4) {\n        y[i * incy] += alpha * x[i * incx];\n        y[(i + 1) * incy] += alpha * x[(i + 1) * incx];\n        y[(i + 2) * incy] += alpha * x[(i + 2) * incx];\n        y[(i + 3) * incy] += alpha * x[(i + 3) * incx];\n    }\n\n    // Handle the tail elements\n    for (; i < n; ++i) {\n        y[i * incy] += alpha * x[i * incx];\n    }\n}\n```",
+  "usage": {
+    "prompt_tokens": 2899,
+    "completion_tokens": 227,
+    "total_tokens": 3126
+  },
+  "stop_reason": "stop"
+}

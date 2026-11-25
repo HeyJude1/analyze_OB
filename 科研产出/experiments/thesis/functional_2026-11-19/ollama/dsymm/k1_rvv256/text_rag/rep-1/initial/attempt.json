@@ -1,0 +1,13 @@
+{
+  "status": "compile_failed",
+  "compile_ok": false,
+  "correct": null,
+  "failure_reason": "other_compiler_error",
+  "usage": {
+    "prompt_tokens": 3064,
+    "completion_tokens": 484,
+    "total_tokens": 3548
+  },
+  "diagnostic": "../experiments/thesis/functional_2026-11-19/ollama/dsymm/k1_rvv256/text_rag/rep-1/initial/candidate.c: In function ‘op_dsymm’:\n../experiments/thesis/functional_2026-11-19/ollama/dsymm/k1_rvv256/text_rag/rep-1/initial/candidate.c:24:53: error: variable-sized object may not be initialized except with an empty initializer\n   24 |             double sum[reg_block_m * reg_block_n] = {0.0};\n      |                                                     ^\n../experiments/thesis/functional_2026-11-19/ollama/dsymm/k1_rvv256/text_rag/rep-1/initial/candidate.c:8:20: warning: unused parameter ‘side’ [-Wunused-parameter]\n    8 | void op_dsymm(char side, char uplo, size_t m, size_t n, double alpha,\n      |               ~~~~~^~~~\n",
+  "candidate_sha256": "7e2d2847c86a7e8be517c81556b364f7b475082c4440aa5e2f1df8c60e3162b9"
+}

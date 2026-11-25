@@ -1,0 +1,13 @@
+{
+  "status": "runtime_failed",
+  "compile_ok": true,
+  "correct": false,
+  "failure_reason": "execution_aborted",
+  "usage": {
+    "prompt_tokens": 1695,
+    "completion_tokens": 257,
+    "total_tokens": 1952
+  },
+  "diagnostic": "Execution aborted or did not return the expected check status.",
+  "candidate_sha256": "ed44334b34a6078f6cc43e60b236a4537d6ad12e1eff4e433c9d74db2a2dc29e"
+}

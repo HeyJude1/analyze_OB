@@ -1,0 +1,46 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "amd64",
+  "results": [
+    {
+      "task": "dgemv",
+      "target": "x86",
+      "variant": "candidate",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemv\\x86_avx2\\strategy_cards\\rep-1\\initial\\candidate.c",
+      "source_sha256": "61e570e5648cb1f2fb91f2fa116f6aaee14e0b2617c8554d74b301874d3aecb3",
+      "status": "passed",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DGEMV",
+          "driver/check.c",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemv\\x86_avx2\\strategy_cards\\rep-1\\initial\\candidate.c",
+          "-o",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemv\\x86_avx2\\strategy_cards\\rep-1\\initial\\bin\\dgemv-x86-candidate.exe",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "e6547f59de074f3d0175bb4f3f30a7cc8584ee3d86f396cca90e77b3bb5b587b",
+      "check": {
+        "argv": [
+          "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemv\\x86_avx2\\strategy_cards\\rep-1\\initial\\bin\\dgemv-x86-candidate.exe"
+        ],
+        "exit_code": 0,
+        "stdout": "84 cases, 0 failures\n",
+        "stderr": ""
+      },
+      "environment": "native"
+    }
+  ]
+}

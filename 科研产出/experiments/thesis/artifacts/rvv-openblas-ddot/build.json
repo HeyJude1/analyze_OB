@@ -1,0 +1,81 @@
+{
+  "task": "ddot",
+  "compiler": "riscv64-buildroot-linux-gnu-gcc.br_real (Buildroot 2021.11-18033-g83947c7bb6) 14.3.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "compiler_target": "riscv64-buildroot-linux-gnu",
+  "build_host": "posix",
+  "commands": [
+    [
+      "/mnt/c/Users/MSI/Desktop/cx_operator_tool/operator_extract/toolchain/riscv-gcc-14.3/bin/riscv64-buildroot-linux-gnu-gcc",
+      "-std=c11",
+      "-O3",
+      "-fno-lto",
+      "-march=rv64gcv",
+      "-mabi=lp64d",
+      "-I/mnt/c/Users/MSI/Desktop/cx_operator_tool/operator_extract/openblas_newtest1/_file/include",
+      "-I",
+      "/mnt/c/Users/MSI/Desktop/\u5f00\u9898/\u79d1\u7814\u4ea7\u51fa/\u7b97\u5b50\u8f93\u5165/include",
+      "-Dop_ddot=base_op",
+      "-c",
+      "/mnt/c/Users/MSI/Desktop/\u5f00\u9898/\u79d1\u7814\u4ea7\u51fa/\u7b97\u5b50\u8f93\u5165/tasks/ddot/generic.c",
+      "-o",
+      "/mnt/c/Users/MSI/Desktop/\u5f00\u9898/\u79d1\u7814\u4ea7\u51fa/experiments/thesis/.build/rvv-openblas-ddot/base.o"
+    ],
+    [
+      "/mnt/c/Users/MSI/Desktop/cx_operator_tool/operator_extract/toolchain/riscv-gcc-14.3/bin/riscv64-buildroot-linux-gnu-gcc",
+      "-std=c11",
+      "-O3",
+      "-fno-lto",
+      "-march=rv64gcv",
+      "-mabi=lp64d",
+      "-I/mnt/c/Users/MSI/Desktop/cx_operator_tool/operator_extract/openblas_newtest1/_file/include",
+      "-I",
+      "/mnt/c/Users/MSI/Desktop/\u5f00\u9898/\u79d1\u7814\u4ea7\u51fa/\u7b97\u5b50\u8f93\u5165/include",
+      "-Dop_ddot=test_op",
+      "-DOPBENCH_TASK_DDOT",
+      "-c",
+      "/mnt/c/Users/MSI/Desktop/\u5f00\u9898/\u79d1\u7814\u4ea7\u51fa/experiments/thesis/openblas_candidate.c",
+      "-o",
+      "/mnt/c/Users/MSI/Desktop/\u5f00\u9898/\u79d1\u7814\u4ea7\u51fa/experiments/thesis/.build/rvv-openblas-ddot/candidate.o"
+    ],
+    [
+      "/mnt/c/Users/MSI/Desktop/cx_operator_tool/operator_extract/toolchain/riscv-gcc-14.3/bin/riscv64-buildroot-linux-gnu-gcc",
+      "-std=c11",
+      "-O3",
+      "-fno-lto",
+      "-march=rv64gcv",
+      "-mabi=lp64d",
+      "-I/mnt/c/Users/MSI/Desktop/cx_operator_tool/operator_extract/openblas_newtest1/_file/include",
+      "-I",
+      "/mnt/c/Users/MSI/Desktop/\u5f00\u9898/\u79d1\u7814\u4ea7\u51fa/\u7b97\u5b50\u8f93\u5165/include",
+      "-DOPBENCH_TASK_DDOT",
+      "-c",
+      "/mnt/c/Users/MSI/Desktop/\u5f00\u9898/\u79d1\u7814\u4ea7\u51fa/experiments/thesis/measure.c",
+      "-o",
+      "/mnt/c/Users/MSI/Desktop/\u5f00\u9898/\u79d1\u7814\u4ea7\u51fa/experiments/thesis/.build/rvv-openblas-ddot/measure.o"
+    ],
+    [
+      "/mnt/c/Users/MSI/Desktop/cx_operator_tool/operator_extract/toolchain/riscv-gcc-14.3/bin/riscv64-buildroot-linux-gnu-gcc",
+      "-march=rv64gcv",
+      "-mabi=lp64d",
+      "-I/mnt/c/Users/MSI/Desktop/cx_operator_tool/operator_extract/openblas_newtest1/_file/include",
+      "-fno-lto",
+      "/mnt/c/Users/MSI/Desktop/\u5f00\u9898/\u79d1\u7814\u4ea7\u51fa/experiments/thesis/.build/rvv-openblas-ddot/measure.o",
+      "/mnt/c/Users/MSI/Desktop/\u5f00\u9898/\u79d1\u7814\u4ea7\u51fa/experiments/thesis/.build/rvv-openblas-ddot/base.o",
+      "/mnt/c/Users/MSI/Desktop/\u5f00\u9898/\u79d1\u7814\u4ea7\u51fa/experiments/thesis/.build/rvv-openblas-ddot/candidate.o",
+      "-static",
+      "/mnt/c/Users/MSI/Desktop/cx_operator_tool/operator_extract/openblas_newtest1/_file/lib/libopenblas_riscv64_zvl256bp_rvv-r0.3.27.dev.a",
+      "-lpthread",
+      "-lm",
+      "-o",
+      "/mnt/c/Users/MSI/Desktop/\u5f00\u9898/\u79d1\u7814\u4ea7\u51fa/experiments/thesis/.build/rvv-openblas-ddot/measure"
+    ]
+  ],
+  "inputs": {
+    "/mnt/c/Users/MSI/Desktop/\u5f00\u9898/\u79d1\u7814\u4ea7\u51fa/\u7b97\u5b50\u8f93\u5165/tasks/ddot/generic.c": "2ccf407f991c84249d1daa56d61be416adffdca8f0c846a8d9d60fba58033129",
+    "/mnt/c/Users/MSI/Desktop/\u5f00\u9898/\u79d1\u7814\u4ea7\u51fa/experiments/thesis/openblas_candidate.c": "992b3f84ba832c9135a6fec4180e3251051db237abaf9a8cdd737ee6b0a8b1fb",
+    "/mnt/c/Users/MSI/Desktop/\u5f00\u9898/\u79d1\u7814\u4ea7\u51fa/experiments/thesis/measure.c": "426d75a921d314c54a85460d084ff1b38e6d92c7c776781d5af853f4517a4d6f",
+    "/mnt/c/Users/MSI/Desktop/\u5f00\u9898/\u79d1\u7814\u4ea7\u51fa/\u7b97\u5b50\u8f93\u5165/include/opbench.h": "a0977a137b308bb4e11bc3db9a114bd5f6495b56e4018b1d42d2e4aee5733487"
+  },
+  "status": "compiled",
+  "binary_sha256": "f2ef8f733744dc3d0d827e0dd1b810655308eba041b629636c09b6fd5ed56661"
+}

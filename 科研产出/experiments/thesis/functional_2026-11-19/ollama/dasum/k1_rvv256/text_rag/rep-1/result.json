@@ -1,0 +1,49 @@
+{
+  "analogy_source": "dot",
+  "card_ids": [
+    "stg:abstract:tail_handling",
+    "stg:abstract:stride_dispatch",
+    "stg:abstract:vector_fma",
+    "stg:abstract:register_blocking"
+  ],
+  "contract_sha256": "5e998ce525341a58ef53e035e89170cf28355a203166b02971b4de12348a5e90",
+  "knowledge_bytes": 4482,
+  "method": "text_rag",
+  "operator": "dasum",
+  "profile": "k1_rvv256",
+  "prompt": "dasum/k1_rvv256/text_rag.json",
+  "prompt_sha256": "a1a3fe0b6cb1e78f357303dc048d141d252943dc912dde556ac47dad0ec8d2a4",
+  "repetition": 1,
+  "source_sha256": "cc032d0101696873b29211d52155bf01b71bffac2dfd71b1a327b40780dff6cc",
+  "split": "holdout",
+  "status": "prepared",
+  "engine": "ollama",
+  "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+  "repair_attempted": true,
+  "initial": {
+    "status": "compile_failed",
+    "compile_ok": false,
+    "correct": null,
+    "failure_reason": "missing_header",
+    "usage": {
+      "prompt_tokens": 2626,
+      "completion_tokens": 464,
+      "total_tokens": 3090
+    },
+    "diagnostic": "../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/text_rag/rep-1/initial/candidate.c:4:10: fatal error: immintrin.h: No such file or directory\n    4 | #include <immintrin.h>\n      |          ^~~~~~~~~~~~~\ncompilation terminated.\n",
+    "candidate_sha256": "40fb93ba79723c317b6164cd34078948b2013ef736c340a335b32856c9604ed5"
+  },
+  "final": {
+    "status": "passed",
+    "compile_ok": true,
+    "correct": true,
+    "failure_reason": null,
+    "usage": {
+      "prompt_tokens": 1810,
+      "completion_tokens": 80,
+      "total_tokens": 1890
+    },
+    "diagnostic": "",
+    "candidate_sha256": "856816e33638f6a6f6c56a33f88b5e218c70bfeb8ee1481a516beba0bb8f5a71"
+  }
+}

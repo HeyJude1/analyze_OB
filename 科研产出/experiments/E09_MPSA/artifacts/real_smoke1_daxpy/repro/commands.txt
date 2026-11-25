@@ -1,0 +1,12 @@
+# 自动记录：每个 cell 的 mpsa 生成命令
+
+## daxpy_b3_seed1
+mpsa: C:\Users\MSI\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\python.exe -m kgagent.cli mpsa --op daxpy --profile k1_rvv256 --code C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\tasks\daxpy\input\generic.c --mode b3 --provider dashscope --out C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\runs\real_smoke1_daxpy\daxpy_b3 --top-k 6
+build: cd cells/daxpy_b3_seed1/final && bash build.sh
+run:   cd cells/daxpy_b3_seed1/final && bash run.sh
+
+## daxpy_b4_seed1
+mpsa: C:\Users\MSI\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\python.exe -m kgagent.cli mpsa --op daxpy --profile k1_rvv256 --code C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\tasks\daxpy\input\generic.c --mode b4 --provider dashscope --out C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\runs\real_smoke1_daxpy\daxpy_b4 --top-k 6 --analysis-k 3
+build: cd cells/daxpy_b4_seed1/final && bash build.sh
+run:   cd cells/daxpy_b4_seed1/final && bash run.sh
+

@@ -1,0 +1,126 @@
+你是 BLAS 算子优化策略的「综合专家」。下面是同一算子、同一硬件上 top-k 策略的逐条适用性分析结果。请按 4 个标准综合，形成最终的代码生成指导。
+
+【目标算子】daxpy（知识图谱规范名：axpy）
+【目标硬件 profile】k1_rvv256
+【任务函数签名】int daxpy_k(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, double da, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y, double *dummy, BLASLONG dummy2)
+【查询代码特征】{
+  "aligned": true,
+  "dtype": "d",
+  "loop_depth": 1,
+  "precision": "double",
+  "reduction": false,
+  "size_regime": "large",
+  "stride_x": 1,
+  "stride_y": 1,
+  "structural": "none",
+  "tail_divisible": false
+}
+
+【4 个综合标准（必须逐一给出 0~1 分数与理由）】
+- supportive（相互支持性）：各策略的适用条件/参数是否一致、能否同时采用，是否会互相抵消；
+- complementarity（互补性）：策略是否作用于不同阶段（向量化 / 循环展开 / 尾部处理 / 寄存器分块 / 步长特化等），组合后是否覆盖更多场景；
+- accuracy（正确性/数值一致性）：组合实现是否保持 BLAS 语义与数值容差，n<=0 / 尾部 / 任意步长 / 别名等边界是否安全；
+- completeness（覆盖完整性）：是否覆盖主循环、尾部、任意步长、n<=0 等分支，是否遗漏关键实现环节。
+
+【逐条适用性分析（JSON 数组）】
+[
+  {
+    "strategy_id": "stg:axpy:specialize_d",
+    "strategy_name": "LMUL/SEW 向量寄存器分组调优",
+    "applies": true,
+    "confidence": 0.8,
+    "evidence": [
+      "策略条件 dtype 与目标算子匹配（值为 'd'）",
+      "策略条件 loop_depth >= 1 满足（实际 loop_depth 为 1）",
+      "策略条件 size_regime 包含 large，与目标匹配",
+      "硬件架构 rvv 支持 k1_rvv256，且参数 lmuls=8, sew=64 符合 double 类型要求",
+      "模板结构支持单位步长与 strided 路径的分支处理，与目标代码特征一致",
+      "证据 ev:axpy:geomean 表明在类似平台有性能提升"
+    ],
+    "risks": [
+      "尾部处理未对齐风险（tail_divisible 为 false）可能导致性能下降或需要额外处理",
+      "寄存器压力可能过高（LMUL=8 占用较多向量寄存器）",
+      "k1_rvv256 对 LMUL=8 的支持可能存在限制（实际硬件支持情况需进一步确认）",
+      "跨平台性能差异（证据基于 QEMU，不代表真实微架构）",
+      "编译器对 RVV 内建函数支持不足可能导致代码生成效率低下"
+    ],
+    "parameters": {
+      "lmul": 8,
+      "sew": 64
+    },
+    "conflicts": []
+  },
+  {
+    "strategy_id": "stg:axpy:tail_handle_d",
+    "strategy_name": "动态 vl / 掩码尾部处理",
+    "applies": true,
+    "confidence": 0.7473,
+    "evidence": [
+      "策略 conditions 中 dtype 为 [\"d\"]，与目标算子匹配",
+      "loop_depth >= 1 的条件满足查询代码特征",
+      "size_regime 为 \"large\"，在策略支持范围内",
+      "tail_divisible 为 false，策略中为非硬性条件",
+      "arch_parameters 中 rvv 的 sew=64 和 lmul=8 与当前目标硬件 k1_rvv256 兼容",
+      "evidence 中 geomean speedup 为 1.2134，表明策略在 QEMU 环境下有正向收益"
+    ],
+    "risks": [
+      "动态 vl 处理尾部时可能引入额外控制流，影响数值一致性",
+      "循环中 vl 每次重新设置可能导致性能波动，尤其在边界附近",
+      "LMUL=8 可能导致寄存器压力过高，影响其它优化或并发操作",
+      "k1_rvv256 硬件是否完全支持动态 vl 模式需进一步确认",
+      "未考虑 x 和 y 指针存在内存别名的场景，可能影响正确性"
+    ],
+    "parameters": {
+      "SEW": 64,
+      "LMUL": 8
+    },
+    "conflicts": []
+  },
+  {
+    "strategy_id": "stg:axpy:vectorize_d",
+    "strategy_name": "RVV 向量化内核（vsetvl + vle/vfmacc/vse）",
+    "applies": true,
+    "confidence": 0.8,
+    "evidence": [
+      "策略的 conditions 中 dtype 与目标算子一致（d/ double）",
+      "loop_depth >= 1 和 size_regime 为 large 的约束满足代码特征",
+      "stride_x == 1 是策略要求的硬性条件且当前查询满足",
+      "aligned == true 满足策略软条件，有助于向量加载/存储对齐",
+      "evidence 中 ev:axpy:geomean 显示速度提升，尽管基于 QEMU 不代表真实性能，但表明策略有支持效果"
+    ],
+    "risks": [
+      "tail_divisible == false 可能导致尾部处理不完整，模板中未明确如何处理剩余元素",
+      "指针别名（x 和 y 是否重叠）可能影响向量化安全，策略 check_hints 中已提示需注意",
+      "arch_parameters 中的 lmul=8 会占用大量向量寄存器，可能导致寄存器压力过高",
+      "k1_rvv256 硬件是否完全支持 RVV 的 vle/vfmacc/vse 指令集和指定参数组合未明确验证",
+      "编译器对 RVV 内建函数（如 __riscv_vle64）的支持程度可能影响代码生成质量"
+    ],
+    "parameters": {
+      "lmul": "保持 8，依据硬件参数和策略实例值",
+      "sew": "固定为 64，由 double 类型决定",
+      "vector_len": "32，匹配 VLEN=256 和 LMUL=8 / SEW=64"
+    },
+    "conflicts": []
+  }
+]
+
+【综合要求】
+1. 综合判断这些策略能否组合、在哪些阶段互补、组合后正确性与覆盖度是否足够；
+2. `recommended` 只写 JSON 数组里真实出现的策略 id，按建议采用顺序排列；
+3. `guidance` 要能直接指导代码生成（主循环怎么循环分块/向量化、尾部怎么处理、参数取什么量级、哪些策略不要用）；
+4. 不要写 C 代码，不要编造未给出的性能数字。
+
+【输出要求】
+只输出一个严格 JSON 对象（不要 markdown 代码围栏、不要解释文字），格式：
+{
+  "criteria": {
+    "supportive": {"score": 0.0, "reason": "策略之间是否相互支持、条件是否一致"},
+    "complementarity": {"score": 0.0, "reason": "策略是否互补（向量化 / 展开 / 尾部 / 分块 / 参数调优）"},
+    "accuracy": {"score": 0.0, "reason": "组合后正确性与数值一致性风险是否可控"},
+    "completeness": {"score": 0.0, "reason": "是否覆盖主循环、尾部、任意步长、n<=0 等"}
+  },
+  "overall": "一句话综合结论",
+  "recommended": ["策略 id，按优先级"],
+  "guidance": "分条给出代码生成阶段的实现要点",
+  "conflicts": ["生成时需要避免的冲突"]
+}

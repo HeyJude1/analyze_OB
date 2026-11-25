@@ -1,0 +1,36 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "amd64",
+  "results": [
+    {
+      "task": "ddot",
+      "target": "x86",
+      "variant": "candidate",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\ddot\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c",
+      "source_sha256": "6072525bbe41a7583787443b5c95ac4662355193d023ad35e9087cd249158ced",
+      "status": "compile_error",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DDOT",
+          "driver/check.c",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\ddot\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c",
+          "-o",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\ddot\\x86_avx2\\text_rag\\rep-1\\initial\\bin\\ddot-x86-candidate.exe",
+          "-lm"
+        ],
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\ddot\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c: In function 'op_ddot':\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\ddot\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c:8:13: error: unknown type name '__m256d'\n    8 |             __m256d x_vec = _mm256_loadu_pd(&x[i]);\n      |             ^~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\ddot\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c:8:29: error: implicit declaration of function '_mm256_loadu_pd' [-Wimplicit-function-declaration]\n    8 |             __m256d x_vec = _mm256_loadu_pd(&x[i]);\n      |                             ^~~~~~~~~~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\ddot\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c:9:13: error: unknown type name '__m256d'\n    9 |             __m256d y_vec = _mm256_loadu_pd(&y[i]);\n      |             ^~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\ddot\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c:10:13: error: unknown type name '__m256d'\n   10 |             __m256d prod_vec = _mm256_mul_pd(x_vec, y_vec);\n      |             ^~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\ddot\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c:10:32: error: implicit declaration of function '_mm256_mul_pd' [-Wimplicit-function-declaration]\n   10 |             __m256d prod_vec = _mm256_mul_pd(x_vec, y_vec);\n      |                                ^~~~~~~~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\ddot\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c:11:20: error: implicit declaration of function '_mm256_reduce_add_pd' [-Wimplicit-function-declaration]\n   11 |             sum += _mm256_reduce_add_pd(prod_vec);\n      |                    ^~~~~~~~~~~~~~~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\ddot\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c:13:16: error: 'i' undeclared (first use in this function)\n   13 |         for (; i < n; ++i) {\n      |                ^\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\ddot\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c:13:16: note: each undeclared identifier is reported only once for each function it appears in\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\ddot\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c:18:13: error: unknown type name '__m256d'\n   18 |             __m256d x_vec = _mm256_loadu_pd(&x[(ptrdiff_t)i * incx]);\n      |             ^~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\ddot\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c:19:13: error: unknown type name '__m256d'\n   19 |             __m256d y_vec = _mm256_loadu_pd(&y[(ptrdiff_t)i * incy]);\n      |             ^~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\ddot\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c:20:13: error: unknown type name '__m256d'\n   20 |             __m256d prod_vec = _mm256_mul_pd(x_vec, y_vec);\n      |             ^~~~~~~\n"
+      }
+    }
+  ]
+}

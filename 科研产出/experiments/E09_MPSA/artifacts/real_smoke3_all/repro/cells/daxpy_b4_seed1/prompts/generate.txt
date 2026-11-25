@@ -1,0 +1,801 @@
+你是 OpenBLAS 风格的高性能 C 内核实现工程师。B4 模式下，已经对每条检索策略做了逐条适用性分析并按 4 个标准综合。请结合「策略 pack + 逐条分析 + 综合报告」为下面的目标算子生成一个完整的 C 函数。
+
+【目标算子】daxpy（知识图谱规范名：axpy）
+【目标硬件 profile】k1_rvv256
+【查询代码特征】{
+  "aligned": true,
+  "dtype": "d",
+  "loop_depth": 1,
+  "precision": "double",
+  "reduction": false,
+  "size_regime": "large",
+  "stride_x": 1,
+  "stride_y": 1,
+  "structural": "none",
+  "tail_divisible": false
+}
+【必须逐字使用的函数签名】int daxpy_k(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, double da, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y, double *dummy, BLASLONG dummy2)
+
+【基线 generic 实现（语义参考：生成实现的输出必须与它一致）】
+/* 由 tools/clean_generic.py 从 OpenBLAS 提取的 generic.c
+ * 来源：13_daxpy_op\daxpy_k.c
+ * 清洗：去掉 common.h 依赖，仅保留最小 typedef；函数体保持原样（未优化参考实现）。
+ */
+#include <stdio.h>
+#include <stddef.h>
+#include <stdlib.h>
+#include <math.h>
+
+typedef long long BLASLONG;
+typedef int blasint;
+
+#include <stdio.h>
+
+int daxpy_k(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, double da, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y, double *dummy, BLASLONG dummy2)
+{
+ BLASLONG i=0;
+ BLASLONG ix,iy;
+
+ if ( n < 0 ) return(0);
+ if ( da == 0.0 ) return(0);
+
+ ix = 0;
+ iy = 0;
+
+ while(i < n)
+ {
+
+  y[iy] += da * x[ix] ;
+  ix += inc_x ;
+  iy += inc_y ;
+  i++ ;
+
+ }
+ return(0);
+
+}
+
+【知识图谱策略 pack（top-6，JSON）】
+[
+  {
+    "id": "stg:axpy:specialize_d",
+    "name": "LMUL/SEW 向量寄存器分组调优",
+    "family": "SIMD向量指令",
+    "action": "specialize",
+    "level": "instruction",
+    "stage": "core",
+    "arch_scope": "arch_specific",
+    "arch": "rvv",
+    "arches": [
+      "rvv"
+    ],
+    "arch_parameters": {
+      "rvv": {
+        "lmul": 8,
+        "sew": 64
+      }
+    },
+    "score": 0.7473,
+    "score_breakdown": {
+      "match_p": 1.0,
+      "fit_c": 1.0,
+      "hw": 1.0,
+      "ev": 0.3616,
+      "sup": 0.2,
+      "tr_penalty": 0.3,
+      "total": 0.7473
+    },
+    "why_selected": {
+      "patterns": [
+        "pat:axpy:core.elementwise_update"
+      ],
+      "conditions_satisfied": [
+        "dtype",
+        "loop_depth",
+        "size_regime"
+      ],
+      "hardware": "k1_rvv256",
+      "source": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/daxpy_k_rvv.c"
+    },
+    "conditions": [
+      {
+        "hard": true,
+        "op": "in",
+        "pred": "dtype",
+        "value": [
+          "d"
+        ]
+      },
+      {
+        "hard": true,
+        "op": "ge",
+        "pred": "loop_depth",
+        "value": 1
+      },
+      {
+        "hard": true,
+        "op": "in",
+        "pred": "size_regime",
+        "value": [
+          "medium",
+          "large"
+        ]
+      }
+    ],
+    "template": {
+      "id": "tpl:axpy:specialize_d",
+      "language": "c",
+      "skeleton": "if (inc_x == 1 && inc_y == 1) {\n    /* 单位步长快速路径：vle{{SEW}}/vse{{SEW}} */\n} else if (inc_y == 1) {\n    /* 跨步 x：vlse{{SEW}} + 连续 y */\n} else {\n    /* 通用 strided 路径 */\n}",
+      "slots": [
+        {
+          "default": 64,
+          "name": "SEW",
+          "source": "par:sew",
+          "type": "int"
+        },
+        {
+          "default": 8,
+          "name": "LMUL",
+          "source": "par:lmul",
+          "type": "int"
+        }
+      ],
+      "check_hints": [
+        "把最常用路径（stride=1）放在分支最前",
+        "多版本代码用宏展开，避免源码重复"
+      ]
+    },
+    "parameters": [
+      {
+        "id": "par:lmul",
+        "derived_from": "num_vector_regs / 同时活跃向量数",
+        "effect_direction": "LMUL 越大单指令吞吐越高、可用寄存器组越少",
+        "kind": "lmul",
+        "name": "lmul",
+        "range": [
+          1,
+          2,
+          4,
+          8
+        ],
+        "unit": "regs",
+        "used_by_strategies": 38,
+        "value_in_source": 8,
+        "value_in_instance": 8
+      },
+      {
+        "id": "par:sew",
+        "derived_from": "dtype",
+        "effect_direction": "由数据类型决定（double 固定 64）",
+        "kind": "sew",
+        "name": "sew",
+        "range": [
+          32,
+          64
+        ],
+        "unit": "bits",
+        "used_by_strategies": 38,
+        "value_in_source": 64,
+        "value_in_instance": 64
+      }
+    ],
+    "evidence": [
+      {
+        "id": "ev:axpy:geomean",
+        "metric": "speedup",
+        "value": 1.2134,
+        "platform_id": "hw:qemu-riscv64-vlen256",
+        "role": "supports",
+        "scope": "operator",
+        "caveat": "QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据"
+      },
+      {
+        "id": "ev:axpy:pass_rate",
+        "metric": "pass_rate",
+        "value": 1.0,
+        "platform_id": "hw:qemu-riscv64-vlen256",
+        "role": "supports",
+        "scope": "operator",
+        "caveat": "QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据"
+      }
+    ],
+    "provenance": {
+      "commit": "OpenBLAS 0.3.27.dev",
+      "extractor_version": "kgagent-v1.5",
+      "line_confidence": "exact",
+      "line_end": 83,
+      "line_start": 10,
+      "origin_file": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/daxpy_k_rvv.c",
+      "source_file": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/daxpy_k_rvv.c"
+    }
+  },
+  {
+    "id": "stg:axpy:tail_handle_d",
+    "name": "动态 vl / 掩码尾部处理",
+    "family": "尾部处理",
+    "action": "tail_handle",
+    "level": "instruction",
+    "stage": "post",
+    "arch_scope": "arch_specific",
+    "arch": "rvv",
+    "arches": [
+      "rvv"
+    ],
+    "arch_parameters": {
+      "rvv": {
+        "lmul": 8,
+        "sew": 64
+      }
+    },
+    "score": 0.7473,
+    "score_breakdown": {
+      "match_p": 1.0,
+      "fit_c": 1.0,
+      "hw": 1.0,
+      "ev": 0.3616,
+      "sup": 0.2,
+      "tr_penalty": 0.3,
+      "total": 0.7473
+    },
+    "why_selected": {
+      "patterns": [
+        "pat:axpy:post.tail_case"
+      ],
+      "conditions_satisfied": [
+        "dtype",
+        "loop_depth",
+        "size_regime",
+        "tail_divisible"
+      ],
+      "hardware": "k1_rvv256",
+      "source": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/daxpy_k_rvv.c"
+    },
+    "conditions": [
+      {
+        "hard": true,
+        "op": "in",
+        "pred": "dtype",
+        "value": [
+          "d"
+        ]
+      },
+      {
+        "hard": true,
+        "op": "ge",
+        "pred": "loop_depth",
+        "value": 1
+      },
+      {
+        "hard": true,
+        "op": "in",
+        "pred": "size_regime",
+        "value": [
+          "medium",
+          "large"
+        ]
+      },
+      {
+        "hard": false,
+        "op": "eq",
+        "pred": "tail_divisible",
+        "value": false
+      }
+    ],
+    "template": {
+      "id": "tpl:axpy:tail_handle_d",
+      "language": "c",
+      "skeleton": "for (BLASLONG i = 0; i < n; i += vl) {\n    size_t vl = __riscv_vsetvl_e{{SEW}}m{{LMUL}}(n - i);   /* 动态 vl 天然处理尾部 */\n    /* 主体：vle / 计算 / vse */\n}",
+      "slots": [
+        {
+          "default": 64,
+          "name": "SEW",
+          "source": "par:sew",
+          "type": "int"
+        },
+        {
+          "default": 8,
+          "name": "LMUL",
+          "source": "par:lmul",
+          "type": "int"
+        }
+      ],
+      "check_hints": [
+        "vl 是剩余长度与 VLMAX 的较小者",
+        "不要假设 n 整除 VLMAX"
+      ]
+    },
+    "parameters": [
+      {
+        "id": "par:lmul",
+        "derived_from": "num_vector_regs / 同时活跃向量数",
+        "effect_direction": "LMUL 越大单指令吞吐越高、可用寄存器组越少",
+        "kind": "lmul",
+        "name": "lmul",
+        "range": [
+          1,
+          2,
+          4,
+          8
+        ],
+        "unit": "regs",
+        "used_by_strategies": 38,
+        "value_in_source": 8,
+        "value_in_instance": 8
+      },
+      {
+        "id": "par:sew",
+        "derived_from": "dtype",
+        "effect_direction": "由数据类型决定（double 固定 64）",
+        "kind": "sew",
+        "name": "sew",
+        "range": [
+          32,
+          64
+        ],
+        "unit": "bits",
+        "used_by_strategies": 38,
+        "value_in_source": 64,
+        "value_in_instance": 64
+      }
+    ],
+    "evidence": [
+      {
+        "id": "ev:axpy:geomean",
+        "metric": "speedup",
+        "value": 1.2134,
+        "platform_id": "hw:qemu-riscv64-vlen256",
+        "role": "supports",
+        "scope": "operator",
+        "caveat": "QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据"
+      },
+      {
+        "id": "ev:axpy:pass_rate",
+        "metric": "pass_rate",
+        "value": 1.0,
+        "platform_id": "hw:qemu-riscv64-vlen256",
+        "role": "supports",
+        "scope": "operator",
+        "caveat": "QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据"
+      }
+    ],
+    "provenance": {
+      "commit": "OpenBLAS 0.3.27.dev",
+      "extractor_version": "kgagent-v1.5",
+      "line_confidence": "exact",
+      "line_end": 83,
+      "line_start": 10,
+      "origin_file": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/daxpy_k_rvv.c",
+      "source_file": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/daxpy_k_rvv.c"
+    }
+  },
+  {
+    "id": "stg:axpy:vectorize_d",
+    "name": "RVV 向量化内核（vsetvl + vle/vfmacc/vse）",
+    "family": "SIMD向量指令",
+    "action": "vectorize",
+    "level": "instruction",
+    "stage": "core",
+    "arch_scope": "arch_specific",
+    "arch": "rvv",
+    "arches": [
+      "rvv"
+    ],
+    "arch_parameters": {
+      "rvv": {
+        "lmul": 8,
+        "sew": 64,
+        "vector_len": 32
+      }
+    },
+    "score": 0.7473,
+    "score_breakdown": {
+      "match_p": 1.0,
+      "fit_c": 1.0,
+      "hw": 1.0,
+      "ev": 0.3616,
+      "sup": 0.2,
+      "tr_penalty": 0.3,
+      "total": 0.7473
+    },
+    "why_selected": {
+      "patterns": [
+        "pat:axpy:core.elementwise_update"
+      ],
+      "conditions_satisfied": [
+        "dtype",
+        "loop_depth",
+        "size_regime",
+        "stride_x",
+        "aligned"
+      ],
+      "hardware": "k1_rvv256",
+      "source": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/daxpy_k_rvv.c"
+    },
+    "conditions": [
+      {
+        "hard": true,
+        "op": "in",
+        "pred": "dtype",
+        "value": [
+          "d"
+        ]
+      },
+      {
+        "hard": true,
+        "op": "ge",
+        "pred": "loop_depth",
+        "value": 1
+      },
+      {
+        "hard": true,
+        "op": "in",
+        "pred": "size_regime",
+        "value": [
+          "medium",
+          "large"
+        ]
+      },
+      {
+        "hard": true,
+        "op": "eq",
+        "pred": "stride_x",
+        "value": 1
+      },
+      {
+        "hard": false,
+        "op": "eq",
+        "pred": "aligned",
+        "value": true
+      }
+    ],
+    "template": {
+      "id": "tpl:axpy:vectorize_d",
+      "language": "c",
+      "skeleton": "for (BLASLONG i = 0; i < n; i += vl) {\n    size_t vl = __riscv_vsetvl_e{{SEW}}m{{LMUL}}(n - i);\n    vfloat{{SEW}}m{{LMUL}}_t vx = __riscv_vle{{SEW}}_v_f{{SEW}}m{{LMUL}}(x + i, vl);\n    vfloat{{SEW}}m{{LMUL}}_t vy = __riscv_vle{{SEW}}_v_f{{SEW}}m{{LMUL}}(y + i, vl);\n    vy = __riscv_vfmacc_vv_f{{SEW}}m{{LMUL}}(vy, vx, {{ALPHA}}, vl);\n    __riscv_vse{{SEW}}_v_f{{SEW}}m{{LMUL}}(y + i, vy, vl);\n}",
+      "slots": [
+        {
+          "default": 64,
+          "name": "SEW",
+          "source": "par:sew",
+          "type": "int"
+        },
+        {
+          "default": 8,
+          "name": "LMUL",
+          "source": "par:lmul",
+          "type": "int"
+        },
+        {
+          "default": "alpha",
+          "name": "ALPHA",
+          "source": "operator.alpha",
+          "type": "expr"
+        }
+      ],
+      "check_hints": [
+        "vsetvl 必须在循环内按剩余长度重新计算",
+        "vl 与 pack 布局一致",
+        "指针别名会阻止向量化"
+      ]
+    },
+    "parameters": [
+      {
+        "id": "par:lmul",
+        "derived_from": "num_vector_regs / 同时活跃向量数",
+        "effect_direction": "LMUL 越大单指令吞吐越高、可用寄存器组越少",
+        "kind": "lmul",
+        "name": "lmul",
+        "range": [
+          1,
+          2,
+          4,
+          8
+        ],
+        "unit": "regs",
+        "used_by_strategies": 38,
+        "value_in_source": 8,
+        "value_in_instance": 8
+      },
+      {
+        "id": "par:sew",
+        "derived_from": "dtype",
+        "effect_direction": "由数据类型决定（double 固定 64）",
+        "kind": "sew",
+        "name": "sew",
+        "range": [
+          32,
+          64
+        ],
+        "unit": "bits",
+        "used_by_strategies": 38,
+        "value_in_source": 64,
+        "value_in_instance": 64
+      },
+      {
+        "id": "par:vector_len",
+        "derived_from": "VLEN*LMUL/SEW = 256*8/64 = 32",
+        "effect_direction": "等于 VLMAX 时无尾部开销；VLEN 越大单指令处理元素越多",
+        "kind": "vector_len",
+        "name": "vector_len",
+        "range": [
+          4,
+          8,
+          16,
+          32
+        ],
+        "unit": "elements",
+        "used_by_strategies": 16,
+        "value_in_source": 32,
+        "value_in_instance": 32
+      }
+    ],
+    "evidence": [
+      {
+        "id": "ev:axpy:geomean",
+        "metric": "speedup",
+        "value": 1.2134,
+        "platform_id": "hw:qemu-riscv64-vlen256",
+        "role": "supports",
+        "scope": "operator",
+        "caveat": "QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据"
+      },
+      {
+        "id": "ev:axpy:pass_rate",
+        "metric": "pass_rate",
+        "value": 1.0,
+        "platform_id": "hw:qemu-riscv64-vlen256",
+        "role": "supports",
+        "scope": "operator",
+        "caveat": "QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据"
+      }
+    ],
+    "provenance": {
+      "commit": "OpenBLAS 0.3.27.dev",
+      "extractor_version": "kgagent-v1.5",
+      "line_confidence": "exact",
+      "line_end": 83,
+      "line_start": 10,
+      "origin_file": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/daxpy_k_rvv.c",
+      "source_file": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/daxpy_k_rvv.c"
+    }
+  },
+  {
+    "id": "stg:axpy:specialize_s",
+    "name": "任意步长 inc 累加访问",
+    "family": "指针/索引优化",
+    "action": "specialize",
+    "level": "code",
+    "stage": "core",
+    "arch_scope": "arch_agnostic",
+    "arch": null,
+    "arches": [],
+    "arch_parameters": {},
+    "score": 0.7023,
+    "score_breakdown": {
+      "match_p": 1.0,
+      "fit_c": 1.0,
+      "hw": 0.7,
+      "ev": 0.3616,
+      "sup": 0.2,
+      "tr_penalty": 0.3,
+      "total": 0.7023
+    },
+    "why_selected": {
+      "patterns": [
+        "pat:axpy:core.elementwise_update"
+      ],
+      "conditions_satisfied": [
+        "dtype",
+        "loop_depth",
+        "size_regime"
+      ],
+      "hardware": "k1_rvv256",
+      "source": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/daxpy_k.c"
+    },
+    "conditions": [
+      {
+        "hard": true,
+        "op": "in",
+        "pred": "dtype",
+        "value": [
+          "d"
+        ]
+      },
+      {
+        "hard": true,
+        "op": "ge",
+        "pred": "loop_depth",
+        "value": 1
+      },
+      {
+        "hard": false,
+        "op": "in",
+        "pred": "size_regime",
+        "value": [
+          "medium",
+          "large"
+        ],
+        "weight": 1.0
+      }
+    ],
+    "template": {
+      "id": "tpl:axpy:specialize_s",
+      "language": "c",
+      "skeleton": "if (inc_x == 1) {\n    for (BLASLONG i = 0; i + {{BLOCK_SIZE}} <= n; i += {{BLOCK_SIZE}}) { /* 连续快速路径 */ }\n} else {\n    for (BLASLONG i = 0; i < n; i++) { /* 跨步路径：inc_x 逐次累加，消除索引乘法 */ }\n}",
+      "slots": [
+        {
+          "default": 4,
+          "name": "BLOCK_SIZE",
+          "source": "derived:isa_defaults",
+          "type": "int"
+        }
+      ],
+      "check_hints": [
+        "分支预测友好的顺序",
+        "消除跨步访问的索引乘法"
+      ]
+    },
+    "parameters": [],
+    "evidence": [
+      {
+        "id": "ev:axpy:geomean",
+        "metric": "speedup",
+        "value": 1.2134,
+        "platform_id": "hw:qemu-riscv64-vlen256",
+        "role": "supports",
+        "scope": "operator",
+        "caveat": "QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据"
+      },
+      {
+        "id": "ev:axpy:pass_rate",
+        "metric": "pass_rate",
+        "value": 1.0,
+        "platform_id": "hw:qemu-riscv64-vlen256",
+        "role": "supports",
+        "scope": "operator",
+        "caveat": "QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据"
+      }
+    ],
+    "provenance": {
+      "commit": "OpenBLAS 0.3.27.dev",
+      "extractor_version": "kgagent-v1.5",
+      "line_confidence": "exact",
+      "line_end": 29,
+      "line_start": 7,
+      "origin_file": "kernel/mips/axpy.c",
+      "source_file": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/daxpy_k.c"
+    }
+  }
+]
+
+【逐条适用性分析（前 3 条策略，JSON 数组）】
+[
+  {
+    "strategy_id": "stg:axpy:specialize_d",
+    "strategy_name": "LMUL/SEW 向量寄存器分组调优",
+    "applies": true,
+    "confidence": 0.8,
+    "evidence": [
+      "策略条件匹配：dtype 为 'd'，loop_depth >= 1，size_regime 为 'large'",
+      "硬件匹配：策略适用于 rvv 架构，目标硬件为 k1_rvv256",
+      "策略模板支持单位步长和跨步路径的分支处理，适配 stride_x=1 且 stride_y=1 的情况",
+      "证据 ev:axpy:geomean 表明在类似平台上有 1.2134 的 speedup"
+    ],
+    "risks": [
+      "尾部处理风险：tail_divisible 为 false，需额外处理非向量长度整数倍的剩余部分",
+      "别名风险：x 和 y 可能存在重叠内存区域，影响向量化结果正确性",
+      "寄存器压力：LMUL=8 可能导致寄存器组不足，尤其是在复杂路径中",
+      "编译器支持风险：RISC-V Vector Extension 支持程度依赖编译器实现"
+    ],
+    "parameters": {
+      "lmul": "建议值 8，依据策略证据中 value_in_instance 和硬件能力",
+      "sew": "建议值 64，依据数据类型为 double，与策略参数一致"
+    },
+    "conflicts": []
+  },
+  {
+    "strategy_id": "stg:axpy:tail_handle_d",
+    "strategy_name": "动态 vl / 掩码尾部处理",
+    "applies": true,
+    "confidence": 0.7473,
+    "evidence": [
+      "conditions_satisfied 中包含 dtype、loop_depth、size_regime、tail_divisible",
+      "evidence 中 speedup 为 1.2134，pass_rate 为 1.0",
+      "template 支持动态 vl 处理尾部，适合 tail_divisible=false 的情况",
+      "arch_parameters 中 sew=64 匹配 double 类型需求",
+      "patterns 匹配 pat:axpy:post.tail_case"
+    ],
+    "risks": [
+      "尾部处理依赖动态 vl，可能导致数值一致性问题或边界处理错误",
+      "LMUL=8 可能导致高寄存器压力，影响整体性能",
+      "stride_x 和 stride_y 虽为 1，但未验证编译器是否优化为连续访问模式",
+      "动态 vl 生成可能在特定微架构上带来不可预期的性能波动",
+      "未明确处理 x 和 y 的内存别名问题"
+    ],
+    "parameters": {
+      "SEW": 64,
+      "LMUL": 8
+    },
+    "conflicts": []
+  },
+  {
+    "strategy_id": "stg:axpy:vectorize_d",
+    "strategy_name": "RVV 向量化内核（vsetvl + vle/vfmacc/vse）",
+    "applies": true,
+    "confidence": 0.8,
+    "evidence": [
+      "conditions_satisfied 包含 dtype、loop_depth、size_regime、stride_x、aligned，与查询代码特征匹配",
+      "arch_scope 为 arch_specific 且 arch 为 rvv，目标硬件 k1_rvv256 属于 RVV 架构",
+      "evidence 中 ev:axpy:geomean 表明在 qemu-riscv64-vlen256 上有性能提升",
+      "template 提供了具体的 RVV 向量化实现结构，符合硬件能力"
+    ],
+    "risks": [
+      "尾部处理未明确：查询特征中 tail_divisible 为 false，模板未处理非整除尾部逻辑",
+      "指针别名风险：模板 check_hints 提到指针别名会阻止向量化，但未提供规避策略",
+      "寄存器压力：LMUL=8 占用大量向量寄存器，可能影响调度和性能",
+      "stride_y 未限制为 1，但模板中未处理 stride_y != 1 的情况",
+      "硬件支持验证不足：evidence 基于 QEMU 模拟，不代表真实 k1_rvv256 性能表现"
+    ],
+    "parameters": {
+      "lmul": "value_in_instance 为 8，建议保持以匹配硬件配置",
+      "sew": "value_in_instance 为 64，由 double 类型决定不可更改",
+      "vector_len": "value_in_instance 为 32，由 VLEN=256, LMUL=8, SEW=64 推导得出"
+    },
+    "conflicts": []
+  }
+]
+
+【4 标准综合报告（supportive / complementarity / accuracy / completeness）】
+{
+  "criteria": {
+    "supportive": {
+      "score": 0.9,
+      "reason": "所有策略均采用 LMUL=8 和 SEW=64，参数一致；向量化策略与尾部处理策略在阶段上分离，可同时应用；无明显冲突项"
+    },
+    "complementarity": {
+      "score": 0.85,
+      "reason": "stg:axpy:vectorize_d 覆盖主循环向量化，stg:axpy:tail_handle_d 处理尾部，stg:axpy:specialize_d 提供寄存器分组参数调优，三者分别作用于不同实现阶段"
+    },
+    "accuracy": {
+      "score": 0.7,
+      "reason": "尾部处理依赖动态 vl 可能引入数值一致性风险；未明确处理 x 和 y 别名问题；向量化实现需确保与标量语义一致"
+    },
+    "completeness": {
+      "score": 0.8,
+      "reason": "主循环、尾部处理已覆盖；stride_x 和 stride_y 均为 1，未处理任意步长情况；n<=0 分支未显式提及，需补充"
+    }
+  },
+  "criteria_scores": {
+    "supportive": 0.9,
+    "complementarity": 0.85,
+    "accuracy": 0.7,
+    "completeness": 0.8
+  },
+  "overall": "三个策略可组合应用，覆盖主循环向量化、尾部处理和寄存器参数调优，但需特别注意尾部处理和内存别名问题",
+  "recommended": [
+    "stg:axpy:vectorize_d",
+    "stg:axpy:tail_handle_d",
+    "stg:axpy:specialize_d"
+  ],
+  "guidance": "['主循环采用 RVV 向量化内核，使用 vsetvl + vle/vfmacc/vse 指令模式', '向量化阶段采用 LMUL=8 和 SEW=64 参数，对应 double 类型和硬件能力', '尾部处理使用动态 vl 和掩码方式，适配 tail_divisible=false 的情况', '对 n<=0 分支进行单独判断处理，确保边界安全', '考虑内存别名问题，必要时加入 restrict 修饰符或标量回退路径', '注意寄存器压力管理，避免 LMUL=8 导致调度瓶颈']",
+  "conflicts": [
+    "stg:axpy:vectorize_d 的尾部处理未覆盖非整除情况，需与 stg:axpy:tail_handle_d 协调"
+  ]
+}
+
+【归约算子补充要求（目标算子为 ddot / dasum / dnrm2 等归约类时必须遵守）】
+- 向量累加器初始化为 0：`vfloat64m8_t vsum = __riscv_vfmv_v_f_f64m8(0.0, vlmax);`
+- 循环结束后**必须做水平归约**再返回标量，例如：
+  `vfloat64m1_t vred = __riscv_vfredusum_vs_f64m8_f64(vsum, __riscv_vfmv_v_f_f64m1(0.0, 1), vl);`
+  `dot = __riscv_vfmv_f_s_f64m1_f64(vred);`
+  或使用 `vfredosum`；**不能只取 `vsum[0]`，也不能用 `__riscv_vfmv_f_s_f64m8_f64(vsum)` 代替水平归约**。
+- 尾部剩余元素用标量循环累加；注意 n<=0、inc 任意（含负步长）。
+- 不要使用不存在的 intrinsic（例如 `__riscv_vmvinf_f64m8`、带两个参数的 `__riscv_vfmv_f_s_f64m8`）；只使用 `riscv_vector.h` 中真实存在的 API。
+
+【硬性要求】
+1. 只输出一个完整的 C 函数（函数签名 + 花括号函数体），不要输出 `main`，不要输出 BLAS/OpenBLAS 头文件，不要输出 markdown 代码围栏、解释文字或测试代码；
+2. 生成必须落实综合报告 `guidance` 中的实现要点；被判定 `applies=false` 的策略不得采用，`conflicts` 中列出的组合必须避免；
+3. 函数名、返回类型、参数列表必须与上面签名完全一致；
+4. 数值语义与基线一致：注意 n<=0、da==0、inc_x/inc_y 任意（含负步长）、尾部元素；
+5. 允许使用 RISC-V RVV intrinsic（需要时可写 `#include <riscv_vector.h>`），但不得依赖 OpenBLAS 内部头文件/宏；
+6. 不要编造未给出的性能数字；代码必须能被 C99/C11 编译器单独编译，不要留 TODO、伪代码或未定义的辅助函数（如需要可写 static 辅助函数放在目标函数之前）。

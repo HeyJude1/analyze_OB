@@ -1,0 +1,19 @@
+  k1_rvv256:
+    vendor: SpacemiT
+    uarch: "K1 (Banana Pi F3)"
+    isa: ["RVV 1.0", Zba, Zbb, Zbc, Zbs]
+    vector_bits: 256
+    fp64_lanes: 4
+    lmul_max: 8
+    vector_regs: 32
+    l1d_kb: 32
+    l2_kb: 512
+    l3_mb: 0
+    cacheline_b: 64
+    cores: 8
+    freq_ghz: 1.6
+    peak_gflops_fp64: 0.0
+    stream_bw_gbps: 0.0
+    measure_env: native
+    compiler: "riscv64-linux-gcc 14.3 -O3 -march=rv64gcv_zvl256b"
+    note: "freq 为标称 1.6GHz（待锁频实测确认）；peak/stream 待实测"

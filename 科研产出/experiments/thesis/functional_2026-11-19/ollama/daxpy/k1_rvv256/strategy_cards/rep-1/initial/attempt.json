@@ -1,0 +1,13 @@
+{
+  "status": "compile_failed",
+  "compile_ok": false,
+  "correct": null,
+  "failure_reason": "other_compiler_error",
+  "usage": {
+    "prompt_tokens": 2933,
+    "completion_tokens": 238,
+    "total_tokens": 3171
+  },
+  "diagnostic": "../experiments/thesis/functional_2026-11-19/ollama/daxpy/k1_rvv256/strategy_cards/rep-1/initial/candidate.c: In function ‘op_daxpy’:\n../experiments/thesis/functional_2026-11-19/ollama/daxpy/k1_rvv256/strategy_cards/rep-1/initial/candidate.c:15:16: error: ‘i’ undeclared (first use in this function)\n   15 |         for (; i < n; ++i) {\n      |                ^\n../experiments/thesis/functional_2026-11-19/ollama/daxpy/k1_rvv256/strategy_cards/rep-1/initial/candidate.c:15:16: note: each undeclared identifier is reported only once for each function it appears in\n",
+  "candidate_sha256": "643ec6baffd5858f004ff94cac8cfa50c4230a459fe5a296f99fd46a01438b48"
+}

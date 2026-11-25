@@ -1,0 +1,34 @@
+{
+  "criteria": {
+    "supportive": {
+      "score": 0.9,
+      "reason": "三个策略均适用于 dtype=d、loop_depth=1、reduction=true、size_regime=large 的场景，策略参数 SEW=64 和 LMUL=8 保持一致，无直接冲突。尾部处理策略 tail_handle_d 明确支持 tail_divisible=false，与向量化策略一致。"
+    },
+    "complementarity": {
+      "score": 0.95,
+      "reason": "specialize_d 负责寄存器分组和向量化参数设定，split_d 构建归约累加链以提升向量利用率，tail_handle_d 补充处理尾部非整除部分，三者分别作用于向量化参数配置、主循环归约优化、尾部处理阶段，形成完整实现链条。"
+    },
+    "accuracy": {
+      "score": 0.7,
+      "reason": "向量化和归约顺序可能影响浮点运算顺序，带来数值一致性风险；但 tail_handle_d 采用动态 vl 和掩码处理确保尾部正确性，整体保持 BLAS 语义一致性。stride_x/y=1 已覆盖，无需处理别名等其他边界情况。"
+    },
+    "completeness": {
+      "score": 0.9,
+      "reason": "specialize_d 和 split_d 覆盖主循环向量化与归约链构建，tail_handle_d 处理尾部非整除部分；所有策略均适用于 n 为 large 的情况，n<=0 等边界情况未明确覆盖，但非本优化重点。"
+    }
+  },
+  "criteria_scores": {
+    "supportive": 0.9,
+    "complementarity": 0.95,
+    "accuracy": 0.7,
+    "completeness": 0.9
+  },
+  "overall": "三策略组合具备高互补性与一致性，可形成完整实现流程，适用于 k1_rvv256 上的大规模 double 点积计算。",
+  "recommended": [
+    "stg:dot:specialize_d",
+    "stg:dot:split_d",
+    "stg:dot:tail_handle_d"
+  ],
+  "guidance": "['主循环采用 LMUL=8、SEW=64 向量寄存器配置进行向量化，利用 RISC-V Vector Extension 指令提升吞吐', '在向量化主循环中构建 split_factor=1 的归约累加链，减少最终归约开销并提升指令级并行度', '尾部采用动态 vl 设置与掩码机制处理非整除部分，确保尾部处理正确性', '参数选取 LMUL=8、SEW=64 适配 double 类型与 k1_rvv256 硬件特性', '无需额外处理 stride_x/y > 1 的情况，当前策略仅适用于单位步长']",
+  "conflicts": []
+}

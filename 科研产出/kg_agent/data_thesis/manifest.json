@@ -1,0 +1,307 @@
+{
+  "build_mode": "offline",
+  "data": {
+    "edges.jsonl": {
+      "lines": 628,
+      "sha256": "f0a08bd6ae3f06784454198a13a6947e2a6d05e974884218e9ca747df75a1253"
+    },
+    "nodes.jsonl": {
+      "lines": 178,
+      "sha256": "5efa3abaa316de2cf428d4f2b64c82640ace40e003aaf7a3a8bad16b7113e202"
+    }
+  },
+  "extractor_version": "kgagent-v1.5",
+  "generated_at": "2026-11-19T21:21:42+08:00",
+  "inputs": [
+    {
+      "bytes": 467,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/daxpy_k.c",
+      "sha256": "32352a9efe234c46502a42b88877f0bda9502331c82d767485a1d890cead9f20"
+    },
+    {
+      "bytes": 2742,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/daxpy_k_rvv.c",
+      "sha256": "05e31a1de8e8c6266da52cc505dc3f55a6ba7e88c31a6bcf6fbd73b72612a3f8"
+    },
+    {
+      "bytes": 377,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/15_ddot_op/ddot_k.c",
+      "sha256": "da070977341a487f99f87e9fa2de6f7c53765949b349e9a5ce4f1a2efd7c6714"
+    },
+    {
+      "bytes": 2244,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/15_ddot_op/ddot_k_rvv.c",
+      "sha256": "81158123c1972c9479bac98c475ce0cb0e2688bbe8ede5ad7fefe5bcd6e4c8cc"
+    },
+    {
+      "bytes": 4906,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/16_dgemm_op5/dgemm_k.c",
+      "sha256": "7ba4cb1ade402b62eee0bbbac172c062cab6fab2411065db427e3907e2380414"
+    },
+    {
+      "bytes": 20798,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/16_dgemm_op5/dgemm_k_rvv.c",
+      "sha256": "0fe8b55dc32fbb0f3dc12c882f15d431fb5026fbe5f9a45ef7b5b8365ca52cfc"
+    },
+    {
+      "bytes": 543,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/17_dgemv_op/dgemv_k.c",
+      "sha256": "663a05f573de734575aecba2ff210c1deed0bafa75d91e6f2916bf86b71091f4"
+    },
+    {
+      "bytes": 1615,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/17_dgemv_op/dgemv_k_rvv.c",
+      "sha256": "025f863d834d86552ef6c90521bb4c843198c920e1af7ba60940cbd7ebc870ba"
+    },
+    {
+      "bytes": 9362,
+      "path": "科研产出/kg_agent/config.yaml",
+      "sha256": "651ecdd8e1f0aeba2d379a42aae5175f62162b45691f29f2da65dfa0929b0833"
+    },
+    {
+      "bytes": 4106,
+      "path": "科研产出/kg_agent/data_thesis/corpus_multiarch/x86_avx2/axpy/daxpy.c",
+      "sha256": "69bb6727f4f80b60ecb630529cc126701c9887c6ad7204f905d7d7567c97f34c"
+    },
+    {
+      "bytes": 3387,
+      "path": "科研产出/kg_agent/data_thesis/corpus_multiarch/x86_avx2/axpy/daxpy_microk_haswell-2.c",
+      "sha256": "e30bbc70df79aeaac17a9e63a6f49f400d4c58c4d739a6de238a6c2b79304169"
+    },
+    {
+      "bytes": 5348,
+      "path": "科研产出/kg_agent/data_thesis/corpus_multiarch/x86_avx2/dot/ddot.c",
+      "sha256": "19c3fdf5384bf4311729fb8f4f1607489bee76f0b9937a08007606d7e00d149c"
+    },
+    {
+      "bytes": 3877,
+      "path": "科研产出/kg_agent/data_thesis/corpus_multiarch/x86_avx2/dot/ddot_microk_haswell-2.c",
+      "sha256": "d3d0bd26bd77da72e3750c530ba9d9d4355394bfa50d53bea8e132b6fed680ea"
+    },
+    {
+      "bytes": 109703,
+      "path": "科研产出/kg_agent/data_thesis/corpus_multiarch/x86_avx2/gemm/dgemm_kernel_16x2_haswell.S",
+      "sha256": "76aac28da0adcf30ebfe28c30ec6c0b22e647c03363659f8fa974baf9956da8f"
+    },
+    {
+      "bytes": 99496,
+      "path": "科研产出/kg_agent/data_thesis/corpus_multiarch/x86_avx2/gemm/dgemm_kernel_4x8_haswell.S",
+      "sha256": "2ecd6f246c110605b7ef140f11fae2253d074d5fd12514db41067a66ec1dab11"
+    },
+    {
+      "bytes": 11534,
+      "path": "科研产出/kg_agent/data_thesis/corpus_multiarch/x86_avx2/gemv/dgemv_n_4.c",
+      "sha256": "62020f2bc92022b80a4deae0e54590f6094529589b5f9d1fa35289ce7a29efa6"
+    },
+    {
+      "bytes": 6116,
+      "path": "科研产出/kg_agent/data_thesis/corpus_multiarch/x86_avx2/gemv/dgemv_n_microk_haswell-4.c",
+      "sha256": "62d6650929802c762c7aaaf00b66895e68bf2244ed104643857082d81947c1ed"
+    },
+    {
+      "bytes": 14657,
+      "path": "科研产出/kg_agent/data_thesis/corpus_multiarch/x86_avx2/gemv/dgemv_t_4.c",
+      "sha256": "c5c385c9b77ed26a604b067aa858088c67eb0d3ef70cda75f2197335336dc1b8"
+    },
+    {
+      "bytes": 1772,
+      "path": "科研产出/kg_agent/schema/condition_vocab.yaml",
+      "sha256": "fc06756fdfe3a320e1ddef98f6006e4d6acda30bbc9e6933c620d79b0792deb3"
+    },
+    {
+      "bytes": 1271,
+      "path": "科研产出/kg_agent/schema/edge.schema.json",
+      "sha256": "feeb8e8c31ced2425664c10514bbe6085b8dd16d3ef78b560c464dfb90ceb549"
+    },
+    {
+      "bytes": 2479,
+      "path": "科研产出/kg_agent/schema/entities.yaml",
+      "sha256": "c2c49f2d80010d53d87691ac1b6cc11c3579bf5721323c3c314f645b9184d4ac"
+    },
+    {
+      "bytes": 3595,
+      "path": "科研产出/kg_agent/schema/hardware_profiles.yaml",
+      "sha256": "6341a97b58ec63f24d1ad54e707f8aa7e4e416776c9a2f05c61aaafdcff962d7"
+    },
+    {
+      "bytes": 1667,
+      "path": "科研产出/kg_agent/schema/node.schema.json",
+      "sha256": "adcb09041a83f6d342ccf90f8ad91bac5cde190cca12029d90c017db4cecfaa4"
+    },
+    {
+      "bytes": 2920,
+      "path": "科研产出/kg_agent/schema/relations.yaml",
+      "sha256": "1617088700ff8ff469e3b160d12b9f319dc6216775e08e8a387b312d28a10496"
+    },
+    {
+      "bytes": 1574,
+      "path": "科研产出/kg_agent/schema/vocab.yaml",
+      "sha256": "6e462ce733dc8a8cb4895251942fa4d9dcffc208d607285f504551c6c06179e9"
+    }
+  ],
+  "model_version": "offline-rules-v1",
+  "prompt_version": "s3-rules-v1",
+  "schema_version": "kg-v1.5",
+  "snapshot_id": "snap-kg-v1.5-thesis",
+  "source_stats": {
+    "characteristics": 206,
+    "corpus_artifacts": 8,
+    "diffs": 8,
+    "evidences": 0,
+    "multiarch_artifacts": 9,
+    "multiarch_commit": "OpenBLAS 0.3.27 (git ce3f668)",
+    "multiarch_diffs": 4,
+    "multiarch_impls": 4,
+    "multiarch_repo": "../openblas_src",
+    "normalized_strategies": 49,
+    "operators": 4,
+    "parameters": 12,
+    "patterns": 20,
+    "raw_strategies": 49,
+    "split_audit": {
+      "architectures": [
+        "x86_avx2",
+        "rvv"
+      ],
+      "excluded_shared_sources": [],
+      "holdout_source_hashes": [
+        "0767e44df77da7ff62c501209b1849732b6a095e7dd5eabddfaf364cee711c4b",
+        "08190fdb40de5b624b9ed4c969913e7231b9c410b24e4fe92c8c7a287c200a99",
+        "09a0ab510864394a97da69006a9a580e9d085d05b79655f07a36008354a6082d",
+        "0b52e88dcfb07f7657e0aaf06648f129ddc9c78195cff0bed4a28094b225ba10",
+        "0ba82f3e77f025d13abf09db63b8ac516f37ef398dbc4e9287d8dcbd29479102",
+        "13360a3fd193718307f9824bc2a24305bfbb16ac6e78b18df3a158613fdbc8f4",
+        "133a1fca8c0122e19455fa3b5e1b5554eaa589906987ee7545f410f2d37be7b2",
+        "14b3edb613b77ad7ef68c2164cb1e29b4a24b9f0f2f231998e7134992d62d335",
+        "1c6d9ff433922ff075904cbbd49eb9bb084ff85bc44c21e064b2e7e09a6e3fea",
+        "1cd39236fc8a9837afb034031187b2bea546a5143c598b35c8e5697479afd759",
+        "1e21b84a69456d09cb0c7d7dc7a110c69d4dfc72734a83ff2bc76280d4a32af9",
+        "1eed214b576bab3faa088e175a6fa3e0eb2de1e1364a5ee90700be7c30b6efe3",
+        "227300d340feca267ca02767130fa604d4a584156abea1b43a1e8a037c53c857",
+        "24fc5195387119c078e4f8920892ea08542f230cbee3ebb6d755432e8f6de20d",
+        "28f7c0edec44486d428f269b9838f6d40cfedf032bb310988acc09f1bf859423",
+        "31fb8b4a04ea6326be8d52d016e6052f771f276b6e1d2155f139be4dbf3ea15e",
+        "33105d6eeea118eba3cf81bcaec2a60394bdf25dd244549e91c0950a56ac15aa",
+        "37f63e065188ef807d65485271b87f959b584263fc9b272a20be49b1b3e1f8b9",
+        "383eab14d45c46981b15ca278097fb0adcaac6dd36a2113d2910ac2a8d69323f",
+        "41da3433fce4f50e71f90c67c63c3ae2f35548f95f49e66fe43f6469cf7c70f8",
+        "43cf2aa54aedf3f9f3bddd68b3256055700636cc44d68ffebb099068c56ade5f",
+        "492b7b92eb461fe083de1262c53a8be37290762c5ada0281041cca0d0443302c",
+        "4e590119a3b743a912a078a34af9cfdf1f18aae0efa55b79ee1291f71fa28983",
+        "522ebea9531ff5495bcc4a2b94415c7de83c5c85794063474526cb45b214f41b",
+        "52ef179ac91b2f25bd669e21ae706d3463fc1f6639eb756fdd168bcbf25502f4",
+        "53e326260dbccd96a21ec0bcfa848627d5ff98af5d721e50137d6c55541bb571",
+        "5ab5a918fb7f4aa3ab8206232ec9856f3f8f65f314ca0e77691d7c476615b0c9",
+        "5aeab8291304eb76cb12f563618d8798bc411f3c19c034d440d670919f0f2ebd",
+        "5eae775eb0c9964c08aa7cf7b660b5c2a0e89739e35111e11a82b6d01d334449",
+        "6800909c8616516124d9f347f0044a1892b88efb296599f28030e2a1f79f1ccf",
+        "6f371b2e0135e3097b3dfbfd5ff832e975d541c8780fc43cb875674dd84007fa",
+        "71a2055d5e46bd28cdc49be196387a6e73fc08f4c0f964180eca804b2caa3443",
+        "758d8b55edc5f51f6a58431e223e07c7ccbbc8ee69ea3c8265c5880ad55543d6",
+        "771003038ee41826172f92a0fa265e449fb808c34711000e5e67128bf44ecdb5",
+        "77a03b6fcf25d11821626096c4c70a769c37187854e61a853bc6e0e00ef6c746",
+        "795b950a494626e389cc2c53698da8566972f80d0afa3b462ee94757cd1306a2",
+        "7988a1d31cfce5dbc315fdb99a31df46b71dc46ad30ad138400c995c3a501bbe",
+        "7ffb8aa7d27626db3fa620c67e068653ff2d52dff64913327db40690782934ae",
+        "87456b6ee092024aa0919a1cc70bb8bc46c4170ee5714d988aa3e17437153023",
+        "8ccf701189d2c03e492c7771939610bdbc96525a5cf9dabe52956e54ff6096a2",
+        "8d1266a41734c84733dfd3d785a73fff00d45d5ef9b13c8c65a2382449b95d3e",
+        "8ddfd7660a65764fda4850783c860559ec1d07bb5fb1ffe77d057157a5d2ec9c",
+        "8e0fd7eb418f2a2b7221e89a9704aa222143764789a967ce62e3a949135e3120",
+        "8e747a68428ab813a5c0030f23ad6ec4ed54d935bbe17146dc5eae555741f4d2",
+        "8ea33cfab38d8d7fba7c61bb4673f018cef55b835a2affa1c4209b9a0e640625",
+        "9a7064546cf4b03fd33c5c39ffb598b854c7e232d20c6a634fe07addcb020a55",
+        "a142f500f2bc9def34c1ef085c7999383e0b053a1da781b30a9d0a5bafaae0f0",
+        "a423d27d90d02efa16dda1a1397d158bd06520f5ebe52bd2d2a978bc1a79be1c",
+        "ab14792cdbcb58c6bbb2d694b77775e26ccf558b4f336a1ea4a31fb2f6064d0a",
+        "af78884b3b3bcd0d8eff29c13064f560a6af76b1f0889ba0afa8daf5b842ced2",
+        "afa48d80ba12653238e9576832f7bc5d3819176989f17a76e5eaa81f8eefcc11",
+        "b55f0570a1b8b43b476a103056f83ef5c607f3854c5394fe0a645cb04e86f729",
+        "ba44c6241a53a602c2c965212c6c944c5a809772e3dee5c4b59c2b0a314dc629",
+        "c062013a978bc3901c757b598e717034ccb468462fa2e14085ac05ba3f53f2d6",
+        "c28fb87934f83048a4c6cfbf6c86f06c7e58979ab6f297609d2a395f1a183b76",
+        "c2b4489ada94397a37795b80f53abeedda74443ee945423f8424c8d3ba69462e",
+        "c3531f46d5b3df493a8d929f4191a2a7ab367d291ba695f9fc442d59c8d06f92",
+        "c62faaa586fd0bdbf052e205a0951b2f8d0b516f6b7d9e1479886f244675c31d",
+        "c97bb07e2c99b57d1907accc295a015452b8b091a9cc548316e3889e798fd5fa",
+        "cbab2ceffe37c7d2009f830b7467bd5ae20cffabf211300fcb27fa70227d06c7",
+        "d01a3ced55f935896d497619054a2f3b8de0c9536532e4461b72cb0d3d858f73",
+        "d31251ddc9c3ea882ae7e772922be1a5a32a3daec1882e08c25f449e708e0c17",
+        "da1eeadc9436cfc802ecda887b788e7e189eab89f86de13f0db7f4220283d57b",
+        "dc7ab6fba58460dd8c8f4987b57fd9174e01cc6e4349a37cd1744512222902d2",
+        "e40cbc3a4f83a2da9d196fe1d384167c128537697424d3dcd665e419fc341033",
+        "e52579233e66be7ca65866bc3a2275c99b0ddac1d7db73fac7f77b439b67764c",
+        "ed04d6f5382dc9b6c05dd7fffbcd3c34cc987dbb4e2a961e77e4f78fa2033d89",
+        "f05a5bffc803eda7f7e68bc3a23c141e65c58752e7e757ff765e300cc010e316",
+        "f165bdf23d39e569c9b7e6db6370dcfdfff2d9f6ab7a4c62b49cd073abf5c8a2",
+        "f496435eedd0f2d64faabc42d5224ccd8d8c46f543e2736d7e728eea4d9df388",
+        "fcb0c718fb1351c24d9ed72b7ab8ef022be414e7a8477a969360817aeb67a91e",
+        "ff8f58af98987b68f3f058879404799658fc31dc476eb91782aa58b362fd0e45"
+      ],
+      "holdout_source_hashes_checked": 72,
+      "legacy_analysis_and_historical_logs": "excluded",
+      "operators": [
+        "axpy",
+        "dot",
+        "gemm",
+        "gemv"
+      ],
+      "overlaps_with_shared_source_cases": [
+        {
+          "op": "symm",
+          "path": "kernel/x86_64/dgemm_kernel_4x8_haswell.S",
+          "sha256": "2ecd6f246c110605b7ef140f11fae2253d074d5fd12514db41067a66ec1dab11"
+        },
+        {
+          "op": "symm",
+          "path": "29_dsymm_op1/dsymm_k.c",
+          "sha256": "7ba4cb1ade402b62eee0bbbac172c062cab6fab2411065db427e3907e2380414"
+        },
+        {
+          "op": "symm",
+          "path": "29_dsymm_op1/dsymm_k_rvv.c",
+          "sha256": "0fe8b55dc32fbb0f3dc12c882f15d431fb5026fbe5f9a45ef7b5b8365ca52cfc"
+        }
+      ],
+      "shared_source_cases": [
+        "symm"
+      ]
+    },
+    "templates": 49
+  },
+  "split": "thesis",
+  "stats": {
+    "arch_correction": "多架构实现 = cx_operator_tool RVV 语料 + openblas_src 复制件",
+    "cross_arch_shared_count": 7,
+    "edges": 628,
+    "edges_by_type": {
+      "OPERATOR_HAS_PATTERN": 20,
+      "PATTERN_HAS_CHARACTERISTIC": 43,
+      "PATTERN_OPTIMIZED_BY": 43,
+      "STRATEGY_APPLIES_WHEN": 168,
+      "STRATEGY_COMPOSES_WITH": 5,
+      "STRATEGY_CONFLICTS_WITH": 2,
+      "STRATEGY_GENERALIZES": 52,
+      "STRATEGY_HAS_PARAMETER": 56,
+      "STRATEGY_HAS_TEMPLATE": 49,
+      "STRATEGY_REQUIRES_ISA": 32,
+      "STRATEGY_TARGETS_UARCH": 158
+    },
+    "implementation_files": 13,
+    "nodes": 178,
+    "nodes_by_type": {
+      "CodeCharacteristic": 9,
+      "ComputationPattern": 20,
+      "HardwareProfile": 6,
+      "ISACapability": 6,
+      "ImplementationTemplate": 49,
+      "Microarchitecture": 6,
+      "Operator": 4,
+      "OptimizationStrategy": 49,
+      "SourceArtifact": 17,
+      "TunableParameter": 12
+    },
+    "ops_with_multi_arch": 4,
+    "strategies_with_arch_scope": 49
+  }
+}

@@ -1,0 +1,20 @@
+# kg/condition_vocab.yaml（v1.5）
+# 目的：把自由文本 applicability_conditions 变成可判断的谓词；检索时 hard=True 做硬过滤，False 做加权。
+
+predicates:
+  dtype:          {type: enum, values: [s, d, c, z],        description: "BLAS 数据类型"}
+  precision:      {type: enum, values: [single, double],    description: "精度"}
+  stride_x:       {type: int,  ops: [eq, ne, gt, lt],       description: "x 步长 incx"}
+  stride_y:       {type: int,  ops: [eq, ne, gt, lt],       description: "y 步长 incy"}
+  loop_depth:     {type: int,  ops: [ge, le, eq],           description: "循环嵌套深度"}
+  size_regime:    {type: enum, values: [small, medium, large], description: "规模档（阈值按算子定义）"}
+  aligned:        {type: bool,                              description: "数据是否按向量宽度对齐"}
+  tail_divisible: {type: bool,                              description: "n 是否整除向量宽度"}
+  structural:     {type: enum, values: [symmetric, triangular, hermitian, banded, none]}
+  reduction:      {type: bool,                              description: "是否含跨迭代归约（dot/nrm2/asum 等）"}
+
+# 规模档的默认阈值（在 task.yaml 里可覆盖）
+size_regime_thresholds:
+  L1: {small: 4096, medium: 65536}
+  L2: {small: 128,  medium: 1024}
+  L3: {small: 64,   medium: 256}

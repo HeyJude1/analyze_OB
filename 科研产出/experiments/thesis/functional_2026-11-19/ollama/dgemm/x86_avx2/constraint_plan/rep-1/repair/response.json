@@ -1,0 +1,9 @@
+{
+  "raw": "```c\n#include \"opbench.h\"\n\nvoid op_dgemm(size_t m, size_t n, size_t k, double alpha, const double *a, size_t lda,\n              const double *b, size_t ldb, double beta, double *c, size_t ldc) {\n    if (alpha == 0.0 || k == 0) {\n        if (beta != 0.0) {\n            for (size_t i = 0; i < m; ++i) {\n                for (size_t j = 0; j < n; ++j) {\n                    c[i * ldc + j] *= beta;\n                }\n            }\n        }\n        return;\n    }\n\n    const double *pa = a;\n    double *pc = c;\n\n    size_t bm = m, bn = n, bk = k;\n    size_t reg_block_n = 4; // Fixed to 4 accumulators for simplicity\n\n    while (bm > 0 && bn > 0 && bk > 0) {\n        size_t i = 0, j = 0, p = 0;\n\n        double acc[reg_block_n] = {0.0};\n\n        // Main block\n        for (; i + reg_block_n <= bm; i += reg_block_n) {\n            for (j = 0; j < bn; ++j) {\n                for (p = 0; p < bk; ++p) {\n                    for (size_t jj = 0; jj < reg_block_n; ++jj) {\n                        acc[jj] += pa[i * lda + p] * b[p * ldb + j + jj];\n                    }\n                }\n            }\n        }\n\n        // Tail block\n        for (; i < bm; ++i) {\n            for (j = 0; j < bn; ++j) {\n                double sum = 0.0;\n                for (p = 0; p < bk; ++p) {\n                    sum += pa[i * lda + p] * b[p * ldb + j];\n                }\n                pc[i * ldc + j] += alpha * sum;\n            }\n        }\n\n        pa += reg_block_n * lda;\n        pc += reg_block_n;\n        bm -= reg_block_n;\n        bn = n;\n    }\n}\n```",
+  "usage": {
+    "prompt_tokens": 2214,
+    "completion_tokens": 478,
+    "total_tokens": 2692
+  },
+  "stop_reason": "stop"
+}

@@ -1,0 +1,91 @@
+# E09 MPSA run `test_auto_org`
+
+> 生成时间：2026-11-12T21:27:28+08:00 ｜ 实验：E09_MPSA ｜ provider：`mock` ｜ profile：`k1_rvv256`
+>
+> ⚠️ mock 冒烟：结果仅验证链路，不代表方法效果
+
+## 1. 配置
+
+| 项 | 值 |
+|---|---|
+| run_id | `test_auto_org` |
+| provider / model | `mock` / `mock` |
+| 条件 | b3（B3 · StrategyPack 直注入 → 单次生成） |
+| 算子 | daxpy |
+| seeds | 1 |
+| sizes / reps | 16384 / 10 |
+| mpsa backend | cli |
+| mpsa impl | kgagent `1.5.0` / mpsa.py sha256 `48badce182d4fb6e` / cli.py `8e6a3b596ac5c44e` |
+| WSL / CC | `Ubuntu` / `riscv64-linux-gnu-gcc` |
+| CFLAGS | `-O3 -march=rv64gcv_zvl256b_zba_zbb_zbc_zbs -mabi=lp64d -static` |
+| QEMU | `qemu-riscv64` `-cpu rv64,v=true,vlen=256,zba=true,zbb=true,zbc=true,zbs=true` |
+
+## 2. 命令
+
+mpsa（示例，实际每 cell 的完整命令见 `results.jsonl.mpsa_cmd`）：
+
+```powershell
+C:\Users\MSI\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\python.exe -m kgagent.cli mpsa --op daxpy --profile k1_rvv256 --code C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\tasks\daxpy\input\generic.c --mode b3 --provider mock --out C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\../artifacts/test_auto_org/daxpy_b3 --top-k 6
+```
+
+编译 + QEMU（`experiments/harness/qemu.py` 生成，产物在 `harness/`）：
+
+```bash
+riscv64-linux-gnu-gcc -O3 -march=rv64gcv_zvl256b_zba_zbb_zbc_zbs -mabi=lp64d -static ... -o bin
+qemu-riscv64 -cpu rv64,v=true,vlen=256,zba=true,zbb=true,zbc=true,zbs=true ./bin 16384 10
+```
+
+## 3. 结果总览
+
+| op | 条件 | size | initial | repair_rounds | compile_ok | correct | maxdiff | qemu_exit | gen_tokens | repair_tokens | mpsa_s | KCS | status |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| daxpy | b3 | 16384 | `ok` | 0 | ✅ | ✅ | 0.00e+00 | 0 | 0 | 0 | 0.108 | 0.00 | `ok` |
+
+汇总：**cells=1，ok=1，FCR_final=100.0%（initial 100.0%）**，编译通过率 final 100.0%（initial 100.0%），总 gen tokens=0（LLM calls=1），KCS 均值 0.00（n=1）
+
+> `ok`/FCR 只表示“编译通过 + 数值正确”，**不含性能含义**；QEMU 的 `best=` 毫秒数不得进性能表（见 `08b` §5.1）。
+
+## 4. 逐 cell 详情
+
+### daxpy × b3（seed=1，n=16384）
+
+- **status（final）**：`ok`
+- **mpsa**：backend=`cli` exit=0 elapsed=0.11s，model=`mock`
+- **检索**：4 条策略 `stg:axpy:specialize_d` LMUL/SEW 向量寄存器分组调优；`stg:axpy:tail_handle_d` 动态 vl / 掩码尾部处理；`stg:axpy:vectorize_d` RVV 向量化内核（vsetvl + vle/vfmacc/vse）；`stg:axpy:specialize_s` 任意步长 inc 累加访问
+- **B3 分析**：无（策略包直注入）
+- **prompt**：generate=17536 chars，analysis=0 chars，synthesis=0 chars
+- **生成代码**：424 bytes，sha256=`3c840edefc0a8ee5`，存档 `../artifacts/test_auto_org/daxpy_b3/generated.c`
+- **编译（final）**：✅ ok（3.52s）；正确性：✅，maxdiff=0.000e+00，reldiff=0.000e+00，qemu_exit=0，timeout=False
+- **QEMU 计时（仅存档，不是性能）**：best=0.1108 ms（qemu_only=True）
+- **token**：total=0（prompt=0 / completion=0 / calls=1）
+- **KCS（启发式 v0）**：0.00（matched 0 / checkable 4；retrieved 4；weak-only 2；uncheckable 0）
+
+  最终代码前 20 行（全文见 `../artifacts/test_auto_org/daxpy_b3/generated.c`；初版见 `../artifacts/test_auto_org/daxpy_b3/generated_initial.c`）：
+
+  ```c
+  typedef long long BLASLONG;
+  
+  int daxpy_k(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, double da, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y, double *dummy, BLASLONG dummy2)
+  {
+      BLASLONG i;
+      BLASLONG ix = 0;
+      BLASLONG iy = 0;
+  
+      if (n <= 0) return 0;
+      if (da == 0.0) return 0;
+  
+      for (i = 0; i < n; i++) {
+          y[iy] += da * x[ix];
+          ix += inc_x;
+          iy += inc_y;
+      }
+      return 0;
+  }
+  ```
+
+## 5. 结论与下一步
+
+- 本次为 **mock 冒烟**：mock 代码是确定性标量参考实现，FCR/KCS/token **不代表 B3 vs B4 的方法效果**，仅验证链路与记录格式。
+- QEMU 只作正确性前置；性能（S_comp/EGC）须在 K1 真机按 `08b` 协议另测。
+- 失败单元按 `status` 分类处理：`compile_failed`/`wrong_answer` 应进入 E7 失败分析。
+- 产物目录：`../artifacts/test_auto_org/`；流水：`results.jsonl`。

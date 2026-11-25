@@ -1,0 +1,36 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "amd64",
+  "results": [
+    {
+      "task": "dsymm",
+      "target": "x86",
+      "variant": "candidate",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymm\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c",
+      "source_sha256": "46a6275fa91663f3cbb7e2b9e27954cfe378ea09348c1d79e8c687ccff788f14",
+      "status": "compile_error",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DSYMM",
+          "driver/check.c",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymm\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c",
+          "-o",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymm\\x86_avx2\\text_rag\\rep-1\\repair\\bin\\dsymm-x86-candidate.exe",
+          "-lm"
+        ],
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "C:/msys64/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: C:\\Users\\MSI\\AppData\\Local\\Temp\\ccvL5taw.o:candidate.c:(.text+0x21b): undefined reference to `op_dscal'\ncollect2.exe: error: ld returned 1 exit status\n"
+      }
+    }
+  ]
+}

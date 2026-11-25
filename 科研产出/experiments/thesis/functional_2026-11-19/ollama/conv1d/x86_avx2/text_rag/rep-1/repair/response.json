@@ -1,0 +1,9 @@
+{
+  "raw": "```c\n#include \"opbench.h\"\n\nvoid op_conv1d(size_t n, size_t k, const double *x, const double *w, double *y) {\n    if (k == 0 || k > n) return;\n    const size_t len = n - k + 1;\n\n    // Register blocking\n    const size_t reg_block_m = 4; // Example value, adjust based on actual register availability\n    const size_t reg_block_n = 4; // Example value, adjust based on actual register availability\n\n    for (size_t i = 0; i < len; i += reg_block_m) {\n        for (size_t j = 0; j < k; j += reg_block_n) {\n            double sum[reg_block_n];\n            op_dscal(reg_block_n, 0.0, sum, 1);\n            for (size_t m = 0; m < reg_block_m && i + m < len; ++m) {\n                for (size_t n = 0; n < reg_block_n && j + n < k; ++n) {\n                    sum[n] += x[i + m + j + n] * w[k - 1 - j - n];\n                }\n            }\n            for (size_t m = 0; m < reg_block_m && i + m < len; ++m) {\n                y[i + m] += sum[m % reg_block_n];\n            }\n        }\n    }\n\n    // Tail handling\n    for (size_t i = len - len % reg_block_m; i < len; ++i) {\n        double sum = 0.0;\n        for (size_t j = 0; j < k; ++j) {\n            sum += x[i + j] * w[k - 1 - j];\n        }\n        y[i] = sum;\n    }\n}\n```",
+  "usage": {
+    "prompt_tokens": 1764,
+    "completion_tokens": 394,
+    "total_tokens": 2158
+  },
+  "stop_reason": "stop"
+}

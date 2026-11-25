@@ -1,0 +1,6 @@
+# experiments 本地缓存（不应进版本库/交付包）
+.cache/
+__pycache__/
+*.pyc
+# 临时调试产物
+runs/*_tmp/

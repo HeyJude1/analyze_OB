@@ -1,0 +1,46 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "amd64",
+  "results": [
+    {
+      "task": "dsymv",
+      "target": "x86",
+      "variant": "candidate",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymv\\x86_avx2\\constraint_plan\\rep-1\\repair\\candidate.c",
+      "source_sha256": "4be921c64e1b0a0bdf579ca80731a009d3b8bd4e356d1580bbb1ed3156f531d9",
+      "status": "check_failed",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DSYMV",
+          "driver/check.c",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymv\\x86_avx2\\constraint_plan\\rep-1\\repair\\candidate.c",
+          "-o",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymv\\x86_avx2\\constraint_plan\\rep-1\\repair\\bin\\dsymv-x86-candidate.exe",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "10e04426e8c2179d787469a037182ce1d482d0fc2cfc6b0255ec650c7e1cd66f",
+      "check": {
+        "argv": [
+          "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymv\\x86_avx2\\constraint_plan\\rep-1\\repair\\bin\\dsymv-x86-candidate.exe"
+        ],
+        "exit_code": 1,
+        "stdout": "720 cases, 2850 failures\n",
+        "stderr": "dsymv triangle/stride/alpha/beta case 121 cell 2: got nan expected 0.32497238424248359\ndsymv triangle/stride/alpha/beta case 122 cell 2: got nan expected -7.071538461538462\ndsymv triangle/stride/alpha/beta case 126 cell 2: got nan expected 1.3263813155654371\ndsymv triangle/stride/alpha/beta case 127 cell 4: got nan expected 1.9895165659365794\ndsymv triangle/stride/alpha/beta case 128 cell 4: got nan expected -4.3821724137931035\ndsymv triangle/stride/alpha/beta case 132 cell 4: got nan expected 2.9897276417902048\ndsymv triangle/stride/alpha/beta case 133 cell 2: got -5.2038640952937119 expected -7.3090220855701507\ndsymv triangle/stride/alpha/beta case 134 cell 2: got 3.3635278514588864 expected -3.4176737400530501\ndsymv triangle/stride/alpha/beta case 138 cell 2: got -2.8218097643689886 expected -0.21625248893610702\ndsymv triangle/stride/alpha/beta case 139 cell 1: got nan expected 12.076754216240175\n"
+      },
+      "environment": "native"
+    }
+  ]
+}

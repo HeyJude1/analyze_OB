@@ -1,0 +1,78 @@
+{
+  "status": "ok",
+  "op": "daxpy",
+  "op_canonical": "axpy",
+  "profile": "k1_rvv256",
+  "mode": "b4",
+  "provider": "mock",
+  "model": "mock",
+  "out_dir": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\smoke_seed1_20261112_204416\\daxpy_b4",
+  "result_path": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\smoke_seed1_20261112_204416\\daxpy_b4\\mpsa_result.json",
+  "generated_c_path": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\smoke_seed1_20261112_204416\\daxpy_b4\\generated.c",
+  "retrieved": {
+    "count": 4,
+    "top_k": 6,
+    "strategy_ids": [
+      "stg:axpy:specialize_d",
+      "stg:axpy:tail_handle_d",
+      "stg:axpy:vectorize_d",
+      "stg:axpy:specialize_s"
+    ],
+    "trace_id": "trace:20261112T204416:axpy:k1_rvv256"
+  },
+  "analysis": {
+    "analysis_k": 3,
+    "count": 3,
+    "strategy_ids": [
+      "stg:axpy:specialize_d",
+      "stg:axpy:tail_handle_d",
+      "stg:axpy:vectorize_d"
+    ]
+  },
+  "synthesis": {
+    "criteria_scores": {
+      "supportive": 0.82,
+      "complementarity": 0.76,
+      "accuracy": 0.9,
+      "completeness": 0.72
+    },
+    "overall": "mock: 建议按检索顺序组合向量化内核 + 动态 vl 尾部处理 + LMUL/展开参数调优。"
+  },
+  "usage": {
+    "calls": 5,
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0,
+    "by_stage": {
+      "analysis": {
+        "calls": 3,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "synthesis": {
+        "calls": 1,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "generate": {
+        "calls": 1,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      }
+    }
+  },
+  "elapsed_s": 0.034,
+  "code_meta": {
+    "signature": "int daxpy_k(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, double da, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y, double *dummy, BLASLONG dummy2)",
+    "function_name": "daxpy_k",
+    "wrapped_body": false,
+    "fences_removed": false,
+    "prologue_added": true,
+    "repairs": [],
+    "char_count": 424
+  },
+  "code_preview": "typedef long long BLASLONG;\n\nint daxpy_k(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, double da, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y, double *dummy, BLASLONG dummy2)\n{\n    BLASLONG i"
+}

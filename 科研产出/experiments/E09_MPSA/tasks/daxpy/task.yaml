@@ -1,0 +1,36 @@
+# E09 task: daxpy（来源：OpOptBench tasks/daxpy，v0.1；E09 补全 signature/semantics/容差，并加 driver 字段）
+# 用途：MPSA B3 vs B4 冒烟与后续正式实验的 L1 向量算子任务卡。
+op: daxpy
+level: L1
+role: S1_seen
+source: 13_daxpy_op/daxpy_k.c
+sizes: [1024, 16384, 1048576]
+input: input/generic.c
+driver: driver/test_daxpy.c
+rvv_expert: 13_daxpy_op/daxpy_k_rvv.c
+
+interface: >-
+  int daxpy_k(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, double da,
+              double *x, BLASLONG inc_x, double *y, BLASLONG inc_y,
+              double *dummy, BLASLONG dummy2);
+  （BLASLONG = long long；与 OpenBLAS daxpy_k 接口一致，返回 0）
+
+semantics: >-
+  BLAS daxpy：y := da * x + y。x/y 分别按 inc_x/inc_y 跨步，n 为元素个数；
+  允许 y 原地更新；da == 0 或 n < 0 时不访问内存、直接返回 0，y 保持不变。
+
+invariants:
+  - "只读写 x[i*inc_x] 与 y[i*inc_y]，不得依赖 inc_x/inc_y 的具体值（本实验用 inc=1）"
+  - "允许原地更新 y，不得分配 O(n) 额外内存"
+  - "n < 0 或 da == 0 时必须直接返回 0，不访问内存"
+  - "返回值为 int 且为 0"
+
+flops: "2*N（每元素 1 mul + 1 add）"
+bytes: "(读 x + 读 y + 写 y) * sizeof(double) = 3*N*8 理想最低"
+
+# 容差：driver 用相对误差判 exit code；harness 用绝对 maxdiff 复核（松一档防 FMA 末位舍入误判）
+# 自校准协议见 04_实验设计与评估协议.md §6.1（参考 vs 参考 η0，取 10×；本算子参考 η0=0）
+tolerance:
+  abs_maxdiff: 1.0e-10
+  rel_maxdiff: 1.0e-12
+  source: "driver 参考 vs 实现逐元素；reldiff 判 exit code，abs_maxdiff 供 harness 复核"

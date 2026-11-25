@@ -1,0 +1,13 @@
+{
+  "status": "compile_failed",
+  "compile_ok": false,
+  "correct": null,
+  "failure_reason": "other_compiler_error",
+  "usage": {
+    "prompt_tokens": 3346,
+    "completion_tokens": 603,
+    "total_tokens": 3949
+  },
+  "diagnostic": "../experiments/thesis/functional_2026-11-19/ollama/dgemm/k1_rvv256/strategy_cards/rep-1/initial/candidate.c: In function ‘op_dgemm’:\n../experiments/thesis/functional_2026-11-19/ollama/dgemm/k1_rvv256/strategy_cards/rep-1/initial/candidate.c:26:34: error: variable-sized object may not be initialized except with an empty initializer\n   26 |             double acc[bm][bn] = {0.0};\n      |                                  ^\n",
+  "candidate_sha256": "86d8011610fd9a80ab2a21567a7983095cc1307cedd44590ecdd1dab6ead7dd3"
+}

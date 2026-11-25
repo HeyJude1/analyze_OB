@@ -1,0 +1,49 @@
+{
+  "analogy_source": "dot",
+  "card_ids": [
+    "stg:abstract:tail_handling",
+    "stg:abstract:stride_dispatch",
+    "stg:abstract:vector_fma",
+    "stg:abstract:register_blocking"
+  ],
+  "contract_sha256": "5e998ce525341a58ef53e035e89170cf28355a203166b02971b4de12348a5e90",
+  "knowledge_bytes": 4482,
+  "method": "text_rag",
+  "operator": "dasum",
+  "profile": "x86_avx2",
+  "prompt": "dasum/x86_avx2/text_rag.json",
+  "prompt_sha256": "70af0619e119f77c7f1443394c7afe2d7e3a5b991d6620d9b6d484bbca3530d7",
+  "repetition": 1,
+  "source_sha256": "cc032d0101696873b29211d52155bf01b71bffac2dfd71b1a327b40780dff6cc",
+  "split": "holdout",
+  "status": "prepared",
+  "engine": "ollama",
+  "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+  "repair_attempted": true,
+  "initial": {
+    "status": "run_timeout",
+    "compile_ok": true,
+    "correct": false,
+    "failure_reason": "candidate_timed_out",
+    "usage": {
+      "prompt_tokens": 2592,
+      "completion_tokens": 269,
+      "total_tokens": 2861
+    },
+    "diagnostic": "",
+    "candidate_sha256": "5508709ec0857fa289da54f659a8a4d3dea0c743ad19c8031d7f2f6436ee54a9"
+  },
+  "final": {
+    "status": "run_timeout",
+    "compile_ok": true,
+    "correct": false,
+    "failure_reason": "candidate_timed_out",
+    "usage": {
+      "prompt_tokens": 1513,
+      "completion_tokens": 269,
+      "total_tokens": 1782
+    },
+    "diagnostic": "",
+    "candidate_sha256": "5508709ec0857fa289da54f659a8a4d3dea0c743ad19c8031d7f2f6436ee54a9"
+  }
+}

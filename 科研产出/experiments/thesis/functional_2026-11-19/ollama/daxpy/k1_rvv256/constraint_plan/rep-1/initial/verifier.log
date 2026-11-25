@@ -1,0 +1,13 @@
+daxpy rvv candidate: check_failed 60 cases, 758 failures
+
+wsl: �hKm0R localhost �NtM�n�FO*g\��P0R WSL0NAT !j_N�v WSL N/ec localhost �Nt0
+daxpy case 13 cell 2: got -0.071936339522546522 expected 1.0477453580901857
+daxpy case 13 cell 3: got -2.9250928381962864 expected -0.5755968169761273
+daxpy case 13 cell 4: got 1.0742705570291777 expected -0.04541114058355445
+daxpy case 13 cell 7: got -1.0159151193633953 expected -3.3654111405835545
+daxpy case 15 cell 1: got -2.5623342175066313 expected -3.5305835543766579
+daxpy case 15 cell 3: got -0.34748010610079577 expected 0.056339522546419087
+daxpy case 15 cell 6: got 0.88657824933687013 expected 0.48275862068965519
+daxpy case 15 cell 7: got -2.8303183023872678 expected -1.8620689655172413
+daxpy case 23 cell 2: got -4.1102917771883289 expected -0.6870026525198939
+daxpy case 23 cell 3: got -4.4256498673740055 expected -1.493368700265252

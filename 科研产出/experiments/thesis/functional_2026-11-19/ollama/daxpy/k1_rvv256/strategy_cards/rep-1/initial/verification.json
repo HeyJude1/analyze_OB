@@ -1,0 +1,37 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "x86_64",
+  "results": [
+    {
+      "task": "daxpy",
+      "target": "rvv",
+      "variant": "candidate",
+      "compiler_version": "riscv64-buildroot-linux-gnu-gcc.br_real (Buildroot 2021.11-18033-g83947c7bb6) 14.3.0",
+      "source": "../experiments/thesis/functional_2026-11-19/ollama/daxpy/k1_rvv256/strategy_cards/rep-1/initial/candidate.c",
+      "source_sha256": "643ec6baffd5858f004ff94cac8cfa50c4230a459fe5a296f99fd46a01438b48",
+      "status": "compile_error",
+      "compile": {
+        "argv": [
+          "/mnt/c/Users/MSI/Desktop/cx_operator_tool/operator_extract/toolchain/riscv-gcc-14.3/bin/riscv64-buildroot-linux-gnu-gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-march=rv64gcv",
+          "-mabi=lp64d",
+          "-static",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DAXPY",
+          "driver/check.c",
+          "../experiments/thesis/functional_2026-11-19/ollama/daxpy/k1_rvv256/strategy_cards/rep-1/initial/candidate.c",
+          "-o",
+          "../experiments/thesis/functional_2026-11-19/ollama/daxpy/k1_rvv256/strategy_cards/rep-1/initial/bin/daxpy-rvv-candidate",
+          "-lm"
+        ],
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "../experiments/thesis/functional_2026-11-19/ollama/daxpy/k1_rvv256/strategy_cards/rep-1/initial/candidate.c: In function ‘op_daxpy’:\n../experiments/thesis/functional_2026-11-19/ollama/daxpy/k1_rvv256/strategy_cards/rep-1/initial/candidate.c:15:16: error: ‘i’ undeclared (first use in this function)\n   15 |         for (; i < n; ++i) {\n      |                ^\n../experiments/thesis/functional_2026-11-19/ollama/daxpy/k1_rvv256/strategy_cards/rep-1/initial/candidate.c:15:16: note: each undeclared identifier is reported only once for each function it appears in\n"
+      }
+    }
+  ]
+}

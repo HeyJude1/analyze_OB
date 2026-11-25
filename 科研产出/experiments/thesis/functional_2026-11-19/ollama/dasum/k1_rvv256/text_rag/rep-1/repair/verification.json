@@ -1,0 +1,50 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "x86_64",
+  "results": [
+    {
+      "task": "dasum",
+      "target": "rvv",
+      "variant": "candidate",
+      "compiler_version": "riscv64-buildroot-linux-gnu-gcc.br_real (Buildroot 2021.11-18033-g83947c7bb6) 14.3.0",
+      "source": "../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/text_rag/rep-1/repair/candidate.c",
+      "source_sha256": "856816e33638f6a6f6c56a33f88b5e218c70bfeb8ee1481a516beba0bb8f5a71",
+      "status": "passed",
+      "compile": {
+        "argv": [
+          "/mnt/c/Users/MSI/Desktop/cx_operator_tool/operator_extract/toolchain/riscv-gcc-14.3/bin/riscv64-buildroot-linux-gnu-gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-march=rv64gcv",
+          "-mabi=lp64d",
+          "-static",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DASUM",
+          "driver/check.c",
+          "../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/text_rag/rep-1/repair/candidate.c",
+          "-o",
+          "../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/text_rag/rep-1/repair/bin/dasum-rvv-candidate",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "452be07b80a8d3b4e4fd761c34a71e2c65d78ff2f4155a925a97b38f24245ac0",
+      "check": {
+        "argv": [
+          "qemu-riscv64",
+          "-cpu",
+          "rv64,v=true,vlen=256,elen=64,vext_spec=v1.0",
+          "/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/text_rag/rep-1/repair/bin/dasum-rvv-candidate"
+        ],
+        "exit_code": 0,
+        "stdout": "288 cases, 0 failures\n",
+        "stderr": ""
+      },
+      "environment": "external_runner"
+    }
+  ]
+}

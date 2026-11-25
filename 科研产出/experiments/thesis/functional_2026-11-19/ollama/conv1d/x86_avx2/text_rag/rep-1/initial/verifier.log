@@ -1,0 +1,6 @@
+conv1d x86 candidate: compile_error 
+
+..\experiments\thesis\functional_2026-11-19\ollama\conv1d\x86_avx2\text_rag\rep-1\initial\candidate.c: In function 'op_conv1d':
+..\experiments\thesis\functional_2026-11-19\ollama\conv1d\x86_avx2\text_rag\rep-1\initial\candidate.c:13:39: error: variable-sized object may not be initialized except with an empty initializer
+   13 |             double sum[reg_block_n] = {0.0};
+      |                                       ^

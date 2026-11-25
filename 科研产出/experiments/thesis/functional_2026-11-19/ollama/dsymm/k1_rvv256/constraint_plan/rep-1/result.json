@@ -1,0 +1,49 @@
+{
+  "analogy_source": "gemm",
+  "card_ids": [
+    "stg:abstract:k_unroll",
+    "stg:abstract:register_blocking",
+    "stg:abstract:vector_fma",
+    "stg:abstract:tail_handling"
+  ],
+  "contract_sha256": "1998f1147530fbd0cb7b46f9e7ca4f7e60d20e9bb8cc625dfde2edb0d39aed1d",
+  "knowledge_bytes": 5826,
+  "method": "constraint_plan",
+  "operator": "dsymm",
+  "profile": "k1_rvv256",
+  "prompt": "dsymm/k1_rvv256/constraint_plan.json",
+  "prompt_sha256": "720455e459537eca24c8033a67a9fc653bfe60af5509859e9d343816c76a35e8",
+  "repetition": 1,
+  "source_sha256": "2b054ea1fb3ef0c2781e028c6d754a08de7d41cf530fe1cbceb1efa19b540ffd",
+  "split": "near_transfer",
+  "status": "prepared",
+  "engine": "ollama",
+  "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+  "repair_attempted": true,
+  "initial": {
+    "status": "compile_failed",
+    "compile_ok": false,
+    "correct": null,
+    "failure_reason": "other_compiler_error",
+    "usage": {
+      "prompt_tokens": 3396,
+      "completion_tokens": 819,
+      "total_tokens": 4215
+    },
+    "diagnostic": "../experiments/thesis/functional_2026-11-19/ollama/dsymm/k1_rvv256/constraint_plan/rep-1/initial/candidate.c: In function ‘op_dsymm’:\n../experiments/thesis/functional_2026-11-19/ollama/dsymm/k1_rvv256/constraint_plan/rep-1/initial/candidate.c:26:43: error: variable-sized object may not be initialized except with an empty initializer\n   26 |             double sum[unroll * unroll] = {0.0};\n      |                                           ^\n../experiments/thesis/functional_2026-11-19/ollama/dsymm/k1_rvv256/constraint_plan/rep-1/initial/candidate.c:22:15: warning: unused variable ‘lmul_max’ [-Wunused-variable]\n   22 |     const int lmul_max = 8;\n      |               ^~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dsymm/k1_rvv256/constraint_plan/rep-1/initial/candidate.c:21:15: warning: unused variable ‘vector_registers’ [-Wunused-variable]\n   21 |     const int vector_registers = 32;\n      |               ^~~~~~~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dsymm/k1_rvv256/constraint_plan/rep-1/initial/candidate.c:20:15: warning: unused variable ‘elements_per_register’ [-Wunused-variable]\n   20 |     const int elements_per_register = vlen_bits / sizeof(double);\n      |               ^~~~~~~~~~~~~~~~~~~~~\n",
+    "candidate_sha256": "3f95acf71d143f6879f4ae97ece9bfb2d3e0ec4aca599fde88b816aadbcd7e7f"
+  },
+  "final": {
+    "status": "runtime_failed",
+    "compile_ok": true,
+    "correct": false,
+    "failure_reason": "execution_aborted",
+    "usage": {
+      "prompt_tokens": 2804,
+      "completion_tokens": 813,
+      "total_tokens": 3617
+    },
+    "diagnostic": "Execution aborted or did not return the expected check status.",
+    "candidate_sha256": "e9d55a88f2290e2d7b37749af5bc3c12b290a2cce6ad1bd4bd59a113592980a6"
+  }
+}

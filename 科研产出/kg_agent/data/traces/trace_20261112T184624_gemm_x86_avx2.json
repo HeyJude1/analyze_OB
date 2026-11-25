@@ -1,0 +1,1434 @@
+{
+  "trace_id": "trace:20261112T184624:gemm:x86_avx2",
+  "query": {
+    "operator": "gemm",
+    "raw_operator": "dgemm",
+    "hardware_profile_id": "x86_avx2",
+    "hardware_profile_node": "hw:x86_avx2",
+    "code_features": {
+      "dtype": "d",
+      "precision": "double",
+      "stride_x": 1,
+      "stride_y": 1,
+      "loop_depth": 3,
+      "size_regime": "large",
+      "aligned": true,
+      "tail_divisible": false,
+      "structural": "none",
+      "reduction": false
+    },
+    "top_k": 6
+  },
+  "steps": [
+    {
+      "step": 1,
+      "name": "pattern_match",
+      "description": "算子计算流程匹配",
+      "input": {
+        "operator": "op:gemm",
+        "operator_name": "gemm"
+      },
+      "candidates": [
+        "pat:gemm:core.mm_microkernel",
+        "pat:gemm:post.tail_case",
+        "pat:gemm:prep.index_pointer_init",
+        "pat:gemm:prep.loop_invariant_calc",
+        "pat:gemm:prep.parameter_validation",
+        "pat:gemm:transform.packing"
+      ],
+      "selected": [
+        "pat:gemm:core.mm_microkernel",
+        "pat:gemm:post.tail_case",
+        "pat:gemm:prep.index_pointer_init",
+        "pat:gemm:prep.loop_invariant_calc",
+        "pat:gemm:prep.parameter_validation",
+        "pat:gemm:transform.packing"
+      ],
+      "dropped": [],
+      "reason": "算子注册表命中：gemm 注册了 6 个计算流程"
+    },
+    {
+      "step": 2,
+      "name": "strategy_recall",
+      "description": "沿 PATTERN_OPTIMIZED_BY 召回策略 + GENERALIZES 抽象扩展",
+      "input": {
+        "patterns": [
+          "pat:gemm:core.mm_microkernel",
+          "pat:gemm:post.tail_case",
+          "pat:gemm:prep.index_pointer_init",
+          "pat:gemm:prep.loop_invariant_calc",
+          "pat:gemm:prep.parameter_validation",
+          "pat:gemm:transform.packing"
+        ],
+        "channels": [
+          "pattern",
+          "generalizes"
+        ]
+      },
+      "candidates": [
+        "stg:abstract:k_unroll",
+        "stg:abstract:pointer_precompute",
+        "stg:abstract:register_blocking",
+        "stg:abstract:tail_handling",
+        "stg:abstract:vector_fma",
+        "stg:gemm:fuse_s",
+        "stg:gemm:pack_algorithm_a",
+        "stg:gemm:pack_instruction_a",
+        "stg:gemm:prefetch_arm_neon",
+        "stg:gemm:prefetch_arm_sve",
+        "stg:gemm:prefetch_x",
+        "stg:gemm:prefetch_x86_avx2",
+        "stg:gemm:prefetch_x86_avx512",
+        "stg:gemm:reorder_algorithm_a",
+        "stg:gemm:reorder_algorithm_a_2",
+        "stg:gemm:reorder_code_a",
+        "stg:gemm:reorder_code_a_2",
+        "stg:gemm:reorder_instruction_a",
+        "stg:gemm:reorder_s",
+        "stg:gemm:specialize_d",
+        "stg:gemm:specialize_instruction_a",
+        "stg:gemm:tail_handle_algorithm_a",
+        "stg:gemm:tail_handle_s",
+        "stg:gemm:tile_algorithm_a",
+        "stg:gemm:tile_arm_neon",
+        "stg:gemm:tile_arm_sve",
+        "stg:gemm:tile_d",
+        "stg:gemm:tile_s",
+        "stg:gemm:tile_x",
+        "stg:gemm:tile_x86_avx2",
+        "stg:gemm:tile_x86_avx512",
+        "stg:gemm:unroll_algorithm_a",
+        "stg:gemm:unroll_arm_neon",
+        "stg:gemm:unroll_arm_sve",
+        "stg:gemm:unroll_code_a",
+        "stg:gemm:unroll_d",
+        "stg:gemm:unroll_s",
+        "stg:gemm:unroll_x",
+        "stg:gemm:unroll_x86_avx2",
+        "stg:gemm:unroll_x86_avx512",
+        "stg:gemm:vectorize_algorithm_a",
+        "stg:gemm:vectorize_arm_neon",
+        "stg:gemm:vectorize_arm_sve",
+        "stg:gemm:vectorize_code_a",
+        "stg:gemm:vectorize_d",
+        "stg:gemm:vectorize_instruction_a",
+        "stg:gemm:vectorize_x",
+        "stg:gemm:vectorize_x86_avx2",
+        "stg:gemm:vectorize_x86_avx512"
+      ],
+      "selected": [
+        "stg:abstract:k_unroll",
+        "stg:abstract:pointer_precompute",
+        "stg:abstract:register_blocking",
+        "stg:abstract:tail_handling",
+        "stg:abstract:vector_fma",
+        "stg:gemm:fuse_s",
+        "stg:gemm:pack_algorithm_a",
+        "stg:gemm:pack_instruction_a",
+        "stg:gemm:prefetch_arm_neon",
+        "stg:gemm:prefetch_arm_sve",
+        "stg:gemm:prefetch_x",
+        "stg:gemm:prefetch_x86_avx2",
+        "stg:gemm:prefetch_x86_avx512",
+        "stg:gemm:reorder_algorithm_a",
+        "stg:gemm:reorder_algorithm_a_2",
+        "stg:gemm:reorder_code_a",
+        "stg:gemm:reorder_code_a_2",
+        "stg:gemm:reorder_instruction_a",
+        "stg:gemm:reorder_s",
+        "stg:gemm:specialize_d",
+        "stg:gemm:specialize_instruction_a",
+        "stg:gemm:tail_handle_algorithm_a",
+        "stg:gemm:tail_handle_s",
+        "stg:gemm:tile_algorithm_a",
+        "stg:gemm:tile_arm_neon",
+        "stg:gemm:tile_arm_sve",
+        "stg:gemm:tile_d",
+        "stg:gemm:tile_s",
+        "stg:gemm:tile_x",
+        "stg:gemm:tile_x86_avx2",
+        "stg:gemm:tile_x86_avx512",
+        "stg:gemm:unroll_algorithm_a",
+        "stg:gemm:unroll_arm_neon",
+        "stg:gemm:unroll_arm_sve",
+        "stg:gemm:unroll_code_a",
+        "stg:gemm:unroll_d",
+        "stg:gemm:unroll_s",
+        "stg:gemm:unroll_x",
+        "stg:gemm:unroll_x86_avx2",
+        "stg:gemm:unroll_x86_avx512",
+        "stg:gemm:vectorize_algorithm_a",
+        "stg:gemm:vectorize_arm_neon",
+        "stg:gemm:vectorize_arm_sve",
+        "stg:gemm:vectorize_code_a",
+        "stg:gemm:vectorize_d",
+        "stg:gemm:vectorize_instruction_a",
+        "stg:gemm:vectorize_x",
+        "stg:gemm:vectorize_x86_avx2",
+        "stg:gemm:vectorize_x86_avx512"
+      ],
+      "dropped": [],
+      "reason": "沿 6 个计算流程召回 44 条策略，GENERALIZES 扩展 9 条抽象策略"
+    },
+    {
+      "step": 3,
+      "name": "condition_filter",
+      "description": "硬条件过滤：策略 conditions 对查询 code_features 求值",
+      "input": {
+        "code_features": {
+          "dtype": "d",
+          "precision": "double",
+          "stride_x": 1,
+          "stride_y": 1,
+          "loop_depth": 3,
+          "size_regime": "large",
+          "aligned": true,
+          "tail_divisible": false,
+          "structural": "none",
+          "reduction": false
+        }
+      },
+      "candidates": [
+        "stg:abstract:k_unroll",
+        "stg:abstract:pointer_precompute",
+        "stg:abstract:register_blocking",
+        "stg:abstract:tail_handling",
+        "stg:abstract:vector_fma",
+        "stg:gemm:fuse_s",
+        "stg:gemm:pack_algorithm_a",
+        "stg:gemm:pack_instruction_a",
+        "stg:gemm:prefetch_arm_neon",
+        "stg:gemm:prefetch_arm_sve",
+        "stg:gemm:prefetch_x",
+        "stg:gemm:prefetch_x86_avx2",
+        "stg:gemm:prefetch_x86_avx512",
+        "stg:gemm:reorder_algorithm_a",
+        "stg:gemm:reorder_algorithm_a_2",
+        "stg:gemm:reorder_code_a",
+        "stg:gemm:reorder_code_a_2",
+        "stg:gemm:reorder_instruction_a",
+        "stg:gemm:reorder_s",
+        "stg:gemm:specialize_d",
+        "stg:gemm:specialize_instruction_a",
+        "stg:gemm:tail_handle_algorithm_a",
+        "stg:gemm:tail_handle_s",
+        "stg:gemm:tile_algorithm_a",
+        "stg:gemm:tile_arm_neon",
+        "stg:gemm:tile_arm_sve",
+        "stg:gemm:tile_d",
+        "stg:gemm:tile_s",
+        "stg:gemm:tile_x",
+        "stg:gemm:tile_x86_avx2",
+        "stg:gemm:tile_x86_avx512",
+        "stg:gemm:unroll_algorithm_a",
+        "stg:gemm:unroll_arm_neon",
+        "stg:gemm:unroll_arm_sve",
+        "stg:gemm:unroll_code_a",
+        "stg:gemm:unroll_d",
+        "stg:gemm:unroll_s",
+        "stg:gemm:unroll_x",
+        "stg:gemm:unroll_x86_avx2",
+        "stg:gemm:unroll_x86_avx512",
+        "stg:gemm:vectorize_algorithm_a",
+        "stg:gemm:vectorize_arm_neon",
+        "stg:gemm:vectorize_arm_sve",
+        "stg:gemm:vectorize_code_a",
+        "stg:gemm:vectorize_d",
+        "stg:gemm:vectorize_instruction_a",
+        "stg:gemm:vectorize_x",
+        "stg:gemm:vectorize_x86_avx2",
+        "stg:gemm:vectorize_x86_avx512"
+      ],
+      "selected": [
+        "stg:abstract:k_unroll",
+        "stg:abstract:pointer_precompute",
+        "stg:abstract:register_blocking",
+        "stg:abstract:tail_handling",
+        "stg:abstract:vector_fma",
+        "stg:gemm:fuse_s",
+        "stg:gemm:prefetch_arm_neon",
+        "stg:gemm:prefetch_arm_sve",
+        "stg:gemm:prefetch_x",
+        "stg:gemm:prefetch_x86_avx2",
+        "stg:gemm:prefetch_x86_avx512",
+        "stg:gemm:reorder_s",
+        "stg:gemm:specialize_d",
+        "stg:gemm:tail_handle_s",
+        "stg:gemm:tile_arm_neon",
+        "stg:gemm:tile_arm_sve",
+        "stg:gemm:tile_d",
+        "stg:gemm:tile_s",
+        "stg:gemm:tile_x",
+        "stg:gemm:tile_x86_avx2",
+        "stg:gemm:tile_x86_avx512",
+        "stg:gemm:unroll_arm_neon",
+        "stg:gemm:unroll_arm_sve",
+        "stg:gemm:unroll_d",
+        "stg:gemm:unroll_s",
+        "stg:gemm:unroll_x",
+        "stg:gemm:unroll_x86_avx2",
+        "stg:gemm:unroll_x86_avx512",
+        "stg:gemm:vectorize_arm_neon",
+        "stg:gemm:vectorize_arm_sve",
+        "stg:gemm:vectorize_d",
+        "stg:gemm:vectorize_x",
+        "stg:gemm:vectorize_x86_avx2",
+        "stg:gemm:vectorize_x86_avx512"
+      ],
+      "dropped": [
+        {
+          "id": "stg:gemm:pack_algorithm_a",
+          "reason": "dtype=d 不满足 dtype in ['c']；precision=double 不满足 precision eq 'single'"
+        },
+        {
+          "id": "stg:gemm:pack_instruction_a",
+          "reason": "dtype=d 不满足 dtype in ['c']；precision=double 不满足 precision eq 'single'"
+        },
+        {
+          "id": "stg:gemm:reorder_algorithm_a",
+          "reason": "dtype=d 不满足 dtype in ['c']；precision=double 不满足 precision eq 'single'"
+        },
+        {
+          "id": "stg:gemm:reorder_algorithm_a_2",
+          "reason": "dtype=d 不满足 dtype in ['c']；precision=double 不满足 precision eq 'single'"
+        },
+        {
+          "id": "stg:gemm:reorder_code_a",
+          "reason": "dtype=d 不满足 dtype in ['c']；precision=double 不满足 precision eq 'single'"
+        },
+        {
+          "id": "stg:gemm:reorder_code_a_2",
+          "reason": "dtype=d 不满足 dtype in ['c']；precision=double 不满足 precision eq 'single'"
+        },
+        {
+          "id": "stg:gemm:reorder_instruction_a",
+          "reason": "dtype=d 不满足 dtype in ['c']；precision=double 不满足 precision eq 'single'"
+        },
+        {
+          "id": "stg:gemm:specialize_instruction_a",
+          "reason": "dtype=d 不满足 dtype in ['c']；precision=double 不满足 precision eq 'single'"
+        },
+        {
+          "id": "stg:gemm:tail_handle_algorithm_a",
+          "reason": "dtype=d 不满足 dtype in ['c']；precision=double 不满足 precision eq 'single'"
+        },
+        {
+          "id": "stg:gemm:tile_algorithm_a",
+          "reason": "dtype=d 不满足 dtype in ['c']；precision=double 不满足 precision eq 'single'"
+        },
+        {
+          "id": "stg:gemm:unroll_algorithm_a",
+          "reason": "dtype=d 不满足 dtype in ['c']；precision=double 不满足 precision eq 'single'"
+        },
+        {
+          "id": "stg:gemm:unroll_code_a",
+          "reason": "dtype=d 不满足 dtype in ['c']；precision=double 不满足 precision eq 'single'"
+        },
+        {
+          "id": "stg:gemm:vectorize_algorithm_a",
+          "reason": "dtype=d 不满足 dtype in ['c']；precision=double 不满足 precision eq 'single'"
+        },
+        {
+          "id": "stg:gemm:vectorize_code_a",
+          "reason": "dtype=d 不满足 dtype in ['c']；precision=double 不满足 precision eq 'single'"
+        },
+        {
+          "id": "stg:gemm:vectorize_instruction_a",
+          "reason": "dtype=d 不满足 dtype in ['c']；precision=double 不满足 precision eq 'single'"
+        }
+      ],
+      "reason": "谓词求值：34 条通过、15 条硬条件淘汰"
+    },
+    {
+      "step": 4,
+      "name": "hardware_filter",
+      "description": "ISA/硬件 profile 能力过滤（profile 绑定 + hard ISA 要求）",
+      "input": {
+        "profile": "hw:x86_avx2",
+        "profile_isa": [
+          "AVX2",
+          "FMA",
+          "SSE4.2"
+        ],
+        "vector_regs": null
+      },
+      "candidates": [
+        "stg:abstract:k_unroll",
+        "stg:abstract:pointer_precompute",
+        "stg:abstract:register_blocking",
+        "stg:abstract:tail_handling",
+        "stg:abstract:vector_fma",
+        "stg:gemm:fuse_s",
+        "stg:gemm:prefetch_arm_neon",
+        "stg:gemm:prefetch_arm_sve",
+        "stg:gemm:prefetch_x",
+        "stg:gemm:prefetch_x86_avx2",
+        "stg:gemm:prefetch_x86_avx512",
+        "stg:gemm:reorder_s",
+        "stg:gemm:specialize_d",
+        "stg:gemm:tail_handle_s",
+        "stg:gemm:tile_arm_neon",
+        "stg:gemm:tile_arm_sve",
+        "stg:gemm:tile_d",
+        "stg:gemm:tile_s",
+        "stg:gemm:tile_x",
+        "stg:gemm:tile_x86_avx2",
+        "stg:gemm:tile_x86_avx512",
+        "stg:gemm:unroll_arm_neon",
+        "stg:gemm:unroll_arm_sve",
+        "stg:gemm:unroll_d",
+        "stg:gemm:unroll_s",
+        "stg:gemm:unroll_x",
+        "stg:gemm:unroll_x86_avx2",
+        "stg:gemm:unroll_x86_avx512",
+        "stg:gemm:vectorize_arm_neon",
+        "stg:gemm:vectorize_arm_sve",
+        "stg:gemm:vectorize_d",
+        "stg:gemm:vectorize_x",
+        "stg:gemm:vectorize_x86_avx2",
+        "stg:gemm:vectorize_x86_avx512"
+      ],
+      "selected": [
+        "stg:abstract:k_unroll",
+        "stg:abstract:pointer_precompute",
+        "stg:abstract:register_blocking",
+        "stg:abstract:tail_handling",
+        "stg:abstract:vector_fma",
+        "stg:gemm:fuse_s",
+        "stg:gemm:prefetch_x",
+        "stg:gemm:prefetch_x86_avx2",
+        "stg:gemm:reorder_s",
+        "stg:gemm:tail_handle_s",
+        "stg:gemm:tile_s",
+        "stg:gemm:tile_x",
+        "stg:gemm:tile_x86_avx2",
+        "stg:gemm:unroll_s",
+        "stg:gemm:unroll_x",
+        "stg:gemm:unroll_x86_avx2",
+        "stg:gemm:vectorize_x",
+        "stg:gemm:vectorize_x86_avx2"
+      ],
+      "dropped": [
+        {
+          "id": "stg:gemm:prefetch_arm_neon",
+          "reason": "hardware_profile_ids=['arm_neon'] 不含 x86_avx2"
+        },
+        {
+          "id": "stg:gemm:prefetch_arm_sve",
+          "reason": "hardware_profile_ids=['arm_sve'] 不含 x86_avx2"
+        },
+        {
+          "id": "stg:gemm:prefetch_x86_avx512",
+          "reason": "hardware_profile_ids=['x86_avx512'] 不含 x86_avx2"
+        },
+        {
+          "id": "stg:gemm:specialize_d",
+          "reason": "hardware_profile_ids=['k1_rvv256', 'qemu-riscv64-vlen256'] 不含 x86_avx2"
+        },
+        {
+          "id": "stg:gemm:tile_arm_neon",
+          "reason": "hardware_profile_ids=['arm_neon'] 不含 x86_avx2"
+        },
+        {
+          "id": "stg:gemm:tile_arm_sve",
+          "reason": "hardware_profile_ids=['arm_sve'] 不含 x86_avx2"
+        },
+        {
+          "id": "stg:gemm:tile_d",
+          "reason": "hardware_profile_ids=['k1_rvv256', 'qemu-riscv64-vlen256'] 不含 x86_avx2"
+        },
+        {
+          "id": "stg:gemm:tile_x86_avx512",
+          "reason": "hardware_profile_ids=['x86_avx512'] 不含 x86_avx2"
+        },
+        {
+          "id": "stg:gemm:unroll_arm_neon",
+          "reason": "hardware_profile_ids=['arm_neon'] 不含 x86_avx2"
+        },
+        {
+          "id": "stg:gemm:unroll_arm_sve",
+          "reason": "hardware_profile_ids=['arm_sve'] 不含 x86_avx2"
+        },
+        {
+          "id": "stg:gemm:unroll_d",
+          "reason": "hardware_profile_ids=['k1_rvv256', 'qemu-riscv64-vlen256'] 不含 x86_avx2"
+        },
+        {
+          "id": "stg:gemm:unroll_x86_avx512",
+          "reason": "hardware_profile_ids=['x86_avx512'] 不含 x86_avx2"
+        },
+        {
+          "id": "stg:gemm:vectorize_arm_neon",
+          "reason": "hardware_profile_ids=['arm_neon'] 不含 x86_avx2"
+        },
+        {
+          "id": "stg:gemm:vectorize_arm_sve",
+          "reason": "hardware_profile_ids=['arm_sve'] 不含 x86_avx2"
+        },
+        {
+          "id": "stg:gemm:vectorize_d",
+          "reason": "hardware_profile_ids=['k1_rvv256', 'qemu-riscv64-vlen256'] 不含 x86_avx2"
+        },
+        {
+          "id": "stg:gemm:vectorize_x86_avx512",
+          "reason": "hardware_profile_ids=['x86_avx512'] 不含 x86_avx2"
+        }
+      ],
+      "reason": "18 条满足 x86_avx2 的硬件约束，16 条被淘汰"
+    },
+    {
+      "step": 5,
+      "name": "conflict_resolve",
+      "description": "同族去重 + 冲突边消解 + 寄存器预算（参数由硬件推导）",
+      "input": {
+        "register_budget_cap": 12.8,
+        "vector_regs": 16.0,
+        "uarch": "uarch:x86_avx2"
+      },
+      "candidates": [
+        "stg:abstract:k_unroll",
+        "stg:abstract:pointer_precompute",
+        "stg:abstract:register_blocking",
+        "stg:abstract:tail_handling",
+        "stg:abstract:vector_fma",
+        "stg:gemm:fuse_s",
+        "stg:gemm:prefetch_x",
+        "stg:gemm:prefetch_x86_avx2",
+        "stg:gemm:reorder_s",
+        "stg:gemm:tail_handle_s",
+        "stg:gemm:tile_s",
+        "stg:gemm:tile_x",
+        "stg:gemm:tile_x86_avx2",
+        "stg:gemm:unroll_s",
+        "stg:gemm:unroll_x",
+        "stg:gemm:unroll_x86_avx2",
+        "stg:gemm:vectorize_x",
+        "stg:gemm:vectorize_x86_avx2"
+      ],
+      "selected": [
+        "stg:gemm:prefetch_x86_avx2",
+        "stg:gemm:tile_x86_avx2",
+        "stg:gemm:unroll_x86_avx2",
+        "stg:gemm:vectorize_x86_avx2",
+        "stg:abstract:pointer_precompute",
+        "stg:abstract:tail_handling",
+        "stg:gemm:fuse_s"
+      ],
+      "dropped": [
+        {
+          "id": "stg:gemm:tile_x",
+          "reason": "与已选 stg:gemm:tile_x86_avx2 同族同动作（分块Tiling/tile），避免重复注入（架构特性优先保留 arch_specific）"
+        },
+        {
+          "id": "stg:gemm:unroll_x",
+          "reason": "与已选 stg:gemm:unroll_x86_avx2 同族同动作（循环展开/unroll），避免重复注入（架构特性优先保留 arch_specific）"
+        },
+        {
+          "id": "stg:gemm:vectorize_x",
+          "reason": "与已选 stg:gemm:vectorize_x86_avx2 同族同动作（SIMD向量指令/vectorize），避免重复注入（架构特性优先保留 arch_specific）"
+        },
+        {
+          "id": "stg:gemm:prefetch_x",
+          "reason": "与已选 stg:gemm:prefetch_x86_avx2 同族同动作（预取/prefetch），避免重复注入（架构特性优先保留 arch_specific）"
+        },
+        {
+          "id": "stg:abstract:vector_fma",
+          "reason": "与已选 stg:gemm:vectorize_x86_avx2 同族同动作（SIMD向量指令/vectorize），避免重复注入（架构特性优先保留 arch_specific）"
+        },
+        {
+          "id": "stg:abstract:k_unroll",
+          "reason": "与已选 stg:gemm:unroll_x86_avx2 同族同动作（循环展开/unroll），避免重复注入（架构特性优先保留 arch_specific）"
+        },
+        {
+          "id": "stg:abstract:register_blocking",
+          "reason": "与已选 stg:gemm:tile_x86_avx2 同族同动作（分块Tiling/tile），避免重复注入（架构特性优先保留 arch_specific）"
+        },
+        {
+          "id": "stg:gemm:reorder_s",
+          "reason": "与已选 stg:abstract:pointer_precompute 同族同动作（指针/索引优化/reorder），避免重复注入（架构特性优先保留 arch_agnostic）"
+        },
+        {
+          "id": "stg:gemm:tail_handle_s",
+          "reason": "与已选 stg:abstract:tail_handling 同族同动作（尾部处理/tail_handle），避免重复注入（架构特性优先保留 arch_agnostic）"
+        },
+        {
+          "id": "stg:gemm:tile_s",
+          "reason": "与已选 stg:gemm:tile_x86_avx2 同族同动作（分块Tiling/tile），避免重复注入（架构特性优先保留 arch_specific）"
+        },
+        {
+          "id": "stg:gemm:unroll_s",
+          "reason": "与已选 stg:gemm:unroll_x86_avx2 同族同动作（循环展开/unroll），避免重复注入（架构特性优先保留 arch_specific）"
+        }
+      ],
+      "reason": "7 条通过冲突消解（占用寄存器预算 2 / 13）",
+      "register_budget_used": 2.0
+    },
+    {
+      "step": 6,
+      "name": "score_and_select",
+      "description": "六项加权打分（match_p/fit_c/hw/ev/sup - transfer penalty）并取 top_k",
+      "input": {
+        "top_k": 6,
+        "weights": {
+          "match_p": 0.35,
+          "fit_c": 0.2,
+          "hw": 0.15,
+          "ev": 0.2,
+          "sup": 0.1,
+          "tr_penalty": 0.15
+        }
+      },
+      "candidates": [
+        "stg:gemm:prefetch_x86_avx2",
+        "stg:gemm:tile_x86_avx2",
+        "stg:gemm:unroll_x86_avx2",
+        "stg:gemm:vectorize_x86_avx2",
+        "stg:abstract:pointer_precompute",
+        "stg:abstract:tail_handling",
+        "stg:gemm:fuse_s"
+      ],
+      "selected": [
+        "stg:gemm:prefetch_x86_avx2",
+        "stg:gemm:tile_x86_avx2",
+        "stg:gemm:unroll_x86_avx2",
+        "stg:gemm:vectorize_x86_avx2",
+        "stg:gemm:fuse_s",
+        "stg:abstract:pointer_precompute"
+      ],
+      "dropped": [
+        {
+          "id": "stg:abstract:tail_handling",
+          "reason": "score 0.615 低于 top_k=6 截断"
+        }
+      ],
+      "reason": "按总分降序取 top 6",
+      "scores": {
+        "stg:gemm:prefetch_x86_avx2": 0.74,
+        "stg:gemm:tile_x86_avx2": 0.74,
+        "stg:gemm:unroll_x86_avx2": 0.74,
+        "stg:gemm:vectorize_x86_avx2": 0.74,
+        "stg:abstract:pointer_precompute": 0.615,
+        "stg:abstract:tail_handling": 0.615,
+        "stg:gemm:fuse_s": 0.7358
+      },
+      "score_breakdown": {
+        "stg:gemm:prefetch_x86_avx2": {
+          "match_p": 1.0,
+          "fit_c": 1.0,
+          "hw": 1.0,
+          "ev": 0.0,
+          "sup": 0.4,
+          "tr_penalty": 0.0,
+          "total": 0.74
+        },
+        "stg:gemm:tile_x86_avx2": {
+          "match_p": 1.0,
+          "fit_c": 1.0,
+          "hw": 1.0,
+          "ev": 0.0,
+          "sup": 0.4,
+          "tr_penalty": 0.0,
+          "total": 0.74
+        },
+        "stg:gemm:unroll_x86_avx2": {
+          "match_p": 1.0,
+          "fit_c": 1.0,
+          "hw": 1.0,
+          "ev": 0.0,
+          "sup": 0.4,
+          "tr_penalty": 0.0,
+          "total": 0.74
+        },
+        "stg:gemm:vectorize_x86_avx2": {
+          "match_p": 1.0,
+          "fit_c": 1.0,
+          "hw": 1.0,
+          "ev": 0.0,
+          "sup": 0.4,
+          "tr_penalty": 0.0,
+          "total": 0.74
+        },
+        "stg:abstract:pointer_precompute": {
+          "match_p": 0.6,
+          "fit_c": 1.0,
+          "hw": 0.7,
+          "ev": 0.0,
+          "sup": 1.0,
+          "tr_penalty": 0.0,
+          "total": 0.615
+        },
+        "stg:abstract:tail_handling": {
+          "match_p": 0.6,
+          "fit_c": 1.0,
+          "hw": 0.7,
+          "ev": 0.0,
+          "sup": 1.0,
+          "tr_penalty": 0.0,
+          "total": 0.615
+        },
+        "stg:gemm:fuse_s": {
+          "match_p": 1.0,
+          "fit_c": 1.0,
+          "hw": 0.7,
+          "ev": 0.5289,
+          "sup": 0.2,
+          "tr_penalty": 0.3,
+          "total": 0.7358
+        }
+      }
+    },
+    {
+      "step": 7,
+      "name": "pack",
+      "description": "生成 StrategyPack（策略 + 模板 + 参数 + 证据 + 溯源），供生成端注入 prompt",
+      "input": {
+        "selected": [
+          "stg:gemm:prefetch_x86_avx2",
+          "stg:gemm:tile_x86_avx2",
+          "stg:gemm:unroll_x86_avx2",
+          "stg:gemm:vectorize_x86_avx2",
+          "stg:gemm:fuse_s",
+          "stg:abstract:pointer_precompute"
+        ]
+      },
+      "candidates": [
+        "stg:gemm:prefetch_x86_avx2",
+        "stg:gemm:tile_x86_avx2",
+        "stg:gemm:unroll_x86_avx2",
+        "stg:gemm:vectorize_x86_avx2",
+        "stg:gemm:fuse_s",
+        "stg:abstract:pointer_precompute"
+      ],
+      "selected": [
+        "stg:gemm:prefetch_x86_avx2",
+        "stg:gemm:tile_x86_avx2",
+        "stg:gemm:unroll_x86_avx2",
+        "stg:gemm:vectorize_x86_avx2",
+        "stg:gemm:fuse_s",
+        "stg:abstract:pointer_precompute"
+      ],
+      "dropped": [],
+      "reason": "打包 6 条策略 / 6 个模板",
+      "result": {
+        "strategies": [
+          "stg:gemm:prefetch_x86_avx2",
+          "stg:gemm:tile_x86_avx2",
+          "stg:gemm:unroll_x86_avx2",
+          "stg:gemm:vectorize_x86_avx2",
+          "stg:gemm:fuse_s",
+          "stg:abstract:pointer_precompute"
+        ],
+        "templates": [
+          "tpl:gemm:prefetch_x86_avx2",
+          "tpl:gemm:tile_x86_avx2",
+          "tpl:gemm:unroll_x86_avx2",
+          "tpl:gemm:vectorize_x86_avx2",
+          "tpl:gemm:fuse_s",
+          "tpl:abstract:pointer_precompute"
+        ]
+      }
+    }
+  ],
+  "result": {
+    "strategies": [
+      "stg:gemm:prefetch_x86_avx2",
+      "stg:gemm:tile_x86_avx2",
+      "stg:gemm:unroll_x86_avx2",
+      "stg:gemm:vectorize_x86_avx2",
+      "stg:gemm:fuse_s",
+      "stg:abstract:pointer_precompute"
+    ],
+    "pack": {
+      "schema_version": "pack-v1",
+      "query": {
+        "operator": "gemm",
+        "dtype": "d",
+        "hardware": "hw:x86_avx2",
+        "patterns": [
+          "pat:gemm:core.mm_microkernel",
+          "pat:gemm:post.tail_case",
+          "pat:gemm:prep.index_pointer_init",
+          "pat:gemm:prep.loop_invariant_calc",
+          "pat:gemm:prep.parameter_validation",
+          "pat:gemm:transform.packing"
+        ],
+        "code_features": {
+          "dtype": "d",
+          "precision": "double",
+          "stride_x": 1,
+          "stride_y": 1,
+          "loop_depth": 3,
+          "size_regime": "large",
+          "aligned": true,
+          "tail_divisible": false,
+          "structural": "none",
+          "reduction": false
+        },
+        "top_k": 6
+      },
+      "strategies": [
+        {
+          "id": "stg:gemm:prefetch_x86_avx2",
+          "name": "x86 AVX2 软件预取",
+          "family": "预取",
+          "action": "prefetch",
+          "level": "instruction",
+          "stage": "prep",
+          "arch_scope": "arch_specific",
+          "arch": "x86_avx2",
+          "arches": [],
+          "arch_parameters": {},
+          "score": 0.74,
+          "score_breakdown": {
+            "match_p": 1.0,
+            "fit_c": 1.0,
+            "hw": 1.0,
+            "ev": 0.0,
+            "sup": 0.4,
+            "tr_penalty": 0.0,
+            "total": 0.74
+          },
+          "why_selected": {
+            "patterns": [
+              "pat:gemm:prep.parameter_validation"
+            ],
+            "conditions_satisfied": [
+              "dtype",
+              "loop_depth",
+              "size_regime"
+            ],
+            "hardware": "x86_avx2",
+            "source": "data/corpus_multiarch/x86_avx2/gemm/dgemm_kernel_16x2_haswell.S"
+          },
+          "conditions": [
+            {
+              "hard": true,
+              "op": "in",
+              "pred": "dtype",
+              "value": [
+                "d"
+              ]
+            },
+            {
+              "hard": true,
+              "op": "ge",
+              "pred": "loop_depth",
+              "value": 2
+            },
+            {
+              "hard": true,
+              "op": "in",
+              "pred": "size_regime",
+              "value": [
+                "medium",
+                "large"
+              ]
+            }
+          ],
+          "template": {
+            "id": "tpl:gemm:prefetch_x86_avx2",
+            "language": "c",
+            "skeleton": "for (BLASLONG i = 0; i < n; i++) {\n    __builtin_prefetch(&b[i + {{PREFETCH_DIST}}]);\n    c[i] += a[i] * b[i];\n}",
+            "slots": [
+              {
+                "default": 16,
+                "name": "PREFETCH_DIST",
+                "source": "par:prefetch_distance",
+                "type": "int"
+              }
+            ],
+            "check_hints": [
+              "预取距离要匹配 L1/L2 延迟",
+              "不要预取越界地址"
+            ]
+          },
+          "parameters": [
+            {
+              "id": "par:prefetch_distance",
+              "derived_from": "代码中的 prefetch 指令条数/距离常量",
+              "effect_direction": "预取太近掩盖不了延迟，太远会污染 cache",
+              "kind": "prefetch_dist",
+              "name": "prefetch_distance",
+              "range": [
+                1,
+                2,
+                4,
+                8
+              ],
+              "unit": "cacheline",
+              "used_by_strategies": 17,
+              "value_in_source": 2,
+              "value_in_instance": 91
+            }
+          ],
+          "evidence": [],
+          "provenance": {
+            "commit": "OpenBLAS 0.3.27 (git ce3f668)",
+            "extractor_version": "kgagent-v1.5",
+            "line_confidence": "exact",
+            "line_end": 5215,
+            "line_start": 1,
+            "origin_file": "kernel/x86_64/dgemm_kernel_16x2_haswell.S",
+            "source_file": "data/corpus_multiarch/x86_avx2/gemm/dgemm_kernel_16x2_haswell.S"
+          }
+        },
+        {
+          "id": "stg:gemm:tile_x86_avx2",
+          "name": "x86 AVX2 寄存器分块内核",
+          "family": "分块Tiling",
+          "action": "tile",
+          "level": "instruction",
+          "stage": "core",
+          "arch_scope": "arch_specific",
+          "arch": "x86_avx2",
+          "arches": [],
+          "arch_parameters": {},
+          "score": 0.74,
+          "score_breakdown": {
+            "match_p": 1.0,
+            "fit_c": 1.0,
+            "hw": 1.0,
+            "ev": 0.0,
+            "sup": 0.4,
+            "tr_penalty": 0.0,
+            "total": 0.74
+          },
+          "why_selected": {
+            "patterns": [
+              "pat:gemm:core.mm_microkernel"
+            ],
+            "conditions_satisfied": [
+              "dtype",
+              "loop_depth",
+              "size_regime"
+            ],
+            "hardware": "x86_avx2",
+            "source": "data/corpus_multiarch/x86_avx2/gemm/dgemm_kernel_16x2_haswell.S"
+          },
+          "conditions": [
+            {
+              "hard": true,
+              "op": "in",
+              "pred": "dtype",
+              "value": [
+                "d"
+              ]
+            },
+            {
+              "hard": true,
+              "op": "ge",
+              "pred": "loop_depth",
+              "value": 2
+            },
+            {
+              "hard": true,
+              "op": "in",
+              "pred": "size_regime",
+              "value": [
+                "medium",
+                "large"
+              ]
+            }
+          ],
+          "template": {
+            "id": "tpl:gemm:tile_x86_avx2",
+            "language": "c",
+            "skeleton": "/* 寄存器分块：{{REG_BLOCK_M}}x{{REG_BLOCK_N}} 个输出块常驻 ymm 累加器 */\nfor (j = 0; j < bn; j += {{REG_BLOCK_N}}) {\n    __m256d acc[{{REG_BLOCK_M}}][{{REG_BLOCK_N}}/4] = {{INIT}};\n    for (k = 0; k < bk; k++) {\n        /* 每步装入 A 的 {{REG_BLOCK_M}} 个标量 + B 的 {{REG_BLOCK_N}} 个向量，做 {{REG_BLOCK_M}}x{{REG_BLOCK_N}} 次 FMA */\n    }\n    /* 写回 {{REG_BLOCK_N}} 列 C */\n}",
+            "slots": [
+              {
+                "default": 4,
+                "name": "REG_BLOCK_M",
+                "source": "par:reg_block_m",
+                "type": "int"
+              },
+              {
+                "default": 8,
+                "name": "REG_BLOCK_N",
+                "source": "par:reg_block_n",
+                "type": "int"
+              },
+              {
+                "default": "_mm256_setzero_pd()",
+                "name": "INIT",
+                "source": "operator.init",
+                "type": "code"
+              }
+            ],
+            "check_hints": [
+              "AVX2 只有 16 个 ymm：累加器 + A/B 向量不能超过它",
+              "写回按列主序处理 ldc 步长"
+            ]
+          },
+          "parameters": [
+            {
+              "id": "par:reg_block_m",
+              "derived_from": "内核文件名中的 block 维度（1x8）",
+              "effect_direction": "M 块越大装入值复用越多，但需要更多累加器寄存器",
+              "kind": "blocking",
+              "name": "reg_block_m",
+              "range": [
+                1,
+                2,
+                4,
+                8,
+                16
+              ],
+              "unit": "elements",
+              "used_by_strategies": 10,
+              "value_in_source": 1,
+              "value_in_instance": 16
+            },
+            {
+              "id": "par:reg_block_n",
+              "derived_from": "由标量/向量寄存器数量与 C 列块宽决定",
+              "effect_direction": "累加器越多，装入值复用次数越高；超过寄存器数会溢出到栈",
+              "kind": "blocking",
+              "name": "reg_block_n",
+              "range": [
+                1,
+                2,
+                4,
+                8,
+                16,
+                32
+              ],
+              "unit": "accumulators",
+              "used_by_strategies": 29,
+              "value_in_source": 4,
+              "value_in_instance": 2
+            }
+          ],
+          "evidence": [],
+          "provenance": {
+            "commit": "OpenBLAS 0.3.27 (git ce3f668)",
+            "extractor_version": "kgagent-v1.5",
+            "line_confidence": "exact",
+            "line_end": 5215,
+            "line_start": 1,
+            "origin_file": "kernel/x86_64/dgemm_kernel_16x2_haswell.S",
+            "source_file": "data/corpus_multiarch/x86_avx2/gemm/dgemm_kernel_16x2_haswell.S"
+          }
+        },
+        {
+          "id": "stg:gemm:unroll_x86_avx2",
+          "name": "x86 AVX2 循环展开/多路累加",
+          "family": "循环展开",
+          "action": "unroll",
+          "level": "instruction",
+          "stage": "core",
+          "arch_scope": "arch_specific",
+          "arch": "x86_avx2",
+          "arches": [],
+          "arch_parameters": {},
+          "score": 0.74,
+          "score_breakdown": {
+            "match_p": 1.0,
+            "fit_c": 1.0,
+            "hw": 1.0,
+            "ev": 0.0,
+            "sup": 0.4,
+            "tr_penalty": 0.0,
+            "total": 0.74
+          },
+          "why_selected": {
+            "patterns": [
+              "pat:gemm:core.mm_microkernel"
+            ],
+            "conditions_satisfied": [
+              "dtype",
+              "loop_depth",
+              "size_regime"
+            ],
+            "hardware": "x86_avx2",
+            "source": "data/corpus_multiarch/x86_avx2/gemm/dgemm_kernel_16x2_haswell.S"
+          },
+          "conditions": [
+            {
+              "hard": true,
+              "op": "in",
+              "pred": "dtype",
+              "value": [
+                "d"
+              ]
+            },
+            {
+              "hard": true,
+              "op": "ge",
+              "pred": "loop_depth",
+              "value": 2
+            },
+            {
+              "hard": true,
+              "op": "in",
+              "pred": "size_regime",
+              "value": [
+                "medium",
+                "large"
+              ]
+            }
+          ],
+          "template": {
+            "id": "tpl:gemm:unroll_x86_avx2",
+            "language": "c",
+            "skeleton": "for (k = 0; k + {{K_UNROLL}} <= bk; k += {{K_UNROLL}}) {\n    /* {{K_UNROLL}} 个独立加载/累加，减少循环计数器与分支 */\n}\nfor (; k < bk; ++k) { /* 尾部 */ }",
+            "slots": [
+              {
+                "default": 4,
+                "name": "K_UNROLL",
+                "source": "derived:isa_defaults",
+                "type": "int"
+              }
+            ],
+            "check_hints": [
+              "展开因子过大会造成寄存器溢出",
+              "代码体积增大可能影响 I-cache"
+            ]
+          },
+          "parameters": [
+            {
+              "id": "par:unroll_factor",
+              "derived_from": "块维度/标量展开变量数/宏块数",
+              "effect_direction": "更大的展开因子可进一步减少循环开销，但会增加寄存器使用量和代码复杂度",
+              "kind": "unroll",
+              "name": "unroll_factor",
+              "range": [
+                1,
+                2,
+                4,
+                8,
+                16
+              ],
+              "unit": "iterations",
+              "used_by_strategies": 27,
+              "value_in_source": 2,
+              "value_in_instance": 32
+            }
+          ],
+          "evidence": [],
+          "provenance": {
+            "commit": "OpenBLAS 0.3.27 (git ce3f668)",
+            "extractor_version": "kgagent-v1.5",
+            "line_confidence": "exact",
+            "line_end": 5215,
+            "line_start": 1,
+            "origin_file": "kernel/x86_64/dgemm_kernel_16x2_haswell.S",
+            "source_file": "data/corpus_multiarch/x86_avx2/gemm/dgemm_kernel_16x2_haswell.S"
+          }
+        },
+        {
+          "id": "stg:gemm:vectorize_x86_avx2",
+          "name": "x86 AVX2 向量化内核",
+          "family": "SIMD向量指令",
+          "action": "vectorize",
+          "level": "instruction",
+          "stage": "core",
+          "arch_scope": "arch_specific",
+          "arch": "x86_avx2",
+          "arches": [],
+          "arch_parameters": {},
+          "score": 0.74,
+          "score_breakdown": {
+            "match_p": 1.0,
+            "fit_c": 1.0,
+            "hw": 1.0,
+            "ev": 0.0,
+            "sup": 0.4,
+            "tr_penalty": 0.0,
+            "total": 0.74
+          },
+          "why_selected": {
+            "patterns": [
+              "pat:gemm:core.mm_microkernel"
+            ],
+            "conditions_satisfied": [
+              "dtype",
+              "loop_depth",
+              "size_regime"
+            ],
+            "hardware": "x86_avx2",
+            "source": "data/corpus_multiarch/x86_avx2/gemm/dgemm_kernel_16x2_haswell.S"
+          },
+          "conditions": [
+            {
+              "hard": true,
+              "op": "in",
+              "pred": "dtype",
+              "value": [
+                "d"
+              ]
+            },
+            {
+              "hard": true,
+              "op": "ge",
+              "pred": "loop_depth",
+              "value": 2
+            },
+            {
+              "hard": true,
+              "op": "in",
+              "pred": "size_regime",
+              "value": [
+                "medium",
+                "large"
+              ]
+            }
+          ],
+          "template": {
+            "id": "tpl:gemm:vectorize_x86_avx2",
+            "language": "c",
+            "skeleton": "for (BLASLONG i = 0; i + {{VEC_LANES}} <= n; i += {{VEC_LANES}}) {\n    __m256d vx = _mm256_loadu_pd(x + i);\n    __m256d vy = _mm256_loadu_pd(y + i);\n    vy = _mm256_fmadd_pd(_mm256_set1_pd({{ALPHA}}), vx, vy);\n    _mm256_storeu_pd(y + i, vy);\n}\nfor (; i < n; ++i) { y[i] += {{ALPHA}} * x[i]; }",
+            "slots": [
+              {
+                "default": 4,
+                "name": "VEC_LANES",
+                "source": "par:vector_width",
+                "type": "int"
+              },
+              {
+                "default": "alpha",
+                "name": "ALPHA",
+                "source": "operator.alpha",
+                "type": "expr"
+              }
+            ],
+            "check_hints": [
+              "AVX2 只有 16 个 ymm 寄存器，注意累加器预算",
+              "未对齐地址用 loadu/storeu"
+            ]
+          },
+          "parameters": [
+            {
+              "id": "par:vector_width",
+              "derived_from": "ISA 向量寄存器宽度",
+              "effect_direction": "宽度越大单指令处理元素越多，但寄存器压力与尾部处理成本上升",
+              "kind": "vector_len",
+              "name": "vector_width",
+              "range": [
+                128,
+                256,
+                512
+              ],
+              "unit": "bits",
+              "used_by_strategies": 37,
+              "value_in_source": 128,
+              "value_in_instance": 256
+            }
+          ],
+          "evidence": [],
+          "provenance": {
+            "commit": "OpenBLAS 0.3.27 (git ce3f668)",
+            "extractor_version": "kgagent-v1.5",
+            "line_confidence": "exact",
+            "line_end": 5215,
+            "line_start": 1,
+            "origin_file": "kernel/x86_64/dgemm_kernel_16x2_haswell.S",
+            "source_file": "data/corpus_multiarch/x86_avx2/gemm/dgemm_kernel_16x2_haswell.S"
+          }
+        },
+        {
+          "id": "stg:gemm:fuse_s",
+          "name": "alpha 缩放融合到写回",
+          "family": "循环融合",
+          "action": "fuse",
+          "level": "code",
+          "stage": "post",
+          "arch_scope": "arch_agnostic",
+          "arch": null,
+          "arches": [],
+          "arch_parameters": {},
+          "score": 0.7358,
+          "score_breakdown": {
+            "match_p": 1.0,
+            "fit_c": 1.0,
+            "hw": 0.7,
+            "ev": 0.5289,
+            "sup": 0.2,
+            "tr_penalty": 0.3,
+            "total": 0.7358
+          },
+          "why_selected": {
+            "patterns": [
+              "pat:gemm:post.tail_case"
+            ],
+            "conditions_satisfied": [
+              "dtype",
+              "loop_depth",
+              "size_regime"
+            ],
+            "hardware": "x86_avx2",
+            "source": "../cx_operator_tool/operator_extract/openblas_newtest1/16_dgemm_op5/dgemm_k.c"
+          },
+          "conditions": [
+            {
+              "hard": true,
+              "op": "in",
+              "pred": "dtype",
+              "value": [
+                "d"
+              ]
+            },
+            {
+              "hard": true,
+              "op": "ge",
+              "pred": "loop_depth",
+              "value": 2
+            },
+            {
+              "hard": false,
+              "op": "in",
+              "pred": "size_regime",
+              "value": [
+                "medium",
+                "large"
+              ],
+              "weight": 1.0
+            }
+          ],
+          "template": {
+            "id": "tpl:gemm:fuse_s",
+            "language": "c",
+            "skeleton": "for (BLASLONG i = 0; i < n; i += {{BLOCK_SIZE}}) {\n    c[i] = {{ALPHA}} * a[i] + b[i];   /* 把缩放融合进写回，避免额外遍历 */\n}",
+            "slots": [
+              {
+                "default": 4,
+                "name": "BLOCK_SIZE",
+                "source": "derived:isa_defaults",
+                "type": "int"
+              },
+              {
+                "default": "alpha",
+                "name": "ALPHA",
+                "source": "operator.alpha",
+                "type": "expr"
+              }
+            ],
+            "check_hints": [
+              "融合后临时变量复用",
+              "注意广播语义"
+            ]
+          },
+          "parameters": [],
+          "evidence": [
+            {
+              "id": "ev:gemm:geomean",
+              "metric": "speedup",
+              "value": 2.197,
+              "platform_id": "hw:qemu-riscv64-vlen256",
+              "role": "supports",
+              "scope": "operator",
+              "caveat": "QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据"
+            },
+            {
+              "id": "ev:gemm:pass_rate",
+              "metric": "pass_rate",
+              "value": 1.0,
+              "platform_id": "hw:qemu-riscv64-vlen256",
+              "role": "supports",
+              "scope": "operator",
+              "caveat": "QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据"
+            }
+          ],
+          "provenance": {
+            "commit": "OpenBLAS 0.3.27.dev",
+            "extractor_version": "kgagent-v1.5",
+            "line_confidence": "exact",
+            "line_end": 164,
+            "line_start": 7,
+            "origin_file": "kernel/generic/gemmkernel_2x2.c",
+            "source_file": "../cx_operator_tool/operator_extract/openblas_newtest1/16_dgemm_op5/dgemm_k.c"
+          }
+        },
+        {
+          "id": "stg:abstract:pointer_precompute",
+          "name": "指针预计算",
+          "family": "指针/索引优化",
+          "action": "reorder",
+          "level": "code",
+          "stage": "prep",
+          "arch_scope": "arch_agnostic",
+          "arch": null,
+          "arches": [],
+          "arch_parameters": {},
+          "score": 0.615,
+          "score_breakdown": {
+            "match_p": 0.6,
+            "fit_c": 1.0,
+            "hw": 0.7,
+            "ev": 0.0,
+            "sup": 1.0,
+            "tr_penalty": 0.0,
+            "total": 0.615
+          },
+          "why_selected": {
+            "patterns": [],
+            "conditions_satisfied": [
+              "dtype",
+              "loop_depth",
+              "size_regime"
+            ],
+            "hardware": "x86_avx2",
+            "source": "开题/analyze_OB/20251114_153700/analysis_results/gemm_analysis.json"
+          },
+          "conditions": [
+            {
+              "hard": true,
+              "op": "in",
+              "pred": "dtype",
+              "value": [
+                "s",
+                "d",
+                "c",
+                "z"
+              ]
+            },
+            {
+              "hard": true,
+              "op": "ge",
+              "pred": "loop_depth",
+              "value": 2
+            },
+            {
+              "hard": true,
+              "op": "in",
+              "pred": "size_regime",
+              "value": [
+                "medium",
+                "large"
+              ]
+            }
+          ],
+          "template": {
+            "id": "tpl:abstract:pointer_precompute",
+            "language": "c",
+            "skeleton": "const double *pa = a;\ndouble *pc = c;\nfor (BLASLONG j = 0; j < n; j += {{BLOCK_SIZE}}) {\n    for (BLASLONG i = 0; i < m; i++) {\n        pc[i] += pa[i * lda];   /* 指针递增替代 i*lda 索引乘法 */\n    }\n    pa += {{BLOCK_SIZE}} * lda; pc += {{BLOCK_SIZE}};\n}",
+            "slots": [
+              {
+                "default": 1,
+                "name": "BLOCK_SIZE",
+                "source": "derived:isa_defaults",
+                "type": "int"
+              }
+            ],
+            "check_hints": [
+              "不要创建别名指针导致编译器无法优化",
+              "指针算术需与 ldc/lda 布局一致"
+            ]
+          },
+          "parameters": [],
+          "evidence": [],
+          "provenance": {
+            "commit": "OpenBLAS 0.3.27.dev",
+            "extractor_version": "kgagent-v1.5",
+            "line_confidence": "exact",
+            "line_end": 81,
+            "line_start": 49,
+            "origin_file": "cgemm3m_incopyb.clean.c",
+            "source_file": "开题/analyze_OB/20251114_153700/analysis_results/gemm_analysis.json"
+          }
+        }
+      ]
+    },
+    "prompt_preview": "你是 OpenBLAS kernel 优化专家。目标算子：gemm（dtype=d，loop_depth=3，stride_x=1，size_regime=large）。\n目标硬件 profile：x86_avx2。请只使用下列知识块中的策略与模板槽位，不要引入未给出的性能数字。\n1) x86 AVX2 软件预取（预取/prefetch，score=0.740）：条件 dtype in ['d']、loop_depth ge 2、size_regime in ['medium', 'large']；参数 prefetch_distance=91。\n2) x86 AVX2 寄存器分块内核（分块Tiling/tile，score=0.740）：条件 dtype in ['d']、loop_depth ge 2、size_regime in ['medium', 'large']；参数 reg_block_m=16、reg_block_n=2。\n3) x86 AVX2 循环展开/多路累加（循环展开/unroll，score=0.740）：条件 dtype in ['d']、loop_dept"
+  },
+  "created_at": "2026-11-12T18:46:24+08:00"
+}

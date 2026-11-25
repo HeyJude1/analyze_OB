@@ -1,0 +1,5619 @@
+{
+  "run": {
+    "engine": "ollama",
+    "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+    "model_digest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+    "prepared_manifest_sha256": "0f7d3f804fd482de3164e1c2a1ed86a31ec1b583d8d49ec57c30d46178147853",
+    "settings": {
+      "context": 8192,
+      "completion_cap": 1536,
+      "temperature": 0.2,
+      "seed": 20261119,
+      "max_repairs": 1,
+      "check_timeout_seconds": 20,
+      "candidate_scope": "C operator only",
+      "ollama_version": "0.9.0",
+      "riscv_compiler": "/mnt/c/Users/MSI/Desktop/cx_operator_tool/operator_extract/toolchain/riscv-gcc-14.3/bin/riscv64-buildroot-linux-gnu-gcc",
+      "riscv_cpu": "rv64,v=true,vlen=256,elen=64,vext_spec=v1.0"
+    }
+  },
+  "prepared_manifest_sha256": "0f7d3f804fd482de3164e1c2a1ed86a31ec1b583d8d49ec57c30d46178147853",
+  "knowledge_byte_cap": 12000,
+  "overall": {
+    "planned": 72,
+    "result_files": 72,
+    "initial": {
+      "compile_observed": 71,
+      "compile_passed": 35,
+      "correctness_observed": 35,
+      "correct": 18,
+      "statuses": {
+        "compile_failed": 36,
+        "compile_timeout": 1,
+        "passed": 18,
+        "run_timeout": 1,
+        "runtime_failed": 1,
+        "wrong_answer": 15
+      }
+    },
+    "final": {
+      "compile_observed": 71,
+      "compile_passed": 44,
+      "correctness_observed": 44,
+      "correct": 19,
+      "statuses": {
+        "compile_failed": 27,
+        "compile_timeout": 1,
+        "passed": 19,
+        "run_timeout": 1,
+        "runtime_failed": 6,
+        "wrong_answer": 18
+      }
+    },
+    "repair_attempted": 53,
+    "repair_rescued": 1,
+    "regressed": 0,
+    "tokens": {
+      "prompt_tokens": {
+        "covered_attempts": 125,
+        "sum": 289020
+      },
+      "completion_tokens": {
+        "covered_attempts": 125,
+        "sum": 48275
+      },
+      "total_tokens": {
+        "covered_attempts": 125,
+        "sum": 337295
+      }
+    }
+  },
+  "by_profile_method": [
+    {
+      "profile": "k1_rvv256",
+      "method": "no_knowledge",
+      "planned": 9,
+      "result_files": 9,
+      "initial": {
+        "compile_observed": 9,
+        "compile_passed": 5,
+        "correctness_observed": 5,
+        "correct": 3,
+        "statuses": {
+          "compile_failed": 4,
+          "passed": 3,
+          "wrong_answer": 2
+        }
+      },
+      "final": {
+        "compile_observed": 9,
+        "compile_passed": 5,
+        "correctness_observed": 5,
+        "correct": 3,
+        "statuses": {
+          "compile_failed": 4,
+          "passed": 3,
+          "wrong_answer": 2
+        }
+      },
+      "repair_attempted": 6,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 15,
+          "sum": 23824
+        },
+        "completion_tokens": {
+          "covered_attempts": 15,
+          "sum": 5081
+        },
+        "total_tokens": {
+          "covered_attempts": 15,
+          "sum": 28905
+        }
+      }
+    },
+    {
+      "profile": "k1_rvv256",
+      "method": "text_rag",
+      "planned": 9,
+      "result_files": 9,
+      "initial": {
+        "compile_observed": 9,
+        "compile_passed": 5,
+        "correctness_observed": 5,
+        "correct": 1,
+        "statuses": {
+          "compile_failed": 4,
+          "passed": 1,
+          "wrong_answer": 4
+        }
+      },
+      "final": {
+        "compile_observed": 9,
+        "compile_passed": 6,
+        "correctness_observed": 6,
+        "correct": 2,
+        "statuses": {
+          "compile_failed": 3,
+          "passed": 2,
+          "runtime_failed": 1,
+          "wrong_answer": 3
+        }
+      },
+      "repair_attempted": 8,
+      "repair_rescued": 1,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 17,
+          "sum": 42676
+        },
+        "completion_tokens": {
+          "covered_attempts": 17,
+          "sum": 7338
+        },
+        "total_tokens": {
+          "covered_attempts": 17,
+          "sum": 50014
+        }
+      }
+    },
+    {
+      "profile": "k1_rvv256",
+      "method": "strategy_cards",
+      "planned": 9,
+      "result_files": 9,
+      "initial": {
+        "compile_observed": 9,
+        "compile_passed": 2,
+        "correctness_observed": 2,
+        "correct": 2,
+        "statuses": {
+          "compile_failed": 7,
+          "passed": 2
+        }
+      },
+      "final": {
+        "compile_observed": 9,
+        "compile_passed": 6,
+        "correctness_observed": 6,
+        "correct": 2,
+        "statuses": {
+          "compile_failed": 3,
+          "passed": 2,
+          "runtime_failed": 2,
+          "wrong_answer": 2
+        }
+      },
+      "repair_attempted": 7,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 16,
+          "sum": 39935
+        },
+        "completion_tokens": {
+          "covered_attempts": 16,
+          "sum": 6639
+        },
+        "total_tokens": {
+          "covered_attempts": 16,
+          "sum": 46574
+        }
+      }
+    },
+    {
+      "profile": "k1_rvv256",
+      "method": "constraint_plan",
+      "planned": 9,
+      "result_files": 9,
+      "initial": {
+        "compile_observed": 9,
+        "compile_passed": 5,
+        "correctness_observed": 5,
+        "correct": 1,
+        "statuses": {
+          "compile_failed": 4,
+          "passed": 1,
+          "runtime_failed": 1,
+          "wrong_answer": 3
+        }
+      },
+      "final": {
+        "compile_observed": 9,
+        "compile_passed": 5,
+        "correctness_observed": 5,
+        "correct": 1,
+        "statuses": {
+          "compile_failed": 4,
+          "passed": 1,
+          "runtime_failed": 2,
+          "wrong_answer": 2
+        }
+      },
+      "repair_attempted": 8,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 17,
+          "sum": 44102
+        },
+        "completion_tokens": {
+          "covered_attempts": 17,
+          "sum": 6454
+        },
+        "total_tokens": {
+          "covered_attempts": 17,
+          "sum": 50556
+        }
+      }
+    },
+    {
+      "profile": "x86_avx2",
+      "method": "no_knowledge",
+      "planned": 9,
+      "result_files": 9,
+      "initial": {
+        "compile_observed": 9,
+        "compile_passed": 7,
+        "correctness_observed": 7,
+        "correct": 4,
+        "statuses": {
+          "compile_failed": 2,
+          "passed": 4,
+          "wrong_answer": 3
+        }
+      },
+      "final": {
+        "compile_observed": 9,
+        "compile_passed": 7,
+        "correctness_observed": 7,
+        "correct": 4,
+        "statuses": {
+          "compile_failed": 2,
+          "passed": 4,
+          "wrong_answer": 3
+        }
+      },
+      "repair_attempted": 5,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 14,
+          "sum": 20395
+        },
+        "completion_tokens": {
+          "covered_attempts": 14,
+          "sum": 4351
+        },
+        "total_tokens": {
+          "covered_attempts": 14,
+          "sum": 24746
+        }
+      }
+    },
+    {
+      "profile": "x86_avx2",
+      "method": "text_rag",
+      "planned": 9,
+      "result_files": 9,
+      "initial": {
+        "compile_observed": 8,
+        "compile_passed": 4,
+        "correctness_observed": 4,
+        "correct": 1,
+        "statuses": {
+          "compile_failed": 4,
+          "compile_timeout": 1,
+          "passed": 1,
+          "run_timeout": 1,
+          "wrong_answer": 2
+        }
+      },
+      "final": {
+        "compile_observed": 8,
+        "compile_passed": 3,
+        "correctness_observed": 3,
+        "correct": 1,
+        "statuses": {
+          "compile_failed": 5,
+          "compile_timeout": 1,
+          "passed": 1,
+          "run_timeout": 1,
+          "wrong_answer": 1
+        }
+      },
+      "repair_attempted": 7,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 16,
+          "sum": 40396
+        },
+        "completion_tokens": {
+          "covered_attempts": 16,
+          "sum": 7071
+        },
+        "total_tokens": {
+          "covered_attempts": 16,
+          "sum": 47467
+        }
+      }
+    },
+    {
+      "profile": "x86_avx2",
+      "method": "strategy_cards",
+      "planned": 9,
+      "result_files": 9,
+      "initial": {
+        "compile_observed": 9,
+        "compile_passed": 3,
+        "correctness_observed": 3,
+        "correct": 3,
+        "statuses": {
+          "compile_failed": 6,
+          "passed": 3
+        }
+      },
+      "final": {
+        "compile_observed": 9,
+        "compile_passed": 6,
+        "correctness_observed": 6,
+        "correct": 3,
+        "statuses": {
+          "compile_failed": 3,
+          "passed": 3,
+          "wrong_answer": 3
+        }
+      },
+      "repair_attempted": 6,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 15,
+          "sum": 38144
+        },
+        "completion_tokens": {
+          "covered_attempts": 15,
+          "sum": 6106
+        },
+        "total_tokens": {
+          "covered_attempts": 15,
+          "sum": 44250
+        }
+      }
+    },
+    {
+      "profile": "x86_avx2",
+      "method": "constraint_plan",
+      "planned": 9,
+      "result_files": 9,
+      "initial": {
+        "compile_observed": 9,
+        "compile_passed": 4,
+        "correctness_observed": 4,
+        "correct": 3,
+        "statuses": {
+          "compile_failed": 5,
+          "passed": 3,
+          "wrong_answer": 1
+        }
+      },
+      "final": {
+        "compile_observed": 9,
+        "compile_passed": 6,
+        "correctness_observed": 6,
+        "correct": 3,
+        "statuses": {
+          "compile_failed": 3,
+          "passed": 3,
+          "runtime_failed": 1,
+          "wrong_answer": 2
+        }
+      },
+      "repair_attempted": 6,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 15,
+          "sum": 39548
+        },
+        "completion_tokens": {
+          "covered_attempts": 15,
+          "sum": 5235
+        },
+        "total_tokens": {
+          "covered_attempts": 15,
+          "sum": 44783
+        }
+      }
+    }
+  ],
+  "by_split": [
+    {
+      "split": "build",
+      "profile": "k1_rvv256",
+      "method": "no_knowledge",
+      "planned": 4,
+      "result_files": 4,
+      "initial": {
+        "compile_observed": 4,
+        "compile_passed": 4,
+        "correctness_observed": 4,
+        "correct": 2,
+        "statuses": {
+          "passed": 2,
+          "wrong_answer": 2
+        }
+      },
+      "final": {
+        "compile_observed": 4,
+        "compile_passed": 4,
+        "correctness_observed": 4,
+        "correct": 2,
+        "statuses": {
+          "passed": 2,
+          "wrong_answer": 2
+        }
+      },
+      "repair_attempted": 2,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 6,
+          "sum": 8589
+        },
+        "completion_tokens": {
+          "covered_attempts": 6,
+          "sum": 1379
+        },
+        "total_tokens": {
+          "covered_attempts": 6,
+          "sum": 9968
+        }
+      }
+    },
+    {
+      "split": "build",
+      "profile": "k1_rvv256",
+      "method": "text_rag",
+      "planned": 4,
+      "result_files": 4,
+      "initial": {
+        "compile_observed": 4,
+        "compile_passed": 3,
+        "correctness_observed": 3,
+        "correct": 1,
+        "statuses": {
+          "compile_failed": 1,
+          "passed": 1,
+          "wrong_answer": 2
+        }
+      },
+      "final": {
+        "compile_observed": 4,
+        "compile_passed": 3,
+        "correctness_observed": 3,
+        "correct": 1,
+        "statuses": {
+          "compile_failed": 1,
+          "passed": 1,
+          "wrong_answer": 2
+        }
+      },
+      "repair_attempted": 3,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 7,
+          "sum": 18712
+        },
+        "completion_tokens": {
+          "covered_attempts": 7,
+          "sum": 3439
+        },
+        "total_tokens": {
+          "covered_attempts": 7,
+          "sum": 22151
+        }
+      }
+    },
+    {
+      "split": "build",
+      "profile": "k1_rvv256",
+      "method": "strategy_cards",
+      "planned": 4,
+      "result_files": 4,
+      "initial": {
+        "compile_observed": 4,
+        "compile_passed": 2,
+        "correctness_observed": 2,
+        "correct": 2,
+        "statuses": {
+          "compile_failed": 2,
+          "passed": 2
+        }
+      },
+      "final": {
+        "compile_observed": 4,
+        "compile_passed": 4,
+        "correctness_observed": 4,
+        "correct": 2,
+        "statuses": {
+          "passed": 2,
+          "runtime_failed": 1,
+          "wrong_answer": 1
+        }
+      },
+      "repair_attempted": 2,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 6,
+          "sum": 16158
+        },
+        "completion_tokens": {
+          "covered_attempts": 6,
+          "sum": 2549
+        },
+        "total_tokens": {
+          "covered_attempts": 6,
+          "sum": 18707
+        }
+      }
+    },
+    {
+      "split": "build",
+      "profile": "k1_rvv256",
+      "method": "constraint_plan",
+      "planned": 4,
+      "result_files": 4,
+      "initial": {
+        "compile_observed": 4,
+        "compile_passed": 4,
+        "correctness_observed": 4,
+        "correct": 1,
+        "statuses": {
+          "passed": 1,
+          "wrong_answer": 3
+        }
+      },
+      "final": {
+        "compile_observed": 4,
+        "compile_passed": 3,
+        "correctness_observed": 3,
+        "correct": 1,
+        "statuses": {
+          "compile_failed": 1,
+          "passed": 1,
+          "wrong_answer": 2
+        }
+      },
+      "repair_attempted": 3,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 7,
+          "sum": 18741
+        },
+        "completion_tokens": {
+          "covered_attempts": 7,
+          "sum": 2527
+        },
+        "total_tokens": {
+          "covered_attempts": 7,
+          "sum": 21268
+        }
+      }
+    },
+    {
+      "split": "build",
+      "profile": "x86_avx2",
+      "method": "no_knowledge",
+      "planned": 4,
+      "result_files": 4,
+      "initial": {
+        "compile_observed": 4,
+        "compile_passed": 4,
+        "correctness_observed": 4,
+        "correct": 2,
+        "statuses": {
+          "passed": 2,
+          "wrong_answer": 2
+        }
+      },
+      "final": {
+        "compile_observed": 4,
+        "compile_passed": 4,
+        "correctness_observed": 4,
+        "correct": 2,
+        "statuses": {
+          "passed": 2,
+          "wrong_answer": 2
+        }
+      },
+      "repair_attempted": 2,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 6,
+          "sum": 8751
+        },
+        "completion_tokens": {
+          "covered_attempts": 6,
+          "sum": 2025
+        },
+        "total_tokens": {
+          "covered_attempts": 6,
+          "sum": 10776
+        }
+      }
+    },
+    {
+      "split": "build",
+      "profile": "x86_avx2",
+      "method": "text_rag",
+      "planned": 4,
+      "result_files": 4,
+      "initial": {
+        "compile_observed": 3,
+        "compile_passed": 2,
+        "correctness_observed": 2,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1,
+          "compile_timeout": 1,
+          "wrong_answer": 2
+        }
+      },
+      "final": {
+        "compile_observed": 3,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 2,
+          "compile_timeout": 1,
+          "wrong_answer": 1
+        }
+      },
+      "repair_attempted": 3,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 7,
+          "sum": 18733
+        },
+        "completion_tokens": {
+          "covered_attempts": 7,
+          "sum": 3184
+        },
+        "total_tokens": {
+          "covered_attempts": 7,
+          "sum": 21917
+        }
+      }
+    },
+    {
+      "split": "build",
+      "profile": "x86_avx2",
+      "method": "strategy_cards",
+      "planned": 4,
+      "result_files": 4,
+      "initial": {
+        "compile_observed": 4,
+        "compile_passed": 3,
+        "correctness_observed": 3,
+        "correct": 3,
+        "statuses": {
+          "compile_failed": 1,
+          "passed": 3
+        }
+      },
+      "final": {
+        "compile_observed": 4,
+        "compile_passed": 4,
+        "correctness_observed": 4,
+        "correct": 3,
+        "statuses": {
+          "passed": 3,
+          "wrong_answer": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 5,
+          "sum": 14348
+        },
+        "completion_tokens": {
+          "covered_attempts": 5,
+          "sum": 1967
+        },
+        "total_tokens": {
+          "covered_attempts": 5,
+          "sum": 16315
+        }
+      }
+    },
+    {
+      "split": "build",
+      "profile": "x86_avx2",
+      "method": "constraint_plan",
+      "planned": 4,
+      "result_files": 4,
+      "initial": {
+        "compile_observed": 4,
+        "compile_passed": 3,
+        "correctness_observed": 3,
+        "correct": 2,
+        "statuses": {
+          "compile_failed": 1,
+          "passed": 2,
+          "wrong_answer": 1
+        }
+      },
+      "final": {
+        "compile_observed": 4,
+        "compile_passed": 2,
+        "correctness_observed": 2,
+        "correct": 2,
+        "statuses": {
+          "compile_failed": 2,
+          "passed": 2
+        }
+      },
+      "repair_attempted": 2,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 6,
+          "sum": 16641
+        },
+        "completion_tokens": {
+          "covered_attempts": 6,
+          "sum": 2093
+        },
+        "total_tokens": {
+          "covered_attempts": 6,
+          "sum": 18734
+        }
+      }
+    },
+    {
+      "split": "external_holdout",
+      "profile": "k1_rvv256",
+      "method": "no_knowledge",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "repair_attempted": 0,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 1,
+          "sum": 1224
+        },
+        "completion_tokens": {
+          "covered_attempts": 1,
+          "sum": 136
+        },
+        "total_tokens": {
+          "covered_attempts": 1,
+          "sum": 1360
+        }
+      }
+    },
+    {
+      "split": "external_holdout",
+      "profile": "k1_rvv256",
+      "method": "text_rag",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "wrong_answer": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 4368
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 715
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 5083
+        }
+      }
+    },
+    {
+      "split": "external_holdout",
+      "profile": "k1_rvv256",
+      "method": "strategy_cards",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 4762
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 755
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 5517
+        }
+      }
+    },
+    {
+      "split": "external_holdout",
+      "profile": "k1_rvv256",
+      "method": "constraint_plan",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 4859
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 572
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 5431
+        }
+      }
+    },
+    {
+      "split": "external_holdout",
+      "profile": "x86_avx2",
+      "method": "no_knowledge",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "repair_attempted": 0,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 1,
+          "sum": 1190
+        },
+        "completion_tokens": {
+          "covered_attempts": 1,
+          "sum": 136
+        },
+        "total_tokens": {
+          "covered_attempts": 1,
+          "sum": 1326
+        }
+      }
+    },
+    {
+      "split": "external_holdout",
+      "profile": "x86_avx2",
+      "method": "text_rag",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 4428
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 776
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 5204
+        }
+      }
+    },
+    {
+      "split": "external_holdout",
+      "profile": "x86_avx2",
+      "method": "strategy_cards",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 4847
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 703
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 5550
+        }
+      }
+    },
+    {
+      "split": "external_holdout",
+      "profile": "x86_avx2",
+      "method": "constraint_plan",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "repair_attempted": 0,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 1,
+          "sum": 2880
+        },
+        "completion_tokens": {
+          "covered_attempts": 1,
+          "sum": 209
+        },
+        "total_tokens": {
+          "covered_attempts": 1,
+          "sum": 3089
+        }
+      }
+    },
+    {
+      "split": "holdout",
+      "profile": "k1_rvv256",
+      "method": "no_knowledge",
+      "planned": 3,
+      "result_files": 3,
+      "initial": {
+        "compile_observed": 3,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 3
+        }
+      },
+      "final": {
+        "compile_observed": 3,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 3
+        }
+      },
+      "repair_attempted": 3,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 6,
+          "sum": 10151
+        },
+        "completion_tokens": {
+          "covered_attempts": 6,
+          "sum": 2710
+        },
+        "total_tokens": {
+          "covered_attempts": 6,
+          "sum": 12861
+        }
+      }
+    },
+    {
+      "split": "holdout",
+      "profile": "k1_rvv256",
+      "method": "text_rag",
+      "planned": 3,
+      "result_files": 3,
+      "initial": {
+        "compile_observed": 3,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 2,
+          "wrong_answer": 1
+        }
+      },
+      "final": {
+        "compile_observed": 3,
+        "compile_passed": 2,
+        "correctness_observed": 2,
+        "correct": 1,
+        "statuses": {
+          "compile_failed": 1,
+          "passed": 1,
+          "wrong_answer": 1
+        }
+      },
+      "repair_attempted": 3,
+      "repair_rescued": 1,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 6,
+          "sum": 14179
+        },
+        "completion_tokens": {
+          "covered_attempts": 6,
+          "sum": 2222
+        },
+        "total_tokens": {
+          "covered_attempts": 6,
+          "sum": 16401
+        }
+      }
+    },
+    {
+      "split": "holdout",
+      "profile": "k1_rvv256",
+      "method": "strategy_cards",
+      "planned": 3,
+      "result_files": 3,
+      "initial": {
+        "compile_observed": 3,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 3
+        }
+      },
+      "final": {
+        "compile_observed": 3,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 2,
+          "runtime_failed": 1
+        }
+      },
+      "repair_attempted": 3,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 6,
+          "sum": 13755
+        },
+        "completion_tokens": {
+          "covered_attempts": 6,
+          "sum": 2399
+        },
+        "total_tokens": {
+          "covered_attempts": 6,
+          "sum": 16154
+        }
+      }
+    },
+    {
+      "split": "holdout",
+      "profile": "k1_rvv256",
+      "method": "constraint_plan",
+      "planned": 3,
+      "result_files": 3,
+      "initial": {
+        "compile_observed": 3,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 2,
+          "runtime_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 3,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 2,
+          "runtime_failed": 1
+        }
+      },
+      "repair_attempted": 3,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 6,
+          "sum": 14302
+        },
+        "completion_tokens": {
+          "covered_attempts": 6,
+          "sum": 1723
+        },
+        "total_tokens": {
+          "covered_attempts": 6,
+          "sum": 16025
+        }
+      }
+    },
+    {
+      "split": "holdout",
+      "profile": "x86_avx2",
+      "method": "no_knowledge",
+      "planned": 3,
+      "result_files": 3,
+      "initial": {
+        "compile_observed": 3,
+        "compile_passed": 2,
+        "correctness_observed": 2,
+        "correct": 1,
+        "statuses": {
+          "compile_failed": 1,
+          "passed": 1,
+          "wrong_answer": 1
+        }
+      },
+      "final": {
+        "compile_observed": 3,
+        "compile_passed": 2,
+        "correctness_observed": 2,
+        "correct": 1,
+        "statuses": {
+          "compile_failed": 1,
+          "passed": 1,
+          "wrong_answer": 1
+        }
+      },
+      "repair_attempted": 2,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 5,
+          "sum": 6654
+        },
+        "completion_tokens": {
+          "covered_attempts": 5,
+          "sum": 1332
+        },
+        "total_tokens": {
+          "covered_attempts": 5,
+          "sum": 7986
+        }
+      }
+    },
+    {
+      "split": "holdout",
+      "profile": "x86_avx2",
+      "method": "text_rag",
+      "planned": 3,
+      "result_files": 3,
+      "initial": {
+        "compile_observed": 3,
+        "compile_passed": 2,
+        "correctness_observed": 2,
+        "correct": 1,
+        "statuses": {
+          "compile_failed": 1,
+          "passed": 1,
+          "run_timeout": 1
+        }
+      },
+      "final": {
+        "compile_observed": 3,
+        "compile_passed": 2,
+        "correctness_observed": 2,
+        "correct": 1,
+        "statuses": {
+          "compile_failed": 1,
+          "passed": 1,
+          "run_timeout": 1
+        }
+      },
+      "repair_attempted": 2,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 5,
+          "sum": 11619
+        },
+        "completion_tokens": {
+          "covered_attempts": 5,
+          "sum": 1513
+        },
+        "total_tokens": {
+          "covered_attempts": 5,
+          "sum": 13132
+        }
+      }
+    },
+    {
+      "split": "holdout",
+      "profile": "x86_avx2",
+      "method": "strategy_cards",
+      "planned": 3,
+      "result_files": 3,
+      "initial": {
+        "compile_observed": 3,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 3
+        }
+      },
+      "final": {
+        "compile_observed": 3,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 2,
+          "wrong_answer": 1
+        }
+      },
+      "repair_attempted": 3,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 6,
+          "sum": 13757
+        },
+        "completion_tokens": {
+          "covered_attempts": 6,
+          "sum": 2494
+        },
+        "total_tokens": {
+          "covered_attempts": 6,
+          "sum": 16251
+        }
+      }
+    },
+    {
+      "split": "holdout",
+      "profile": "x86_avx2",
+      "method": "constraint_plan",
+      "planned": 3,
+      "result_files": 3,
+      "initial": {
+        "compile_observed": 3,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 3
+        }
+      },
+      "final": {
+        "compile_observed": 3,
+        "compile_passed": 2,
+        "correctness_observed": 2,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1,
+          "runtime_failed": 1,
+          "wrong_answer": 1
+        }
+      },
+      "repair_attempted": 3,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 6,
+          "sum": 14546
+        },
+        "completion_tokens": {
+          "covered_attempts": 6,
+          "sum": 1991
+        },
+        "total_tokens": {
+          "covered_attempts": 6,
+          "sum": 16537
+        }
+      }
+    },
+    {
+      "split": "near_transfer",
+      "profile": "k1_rvv256",
+      "method": "no_knowledge",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 3860
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 856
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 4716
+        }
+      }
+    },
+    {
+      "split": "near_transfer",
+      "profile": "k1_rvv256",
+      "method": "text_rag",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "runtime_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 5417
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 962
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 6379
+        }
+      }
+    },
+    {
+      "split": "near_transfer",
+      "profile": "k1_rvv256",
+      "method": "strategy_cards",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "wrong_answer": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 5260
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 936
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 6196
+        }
+      }
+    },
+    {
+      "split": "near_transfer",
+      "profile": "k1_rvv256",
+      "method": "constraint_plan",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "runtime_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 6200
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 1632
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 7832
+        }
+      }
+    },
+    {
+      "split": "near_transfer",
+      "profile": "x86_avx2",
+      "method": "no_knowledge",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 3800
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 858
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 4658
+        }
+      }
+    },
+    {
+      "split": "near_transfer",
+      "profile": "x86_avx2",
+      "method": "text_rag",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 5616
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 1598
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 7214
+        }
+      }
+    },
+    {
+      "split": "near_transfer",
+      "profile": "x86_avx2",
+      "method": "strategy_cards",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "wrong_answer": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 5192
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 942
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 6134
+        }
+      }
+    },
+    {
+      "split": "near_transfer",
+      "profile": "x86_avx2",
+      "method": "constraint_plan",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "wrong_answer": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 5481
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 942
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 6423
+        }
+      }
+    }
+  ],
+  "by_operator": [
+    {
+      "split": "build",
+      "operator": "daxpy",
+      "profile": "k1_rvv256",
+      "method": "no_knowledge",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "repair_attempted": 0,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 1,
+          "sum": 1174
+        },
+        "completion_tokens": {
+          "covered_attempts": 1,
+          "sum": 104
+        },
+        "total_tokens": {
+          "covered_attempts": 1,
+          "sum": 1278
+        }
+      }
+    },
+    {
+      "split": "build",
+      "operator": "daxpy",
+      "profile": "k1_rvv256",
+      "method": "text_rag",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "repair_attempted": 0,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 1,
+          "sum": 3047
+        },
+        "completion_tokens": {
+          "covered_attempts": 1,
+          "sum": 471
+        },
+        "total_tokens": {
+          "covered_attempts": 1,
+          "sum": 3518
+        }
+      }
+    },
+    {
+      "split": "build",
+      "operator": "daxpy",
+      "profile": "k1_rvv256",
+      "method": "strategy_cards",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "wrong_answer": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 4557
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 774
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 5331
+        }
+      }
+    },
+    {
+      "split": "build",
+      "operator": "daxpy",
+      "profile": "k1_rvv256",
+      "method": "constraint_plan",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "wrong_answer": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 4921
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 529
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 5450
+        }
+      }
+    },
+    {
+      "split": "build",
+      "operator": "daxpy",
+      "profile": "x86_avx2",
+      "method": "no_knowledge",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "repair_attempted": 0,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 1,
+          "sum": 1140
+        },
+        "completion_tokens": {
+          "covered_attempts": 1,
+          "sum": 104
+        },
+        "total_tokens": {
+          "covered_attempts": 1,
+          "sum": 1244
+        }
+      }
+    },
+    {
+      "split": "build",
+      "operator": "daxpy",
+      "profile": "x86_avx2",
+      "method": "text_rag",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 0,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_timeout": 1
+        }
+      },
+      "final": {
+        "compile_observed": 0,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_timeout": 1
+        }
+      },
+      "repair_attempted": 0,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 1,
+          "sum": 3013
+        },
+        "completion_tokens": {
+          "covered_attempts": 1,
+          "sum": 274
+        },
+        "total_tokens": {
+          "covered_attempts": 1,
+          "sum": 3287
+        }
+      }
+    },
+    {
+      "split": "build",
+      "operator": "daxpy",
+      "profile": "x86_avx2",
+      "method": "strategy_cards",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "repair_attempted": 0,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 1,
+          "sum": 2899
+        },
+        "completion_tokens": {
+          "covered_attempts": 1,
+          "sum": 227
+        },
+        "total_tokens": {
+          "covered_attempts": 1,
+          "sum": 3126
+        }
+      }
+    },
+    {
+      "split": "build",
+      "operator": "daxpy",
+      "profile": "x86_avx2",
+      "method": "constraint_plan",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "wrong_answer": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 4750
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 594
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 5344
+        }
+      }
+    },
+    {
+      "split": "build",
+      "operator": "ddot",
+      "profile": "k1_rvv256",
+      "method": "no_knowledge",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "repair_attempted": 0,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 1,
+          "sum": 1158
+        },
+        "completion_tokens": {
+          "covered_attempts": 1,
+          "sum": 99
+        },
+        "total_tokens": {
+          "covered_attempts": 1,
+          "sum": 1257
+        }
+      }
+    },
+    {
+      "split": "build",
+      "operator": "ddot",
+      "profile": "k1_rvv256",
+      "method": "text_rag",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 5110
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 1190
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 6300
+        }
+      }
+    },
+    {
+      "split": "build",
+      "operator": "ddot",
+      "profile": "k1_rvv256",
+      "method": "strategy_cards",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "repair_attempted": 0,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 1,
+          "sum": 3044
+        },
+        "completion_tokens": {
+          "covered_attempts": 1,
+          "sum": 164
+        },
+        "total_tokens": {
+          "covered_attempts": 1,
+          "sum": 3208
+        }
+      }
+    },
+    {
+      "split": "build",
+      "operator": "ddot",
+      "profile": "k1_rvv256",
+      "method": "constraint_plan",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "repair_attempted": 0,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 1,
+          "sum": 3238
+        },
+        "completion_tokens": {
+          "covered_attempts": 1,
+          "sum": 164
+        },
+        "total_tokens": {
+          "covered_attempts": 1,
+          "sum": 3402
+        }
+      }
+    },
+    {
+      "split": "build",
+      "operator": "ddot",
+      "profile": "x86_avx2",
+      "method": "no_knowledge",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "repair_attempted": 0,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 1,
+          "sum": 1124
+        },
+        "completion_tokens": {
+          "covered_attempts": 1,
+          "sum": 99
+        },
+        "total_tokens": {
+          "covered_attempts": 1,
+          "sum": 1223
+        }
+      }
+    },
+    {
+      "split": "build",
+      "operator": "ddot",
+      "profile": "x86_avx2",
+      "method": "text_rag",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 5326
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 722
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 6048
+        }
+      }
+    },
+    {
+      "split": "build",
+      "operator": "ddot",
+      "profile": "x86_avx2",
+      "method": "strategy_cards",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "repair_attempted": 0,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 1,
+          "sum": 3010
+        },
+        "completion_tokens": {
+          "covered_attempts": 1,
+          "sum": 164
+        },
+        "total_tokens": {
+          "covered_attempts": 1,
+          "sum": 3174
+        }
+      }
+    },
+    {
+      "split": "build",
+      "operator": "ddot",
+      "profile": "x86_avx2",
+      "method": "constraint_plan",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "repair_attempted": 0,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 1,
+          "sum": 3152
+        },
+        "completion_tokens": {
+          "covered_attempts": 1,
+          "sum": 164
+        },
+        "total_tokens": {
+          "covered_attempts": 1,
+          "sum": 3316
+        }
+      }
+    },
+    {
+      "split": "build",
+      "operator": "dgemm",
+      "profile": "k1_rvv256",
+      "method": "no_knowledge",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "wrong_answer": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "wrong_answer": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 3252
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 748
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 4000
+        }
+      }
+    },
+    {
+      "split": "build",
+      "operator": "dgemm",
+      "profile": "k1_rvv256",
+      "method": "text_rag",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "wrong_answer": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "wrong_answer": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 5574
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 1100
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 6674
+        }
+      }
+    },
+    {
+      "split": "build",
+      "operator": "dgemm",
+      "profile": "k1_rvv256",
+      "method": "strategy_cards",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "runtime_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 5534
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 1264
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 6798
+        }
+      }
+    },
+    {
+      "split": "build",
+      "operator": "dgemm",
+      "profile": "k1_rvv256",
+      "method": "constraint_plan",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "wrong_answer": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "wrong_answer": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 5587
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 1026
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 6613
+        }
+      }
+    },
+    {
+      "split": "build",
+      "operator": "dgemm",
+      "profile": "x86_avx2",
+      "method": "no_knowledge",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "wrong_answer": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "wrong_answer": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 3547
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 1386
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 4933
+        }
+      }
+    },
+    {
+      "split": "build",
+      "operator": "dgemm",
+      "profile": "x86_avx2",
+      "method": "text_rag",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "wrong_answer": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 5217
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 1028
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 6245
+        }
+      }
+    },
+    {
+      "split": "build",
+      "operator": "dgemm",
+      "profile": "x86_avx2",
+      "method": "strategy_cards",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "wrong_answer": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 5450
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 1229
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 6679
+        }
+      }
+    },
+    {
+      "split": "build",
+      "operator": "dgemm",
+      "profile": "x86_avx2",
+      "method": "constraint_plan",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 5670
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 988
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 6658
+        }
+      }
+    },
+    {
+      "split": "build",
+      "operator": "dgemv",
+      "profile": "k1_rvv256",
+      "method": "no_knowledge",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "wrong_answer": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "wrong_answer": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 3005
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 428
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 3433
+        }
+      }
+    },
+    {
+      "split": "build",
+      "operator": "dgemv",
+      "profile": "k1_rvv256",
+      "method": "text_rag",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "wrong_answer": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "wrong_answer": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 4981
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 678
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 5659
+        }
+      }
+    },
+    {
+      "split": "build",
+      "operator": "dgemv",
+      "profile": "k1_rvv256",
+      "method": "strategy_cards",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "repair_attempted": 0,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 1,
+          "sum": 3023
+        },
+        "completion_tokens": {
+          "covered_attempts": 1,
+          "sum": 347
+        },
+        "total_tokens": {
+          "covered_attempts": 1,
+          "sum": 3370
+        }
+      }
+    },
+    {
+      "split": "build",
+      "operator": "dgemv",
+      "profile": "k1_rvv256",
+      "method": "constraint_plan",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "wrong_answer": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "wrong_answer": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 4995
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 808
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 5803
+        }
+      }
+    },
+    {
+      "split": "build",
+      "operator": "dgemv",
+      "profile": "x86_avx2",
+      "method": "no_knowledge",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "wrong_answer": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "wrong_answer": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 2940
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 436
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 3376
+        }
+      }
+    },
+    {
+      "split": "build",
+      "operator": "dgemv",
+      "profile": "x86_avx2",
+      "method": "text_rag",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "wrong_answer": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "wrong_answer": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 5177
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 1160
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 6337
+        }
+      }
+    },
+    {
+      "split": "build",
+      "operator": "dgemv",
+      "profile": "x86_avx2",
+      "method": "strategy_cards",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "repair_attempted": 0,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 1,
+          "sum": 2989
+        },
+        "completion_tokens": {
+          "covered_attempts": 1,
+          "sum": 347
+        },
+        "total_tokens": {
+          "covered_attempts": 1,
+          "sum": 3336
+        }
+      }
+    },
+    {
+      "split": "build",
+      "operator": "dgemv",
+      "profile": "x86_avx2",
+      "method": "constraint_plan",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "repair_attempted": 0,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 1,
+          "sum": 3069
+        },
+        "completion_tokens": {
+          "covered_attempts": 1,
+          "sum": 347
+        },
+        "total_tokens": {
+          "covered_attempts": 1,
+          "sum": 3416
+        }
+      }
+    },
+    {
+      "split": "external_holdout",
+      "operator": "conv1d",
+      "profile": "k1_rvv256",
+      "method": "no_knowledge",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "repair_attempted": 0,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 1,
+          "sum": 1224
+        },
+        "completion_tokens": {
+          "covered_attempts": 1,
+          "sum": 136
+        },
+        "total_tokens": {
+          "covered_attempts": 1,
+          "sum": 1360
+        }
+      }
+    },
+    {
+      "split": "external_holdout",
+      "operator": "conv1d",
+      "profile": "k1_rvv256",
+      "method": "text_rag",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "wrong_answer": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 4368
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 715
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 5083
+        }
+      }
+    },
+    {
+      "split": "external_holdout",
+      "operator": "conv1d",
+      "profile": "k1_rvv256",
+      "method": "strategy_cards",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 4762
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 755
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 5517
+        }
+      }
+    },
+    {
+      "split": "external_holdout",
+      "operator": "conv1d",
+      "profile": "k1_rvv256",
+      "method": "constraint_plan",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 4859
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 572
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 5431
+        }
+      }
+    },
+    {
+      "split": "external_holdout",
+      "operator": "conv1d",
+      "profile": "x86_avx2",
+      "method": "no_knowledge",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "repair_attempted": 0,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 1,
+          "sum": 1190
+        },
+        "completion_tokens": {
+          "covered_attempts": 1,
+          "sum": 136
+        },
+        "total_tokens": {
+          "covered_attempts": 1,
+          "sum": 1326
+        }
+      }
+    },
+    {
+      "split": "external_holdout",
+      "operator": "conv1d",
+      "profile": "x86_avx2",
+      "method": "text_rag",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 4428
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 776
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 5204
+        }
+      }
+    },
+    {
+      "split": "external_holdout",
+      "operator": "conv1d",
+      "profile": "x86_avx2",
+      "method": "strategy_cards",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 4847
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 703
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 5550
+        }
+      }
+    },
+    {
+      "split": "external_holdout",
+      "operator": "conv1d",
+      "profile": "x86_avx2",
+      "method": "constraint_plan",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "repair_attempted": 0,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 1,
+          "sum": 2880
+        },
+        "completion_tokens": {
+          "covered_attempts": 1,
+          "sum": 209
+        },
+        "total_tokens": {
+          "covered_attempts": 1,
+          "sum": 3089
+        }
+      }
+    },
+    {
+      "split": "holdout",
+      "operator": "dasum",
+      "profile": "k1_rvv256",
+      "method": "no_knowledge",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 2769
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 512
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 3281
+        }
+      }
+    },
+    {
+      "split": "holdout",
+      "operator": "dasum",
+      "profile": "k1_rvv256",
+      "method": "text_rag",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 1,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 4436
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 544
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 4980
+        }
+      }
+    },
+    {
+      "split": "holdout",
+      "operator": "dasum",
+      "profile": "k1_rvv256",
+      "method": "strategy_cards",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 4163
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 560
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 4723
+        }
+      }
+    },
+    {
+      "split": "holdout",
+      "operator": "dasum",
+      "profile": "k1_rvv256",
+      "method": "constraint_plan",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 4516
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 482
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 4998
+        }
+      }
+    },
+    {
+      "split": "holdout",
+      "operator": "dasum",
+      "profile": "x86_avx2",
+      "method": "no_knowledge",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 2766
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 779
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 3545
+        }
+      }
+    },
+    {
+      "split": "holdout",
+      "operator": "dasum",
+      "profile": "x86_avx2",
+      "method": "text_rag",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "run_timeout": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "run_timeout": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 4105
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 538
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 4643
+        }
+      }
+    },
+    {
+      "split": "holdout",
+      "operator": "dasum",
+      "profile": "x86_avx2",
+      "method": "strategy_cards",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 4104
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 494
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 4598
+        }
+      }
+    },
+    {
+      "split": "holdout",
+      "operator": "dasum",
+      "profile": "x86_avx2",
+      "method": "constraint_plan",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "runtime_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 4503
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 509
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 5012
+        }
+      }
+    },
+    {
+      "split": "holdout",
+      "operator": "dscal",
+      "profile": "k1_rvv256",
+      "method": "no_knowledge",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 3020
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 450
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 3470
+        }
+      }
+    },
+    {
+      "split": "holdout",
+      "operator": "dscal",
+      "profile": "k1_rvv256",
+      "method": "text_rag",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 4723
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 646
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 5369
+        }
+      }
+    },
+    {
+      "split": "holdout",
+      "operator": "dscal",
+      "profile": "k1_rvv256",
+      "method": "strategy_cards",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 4561
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 757
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 5318
+        }
+      }
+    },
+    {
+      "split": "holdout",
+      "operator": "dscal",
+      "profile": "k1_rvv256",
+      "method": "constraint_plan",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "runtime_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "runtime_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 4361
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 310
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 4671
+        }
+      }
+    },
+    {
+      "split": "holdout",
+      "operator": "dscal",
+      "profile": "x86_avx2",
+      "method": "no_knowledge",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "wrong_answer": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "wrong_answer": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 2492
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 292
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 2784
+        }
+      }
+    },
+    {
+      "split": "holdout",
+      "operator": "dscal",
+      "profile": "x86_avx2",
+      "method": "text_rag",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 4637
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 650
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 5287
+        }
+      }
+    },
+    {
+      "split": "holdout",
+      "operator": "dscal",
+      "profile": "x86_avx2",
+      "method": "strategy_cards",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 4598
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 770
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 5368
+        }
+      }
+    },
+    {
+      "split": "holdout",
+      "operator": "dscal",
+      "profile": "x86_avx2",
+      "method": "constraint_plan",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 5020
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 793
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 5813
+        }
+      }
+    },
+    {
+      "split": "holdout",
+      "operator": "dsymv",
+      "profile": "k1_rvv256",
+      "method": "no_knowledge",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 4362
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 1748
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 6110
+        }
+      }
+    },
+    {
+      "split": "holdout",
+      "operator": "dsymv",
+      "profile": "k1_rvv256",
+      "method": "text_rag",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "wrong_answer": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "wrong_answer": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 5020
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 1032
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 6052
+        }
+      }
+    },
+    {
+      "split": "holdout",
+      "operator": "dsymv",
+      "profile": "k1_rvv256",
+      "method": "strategy_cards",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "runtime_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 5031
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 1082
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 6113
+        }
+      }
+    },
+    {
+      "split": "holdout",
+      "operator": "dsymv",
+      "profile": "k1_rvv256",
+      "method": "constraint_plan",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 5425
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 931
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 6356
+        }
+      }
+    },
+    {
+      "split": "holdout",
+      "operator": "dsymv",
+      "profile": "x86_avx2",
+      "method": "no_knowledge",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "repair_attempted": 0,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 1,
+          "sum": 1396
+        },
+        "completion_tokens": {
+          "covered_attempts": 1,
+          "sum": 261
+        },
+        "total_tokens": {
+          "covered_attempts": 1,
+          "sum": 1657
+        }
+      }
+    },
+    {
+      "split": "holdout",
+      "operator": "dsymv",
+      "profile": "x86_avx2",
+      "method": "text_rag",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 1,
+        "statuses": {
+          "passed": 1
+        }
+      },
+      "repair_attempted": 0,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 1,
+          "sum": 2877
+        },
+        "completion_tokens": {
+          "covered_attempts": 1,
+          "sum": 325
+        },
+        "total_tokens": {
+          "covered_attempts": 1,
+          "sum": 3202
+        }
+      }
+    },
+    {
+      "split": "holdout",
+      "operator": "dsymv",
+      "profile": "x86_avx2",
+      "method": "strategy_cards",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "wrong_answer": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 5055
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 1230
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 6285
+        }
+      }
+    },
+    {
+      "split": "holdout",
+      "operator": "dsymv",
+      "profile": "x86_avx2",
+      "method": "constraint_plan",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "wrong_answer": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 5023
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 689
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 5712
+        }
+      }
+    },
+    {
+      "split": "near_transfer",
+      "operator": "dsymm",
+      "profile": "k1_rvv256",
+      "method": "no_knowledge",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 3860
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 856
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 4716
+        }
+      }
+    },
+    {
+      "split": "near_transfer",
+      "operator": "dsymm",
+      "profile": "k1_rvv256",
+      "method": "text_rag",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "runtime_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 5417
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 962
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 6379
+        }
+      }
+    },
+    {
+      "split": "near_transfer",
+      "operator": "dsymm",
+      "profile": "k1_rvv256",
+      "method": "strategy_cards",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "wrong_answer": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 5260
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 936
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 6196
+        }
+      }
+    },
+    {
+      "split": "near_transfer",
+      "operator": "dsymm",
+      "profile": "k1_rvv256",
+      "method": "constraint_plan",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "runtime_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 6200
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 1632
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 7832
+        }
+      }
+    },
+    {
+      "split": "near_transfer",
+      "operator": "dsymm",
+      "profile": "x86_avx2",
+      "method": "no_knowledge",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 3800
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 858
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 4658
+        }
+      }
+    },
+    {
+      "split": "near_transfer",
+      "operator": "dsymm",
+      "profile": "x86_avx2",
+      "method": "text_rag",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 5616
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 1598
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 7214
+        }
+      }
+    },
+    {
+      "split": "near_transfer",
+      "operator": "dsymm",
+      "profile": "x86_avx2",
+      "method": "strategy_cards",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "wrong_answer": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 5192
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 942
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 6134
+        }
+      }
+    },
+    {
+      "split": "near_transfer",
+      "operator": "dsymm",
+      "profile": "x86_avx2",
+      "method": "constraint_plan",
+      "planned": 1,
+      "result_files": 1,
+      "initial": {
+        "compile_observed": 1,
+        "compile_passed": 0,
+        "correctness_observed": 0,
+        "correct": 0,
+        "statuses": {
+          "compile_failed": 1
+        }
+      },
+      "final": {
+        "compile_observed": 1,
+        "compile_passed": 1,
+        "correctness_observed": 1,
+        "correct": 0,
+        "statuses": {
+          "wrong_answer": 1
+        }
+      },
+      "repair_attempted": 1,
+      "repair_rescued": 0,
+      "regressed": 0,
+      "tokens": {
+        "prompt_tokens": {
+          "covered_attempts": 2,
+          "sum": 5481
+        },
+        "completion_tokens": {
+          "covered_attempts": 2,
+          "sum": 942
+        },
+        "total_tokens": {
+          "covered_attempts": 2,
+          "sum": 6423
+        }
+      }
+    }
+  ],
+  "failures": [
+    {
+      "stage": "initial",
+      "profile": "k1_rvv256",
+      "method": "strategy_cards",
+      "status": "compile_failed",
+      "reason": "other_compiler_error",
+      "count": 5,
+      "examples": [
+        "daxpy/k1_rvv256/strategy_cards/rep-1/result.json",
+        "dgemm/k1_rvv256/strategy_cards/rep-1/result.json",
+        "dsymv/k1_rvv256/strategy_cards/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "initial",
+      "profile": "k1_rvv256",
+      "method": "text_rag",
+      "status": "wrong_answer",
+      "reason": "numerical_or_memory_contract",
+      "count": 4,
+      "examples": [
+        "dgemv/k1_rvv256/text_rag/rep-1/result.json",
+        "dgemm/k1_rvv256/text_rag/rep-1/result.json",
+        "dsymv/k1_rvv256/text_rag/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "initial",
+      "profile": "x86_avx2",
+      "method": "constraint_plan",
+      "status": "compile_failed",
+      "reason": "other_compiler_error",
+      "count": 4,
+      "examples": [
+        "dgemm/x86_avx2/constraint_plan/rep-1/result.json",
+        "dasum/x86_avx2/constraint_plan/rep-1/result.json",
+        "dsymv/x86_avx2/constraint_plan/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "initial",
+      "profile": "k1_rvv256",
+      "method": "constraint_plan",
+      "status": "compile_failed",
+      "reason": "other_compiler_error",
+      "count": 3,
+      "examples": [
+        "dsymv/k1_rvv256/constraint_plan/rep-1/result.json",
+        "dsymm/k1_rvv256/constraint_plan/rep-1/result.json",
+        "conv1d/k1_rvv256/constraint_plan/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "initial",
+      "profile": "k1_rvv256",
+      "method": "constraint_plan",
+      "status": "wrong_answer",
+      "reason": "numerical_or_memory_contract",
+      "count": 3,
+      "examples": [
+        "daxpy/k1_rvv256/constraint_plan/rep-1/result.json",
+        "dgemv/k1_rvv256/constraint_plan/rep-1/result.json",
+        "dgemm/k1_rvv256/constraint_plan/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "initial",
+      "profile": "x86_avx2",
+      "method": "no_knowledge",
+      "status": "wrong_answer",
+      "reason": "numerical_or_memory_contract",
+      "count": 3,
+      "examples": [
+        "dgemv/x86_avx2/no_knowledge/rep-1/result.json",
+        "dgemm/x86_avx2/no_knowledge/rep-1/result.json",
+        "dscal/x86_avx2/no_knowledge/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "initial",
+      "profile": "x86_avx2",
+      "method": "strategy_cards",
+      "status": "compile_failed",
+      "reason": "intrinsic_or_target_error",
+      "count": 3,
+      "examples": [
+        "dscal/x86_avx2/strategy_cards/rep-1/result.json",
+        "dasum/x86_avx2/strategy_cards/rep-1/result.json",
+        "conv1d/x86_avx2/strategy_cards/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "initial",
+      "profile": "x86_avx2",
+      "method": "strategy_cards",
+      "status": "compile_failed",
+      "reason": "other_compiler_error",
+      "count": 3,
+      "examples": [
+        "dgemm/x86_avx2/strategy_cards/rep-1/result.json",
+        "dsymv/x86_avx2/strategy_cards/rep-1/result.json",
+        "dsymm/x86_avx2/strategy_cards/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "initial",
+      "profile": "k1_rvv256",
+      "method": "no_knowledge",
+      "status": "compile_failed",
+      "reason": "intrinsic_or_target_error",
+      "count": 2,
+      "examples": [
+        "dscal/k1_rvv256/no_knowledge/rep-1/result.json",
+        "dsymv/k1_rvv256/no_knowledge/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "initial",
+      "profile": "k1_rvv256",
+      "method": "no_knowledge",
+      "status": "wrong_answer",
+      "reason": "numerical_or_memory_contract",
+      "count": 2,
+      "examples": [
+        "dgemv/k1_rvv256/no_knowledge/rep-1/result.json",
+        "dgemm/k1_rvv256/no_knowledge/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "initial",
+      "profile": "k1_rvv256",
+      "method": "text_rag",
+      "status": "compile_failed",
+      "reason": "other_compiler_error",
+      "count": 2,
+      "examples": [
+        "ddot/k1_rvv256/text_rag/rep-1/result.json",
+        "dsymm/k1_rvv256/text_rag/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "initial",
+      "profile": "x86_avx2",
+      "method": "text_rag",
+      "status": "compile_failed",
+      "reason": "intrinsic_or_target_error",
+      "count": 2,
+      "examples": [
+        "ddot/x86_avx2/text_rag/rep-1/result.json",
+        "dscal/x86_avx2/text_rag/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "initial",
+      "profile": "x86_avx2",
+      "method": "text_rag",
+      "status": "compile_failed",
+      "reason": "other_compiler_error",
+      "count": 2,
+      "examples": [
+        "dsymm/x86_avx2/text_rag/rep-1/result.json",
+        "conv1d/x86_avx2/text_rag/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "initial",
+      "profile": "x86_avx2",
+      "method": "text_rag",
+      "status": "wrong_answer",
+      "reason": "numerical_or_memory_contract",
+      "count": 2,
+      "examples": [
+        "dgemv/x86_avx2/text_rag/rep-1/result.json",
+        "dgemm/x86_avx2/text_rag/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "initial",
+      "profile": "k1_rvv256",
+      "method": "constraint_plan",
+      "status": "compile_failed",
+      "reason": "missing_header",
+      "count": 1,
+      "examples": [
+        "dasum/k1_rvv256/constraint_plan/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "initial",
+      "profile": "k1_rvv256",
+      "method": "constraint_plan",
+      "status": "runtime_failed",
+      "reason": "execution_aborted",
+      "count": 1,
+      "examples": [
+        "dscal/k1_rvv256/constraint_plan/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "initial",
+      "profile": "k1_rvv256",
+      "method": "no_knowledge",
+      "status": "compile_failed",
+      "reason": "missing_header",
+      "count": 1,
+      "examples": [
+        "dasum/k1_rvv256/no_knowledge/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "initial",
+      "profile": "k1_rvv256",
+      "method": "no_knowledge",
+      "status": "compile_failed",
+      "reason": "other_compiler_error",
+      "count": 1,
+      "examples": [
+        "dsymm/k1_rvv256/no_knowledge/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "initial",
+      "profile": "k1_rvv256",
+      "method": "strategy_cards",
+      "status": "compile_failed",
+      "reason": "intrinsic_or_target_error",
+      "count": 1,
+      "examples": [
+        "dscal/k1_rvv256/strategy_cards/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "initial",
+      "profile": "k1_rvv256",
+      "method": "strategy_cards",
+      "status": "compile_failed",
+      "reason": "missing_header",
+      "count": 1,
+      "examples": [
+        "dasum/k1_rvv256/strategy_cards/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "initial",
+      "profile": "k1_rvv256",
+      "method": "text_rag",
+      "status": "compile_failed",
+      "reason": "intrinsic_or_target_error",
+      "count": 1,
+      "examples": [
+        "dscal/k1_rvv256/text_rag/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "initial",
+      "profile": "k1_rvv256",
+      "method": "text_rag",
+      "status": "compile_failed",
+      "reason": "missing_header",
+      "count": 1,
+      "examples": [
+        "dasum/k1_rvv256/text_rag/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "initial",
+      "profile": "x86_avx2",
+      "method": "constraint_plan",
+      "status": "compile_failed",
+      "reason": "intrinsic_or_target_error",
+      "count": 1,
+      "examples": [
+        "dscal/x86_avx2/constraint_plan/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "initial",
+      "profile": "x86_avx2",
+      "method": "constraint_plan",
+      "status": "wrong_answer",
+      "reason": "numerical_or_memory_contract",
+      "count": 1,
+      "examples": [
+        "daxpy/x86_avx2/constraint_plan/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "initial",
+      "profile": "x86_avx2",
+      "method": "no_knowledge",
+      "status": "compile_failed",
+      "reason": "intrinsic_or_target_error",
+      "count": 1,
+      "examples": [
+        "dasum/x86_avx2/no_knowledge/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "initial",
+      "profile": "x86_avx2",
+      "method": "no_knowledge",
+      "status": "compile_failed",
+      "reason": "other_compiler_error",
+      "count": 1,
+      "examples": [
+        "dsymm/x86_avx2/no_knowledge/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "initial",
+      "profile": "x86_avx2",
+      "method": "text_rag",
+      "status": "compile_timeout",
+      "reason": "compiler_timed_out",
+      "count": 1,
+      "examples": [
+        "daxpy/x86_avx2/text_rag/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "initial",
+      "profile": "x86_avx2",
+      "method": "text_rag",
+      "status": "run_timeout",
+      "reason": "candidate_timed_out",
+      "count": 1,
+      "examples": [
+        "dasum/x86_avx2/text_rag/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "final",
+      "profile": "k1_rvv256",
+      "method": "text_rag",
+      "status": "wrong_answer",
+      "reason": "numerical_or_memory_contract",
+      "count": 3,
+      "examples": [
+        "dgemv/k1_rvv256/text_rag/rep-1/result.json",
+        "dgemm/k1_rvv256/text_rag/rep-1/result.json",
+        "dsymv/k1_rvv256/text_rag/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "final",
+      "profile": "x86_avx2",
+      "method": "no_knowledge",
+      "status": "wrong_answer",
+      "reason": "numerical_or_memory_contract",
+      "count": 3,
+      "examples": [
+        "dgemv/x86_avx2/no_knowledge/rep-1/result.json",
+        "dgemm/x86_avx2/no_knowledge/rep-1/result.json",
+        "dscal/x86_avx2/no_knowledge/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "final",
+      "profile": "x86_avx2",
+      "method": "strategy_cards",
+      "status": "compile_failed",
+      "reason": "intrinsic_or_target_error",
+      "count": 3,
+      "examples": [
+        "dscal/x86_avx2/strategy_cards/rep-1/result.json",
+        "dasum/x86_avx2/strategy_cards/rep-1/result.json",
+        "conv1d/x86_avx2/strategy_cards/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "final",
+      "profile": "x86_avx2",
+      "method": "strategy_cards",
+      "status": "wrong_answer",
+      "reason": "numerical_or_memory_contract",
+      "count": 3,
+      "examples": [
+        "dgemm/x86_avx2/strategy_cards/rep-1/result.json",
+        "dsymv/x86_avx2/strategy_cards/rep-1/result.json",
+        "dsymm/x86_avx2/strategy_cards/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "final",
+      "profile": "x86_avx2",
+      "method": "text_rag",
+      "status": "compile_failed",
+      "reason": "intrinsic_or_target_error",
+      "count": 3,
+      "examples": [
+        "ddot/x86_avx2/text_rag/rep-1/result.json",
+        "dgemm/x86_avx2/text_rag/rep-1/result.json",
+        "dscal/x86_avx2/text_rag/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "final",
+      "profile": "k1_rvv256",
+      "method": "constraint_plan",
+      "status": "compile_failed",
+      "reason": "other_compiler_error",
+      "count": 2,
+      "examples": [
+        "dsymv/k1_rvv256/constraint_plan/rep-1/result.json",
+        "conv1d/k1_rvv256/constraint_plan/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "final",
+      "profile": "k1_rvv256",
+      "method": "constraint_plan",
+      "status": "runtime_failed",
+      "reason": "execution_aborted",
+      "count": 2,
+      "examples": [
+        "dscal/k1_rvv256/constraint_plan/rep-1/result.json",
+        "dsymm/k1_rvv256/constraint_plan/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "final",
+      "profile": "k1_rvv256",
+      "method": "constraint_plan",
+      "status": "wrong_answer",
+      "reason": "numerical_or_memory_contract",
+      "count": 2,
+      "examples": [
+        "dgemv/k1_rvv256/constraint_plan/rep-1/result.json",
+        "dgemm/k1_rvv256/constraint_plan/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "final",
+      "profile": "k1_rvv256",
+      "method": "no_knowledge",
+      "status": "compile_failed",
+      "reason": "other_compiler_error",
+      "count": 2,
+      "examples": [
+        "dasum/k1_rvv256/no_knowledge/rep-1/result.json",
+        "dsymm/k1_rvv256/no_knowledge/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "final",
+      "profile": "k1_rvv256",
+      "method": "no_knowledge",
+      "status": "wrong_answer",
+      "reason": "numerical_or_memory_contract",
+      "count": 2,
+      "examples": [
+        "dgemv/k1_rvv256/no_knowledge/rep-1/result.json",
+        "dgemm/k1_rvv256/no_knowledge/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "final",
+      "profile": "k1_rvv256",
+      "method": "strategy_cards",
+      "status": "compile_failed",
+      "reason": "intrinsic_or_target_error",
+      "count": 2,
+      "examples": [
+        "dscal/k1_rvv256/strategy_cards/rep-1/result.json",
+        "dasum/k1_rvv256/strategy_cards/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "final",
+      "profile": "k1_rvv256",
+      "method": "strategy_cards",
+      "status": "runtime_failed",
+      "reason": "execution_aborted",
+      "count": 2,
+      "examples": [
+        "dgemm/k1_rvv256/strategy_cards/rep-1/result.json",
+        "dsymv/k1_rvv256/strategy_cards/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "final",
+      "profile": "k1_rvv256",
+      "method": "strategy_cards",
+      "status": "wrong_answer",
+      "reason": "numerical_or_memory_contract",
+      "count": 2,
+      "examples": [
+        "daxpy/k1_rvv256/strategy_cards/rep-1/result.json",
+        "dsymm/k1_rvv256/strategy_cards/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "final",
+      "profile": "k1_rvv256",
+      "method": "text_rag",
+      "status": "compile_failed",
+      "reason": "other_compiler_error",
+      "count": 2,
+      "examples": [
+        "ddot/k1_rvv256/text_rag/rep-1/result.json",
+        "conv1d/k1_rvv256/text_rag/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "final",
+      "profile": "x86_avx2",
+      "method": "constraint_plan",
+      "status": "compile_failed",
+      "reason": "intrinsic_or_target_error",
+      "count": 2,
+      "examples": [
+        "daxpy/x86_avx2/constraint_plan/rep-1/result.json",
+        "dscal/x86_avx2/constraint_plan/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "final",
+      "profile": "x86_avx2",
+      "method": "constraint_plan",
+      "status": "wrong_answer",
+      "reason": "numerical_or_memory_contract",
+      "count": 2,
+      "examples": [
+        "dsymv/x86_avx2/constraint_plan/rep-1/result.json",
+        "dsymm/x86_avx2/constraint_plan/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "final",
+      "profile": "x86_avx2",
+      "method": "text_rag",
+      "status": "compile_failed",
+      "reason": "link_or_missing_symbol",
+      "count": 2,
+      "examples": [
+        "dsymm/x86_avx2/text_rag/rep-1/result.json",
+        "conv1d/x86_avx2/text_rag/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "final",
+      "profile": "k1_rvv256",
+      "method": "constraint_plan",
+      "status": "compile_failed",
+      "reason": "intrinsic_or_target_error",
+      "count": 1,
+      "examples": [
+        "dasum/k1_rvv256/constraint_plan/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "final",
+      "profile": "k1_rvv256",
+      "method": "constraint_plan",
+      "status": "compile_failed",
+      "reason": "missing_header",
+      "count": 1,
+      "examples": [
+        "daxpy/k1_rvv256/constraint_plan/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "final",
+      "profile": "k1_rvv256",
+      "method": "no_knowledge",
+      "status": "compile_failed",
+      "reason": "intrinsic_or_target_error",
+      "count": 1,
+      "examples": [
+        "dscal/k1_rvv256/no_knowledge/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "final",
+      "profile": "k1_rvv256",
+      "method": "no_knowledge",
+      "status": "compile_failed",
+      "reason": "missing_header",
+      "count": 1,
+      "examples": [
+        "dsymv/k1_rvv256/no_knowledge/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "final",
+      "profile": "k1_rvv256",
+      "method": "strategy_cards",
+      "status": "compile_failed",
+      "reason": "other_compiler_error",
+      "count": 1,
+      "examples": [
+        "conv1d/k1_rvv256/strategy_cards/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "final",
+      "profile": "k1_rvv256",
+      "method": "text_rag",
+      "status": "compile_failed",
+      "reason": "intrinsic_or_target_error",
+      "count": 1,
+      "examples": [
+        "dscal/k1_rvv256/text_rag/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "final",
+      "profile": "k1_rvv256",
+      "method": "text_rag",
+      "status": "runtime_failed",
+      "reason": "execution_aborted",
+      "count": 1,
+      "examples": [
+        "dsymm/k1_rvv256/text_rag/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "final",
+      "profile": "x86_avx2",
+      "method": "constraint_plan",
+      "status": "compile_failed",
+      "reason": "other_compiler_error",
+      "count": 1,
+      "examples": [
+        "dgemm/x86_avx2/constraint_plan/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "final",
+      "profile": "x86_avx2",
+      "method": "constraint_plan",
+      "status": "runtime_failed",
+      "reason": "execution_aborted",
+      "count": 1,
+      "examples": [
+        "dasum/x86_avx2/constraint_plan/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "final",
+      "profile": "x86_avx2",
+      "method": "no_knowledge",
+      "status": "compile_failed",
+      "reason": "intrinsic_or_target_error",
+      "count": 1,
+      "examples": [
+        "dasum/x86_avx2/no_knowledge/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "final",
+      "profile": "x86_avx2",
+      "method": "no_knowledge",
+      "status": "compile_failed",
+      "reason": "other_compiler_error",
+      "count": 1,
+      "examples": [
+        "dsymm/x86_avx2/no_knowledge/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "final",
+      "profile": "x86_avx2",
+      "method": "text_rag",
+      "status": "compile_timeout",
+      "reason": "compiler_timed_out",
+      "count": 1,
+      "examples": [
+        "daxpy/x86_avx2/text_rag/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "final",
+      "profile": "x86_avx2",
+      "method": "text_rag",
+      "status": "run_timeout",
+      "reason": "candidate_timed_out",
+      "count": 1,
+      "examples": [
+        "dasum/x86_avx2/text_rag/rep-1/result.json"
+      ]
+    },
+    {
+      "stage": "final",
+      "profile": "x86_avx2",
+      "method": "text_rag",
+      "status": "wrong_answer",
+      "reason": "numerical_or_memory_contract",
+      "count": 1,
+      "examples": [
+        "dgemv/x86_avx2/text_rag/rep-1/result.json"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "amd64",
+  "results": [
+    {
+      "task": "dgemm",
+      "target": "x86",
+      "variant": "candidate",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\strategy_cards\\rep-1\\repair\\candidate.c",
+      "source_sha256": "1529dd6bee475d79d48901f7a471d451d65f67f19583a9cfb6065b49161aaeb9",
+      "status": "check_failed",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DGEMM",
+          "driver/check.c",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\strategy_cards\\rep-1\\repair\\candidate.c",
+          "-o",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\strategy_cards\\rep-1\\repair\\bin\\dgemm-x86-candidate.exe",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "be98de62a576a256aa87f2d2d20f151f07ebcffe21a4c38d330aaf328731a5b2",
+      "check": {
+        "argv": [
+          "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\strategy_cards\\rep-1\\repair\\bin\\dgemm-x86-candidate.exe"
+        ],
+        "exit_code": 1,
+        "stdout": "32 cases, 590 failures\n",
+        "stderr": "dgemm case 9 cell 1: got nan expected 0\ndgemm case 9 cell 2: got nan expected 0\ndgemm case 9 cell 3: got nan expected 0\ndgemm case 9 cell 4: got nan expected 0\ndgemm case 9 cell 5: got nan expected 0\ndgemm case 9 cell 6: got nan expected 0\ndgemm case 9 cell 7: got nan expected 0\ndgemm case 9 cell 8: got nan expected 0\ndgemm case 9 cell 9: got nan expected 0\ndgemm case 9 cell 13: got nan expected 0\n"
+      },
+      "environment": "native"
+    }
+  ]
+}

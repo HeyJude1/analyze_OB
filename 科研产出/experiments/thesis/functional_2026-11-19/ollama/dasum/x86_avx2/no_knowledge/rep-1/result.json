@@ -1,0 +1,44 @@
+{
+  "analogy_source": "dot",
+  "card_ids": [],
+  "contract_sha256": "5e998ce525341a58ef53e035e89170cf28355a203166b02971b4de12348a5e90",
+  "knowledge_bytes": 0,
+  "method": "no_knowledge",
+  "operator": "dasum",
+  "profile": "x86_avx2",
+  "prompt": "dasum/x86_avx2/no_knowledge.json",
+  "prompt_sha256": "114edc592ed313f1a1cbf14fa07fb7a9bd236e3d7c72bcdf9f408d85f9308f82",
+  "repetition": 1,
+  "source_sha256": "cc032d0101696873b29211d52155bf01b71bffac2dfd71b1a327b40780dff6cc",
+  "split": "holdout",
+  "status": "prepared",
+  "engine": "ollama",
+  "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+  "repair_attempted": true,
+  "initial": {
+    "status": "compile_failed",
+    "compile_ok": false,
+    "correct": null,
+    "failure_reason": "intrinsic_or_target_error",
+    "usage": {
+      "prompt_tokens": 1118,
+      "completion_tokens": 295,
+      "total_tokens": 1413
+    },
+    "diagnostic": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dasum\\x86_avx2\\no_knowledge\\rep-1\\initial\\candidate.c: In function 'op_dasum':\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dasum\\x86_avx2\\no_knowledge\\rep-1\\initial\\candidate.c:18:16: error: implicit declaration of function '_mm256_reduce_add_pd'; did you mean '_mm256_reduce_add_ph'? [-Wimplicit-function-declaration]\n   18 |         sum += _mm256_reduce_add_pd(abs_vec_x1) + _mm256_reduce_add_pd(abs_vec_x2);\n      |                ^~~~~~~~~~~~~~~~~~~~\n      |                _mm256_reduce_add_ph\n",
+    "candidate_sha256": "061acc4bf980d8907a9ea32b9ab05ea216732e1d3396b3b612aa6b9d14ad227d"
+  },
+  "final": {
+    "status": "compile_failed",
+    "compile_ok": false,
+    "correct": null,
+    "failure_reason": "intrinsic_or_target_error",
+    "usage": {
+      "prompt_tokens": 1648,
+      "completion_tokens": 484,
+      "total_tokens": 2132
+    },
+    "diagnostic": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dasum\\x86_avx2\\no_knowledge\\rep-1\\repair\\candidate.c: In function 'op_dasum':\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dasum\\x86_avx2\\no_knowledge\\rep-1\\repair\\candidate.c:17:16: error: implicit declaration of function '_mm256_reduce_add_pd'; did you mean '_mm256_reduce_add_ph'? [-Wimplicit-function-declaration]\n   17 |         sum += _mm256_reduce_add_pd(abs_vec_x1) + _mm256_reduce_add_pd(abs_vec_x2);\n      |                ^~~~~~~~~~~~~~~~~~~~\n      |                _mm256_reduce_add_ph\n",
+    "candidate_sha256": "3355dfd049d1920ecaa2a7278dc427a5c719b095266ad81fd788f230caad050b"
+  }
+}

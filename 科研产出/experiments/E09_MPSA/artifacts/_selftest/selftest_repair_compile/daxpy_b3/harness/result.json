@@ -1,0 +1,59 @@
+{
+  "ok": false,
+  "compile_ok": false,
+  "correct": false,
+  "maxdiff": null,
+  "reldiff": null,
+  "qemu_exit": null,
+  "stdout": "[build] cc=riscv64-linux-gnu-gcc\n[build] driver=/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/tasks/daxpy/driver/test_daxpy.c\n[build] generated=/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/selftest_repair_compile/daxpy_b3/harness/generated.c\n[build] gcc_exit=1\n[build] FAIL（见 build.stderr.log）\n",
+  "stderr": "/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/selftest_repair_compile/daxpy_b3/harness/generated.c: In function ‘daxpy_k’:\n/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/selftest_repair_compile/daxpy_b3/harness/generated.c:12:5: error: unknown type name ‘vfloat64m8_t’\n   12 |     vfloat64m8_t vx = __riscv_vlseg1e64_v_f64m8(x, 1);\n      |     ^~~~~~~~~~~~\n/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/selftest_repair_compile/daxpy_b3/harness/generated.c:12:23: warning: implicit declaration of function ‘__riscv_vlseg1e64_v_f64m8’ [-Wimplicit-function-declaration]\n   12 |     vfloat64m8_t vx = __riscv_vlseg1e64_v_f64m8(x, 1);\n      |                       ^~~~~~~~~~~~~~~~~~~~~~~~~\n",
+  "timeout": false,
+  "best_ms": null,
+  "qemu_only": true,
+  "n": 16384,
+  "reps": 10,
+  "tolerance": 1e-10,
+  "op": "daxpy",
+  "task_dir": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\tasks\\daxpy",
+  "driver": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\tasks\\daxpy\\driver\\test_daxpy.c",
+  "generated_c": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\selftest_repair_compile\\daxpy_b3\\harness\\generated.c",
+  "out_dir": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\selftest_repair_compile\\daxpy_b3\\harness",
+  "scripts": {
+    "build": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\selftest_repair_compile\\daxpy_b3\\harness\\build.sh",
+    "run": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\selftest_repair_compile\\daxpy_b3\\harness\\run.sh"
+  },
+  "logs": {
+    "build_stdout": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\selftest_repair_compile\\daxpy_b3\\harness\\build.stdout.log",
+    "build_stderr": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\selftest_repair_compile\\daxpy_b3\\harness\\build.stderr.log",
+    "qemu_stdout": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\selftest_repair_compile\\daxpy_b3\\harness\\qemu.stdout.log",
+    "qemu_stderr": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\selftest_repair_compile\\daxpy_b3\\harness\\qemu.stderr.log"
+  },
+  "commands": {
+    "build": [
+      "wsl.exe",
+      "-d",
+      "Ubuntu",
+      "-e",
+      "bash",
+      "/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/selftest_repair_compile/daxpy_b3/harness/build.sh"
+    ]
+  },
+  "compile_timeout": false,
+  "elapsed_build_s": 1.658,
+  "elapsed_run_s": null,
+  "elapsed_s": 1.66,
+  "error": "compile_failed：/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/selftest_repair_compile/daxpy_b3/harness/generated.c: In function ‘daxpy_k’: | /mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/selftest_repair_compile/daxpy_b3/harness/generated.c:12:5: error: unknown type name ‘vfloat64m8_t’ |    12 |     vfloat64m8_t vx = __riscv_vlseg1e64_v_f64m8(x, 1); |       |     ^~~~~~~~~~~~ | /mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/selftest_repair_compile/daxpy_b3/harness/generated.c:12:23: warning: implicit declaration of function ‘__riscv_vlseg1e64_v_f64m8’ [-Wimplicit-function-declaration] |    12 |     vfloat64m8_t vx = __riscv_vlseg1e64_v_f64m8(x, 1); |       |                       ^~~~~~~~~~~~~~~~~~~~~~~~~（见 C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\selftest_repair_compile\\daxpy_b3\\harness\\build.stderr.log）",
+  "env": {
+    "wsl_distro": "Ubuntu",
+    "cc": "riscv64-linux-gnu-gcc",
+    "cflags": [
+      "-O3",
+      "-march=rv64gcv_zvl256b_zba_zbb_zbc_zbs",
+      "-mabi=lp64d",
+      "-static"
+    ],
+    "qemu": "qemu-riscv64",
+    "qemu_cpu": "rv64,v=true,vlen=256,zba=true,zbb=true,zbc=true,zbs=true",
+    "flags_source": "experiments/harness/qemu.py"
+  }
+}

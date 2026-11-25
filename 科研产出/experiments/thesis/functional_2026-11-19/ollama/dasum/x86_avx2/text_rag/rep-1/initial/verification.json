@@ -1,0 +1,47 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "amd64",
+  "results": [
+    {
+      "task": "dasum",
+      "target": "x86",
+      "variant": "candidate",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dasum\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c",
+      "source_sha256": "5508709ec0857fa289da54f659a8a4d3dea0c743ad19c8031d7f2f6436ee54a9",
+      "status": "run_timeout",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DASUM",
+          "driver/check.c",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dasum\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c",
+          "-o",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dasum\\x86_avx2\\text_rag\\rep-1\\initial\\bin\\dasum-x86-candidate.exe",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "62feb88484a71561726558227a8f56e1439c54348d377cc89e5ea8de04928184",
+      "check": {
+        "argv": [
+          "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\thesis\\functional_2026-11-19\\ollama\\dasum\\x86_avx2\\text_rag\\rep-1\\initial\\bin\\dasum-x86-candidate.exe"
+        ],
+        "exit_code": null,
+        "stdout": "",
+        "stderr": "\nProcess timed out after 20 seconds.\n",
+        "timed_out": true
+      },
+      "environment": "native"
+    }
+  ]
+}

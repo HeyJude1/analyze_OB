@@ -1,0 +1,1172 @@
+[
+  {
+    "strategy_uid": "b7905437f874d22735cb33368840a5b1",
+    "canonical_name": "索引步长预缩放与循环不变量外提",
+    "cluster_size": 7,
+    "pattern_counts": {
+      "prep.loop_invariant_calc": 7,
+      "core.elementwise_update": 6
+    },
+    "core_patterns": [
+      "prep.loop_invariant_calc",
+      "core.elementwise_update"
+    ],
+    "contextual_patterns": {},
+    "members": [
+      "2587fc789857f42e4782aafed10ea4a1",
+      "2a98afc12c8731e9a7caccf7aa50cddf",
+      "6f8de08b22d9fd30e824c07d9e440ad5",
+      "1596335b30e0a6806cb2be2d5dc4efae",
+      "a250505390585b6ee9c323054ab47468",
+      "4ae50d89d2773c2381e04bd938aafa4a"
+    ]
+  },
+  {
+    "strategy_uid": "00009e903cbc1119cc3b6824eb36f756",
+    "canonical_name": "循环内索引增量展开与指针优化",
+    "cluster_size": 13,
+    "pattern_counts": {
+      "core.elementwise_update": 5,
+      "prep.index_pointer_init": 8,
+      "transform.packing": 5,
+      "core.gemv_like": 2,
+      "core.tiled_loop": 2,
+      "core.mm_microkernel": 2
+    },
+    "core_patterns": [
+      "prep.index_pointer_init"
+    ],
+    "contextual_patterns": {
+      "core.elementwise_update": "0.384615",
+      "transform.packing": "0.384615",
+      "core.gemv_like": "0.153846",
+      "core.tiled_loop": "0.153846",
+      "core.mm_microkernel": "0.153846"
+    },
+    "members": [
+      "521e2f650dddf516fe754b940c385d1d",
+      "feacdd6032fee449c7520afbd830a731",
+      "613bfef995819cbef0231bfc247be0ef",
+      "6dc25f8f615c1e599826f1e3d00757aa",
+      "576886ffa109c60377ce1b5f0c42669c",
+      "57bc525585e7e5964a8e32794a16f95c",
+      "a3b6c14881134b58425f635efc22049d",
+      "5f6fda7dd9feae1f8835eda388947e79",
+      "b7fd788ab583b49911e2fb49a37a8312",
+      "4f2ff6112a534d91465465ca7b897743",
+      "595850d1c0b7acf503a6dec13c1c09fa",
+      "3a959ee29aa1fb1d2ed590926d032730"
+    ]
+  },
+  {
+    "strategy_uid": "b3c0f6131b5d9d55133e1b21c7c41dd5",
+    "canonical_name": "四重循环展开与循环展开与指针预计算",
+    "cluster_size": 10,
+    "pattern_counts": {
+      "core.mm_microkernel": 7,
+      "transform.packing": 3,
+      "core.tiled_loop": 2
+    },
+    "core_patterns": [
+      "core.mm_microkernel"
+    ],
+    "contextual_patterns": {
+      "transform.packing": "0.300000",
+      "core.tiled_loop": "0.200000"
+    },
+    "members": [
+      "71e80a726f6d7a563dc5067c477b7a94",
+      "543ec0dd29835d7ce15f0ab3e9591e11",
+      "22a2cf3a1692caff5ee390f7cb9d86c0",
+      "a6a23909f8b64f74c12c10c6f58d3f92",
+      "05c9ee33da816a36769fa0d994d763c4",
+      "e4438c1f9b3e262dd7fe8bfca3001f44",
+      "7e7f13bcef9513ab30251a8ff6031469",
+      "6aa06f4984b75a125a41f939d939e6bd",
+      "d856ec4ef16532df66c28c1be9b506a4"
+    ]
+  },
+  {
+    "strategy_uid": "36262e35b261ea31d7f19ab4dd629e22",
+    "canonical_name": "条件分支消除与归约路径合并与条件分支合并与指针重定向",
+    "cluster_size": 2,
+    "pattern_counts": {
+      "transform.packing": 2,
+      "post.scale_accumulation": 1,
+      "transform.unpacking_special": 1,
+      "core.elementwise_update": 1
+    },
+    "core_patterns": [
+      "transform.packing"
+    ],
+    "contextual_patterns": {
+      "post.scale_accumulation": "0.500000",
+      "transform.unpacking_special": "0.500000",
+      "core.elementwise_update": "0.500000"
+    },
+    "members": [
+      "b47da76166b0d39ed6ad758f0bca54f5"
+    ]
+  },
+  {
+    "strategy_uid": "0ad5432f7acf2b2e2e618d310216dad8",
+    "canonical_name": "内存访问与算术操作重叠设计",
+    "cluster_size": 1,
+    "pattern_counts": {
+      "core.elementwise_update": 1,
+      "prep.loop_invariant_calc": 1
+    },
+    "core_patterns": [
+      "core.elementwise_update",
+      "prep.loop_invariant_calc"
+    ],
+    "contextual_patterns": {},
+    "members": []
+  },
+  {
+    "strategy_uid": "5b497ef491c98a92c0ddbcb7c0bae7ed",
+    "canonical_name": "标量循环的指令级并行利用",
+    "cluster_size": 1,
+    "pattern_counts": {
+      "core.elementwise_update": 1
+    },
+    "core_patterns": [
+      "core.elementwise_update"
+    ],
+    "contextual_patterns": {},
+    "members": []
+  },
+  {
+    "strategy_uid": "024ab9bd43b00181959bcae8b44bed4e",
+    "canonical_name": "循环分块与固定大小迭代",
+    "cluster_size": 4,
+    "pattern_counts": {
+      "core.gemv_like": 3,
+      "transform.unpacking_special": 3,
+      "core.vector_reduction": 1,
+      "transform.packing": 1
+    },
+    "core_patterns": [
+      "core.gemv_like",
+      "transform.unpacking_special"
+    ],
+    "contextual_patterns": {
+      "core.vector_reduction": "0.250000",
+      "transform.packing": "0.250000"
+    },
+    "members": [
+      "10c47c57ce61313bed9149e979dfe008",
+      "e4be5431154ce80f691ab3287e2b47b9",
+      "b55a7f2c3512abe92ed3a7bcbe409391"
+    ]
+  },
+  {
+    "strategy_uid": "02ac627c31428b9d7b26772c1227184f",
+    "canonical_name": "寄存器变量显式驻留与复用优化",
+    "cluster_size": 10,
+    "pattern_counts": {
+      "core.mm_microkernel": 8,
+      "post.scale_accumulation": 5,
+      "core.elementwise_update": 2,
+      "transform.packing": 2,
+      "prep.index_pointer_init": 1
+    },
+    "core_patterns": [
+      "core.mm_microkernel"
+    ],
+    "contextual_patterns": {
+      "post.scale_accumulation": "0.500000",
+      "core.elementwise_update": "0.200000",
+      "transform.packing": "0.200000",
+      "prep.index_pointer_init": "0.100000"
+    },
+    "members": [
+      "8fb4ad728826b2e8610d84fa4968ba1e",
+      "652d1585e7825424c5987f968c9960e3",
+      "986c181f8a0f48784fbc392e3821f58c",
+      "ca7a9e4af55e40af1dd6bfcd1f28b919",
+      "d2f20f40cd444360f2e6f75bd1d64002",
+      "3a1c366e68126d15f9c67b3c698818f3",
+      "fbe08b063724aefd4d383e7e670a2e67",
+      "a13f203ffa775ae9fae6740d298b43b4",
+      "a186c55b88a639490e5aadad4d942376"
+    ]
+  },
+  {
+    "strategy_uid": "02c3072945af12c082997f8c97ce5d6d",
+    "canonical_name": "分支消除与短路返回",
+    "cluster_size": 10,
+    "pattern_counts": {
+      "prep.parameter_validation": 10
+    },
+    "core_patterns": [
+      "prep.parameter_validation"
+    ],
+    "contextual_patterns": {},
+    "members": [
+      "c63c95e5e67bff2ffa77ba3900e23161",
+      "6662ac62283ec85e4ef3ade4bcce8471",
+      "37786cbc6802cdfa4e83c5fdf4ecd84d",
+      "50529d5fbaa88fb855e375688c843cde",
+      "ac8e7c557748ea3aeef8596a59967e58",
+      "758917855291d94ae00a69941a5af09a",
+      "4a58dc51558756ae7ab66563c6ccfae2",
+      "032283aff7a2165dcf780291e40fb96d",
+      "88871d6d2a55a254345e83d1d1588677"
+    ]
+  },
+  {
+    "strategy_uid": "0ed6bb2411785cc48e7f030b3594ae01",
+    "canonical_name": "对称结构感知计算",
+    "cluster_size": 7,
+    "pattern_counts": {
+      "transform.unpacking_special": 7,
+      "core.rank1_update": 1,
+      "core.gemv_like": 5,
+      "transform.packing": 1
+    },
+    "core_patterns": [
+      "transform.unpacking_special",
+      "core.gemv_like"
+    ],
+    "contextual_patterns": {
+      "core.rank1_update": "0.142857",
+      "transform.packing": "0.142857"
+    },
+    "members": [
+      "e848374f967e6ec192ea8983dcfb3c71",
+      "eac6d6b812ce51532bf35c07cb4f05d2",
+      "20fb27a11557ad3e8c06a7e492388eb0",
+      "e710dd23ee24a81be87331e1741e70f0",
+      "a29b1b3c235f25babcb8d11e55414872",
+      "f09ea64974b0ca12ae25f7d8f4bec146"
+    ]
+  },
+  {
+    "strategy_uid": "10ed13b3de63ecfeca4dee46eef7d56f",
+    "canonical_name": "内存访问对齐强制以支持SIMD加载",
+    "cluster_size": 8,
+    "pattern_counts": {
+      "transform.packing": 8,
+      "prep.index_pointer_init": 2,
+      "transform.unpacking_special": 3,
+      "core.gemv_like": 1,
+      "prep.loop_invariant_calc": 1
+    },
+    "core_patterns": [
+      "transform.packing"
+    ],
+    "contextual_patterns": {
+      "prep.index_pointer_init": "0.250000",
+      "transform.unpacking_special": "0.375000",
+      "core.gemv_like": "0.125000",
+      "prep.loop_invariant_calc": "0.125000"
+    },
+    "members": [
+      "f9318964b9850980d79910addf0375be",
+      "e65b56d8692d447f3cba50863045212d",
+      "9a7c940487823ec19de8cb1618acb056",
+      "3a27ceb788556c6d54871add6cfc1fbd",
+      "6128dd747619b7ea8993731929396914",
+      "eecf8fcc754109b6f3f6a621092c653a",
+      "fdeee04e25d7a1289fa1cee1cc1f256f"
+    ]
+  },
+  {
+    "strategy_uid": "3b8a43646440fb70b7bd9e68eeb08899",
+    "canonical_name": "跨步内存访问的向量友好布局适配",
+    "cluster_size": 1,
+    "pattern_counts": {
+      "core.mm_microkernel": 1
+    },
+    "core_patterns": [
+      "core.mm_microkernel"
+    ],
+    "contextual_patterns": {},
+    "members": []
+  },
+  {
+    "strategy_uid": "10f1a6727fad6939a4d179d224731256",
+    "canonical_name": "缓冲区分层管理",
+    "cluster_size": 1,
+    "pattern_counts": {
+      "transform.packing": 1,
+      "transform.unpacking_special": 1,
+      "core.gemv_like": 1
+    },
+    "core_patterns": [
+      "transform.packing",
+      "transform.unpacking_special",
+      "core.gemv_like"
+    ],
+    "contextual_patterns": {},
+    "members": []
+  },
+  {
+    "strategy_uid": "110d2b750764fab12a06bfc5cc1f3d84",
+    "canonical_name": "访存与计算重叠的流水线友好结构",
+    "cluster_size": 2,
+    "pattern_counts": {
+      "core.mm_microkernel": 1,
+      "transform.packing": 1
+    },
+    "core_patterns": [],
+    "contextual_patterns": {
+      "core.mm_microkernel": "0.500000",
+      "transform.packing": "0.500000"
+    },
+    "members": [
+      "2c1444d92d0dcbedf803f44287a37ad2"
+    ]
+  },
+  {
+    "strategy_uid": "11ea3c4da3bbd9c81928b26f75484822",
+    "canonical_name": "循环不变量外提",
+    "cluster_size": 1,
+    "pattern_counts": {
+      "prep.loop_invariant_calc": 1
+    },
+    "core_patterns": [
+      "prep.loop_invariant_calc"
+    ],
+    "contextual_patterns": {},
+    "members": []
+  },
+  {
+    "strategy_uid": "13c70809b91e59cfa03d706ee851fb9e",
+    "canonical_name": "复数乘法原子操作融合",
+    "cluster_size": 15,
+    "pattern_counts": {
+      "core.mm_microkernel": 9,
+      "post.scale_accumulation": 6,
+      "core.elementwise_update": 6
+    },
+    "core_patterns": [
+      "core.mm_microkernel"
+    ],
+    "contextual_patterns": {
+      "post.scale_accumulation": "0.400000",
+      "core.elementwise_update": "0.400000"
+    },
+    "members": [
+      "59e3b3f45052b4abad33fa385f746f84",
+      "b314a2c3fe13735d8ffdf2524a6ac94c",
+      "5afcbb66462cde09cb9cdf16e26e5035",
+      "49f332f9c06fe0054f28db384656aded",
+      "634a113a487162f81e34db6cdb018f45",
+      "36296e58c44d4f71e48100284a356a94",
+      "c5c4f7c92272641bc4c936d5a1b35043",
+      "b618dbed5bde0bb2db58a5e980f53b47",
+      "6af85bf1fbf05977f6b6ebbd2fba4bd9",
+      "a29955bbf91f9f267ba4b4b00b6352ee",
+      "a9b66b64a7862c2e26f3107d547ab767",
+      "f6051f71cf1d689ebefdf2a3f05c7146",
+      "ad22b360ca087a20cb8fe41216b6153d",
+      "7dc1dcb633499b6db269ea5614ca8fc5"
+    ]
+  },
+  {
+    "strategy_uid": "29bc9c27854e196a2ff422dd12f00cfa",
+    "canonical_name": "复数乘法融合与延迟缩放",
+    "cluster_size": 1,
+    "pattern_counts": {
+      "post.scale_accumulation": 1
+    },
+    "core_patterns": [
+      "post.scale_accumulation"
+    ],
+    "contextual_patterns": {},
+    "members": []
+  },
+  {
+    "strategy_uid": "4b9485fa25e9a8e535f95a8a92dd6ce2",
+    "canonical_name": "SIMD向量化处理复数乘加运算",
+    "cluster_size": 1,
+    "pattern_counts": {
+      "transform.packing": 1,
+      "post.scale_accumulation": 1
+    },
+    "core_patterns": [
+      "transform.packing",
+      "post.scale_accumulation"
+    ],
+    "contextual_patterns": {},
+    "members": []
+  },
+  {
+    "strategy_uid": "29bc9c27854e196a2ff422dd12f00cfa",
+    "canonical_name": "复数乘法融合与延迟缩放",
+    "cluster_size": 1,
+    "pattern_counts": {
+      "post.scale_accumulation": 1
+    },
+    "core_patterns": [
+      "post.scale_accumulation"
+    ],
+    "contextual_patterns": {},
+    "members": []
+  },
+  {
+    "strategy_uid": "4b9485fa25e9a8e535f95a8a92dd6ce2",
+    "canonical_name": "SIMD向量化处理复数乘加运算",
+    "cluster_size": 1,
+    "pattern_counts": {
+      "transform.packing": 1,
+      "post.scale_accumulation": 1
+    },
+    "core_patterns": [
+      "transform.packing",
+      "post.scale_accumulation"
+    ],
+    "contextual_patterns": {},
+    "members": []
+  },
+  {
+    "strategy_uid": "16a30efcf18dd5a51bb7fe77d4602389",
+    "canonical_name": "部分累积与延迟归约",
+    "cluster_size": 2,
+    "pattern_counts": {
+      "core.mm_microkernel": 2,
+      "post.scale_accumulation": 1
+    },
+    "core_patterns": [
+      "core.mm_microkernel"
+    ],
+    "contextual_patterns": {
+      "post.scale_accumulation": "0.500000"
+    },
+    "members": [
+      "8272f499c34eef1302364820cc498061"
+    ]
+  },
+  {
+    "strategy_uid": "1c64ebd1c359e48dead49ec638b291ef",
+    "canonical_name": "数据打包与格式转换",
+    "cluster_size": 4,
+    "pattern_counts": {
+      "prep.index_pointer_init": 1,
+      "prep.loop_invariant_calc": 1,
+      "transform.packing": 4
+    },
+    "core_patterns": [
+      "transform.packing"
+    ],
+    "contextual_patterns": {
+      "prep.index_pointer_init": "0.250000",
+      "prep.loop_invariant_calc": "0.250000"
+    },
+    "members": [
+      "794804d890380f67ac4726f755056893",
+      "d2d4320f11a55bb33caf48258634daa0",
+      "53431f628d8a64613f9d9828b9ef30d7"
+    ]
+  },
+  {
+    "strategy_uid": "c104b48b7deec49726962b6da0c23309",
+    "canonical_name": "分块双列预取与和值打包",
+    "cluster_size": 2,
+    "pattern_counts": {
+      "transform.packing": 2
+    },
+    "core_patterns": [
+      "transform.packing"
+    ],
+    "contextual_patterns": {},
+    "members": [
+      "e44ad32cadbf7478ba810e33be513e56"
+    ]
+  },
+  {
+    "strategy_uid": "8761f11dd7b1394e0225f8879552c011",
+    "canonical_name": "分块循环处理",
+    "cluster_size": 3,
+    "pattern_counts": {
+      "prep.index_pointer_init": 1,
+      "transform.packing": 1,
+      "core.tiled_loop": 2,
+      "core.mm_microkernel": 2
+    },
+    "core_patterns": [
+      "core.tiled_loop",
+      "core.mm_microkernel"
+    ],
+    "contextual_patterns": {
+      "prep.index_pointer_init": "0.333333",
+      "transform.packing": "0.333333"
+    },
+    "members": [
+      "48deec570602d13d9bdb1e0278550bbb",
+      "c33cfabec529e249d0c0d8e10141f3dc"
+    ]
+  },
+  {
+    "strategy_uid": "1d03eac350a93a29a4d750ae2181d01a",
+    "canonical_name": "指针递增代替索引计算",
+    "cluster_size": 11,
+    "pattern_counts": {
+      "transform.packing": 4,
+      "prep.index_pointer_init": 5,
+      "core.mm_microkernel": 7,
+      "core.tiled_loop": 3,
+      "prep.loop_invariant_calc": 2
+    },
+    "core_patterns": [
+      "core.mm_microkernel"
+    ],
+    "contextual_patterns": {
+      "transform.packing": "0.363636",
+      "prep.index_pointer_init": "0.454545",
+      "core.tiled_loop": "0.272727",
+      "prep.loop_invariant_calc": "0.181818"
+    },
+    "members": [
+      "62bd5b098225b2bc1b92e85995493732",
+      "cd34fde5d02f106d2f2c2a92758fc393",
+      "99d4d86605b4a6106c2eb02e81abcad1",
+      "2800b8e14cf746ccd17ca83ff1dedb16",
+      "4b5aeb7de7781c10cd4d0b254909bff3",
+      "e0fc18871b92e9a9633fe9cf326fff89",
+      "8107d93b33a34f099997e4e944deb6db",
+      "af66a180406c357a28cde9bab7ea7c2a",
+      "e1f758c88dda0fec2fab822da86214f6",
+      "8e985f3027d0ba48b527cc53fa08387d"
+    ]
+  },
+  {
+    "strategy_uid": "3123ad0a63494b21027b6012692a2d8d",
+    "canonical_name": "双缓冲指针调度",
+    "cluster_size": 1,
+    "pattern_counts": {
+      "transform.packing": 1,
+      "prep.index_pointer_init": 1
+    },
+    "core_patterns": [
+      "transform.packing",
+      "prep.index_pointer_init"
+    ],
+    "contextual_patterns": {},
+    "members": []
+  },
+  {
+    "strategy_uid": "1f3237efdd12adb193ee7e46cdccc0d3",
+    "canonical_name": "分支预测友好型循环结构优化",
+    "cluster_size": 9,
+    "pattern_counts": {
+      "transform.packing": 8,
+      "transform.unpacking_special": 2,
+      "core.gemv_like": 2,
+      "prep.index_pointer_init": 2,
+      "core.mm_microkernel": 1,
+      "post.scale_accumulation": 1
+    },
+    "core_patterns": [
+      "transform.packing"
+    ],
+    "contextual_patterns": {
+      "transform.unpacking_special": "0.222222",
+      "core.gemv_like": "0.222222",
+      "prep.index_pointer_init": "0.222222",
+      "core.mm_microkernel": "0.111111",
+      "post.scale_accumulation": "0.111111"
+    },
+    "members": [
+      "77d553c1085b576939797734da0910ba",
+      "59ab63b0566f4bdcdbe5f14d8ee292b1",
+      "294748c4c973e2ce43865b8cca534145",
+      "c691e81f96bfa121202aff66cdec7184",
+      "54e452069473a986b9302da74b003f76",
+      "5dc31dbd44135743bcfb6c4b8c4f151e",
+      "dd601dd1a985432a3a9920c5fd4b694a",
+      "ecd1a2cf9f16f3de01e984fc98dbca86"
+    ]
+  },
+  {
+    "strategy_uid": "1ff0ab96b43d3a033df3408f54e56fab",
+    "canonical_name": "中间结果复用",
+    "cluster_size": 1,
+    "pattern_counts": {
+      "core.gemv_like": 1,
+      "core.rank1_update": 1
+    },
+    "core_patterns": [
+      "core.gemv_like",
+      "core.rank1_update"
+    ],
+    "contextual_patterns": {},
+    "members": []
+  },
+  {
+    "strategy_uid": "23734f5e62c4c82dc8e55f8d6860e91c",
+    "canonical_name": "空引用抑制未使用变量警告",
+    "cluster_size": 2,
+    "pattern_counts": {},
+    "core_patterns": [],
+    "contextual_patterns": {},
+    "members": [
+      "d59daa18f0cb7f95b9b55a215bf3207f"
+    ]
+  },
+  {
+    "strategy_uid": "29625a085e26cced64b1a87c4456172a",
+    "canonical_name": "循环分块与残差奇偶分离处理",
+    "cluster_size": 9,
+    "pattern_counts": {
+      "core.mm_microkernel": 3,
+      "core.tiled_loop": 6,
+      "prep.index_pointer_init": 3,
+      "transform.packing": 1
+    },
+    "core_patterns": [
+      "core.tiled_loop"
+    ],
+    "contextual_patterns": {
+      "core.mm_microkernel": "0.333333",
+      "prep.index_pointer_init": "0.333333",
+      "transform.packing": "0.111111"
+    },
+    "members": [
+      "9de91dc181231e5a0debca2ad5a94343",
+      "7134db06cf6a7f9f34e0b6eb8c1983e5",
+      "dddf023c8aca2f1e65f93bd530442ef8",
+      "e6e4613a1ef0e732830cca20d18ce8de",
+      "3d3972f1b00b4b3d66dece22cbeaebb3",
+      "b690f13c5682469b43790301bf9b18f7",
+      "a999de4f7c4c16a30e6cc715034ce6d1",
+      "7c21cc9b2299a2578e959449987649a2"
+    ]
+  },
+  {
+    "strategy_uid": "2b0ca428ce09e25e077e8051bfd3c073",
+    "canonical_name": "内联汇编实现核心微核",
+    "cluster_size": 1,
+    "pattern_counts": {
+      "transform.unpacking_special": 1,
+      "core.rank1_update": 1
+    },
+    "core_patterns": [
+      "transform.unpacking_special",
+      "core.rank1_update"
+    ],
+    "contextual_patterns": {},
+    "members": []
+  },
+  {
+    "strategy_uid": "78c7fba8c57a8964bff8cb93e7700d26",
+    "canonical_name": "SIMD向量化数据打包与手动SIMD向量化",
+    "cluster_size": 6,
+    "pattern_counts": {
+      "transform.packing": 3,
+      "core.mm_microkernel": 3,
+      "core.tiled_loop": 3
+    },
+    "core_patterns": [],
+    "contextual_patterns": {
+      "transform.packing": "0.500000",
+      "core.mm_microkernel": "0.500000",
+      "core.tiled_loop": "0.500000"
+    },
+    "members": [
+      "83a9a0fa8fcdd41d04aa5a38d3812511",
+      "5ddbba19d3f2c103ca9d9e4628afd6c9",
+      "85952198dadbc8242ae273987831d406",
+      "50f422d7fc5b80fb8ebe16df97250e4f",
+      "e8a9f5fd4e956acf8b1805d6d737d462"
+    ]
+  },
+  {
+    "strategy_uid": "302ca26d6cbb10e5a45d05e7a2df2b87",
+    "canonical_name": "标量模拟双通道SIMD数据提取与内存访问模式规整化以利于SIMD向量化",
+    "cluster_size": 7,
+    "pattern_counts": {
+      "transform.packing": 6,
+      "prep.loop_invariant_calc": 2,
+      "core.elementwise_update": 1,
+      "prep.index_pointer_init": 1
+    },
+    "core_patterns": [
+      "transform.packing"
+    ],
+    "contextual_patterns": {
+      "prep.loop_invariant_calc": "0.285714",
+      "core.elementwise_update": "0.142857",
+      "prep.index_pointer_init": "0.142857"
+    },
+    "members": [
+      "96df9391c5927335294a2808767a3370",
+      "54e04f42dd32930062dde38fffdc26b5",
+      "55d72b0fda0150659188d273ffd5a826",
+      "3f71513c2b08e0859dff21b6d99314f9",
+      "f27a4803f6c7466a2622596d22b545ac",
+      "500d9b9d01dc4645bba717de2d211b4e"
+    ]
+  },
+  {
+    "strategy_uid": "fdc8883dee5324b1b626e05784a20e02",
+    "canonical_name": "SIMD向量化复数点积计算",
+    "cluster_size": 1,
+    "pattern_counts": {
+      "core.gemv_like": 1,
+      "core.vector_reduction": 1
+    },
+    "core_patterns": [
+      "core.gemv_like",
+      "core.vector_reduction"
+    ],
+    "contextual_patterns": {},
+    "members": []
+  },
+  {
+    "strategy_uid": "312c3b5a2967422ddbb1001d7aeced6c",
+    "canonical_name": "双路径非对角块计算",
+    "cluster_size": 1,
+    "pattern_counts": {
+      "core.gemv_like": 1
+    },
+    "core_patterns": [
+      "core.gemv_like"
+    ],
+    "contextual_patterns": {},
+    "members": []
+  },
+  {
+    "strategy_uid": "31ecf9af854aea2663e57d3e3f55688f",
+    "canonical_name": "分块矩阵计算与边界优化策略",
+    "cluster_size": 6,
+    "pattern_counts": {
+      "core.tiled_loop": 2,
+      "core.mm_microkernel": 2,
+      "transform.packing": 2,
+      "transform.unpacking_special": 1,
+      "core.gemv_like": 2,
+      "core.rank1_update": 1,
+      "prep.loop_invariant_calc": 1,
+      "prep.index_pointer_init": 1,
+      "post.scale_accumulation": 1
+    },
+    "core_patterns": [],
+    "contextual_patterns": {
+      "core.tiled_loop": "0.333333",
+      "core.mm_microkernel": "0.333333",
+      "transform.packing": "0.333333",
+      "transform.unpacking_special": "0.166667",
+      "core.gemv_like": "0.333333",
+      "core.rank1_update": "0.166667",
+      "prep.loop_invariant_calc": "0.166667",
+      "prep.index_pointer_init": "0.166667",
+      "post.scale_accumulation": "0.166667"
+    },
+    "members": [
+      "4617ebe73e160b404756cccdf3d89941",
+      "d957c3ecbde097c7ad53db1c9004dca1",
+      "38b6357defb5d3e12c6bef4b8b978f7e",
+      "3d315808f2d5b2c18d6215f8fe2eb4ac",
+      "a6b082955f35e8c530908aa6a3f6a72e"
+    ]
+  },
+  {
+    "strategy_uid": "36cd3443ac8bcd770b10653b2c35037a",
+    "canonical_name": "指针重定向与本地缓存",
+    "cluster_size": 1,
+    "pattern_counts": {
+      "prep.index_pointer_init": 1
+    },
+    "core_patterns": [
+      "prep.index_pointer_init"
+    ],
+    "contextual_patterns": {},
+    "members": []
+  },
+  {
+    "strategy_uid": "3db2dcec8deacb7bd722253769e863c0",
+    "canonical_name": "计算分解与流水调度",
+    "cluster_size": 1,
+    "pattern_counts": {
+      "transform.packing": 1,
+      "post.scale_accumulation": 1
+    },
+    "core_patterns": [
+      "transform.packing",
+      "post.scale_accumulation"
+    ],
+    "contextual_patterns": {},
+    "members": []
+  },
+  {
+    "strategy_uid": "41e5bdeba23066087bc365c53757da24",
+    "canonical_name": "预复制到连续内存",
+    "cluster_size": 4,
+    "pattern_counts": {
+      "transform.packing": 4,
+      "transform.unpacking_special": 2,
+      "core.elementwise_update": 2,
+      "post.scale_accumulation": 1
+    },
+    "core_patterns": [
+      "transform.packing"
+    ],
+    "contextual_patterns": {
+      "transform.unpacking_special": "0.500000",
+      "core.elementwise_update": "0.500000",
+      "post.scale_accumulation": "0.250000"
+    },
+    "members": [
+      "f27c3aab30c237e3d23b4eeda142472c",
+      "ae0d2be881c2f212a6870a0fc0efb5fd",
+      "7696165c178cd208f04ce5dbd9ae3ba8"
+    ]
+  },
+  {
+    "strategy_uid": "463bba9b50e24063883ffe27ef6d1d97",
+    "canonical_name": "复数格式打包存储以提升SIMD利用率",
+    "cluster_size": 4,
+    "pattern_counts": {
+      "transform.packing": 3,
+      "transform.unpacking_special": 2,
+      "core.gemv_like": 1
+    },
+    "core_patterns": [
+      "transform.packing"
+    ],
+    "contextual_patterns": {
+      "transform.unpacking_special": "0.500000",
+      "core.gemv_like": "0.250000"
+    },
+    "members": [
+      "a5dbd1a6fbdeffd5a74bbe7e5cba15e4",
+      "a9001c5008cd6276d7c6fea751f0123a",
+      "76074d7119b2cda0ab865b72f220584a"
+    ]
+  },
+  {
+    "strategy_uid": "c5586d00ae5e2d41edcf305ab78caf0f",
+    "canonical_name": "标量复数交错加载与解包",
+    "cluster_size": 1,
+    "pattern_counts": {
+      "transform.packing": 1
+    },
+    "core_patterns": [
+      "transform.packing"
+    ],
+    "contextual_patterns": {},
+    "members": []
+  },
+  {
+    "strategy_uid": "4bbcb48127b149d3c461e5861e34efc6",
+    "canonical_name": "无显式向量化",
+    "cluster_size": 2,
+    "pattern_counts": {
+      "core.elementwise_update": 2
+    },
+    "core_patterns": [
+      "core.elementwise_update"
+    ],
+    "contextual_patterns": {},
+    "members": [
+      "b00a0ecc0a64c2115aefd1539e215743"
+    ]
+  },
+  {
+    "strategy_uid": "4fa3651cc1e38306d9ab92e4b5c13626",
+    "canonical_name": "循环不变量外提与强度削弱",
+    "cluster_size": 6,
+    "pattern_counts": {
+      "prep.loop_invariant_calc": 6,
+      "transform.packing": 1,
+      "prep.index_pointer_init": 1
+    },
+    "core_patterns": [
+      "prep.loop_invariant_calc"
+    ],
+    "contextual_patterns": {
+      "transform.packing": "0.166667",
+      "prep.index_pointer_init": "0.166667"
+    },
+    "members": [
+      "ac2de42e53ff91948318dc335e5a351f",
+      "a2a208fe32a0c424e7a352aa4a454028",
+      "fec2dd32b86c0d4c6566cf216e195e04",
+      "5e1a1bb85ce823a0320160f73cd8cb5c",
+      "a93f075b2c5979d07ed455f8618b6530"
+    ]
+  },
+  {
+    "strategy_uid": "579aead9727a93afe2135a21ee415c00",
+    "canonical_name": "复数代数融合避免函数调用",
+    "cluster_size": 1,
+    "pattern_counts": {
+      "core.elementwise_update": 1
+    },
+    "core_patterns": [
+      "core.elementwise_update"
+    ],
+    "contextual_patterns": {},
+    "members": []
+  },
+  {
+    "strategy_uid": "67955686dcf6d29c7cc96e2211ea7b9f",
+    "canonical_name": "向量化复数共轭乘加融合",
+    "cluster_size": 1,
+    "pattern_counts": {
+      "core.gemv_like": 1
+    },
+    "core_patterns": [
+      "core.gemv_like"
+    ],
+    "contextual_patterns": {},
+    "members": []
+  },
+  {
+    "strategy_uid": "723c2d118c03bb5ced8fa2097ea21052",
+    "canonical_name": "寄存器变量占位抑制编译警告",
+    "cluster_size": 3,
+    "pattern_counts": {
+      "transform.packing": 2
+    },
+    "core_patterns": [
+      "transform.packing"
+    ],
+    "contextual_patterns": {},
+    "members": [
+      "87100dbd2b20db351663c5ff24e204e1",
+      "a8ece8ef4c7dca3d059e0797f4111b16"
+    ]
+  },
+  {
+    "strategy_uid": "7be432bf626f1d6d628493ba477a61ff",
+    "canonical_name": "内联汇编手工调度复数乘法",
+    "cluster_size": 1,
+    "pattern_counts": {
+      "core.gemv_like": 1,
+      "core.vector_reduction": 1
+    },
+    "core_patterns": [
+      "core.gemv_like",
+      "core.vector_reduction"
+    ],
+    "contextual_patterns": {},
+    "members": []
+  },
+  {
+    "strategy_uid": "7cfefb39f3d2468e581dc204223135e2",
+    "canonical_name": "索引步长解耦访问",
+    "cluster_size": 2,
+    "pattern_counts": {
+      "prep.index_pointer_init": 2,
+      "core.elementwise_update": 2
+    },
+    "core_patterns": [
+      "prep.index_pointer_init",
+      "core.elementwise_update"
+    ],
+    "contextual_patterns": {},
+    "members": [
+      "a05e1a094430adb177cef99b1cdd4d48"
+    ]
+  },
+  {
+    "strategy_uid": "97b47a5ec6140ef309b66eca125e211d",
+    "canonical_name": "指针偏移预计算",
+    "cluster_size": 2,
+    "pattern_counts": {
+      "prep.loop_invariant_calc": 1,
+      "prep.index_pointer_init": 2,
+      "core.tiled_loop": 1
+    },
+    "core_patterns": [
+      "prep.index_pointer_init"
+    ],
+    "contextual_patterns": {
+      "prep.loop_invariant_calc": "0.500000",
+      "core.tiled_loop": "0.500000"
+    },
+    "members": [
+      "e2a867d91fb3baeb9ceba2242eb257c7"
+    ]
+  },
+  {
+    "strategy_uid": "a83ed24d245398cc4356e93a1437d22a",
+    "canonical_name": "循环展开（部分展开）",
+    "cluster_size": 1,
+    "pattern_counts": {
+      "transform.packing": 1
+    },
+    "core_patterns": [
+      "transform.packing"
+    ],
+    "contextual_patterns": {},
+    "members": []
+  },
+  {
+    "strategy_uid": "fbfa32b959f8ab8ae66998b9174022c7",
+    "canonical_name": "微内核实例化",
+    "cluster_size": 1,
+    "pattern_counts": {
+      "core.mm_microkernel": 1,
+      "core.elementwise_update": 1
+    },
+    "core_patterns": [
+      "core.mm_microkernel",
+      "core.elementwise_update"
+    ],
+    "contextual_patterns": {},
+    "members": []
+  },
+  {
+    "strategy_uid": "a9fa927ff912f6f7f8942a1405999935",
+    "canonical_name": "奇偶列尾部处理",
+    "cluster_size": 4,
+    "pattern_counts": {
+      "transform.packing": 3,
+      "prep.index_pointer_init": 2,
+      "core.tiled_loop": 1
+    },
+    "core_patterns": [
+      "transform.packing"
+    ],
+    "contextual_patterns": {
+      "prep.index_pointer_init": "0.500000",
+      "core.tiled_loop": "0.250000"
+    },
+    "members": [
+      "ff0add0699994431235d80eb0c1cf704",
+      "c363ae32eb5c71d77575a9242c225c5f",
+      "c55adb51d0912643d8a8d09d136f2258"
+    ]
+  },
+  {
+    "strategy_uid": "c505e62647e8f7490bb464e5085208b3",
+    "canonical_name": "双缓冲指针调度",
+    "cluster_size": 1,
+    "pattern_counts": {
+      "prep.index_pointer_init": 1,
+      "transform.packing": 1
+    },
+    "core_patterns": [
+      "prep.index_pointer_init",
+      "transform.packing"
+    ],
+    "contextual_patterns": {},
+    "members": []
+  },
+  {
+    "strategy_uid": "c7a92e61fc6dd64b77846cd10416c9a1",
+    "canonical_name": "访存对齐与连续写入优化",
+    "cluster_size": 1,
+    "pattern_counts": {
+      "transform.packing": 1
+    },
+    "core_patterns": [
+      "transform.packing"
+    ],
+    "contextual_patterns": {},
+    "members": []
+  },
+  {
+    "strategy_uid": "d7d3cc05355a586a42bf6365f5b133a5",
+    "canonical_name": "循环边界条件融合",
+    "cluster_size": 1,
+    "pattern_counts": {
+      "core.gemv_like": 1
+    },
+    "core_patterns": [
+      "core.gemv_like"
+    ],
+    "contextual_patterns": {},
+    "members": []
+  },
+  {
+    "strategy_uid": "dcea9d6e2bab82279344a45d5074726c",
+    "canonical_name": "无显式指令级优化（标量回退路径）",
+    "cluster_size": 1,
+    "pattern_counts": {
+      "core.elementwise_update": 1
+    },
+    "core_patterns": [
+      "core.elementwise_update"
+    ],
+    "contextual_patterns": {},
+    "members": []
+  },
+  {
+    "strategy_uid": "df07172a4026612a89c066dfd328b8e4",
+    "canonical_name": "内存访问模式优化",
+    "cluster_size": 1,
+    "pattern_counts": {
+      "core.elementwise_update": 1
+    },
+    "core_patterns": [
+      "core.elementwise_update"
+    ],
+    "contextual_patterns": {},
+    "members": []
+  },
+  {
+    "strategy_uid": "e415b5964329383835bc8ed435ad2ca6",
+    "canonical_name": "访存步长与数据对齐感知设计",
+    "cluster_size": 1,
+    "pattern_counts": {
+      "core.mm_microkernel": 1,
+      "prep.loop_invariant_calc": 1
+    },
+    "core_patterns": [
+      "core.mm_microkernel",
+      "prep.loop_invariant_calc"
+    ],
+    "contextual_patterns": {},
+    "members": []
+  },
+  {
+    "strategy_uid": "e6cc22911563c245d3fc34da12633760",
+    "canonical_name": "编译器友好的SIMD自动向量化准备",
+    "cluster_size": 1,
+    "pattern_counts": {
+      "core.elementwise_update": 1
+    },
+    "core_patterns": [
+      "core.elementwise_update"
+    ],
+    "contextual_patterns": {},
+    "members": []
+  },
+  {
+    "strategy_uid": "f48269d0253f881766f8c4dac59f3b09",
+    "canonical_name": "标量复数乘法的FMA模式模拟",
+    "cluster_size": 1,
+    "pattern_counts": {
+      "core.mm_microkernel": 1
+    },
+    "core_patterns": [
+      "core.mm_microkernel"
+    ],
+    "contextual_patterns": {},
+    "members": []
+  },
+  {
+    "strategy_uid": "f6dbb7ca0b6f5c45c193b869f2f3920b",
+    "canonical_name": "循环边界条件合并",
+    "cluster_size": 1,
+    "pattern_counts": {
+      "core.elementwise_update": 1
+    },
+    "core_patterns": [
+      "core.elementwise_update"
+    ],
+    "contextual_patterns": {},
+    "members": []
+  },
+  {
+    "strategy_uid": "f79f597ea77257276182e76a88195ebd",
+    "canonical_name": "内存对齐分配",
+    "cluster_size": 1,
+    "pattern_counts": {
+      "transform.packing": 1,
+      "core.gemv_like": 1
+    },
+    "core_patterns": [
+      "transform.packing",
+      "core.gemv_like"
+    ],
+    "contextual_patterns": {},
+    "members": []
+  }
+]

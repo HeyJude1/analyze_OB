@@ -1,0 +1,55 @@
+# kg/hardware_profiles.yaml（v1.5 模板）
+# 用途：给策略提供"可计算的硬件约束"。字段填实测值，不填厂商标称值。
+# 填完把 freq_ghz / peak_gflops_fp64 / stream_bw_gbps 的来源写进 evidence 备注。
+
+x86_avx2:
+  vendor: Intel
+  uarch: "Haswell/Skylake 类"        # 按实际机器改
+  isa: ["AVX2", "FMA", "SSE4.2"]
+  vector_bits: 256
+  fp64_lanes: 4
+  vector_regs: 16
+  l1d_kb: 32
+  l2_kb: 256
+  l3_mb: 8
+  cacheline_b: 64
+  cores: 8
+  freq_ghz: 0.0
+  peak_gflops_fp64: 0.0
+  stream_bw_gbps: 0.0
+  measure_env: native
+
+x86_avx512:
+  vendor: Intel
+  uarch: "Skylake-X/Ice Lake 类"
+  isa: ["AVX512F", "AVX512DQ", "FMA"]
+  vector_bits: 512
+  fp64_lanes: 8
+  vector_regs: 32
+  l1d_kb: 32
+  l2_kb: 1024
+  l3_mb: 16
+  cacheline_b: 64
+  cores: 8
+  freq_ghz: 0.0
+  peak_gflops_fp64: 0.0
+  stream_bw_gbps: 0.0
+  measure_env: native
+
+k1_rvv256:
+  vendor: SpacemiT
+  uarch: "K1 (Banana Pi F3)"
+  isa: ["RVV 1.0", "Zba", "Zbb", "Zbc", "Zbs"]
+  vector_bits: 256
+  fp64_lanes: 4
+  lmul_max: 8
+  vector_regs: 32
+  l1d_kb: 32
+  l2_kb: 512
+  l3_mb: 0
+  cacheline_b: 64
+  cores: 8
+  freq_ghz: 1.6
+  peak_gflops_fp64: 0.0
+  stream_bw_gbps: 0.0
+  measure_env: native

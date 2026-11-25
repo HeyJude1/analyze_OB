@@ -1,0 +1,6 @@
+conv1d x86 candidate: compile_error 
+
+C:/msys64/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: C:\Users\MSI\AppData\Local\Temp\cc7pM1eN.o:candidate.c:(.text+0xdf): undefined reference to `op_dscal'
+C:/msys64/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: C:\Users\MSI\AppData\Local\Temp\cc7pM1eN.o:candidate.c:(.text+0x64a): undefined reference to `op_dscal'
+C:/msys64/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: C:\Users\MSI\AppData\Local\Temp\cc7pM1eN.o:candidate.c:(.text+0x7f4): undefined reference to `op_dscal'
+collect2.exe: error: ld returned 1 exit status

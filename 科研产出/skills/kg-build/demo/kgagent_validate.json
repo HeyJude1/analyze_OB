@@ -1,0 +1,129 @@
+{
+  "ok": true,
+  "strict": false,
+  "stats": {
+    "entities": 862,
+    "relations": 3656,
+    "entity_types": {
+      "ImplementationTemplate": 262,
+      "OptimizationStrategy": 262,
+      "SourceArtifact": 111,
+      "PerformanceEvidence": 88,
+      "ComputationPattern": 76,
+      "CodeCharacteristic": 17,
+      "Operator": 14,
+      "TunableParameter": 14,
+      "HardwareProfile": 6,
+      "ISACapability": 6,
+      "Microarchitecture": 6
+    },
+    "relation_types": {
+      "STRATEGY_APPLIES_WHEN": 1015,
+      "STRATEGY_TARGETS_UARCH": 672,
+      "STRATEGY_GENERALIZES": 313,
+      "STRATEGY_HAS_TEMPLATE": 262,
+      "STRATEGY_EVIDENCED_BY": 258,
+      "PATTERN_OPTIMIZED_BY": 252,
+      "STRATEGY_HAS_PARAMETER": 236,
+      "PATTERN_HAS_CHARACTERISTIC": 215,
+      "STRATEGY_REQUIRES_ISA": 163,
+      "EVIDENCE_ON": 88,
+      "EVIDENCE_SOURCE": 88,
+      "OPERATOR_HAS_PATTERN": 76,
+      "STRATEGY_CONFLICTS_WITH": 14,
+      "STRATEGY_COMPOSES_WITH": 4
+    },
+    "errors": 0,
+    "warnings": 1
+  },
+  "errors": [],
+  "warnings": [
+    {
+      "gate": "D",
+      "msg": "同类型同名实体（需合并或标注别名）",
+      "count": 86,
+      "sample": [
+        {
+          "type": "ComputationPattern",
+          "name": "跨迭代归约",
+          "ids": [
+            "pat:asum:core.reduction",
+            "pat:dot:core.reduction",
+            "pat:nrm2:core.reduction"
+          ]
+        },
+        {
+          "type": "ComputationPattern",
+          "name": "尾部余数处理",
+          "ids": [
+            "pat:asum:post.tail_case",
+            "pat:axpby:post.tail_case",
+            "pat:axpy:post.tail_case",
+            "pat:copy:post.tail_case",
+            "pat:dot:post.tail_case",
+            "pat:gemm:post.tail_case",
+            "pat:gemv:post.tail_case",
+            "pat:hemv:post.tail_case",
+            "pat:nrm2:post.tail_case",
+            "pat:rot:post.tail_case",
+            "pat:scal:post.tail_case",
+            "pat:swap:post.tail_case",
+            "pat:symm:post.tail_case",
+            "pat:trmm:post.tail_case"
+          ]
+        },
+        {
+          "type": "ComputationPattern",
+          "name": "索引与指针初始化",
+          "ids": [
+            "pat:asum:prep.index_pointer_init",
+            "pat:axpby:prep.index_pointer_init",
+            "pat:axpy:prep.index_pointer_init",
+            "pat:copy:prep.index_pointer_init",
+            "pat:dot:prep.index_pointer_init",
+            "pat:gemm:prep.index_pointer_init",
+            "pat:gemv:prep.index_pointer_init",
+            "pat:hemv:prep.index_pointer_init",
+            "pat:nrm2:prep.index_pointer_init",
+            "pat:rot:prep.index_pointer_init",
+            "pat:scal:prep.index_pointer_init",
+            "pat:swap:prep.index_pointer_init",
+            "pat:symm:prep.index_pointer_init",
+            "pat:trmm:prep.index_pointer_init"
+          ]
+        },
+        {
+          "type": "ComputationPattern",
+          "name": "参数合法性校验",
+          "ids": [
+            "pat:asum:prep.parameter_validation",
+            "pat:axpby:prep.parameter_validation",
+            "pat:axpy:prep.parameter_validation",
+            "pat:copy:prep.parameter_validation",
+            "pat:dot:prep.parameter_validation",
+            "pat:gemm:prep.parameter_validation",
+            "pat:gemv:prep.parameter_validation",
+            "pat:hemv:prep.parameter_validation",
+            "pat:nrm2:prep.parameter_validation",
+            "pat:rot:prep.parameter_validation",
+            "pat:scal:prep.parameter_validation",
+            "pat:swap:prep.parameter_validation",
+            "pat:symm:prep.parameter_validation",
+            "pat:trmm:prep.parameter_validation"
+          ]
+        },
+        {
+          "type": "ComputationPattern",
+          "name": "逐元素更新",
+          "ids": [
+            "pat:axpby:core.elementwise_update",
+            "pat:copy:core.elementwise_update",
+            "pat:rot:core.elementwise_update",
+            "pat:scal:core.elementwise_update",
+            "pat:swap:core.elementwise_update"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,121 @@
+# kg_agent 硬件 Profile（Schema v1.5）
+# 来源：10_第一周执行包/kg_v1.5/hardware_profiles.yaml（复制）+ 追加 qemu profile
+# 规则：硬件数值只能来自本文件 / Microarchitecture 节点；拿不到的字段写 null 或 0 并标 note，不填"典型值"。
+# x86 的 freq/peak/stream 为待实测占位（0 表示未测），实验第 1 天用微基准回填。
+
+profiles:
+  x86_avx2:
+    vendor: Intel
+    uarch: "Haswell/Skylake 类"
+    isa: [AVX2, FMA, SSE4.2]
+    vector_bits: 256
+    fp64_lanes: 4
+    vector_regs: 16
+    l1d_kb: 32
+    l2_kb: 256
+    l3_mb: 8
+    cacheline_b: 64
+    cores: 8
+    freq_ghz: 0.0
+    peak_gflops_fp64: 0.0
+    stream_bw_gbps: 0.0
+    measure_env: native
+    compiler: "gcc 13 -O3 -mavx2 -mfma"
+    note: "freq/peak/stream 为未实测占位(0)，W1 用微基准回填"
+  x86_avx512:
+    vendor: Intel
+    uarch: "Skylake-X/Ice Lake 类"
+    isa: [AVX512F, AVX512DQ, FMA]
+    vector_bits: 512
+    fp64_lanes: 8
+    vector_regs: 32
+    l1d_kb: 32
+    l2_kb: 1024
+    l3_mb: 16
+    cacheline_b: 64
+    cores: 8
+    freq_ghz: 0.0
+    peak_gflops_fp64: 0.0
+    stream_bw_gbps: 0.0
+    measure_env: native
+    compiler: "gcc 13 -O3 -mavx512f"
+    note: "freq/peak/stream 为未实测占位(0)"
+  k1_rvv256:
+    vendor: SpacemiT
+    uarch: "K1 (Banana Pi F3)"
+    isa: ["RVV 1.0", Zba, Zbb, Zbc, Zbs]
+    vector_bits: 256
+    fp64_lanes: 4
+    lmul_max: 8
+    vector_regs: 32
+    l1d_kb: 32
+    l2_kb: 512
+    l3_mb: 0
+    cacheline_b: 64
+    cores: 8
+    freq_ghz: 1.6
+    peak_gflops_fp64: 0.0
+    stream_bw_gbps: 0.0
+    measure_env: native
+    compiler: "riscv64-linux-gcc 14.3 -O3 -march=rv64gcv_zvl256b"
+    note: "freq 为标称 1.6GHz（待锁频实测确认）；peak/stream 待实测"
+  qemu-riscv64-vlen256:
+    vendor: QEMU
+    uarch: "QEMU TCG (rv64, v=true, vlen=256)"
+    isa: ["RVV 1.0", Zba, Zbb, Zbc, Zbs]
+    vector_bits: 256
+    fp64_lanes: 4
+    lmul_max: 8
+    vector_regs: 32
+    l1d_kb: 0
+    l2_kb: 0
+    l3_mb: 0
+    cacheline_b: 64
+    cores: 1
+    freq_ghz: 0.0
+    peak_gflops_fp64: 0.0
+    stream_bw_gbps: 0.0
+    measure_env: qemu
+    compiler: "riscv64-linux-gcc 14.3 -O3 -march=rv64gcv_zvl256b"
+    note: "QEMU 不建模真实 cache/L1 延迟，仅功能与相对趋势；所有 cx_operator_tool 日志的测量环境"
+  arm_neon:
+    vendor: ARM
+    uarch: "Cortex-A53/A72 类（ARMv8-A ASIMD/NEON）"
+    isa: [NEON, ASIMD, FMA]
+    vector_bits: 128
+    fp64_lanes: 2
+    lmul_max: 1
+    vector_regs: 32
+    l1d_kb: 32
+    l2_kb: 512
+    l3_mb: 0
+    cacheline_b: 64
+    cores: 4
+    freq_ghz: 0.0
+    peak_gflops_fp64: 0.0
+    stream_bw_gbps: 0.0
+    measure_env: native
+    compiler: "aarch64-linux-gcc -O3 -march=armv8-a"
+    note: "无真机性能日志；参数为 ARMv8-A 公开规格（128-bit、32 向量寄存器），freq/peak/stream 未实测"
+  arm_sve:
+    vendor: ARM
+    uarch: "Neoverse-V1/N2 类（SVE，实现 VL=256）"
+    isa: [SVE, "SVE 1.0", NEON]
+    vector_bits: 256
+    fp64_lanes: 4
+    lmul_max: 1
+    vector_regs: 32
+    l1d_kb: 64
+    l2_kb: 1024
+    l3_mb: 32
+    cacheline_b: 64
+    cores: 8
+    freq_ghz: 0.0
+    peak_gflops_fp64: 0.0
+    stream_bw_gbps: 0.0
+    measure_env: native
+    compiler: "aarch64-linux-gcc -O3 -march=armv8.2-a+sve"
+    note: "SVE 为可伸缩向量；此处按实现 VL=256 记录，无真机日志，freq/peak/stream 未实测"
+
+# QEMU profile 的微架构数值来源说明（Microarchitecture 节点的 source_ref 用）
+qemu_source_ref: "openblas_newtest1/*/_command.txt 末尾 qemu 启动参数：-cpu rv64,v=true,vlen=256,vext_spec=v1.0"

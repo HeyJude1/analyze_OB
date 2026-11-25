@@ -1,0 +1,37 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "x86_64",
+  "results": [
+    {
+      "task": "dasum",
+      "target": "rvv",
+      "variant": "candidate",
+      "compiler_version": "riscv64-buildroot-linux-gnu-gcc.br_real (Buildroot 2021.11-18033-g83947c7bb6) 14.3.0",
+      "source": "../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/constraint_plan/rep-1/initial/candidate.c",
+      "source_sha256": "f2990b95cf31bfc59b29b5019b025f828667afe3990f4a8f0799d276f46c92cf",
+      "status": "compile_error",
+      "compile": {
+        "argv": [
+          "/mnt/c/Users/MSI/Desktop/cx_operator_tool/operator_extract/toolchain/riscv-gcc-14.3/bin/riscv64-buildroot-linux-gnu-gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-march=rv64gcv",
+          "-mabi=lp64d",
+          "-static",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DASUM",
+          "driver/check.c",
+          "../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/constraint_plan/rep-1/initial/candidate.c",
+          "-o",
+          "../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/constraint_plan/rep-1/initial/bin/dasum-rvv-candidate",
+          "-lm"
+        ],
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/constraint_plan/rep-1/initial/candidate.c:3:10: fatal error: immintrin.h: No such file or directory\n    3 | #include <immintrin.h>\n      |          ^~~~~~~~~~~~~\ncompilation terminated.\n"
+      }
+    }
+  ]
+}

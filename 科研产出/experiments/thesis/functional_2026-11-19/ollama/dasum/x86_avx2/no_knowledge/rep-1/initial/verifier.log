@@ -1,0 +1,7 @@
+dasum x86 candidate: compile_error 
+
+..\experiments\thesis\functional_2026-11-19\ollama\dasum\x86_avx2\no_knowledge\rep-1\initial\candidate.c: In function 'op_dasum':
+..\experiments\thesis\functional_2026-11-19\ollama\dasum\x86_avx2\no_knowledge\rep-1\initial\candidate.c:18:16: error: implicit declaration of function '_mm256_reduce_add_pd'; did you mean '_mm256_reduce_add_ph'? [-Wimplicit-function-declaration]
+   18 |         sum += _mm256_reduce_add_pd(abs_vec_x1) + _mm256_reduce_add_pd(abs_vec_x2);
+      |                ^~~~~~~~~~~~~~~~~~~~
+      |                _mm256_reduce_add_ph

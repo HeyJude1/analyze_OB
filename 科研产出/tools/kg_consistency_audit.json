@@ -1,0 +1,744 @@
+{
+  "stats": {
+    "strategies": 262,
+    "profiles": 6,
+    "errors": 6,
+    "warnings": 62,
+    "by_check": {
+      "C1": 0,
+      "C2": 0,
+      "C3": 34,
+      "C4": 0,
+      "C5": 6,
+      "C6": 28,
+      "C7": 0,
+      "C8": 0
+    }
+  },
+  "findings": {
+    "C1": [],
+    "C2": [],
+    "C3": [
+      {
+        "strategy": "stg:asum:tile_arm_neon",
+        "parameter": "par:reg_block_n",
+        "value": 30,
+        "range": [
+          1,
+          2,
+          4,
+          8,
+          16,
+          32
+        ]
+      },
+      {
+        "strategy": "stg:asum:unroll_arm_neon",
+        "parameter": "par:unroll_factor",
+        "value": 30,
+        "range": [
+          1,
+          2,
+          4,
+          8,
+          16
+        ]
+      },
+      {
+        "strategy": "stg:axpy:prefetch_arm_neon",
+        "parameter": "par:prefetch_distance",
+        "value": 12,
+        "range": [
+          1,
+          2,
+          4,
+          8
+        ]
+      },
+      {
+        "strategy": "stg:copy:prefetch_x86_avx2",
+        "parameter": "par:prefetch_distance",
+        "value": 6,
+        "range": [
+          1,
+          2,
+          4,
+          8
+        ]
+      },
+      {
+        "strategy": "stg:dot:prefetch_arm_neon",
+        "parameter": "par:prefetch_distance",
+        "value": 9,
+        "range": [
+          1,
+          2,
+          4,
+          8
+        ]
+      },
+      {
+        "strategy": "stg:dot:tile_arm_neon",
+        "parameter": "par:reg_block_n",
+        "value": 24,
+        "range": [
+          1,
+          2,
+          4,
+          8,
+          16,
+          32
+        ]
+      },
+      {
+        "strategy": "stg:dot:tile_arm_sve",
+        "parameter": "par:reg_block_n",
+        "value": 7,
+        "range": [
+          1,
+          2,
+          4,
+          8,
+          16,
+          32
+        ]
+      },
+      {
+        "strategy": "stg:dot:unroll_arm_neon",
+        "parameter": "par:unroll_factor",
+        "value": 24,
+        "range": [
+          1,
+          2,
+          4,
+          8,
+          16
+        ]
+      },
+      {
+        "strategy": "stg:dot:unroll_arm_sve",
+        "parameter": "par:unroll_factor",
+        "value": 7,
+        "range": [
+          1,
+          2,
+          4,
+          8,
+          16
+        ]
+      },
+      {
+        "strategy": "stg:gemm:prefetch_arm_sve",
+        "parameter": "par:prefetch_distance",
+        "value": 50,
+        "range": [
+          1,
+          2,
+          4,
+          8
+        ]
+      },
+      {
+        "strategy": "stg:gemm:prefetch_x86_avx2",
+        "parameter": "par:prefetch_distance",
+        "value": 91,
+        "range": [
+          1,
+          2,
+          4,
+          8
+        ]
+      },
+      {
+        "strategy": "stg:gemm:prefetch_x86_avx512",
+        "parameter": "par:prefetch_distance",
+        "value": 80,
+        "range": [
+          1,
+          2,
+          4,
+          8
+        ]
+      },
+      {
+        "strategy": "stg:gemm:unroll_x86_avx2",
+        "parameter": "par:unroll_factor",
+        "value": 32,
+        "range": [
+          1,
+          2,
+          4,
+          8,
+          16
+        ]
+      },
+      {
+        "strategy": "stg:gemm:unroll_x86_avx512",
+        "parameter": "par:unroll_factor",
+        "value": 32,
+        "range": [
+          1,
+          2,
+          4,
+          8,
+          16
+        ]
+      },
+      {
+        "strategy": "stg:gemv:prefetch_arm_neon",
+        "parameter": "par:prefetch_distance",
+        "value": 12,
+        "range": [
+          1,
+          2,
+          4,
+          8
+        ]
+      },
+      {
+        "strategy": "stg:gemv:tile_arm_neon",
+        "parameter": "par:reg_block_n",
+        "value": 9,
+        "range": [
+          1,
+          2,
+          4,
+          8,
+          16,
+          32
+        ]
+      },
+      {
+        "strategy": "stg:gemv:unroll_arm_neon",
+        "parameter": "par:unroll_factor",
+        "value": 7,
+        "range": [
+          1,
+          2,
+          4,
+          8,
+          16
+        ]
+      },
+      {
+        "strategy": "stg:nrm2:unroll_arm_neon",
+        "parameter": "par:unroll_factor",
+        "value": 5,
+        "range": [
+          1,
+          2,
+          4,
+          8,
+          16
+        ]
+      },
+      {
+        "strategy": "stg:rot:tile_arm_neon",
+        "parameter": "par:reg_block_n",
+        "value": 6,
+        "range": [
+          1,
+          2,
+          4,
+          8,
+          16,
+          32
+        ]
+      },
+      {
+        "strategy": "stg:rot:tile_x86_avx2",
+        "parameter": "par:reg_block_n",
+        "value": 12,
+        "range": [
+          1,
+          2,
+          4,
+          8,
+          16,
+          32
+        ]
+      },
+      {
+        "strategy": "stg:rot:tile_x86_avx512",
+        "parameter": "par:reg_block_n",
+        "value": 12,
+        "range": [
+          1,
+          2,
+          4,
+          8,
+          16,
+          32
+        ]
+      },
+      {
+        "strategy": "stg:rot:unroll_arm_neon",
+        "parameter": "par:unroll_factor",
+        "value": 7,
+        "range": [
+          1,
+          2,
+          4,
+          8,
+          16
+        ]
+      },
+      {
+        "strategy": "stg:rot:unroll_x86_avx2",
+        "parameter": "par:unroll_factor",
+        "value": 12,
+        "range": [
+          1,
+          2,
+          4,
+          8,
+          16
+        ]
+      },
+      {
+        "strategy": "stg:rot:unroll_x86_avx512",
+        "parameter": "par:unroll_factor",
+        "value": 12,
+        "range": [
+          1,
+          2,
+          4,
+          8,
+          16
+        ]
+      },
+      {
+        "strategy": "stg:scal:unroll_arm_neon",
+        "parameter": "par:unroll_factor",
+        "value": 6,
+        "range": [
+          1,
+          2,
+          4,
+          8,
+          16
+        ]
+      },
+      {
+        "strategy": "stg:swap:prefetch_x86_avx2",
+        "parameter": "par:prefetch_distance",
+        "value": 6,
+        "range": [
+          1,
+          2,
+          4,
+          8
+        ]
+      },
+      {
+        "strategy": "stg:symm:prefetch_x86_avx2",
+        "parameter": "par:prefetch_distance",
+        "value": 72,
+        "range": [
+          1,
+          2,
+          4,
+          8
+        ]
+      },
+      {
+        "strategy": "stg:symm:prefetch_x86_avx512",
+        "parameter": "par:prefetch_distance",
+        "value": 80,
+        "range": [
+          1,
+          2,
+          4,
+          8
+        ]
+      },
+      {
+        "strategy": "stg:symm:unroll_x86_avx2",
+        "parameter": "par:unroll_factor",
+        "value": 32,
+        "range": [
+          1,
+          2,
+          4,
+          8,
+          16
+        ]
+      },
+      {
+        "strategy": "stg:symm:unroll_x86_avx512",
+        "parameter": "par:unroll_factor",
+        "value": 32,
+        "range": [
+          1,
+          2,
+          4,
+          8,
+          16
+        ]
+      },
+      {
+        "strategy": "stg:symv:tile_x86_avx2",
+        "parameter": "par:reg_block_n",
+        "value": 5,
+        "range": [
+          1,
+          2,
+          4,
+          8,
+          16,
+          32
+        ]
+      },
+      {
+        "strategy": "stg:trmm:prefetch_arm_sve",
+        "parameter": "par:prefetch_distance",
+        "value": 31,
+        "range": [
+          1,
+          2,
+          4,
+          8
+        ]
+      },
+      {
+        "strategy": "stg:trmm:unroll_arm_neon",
+        "parameter": "par:unroll_factor",
+        "value": 32,
+        "range": [
+          1,
+          2,
+          4,
+          8,
+          16
+        ]
+      },
+      {
+        "strategy": "stg:trmm:unroll_x86_avx2",
+        "parameter": "par:unroll_factor",
+        "value": 32,
+        "range": [
+          1,
+          2,
+          4,
+          8,
+          16
+        ]
+      }
+    ],
+    "C4": [],
+    "C5": [
+      {
+        "key": [
+          "gemm",
+          "指针/索引优化",
+          "reorder",
+          "code",
+          "arch_agnostic",
+          null
+        ],
+        "strategies": [
+          "stg:gemm:reorder_code_a",
+          "stg:gemm:reorder_s"
+        ]
+      },
+      {
+        "key": [
+          "gemm",
+          "循环展开",
+          "unroll",
+          "code",
+          "arch_agnostic",
+          null
+        ],
+        "strategies": [
+          "stg:gemm:unroll_code_a",
+          "stg:gemm:unroll_s"
+        ]
+      },
+      {
+        "key": [
+          "hemv",
+          "尾部处理",
+          "tail_handle",
+          "code",
+          "arch_agnostic",
+          null
+        ],
+        "strategies": [
+          "stg:hemv:tail_handle_code_a",
+          "stg:hemv:tail_handle_s"
+        ]
+      },
+      {
+        "key": [
+          "trmm",
+          "循环融合",
+          "fuse",
+          "code",
+          "arch_agnostic",
+          null
+        ],
+        "strategies": [
+          "stg:trmm:fuse_code_a",
+          "stg:trmm:fuse_s"
+        ]
+      },
+      {
+        "key": [
+          "trmm",
+          "指针/索引优化",
+          "reorder",
+          "code",
+          "arch_agnostic",
+          null
+        ],
+        "strategies": [
+          "stg:trmm:reorder_code_a",
+          "stg:trmm:reorder_s"
+        ]
+      },
+      {
+        "key": [
+          "trmm",
+          "尾部处理",
+          "tail_handle",
+          "code",
+          "arch_agnostic",
+          null
+        ],
+        "strategies": [
+          "stg:trmm:tail_handle_code_a",
+          "stg:trmm:tail_handle_s"
+        ]
+      }
+    ],
+    "C6": [
+      {
+        "strategy": "stg:axpy:specialize_s",
+        "suffix": "s",
+        "condition_dtype": [
+          "d"
+        ],
+        "note": "后缀与 dtype 不符；若 _s/_d 表示来源(normalize.py:259-262)，则应改名避免歧义"
+      },
+      {
+        "strategy": "stg:copy:specialize_s",
+        "suffix": "s",
+        "condition_dtype": [
+          "d"
+        ],
+        "note": "后缀与 dtype 不符；若 _s/_d 表示来源(normalize.py:259-262)，则应改名避免歧义"
+      },
+      {
+        "strategy": "stg:dot:reduce_register_pressure_s",
+        "suffix": "s",
+        "condition_dtype": [
+          "d"
+        ],
+        "note": "后缀与 dtype 不符；若 _s/_d 表示来源(normalize.py:259-262)，则应改名避免歧义"
+      },
+      {
+        "strategy": "stg:dot:specialize_s",
+        "suffix": "s",
+        "condition_dtype": [
+          "d"
+        ],
+        "note": "后缀与 dtype 不符；若 _s/_d 表示来源(normalize.py:259-262)，则应改名避免歧义"
+      },
+      {
+        "strategy": "stg:gemm:fuse_s",
+        "suffix": "s",
+        "condition_dtype": [
+          "d"
+        ],
+        "note": "后缀与 dtype 不符；若 _s/_d 表示来源(normalize.py:259-262)，则应改名避免歧义"
+      },
+      {
+        "strategy": "stg:gemm:reorder_s",
+        "suffix": "s",
+        "condition_dtype": [
+          "d"
+        ],
+        "note": "后缀与 dtype 不符；若 _s/_d 表示来源(normalize.py:259-262)，则应改名避免歧义"
+      },
+      {
+        "strategy": "stg:gemm:tail_handle_s",
+        "suffix": "s",
+        "condition_dtype": [
+          "d"
+        ],
+        "note": "后缀与 dtype 不符；若 _s/_d 表示来源(normalize.py:259-262)，则应改名避免歧义"
+      },
+      {
+        "strategy": "stg:gemm:tile_s",
+        "suffix": "s",
+        "condition_dtype": [
+          "d"
+        ],
+        "note": "后缀与 dtype 不符；若 _s/_d 表示来源(normalize.py:259-262)，则应改名避免歧义"
+      },
+      {
+        "strategy": "stg:gemm:unroll_s",
+        "suffix": "s",
+        "condition_dtype": [
+          "d"
+        ],
+        "note": "后缀与 dtype 不符；若 _s/_d 表示来源(normalize.py:259-262)，则应改名避免歧义"
+      },
+      {
+        "strategy": "stg:gemv:fuse_s",
+        "suffix": "s",
+        "condition_dtype": [
+          "d"
+        ],
+        "note": "后缀与 dtype 不符；若 _s/_d 表示来源(normalize.py:259-262)，则应改名避免歧义"
+      },
+      {
+        "strategy": "stg:gemv:specialize_s",
+        "suffix": "s",
+        "condition_dtype": [
+          "d"
+        ],
+        "note": "后缀与 dtype 不符；若 _s/_d 表示来源(normalize.py:259-262)，则应改名避免歧义"
+      },
+      {
+        "strategy": "stg:hemv:specialize_d",
+        "suffix": "d",
+        "condition_dtype": [
+          "c"
+        ],
+        "note": "后缀与 dtype 不符；若 _s/_d 表示来源(normalize.py:259-262)，则应改名避免歧义"
+      },
+      {
+        "strategy": "stg:hemv:tail_handle_s",
+        "suffix": "s",
+        "condition_dtype": [
+          "c"
+        ],
+        "note": "后缀与 dtype 不符；若 _s/_d 表示来源(normalize.py:259-262)，则应改名避免歧义"
+      },
+      {
+        "strategy": "stg:hemv:vectorize_d",
+        "suffix": "d",
+        "condition_dtype": [
+          "c"
+        ],
+        "note": "后缀与 dtype 不符；若 _s/_d 表示来源(normalize.py:259-262)，则应改名避免歧义"
+      },
+      {
+        "strategy": "stg:nrm2:reduce_register_pressure_s",
+        "suffix": "s",
+        "condition_dtype": [
+          "d"
+        ],
+        "note": "后缀与 dtype 不符；若 _s/_d 表示来源(normalize.py:259-262)，则应改名避免歧义"
+      },
+      {
+        "strategy": "stg:nrm2:specialize_s",
+        "suffix": "s",
+        "condition_dtype": [
+          "d"
+        ],
+        "note": "后缀与 dtype 不符；若 _s/_d 表示来源(normalize.py:259-262)，则应改名避免歧义"
+      },
+      {
+        "strategy": "stg:rot:specialize_s",
+        "suffix": "s",
+        "condition_dtype": [
+          "d"
+        ],
+        "note": "后缀与 dtype 不符；若 _s/_d 表示来源(normalize.py:259-262)，则应改名避免歧义"
+      },
+      {
+        "strategy": "stg:scal:specialize_s",
+        "suffix": "s",
+        "condition_dtype": [
+          "d"
+        ],
+        "note": "后缀与 dtype 不符；若 _s/_d 表示来源(normalize.py:259-262)，则应改名避免歧义"
+      },
+      {
+        "strategy": "stg:swap:specialize_s",
+        "suffix": "s",
+        "condition_dtype": [
+          "d"
+        ],
+        "note": "后缀与 dtype 不符；若 _s/_d 表示来源(normalize.py:259-262)，则应改名避免歧义"
+      },
+      {
+        "strategy": "stg:symm:fuse_s",
+        "suffix": "s",
+        "condition_dtype": [
+          "d"
+        ],
+        "note": "后缀与 dtype 不符；若 _s/_d 表示来源(normalize.py:259-262)，则应改名避免歧义"
+      },
+      {
+        "strategy": "stg:symm:reorder_s",
+        "suffix": "s",
+        "condition_dtype": [
+          "d"
+        ],
+        "note": "后缀与 dtype 不符；若 _s/_d 表示来源(normalize.py:259-262)，则应改名避免歧义"
+      },
+      {
+        "strategy": "stg:symm:tail_handle_s",
+        "suffix": "s",
+        "condition_dtype": [
+          "d"
+        ],
+        "note": "后缀与 dtype 不符；若 _s/_d 表示来源(normalize.py:259-262)，则应改名避免歧义"
+      },
+      {
+        "strategy": "stg:symm:tile_s",
+        "suffix": "s",
+        "condition_dtype": [
+          "d"
+        ],
+        "note": "后缀与 dtype 不符；若 _s/_d 表示来源(normalize.py:259-262)，则应改名避免歧义"
+      },
+      {
+        "strategy": "stg:symm:unroll_s",
+        "suffix": "s",
+        "condition_dtype": [
+          "d"
+        ],
+        "note": "后缀与 dtype 不符；若 _s/_d 表示来源(normalize.py:259-262)，则应改名避免歧义"
+      },
+      {
+        "strategy": "stg:trmm:fuse_s",
+        "suffix": "s",
+        "condition_dtype": [
+          "d"
+        ],
+        "note": "后缀与 dtype 不符；若 _s/_d 表示来源(normalize.py:259-262)，则应改名避免歧义"
+      },
+      {
+        "strategy": "stg:trmm:reorder_s",
+        "suffix": "s",
+        "condition_dtype": [
+          "d"
+        ],
+        "note": "后缀与 dtype 不符；若 _s/_d 表示来源(normalize.py:259-262)，则应改名避免歧义"
+      },
+      {
+        "strategy": "stg:trmm:tail_handle_s",
+        "suffix": "s",
+        "condition_dtype": [
+          "d"
+        ],
+        "note": "后缀与 dtype 不符；若 _s/_d 表示来源(normalize.py:259-262)，则应改名避免歧义"
+      },
+      {
+        "strategy": "stg:trmm:tile_s",
+        "suffix": "s",
+        "condition_dtype": [
+          "d"
+        ],
+        "note": "后缀与 dtype 不符；若 _s/_d 表示来源(normalize.py:259-262)，则应改名避免歧义"
+      }
+    ],
+    "C7": [],
+    "C8": []
+  }
+}

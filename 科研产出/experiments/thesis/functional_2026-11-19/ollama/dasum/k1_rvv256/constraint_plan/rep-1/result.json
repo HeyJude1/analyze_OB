@@ -1,0 +1,49 @@
+{
+  "analogy_source": "dot",
+  "card_ids": [
+    "stg:abstract:register_blocking",
+    "stg:abstract:vector_fma",
+    "stg:abstract:tail_handling",
+    "stg:abstract:stride_dispatch"
+  ],
+  "contract_sha256": "5e998ce525341a58ef53e035e89170cf28355a203166b02971b4de12348a5e90",
+  "knowledge_bytes": 5810,
+  "method": "constraint_plan",
+  "operator": "dasum",
+  "profile": "k1_rvv256",
+  "prompt": "dasum/k1_rvv256/constraint_plan.json",
+  "prompt_sha256": "dd42ad04475f94df92938f3f31da570e7e2ef118e5148e26a2671f65a5b22306",
+  "repetition": 1,
+  "source_sha256": "cc032d0101696873b29211d52155bf01b71bffac2dfd71b1a327b40780dff6cc",
+  "split": "holdout",
+  "status": "prepared",
+  "engine": "ollama",
+  "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+  "repair_attempted": true,
+  "initial": {
+    "status": "compile_failed",
+    "compile_ok": false,
+    "correct": null,
+    "failure_reason": "missing_header",
+    "usage": {
+      "prompt_tokens": 2946,
+      "completion_tokens": 245,
+      "total_tokens": 3191
+    },
+    "diagnostic": "../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/constraint_plan/rep-1/initial/candidate.c:3:10: fatal error: immintrin.h: No such file or directory\n    3 | #include <immintrin.h>\n      |          ^~~~~~~~~~~~~\ncompilation terminated.\n",
+    "candidate_sha256": "f2990b95cf31bfc59b29b5019b025f828667afe3990f4a8f0799d276f46c92cf"
+  },
+  "final": {
+    "status": "compile_failed",
+    "compile_ok": false,
+    "correct": null,
+    "failure_reason": "intrinsic_or_target_error",
+    "usage": {
+      "prompt_tokens": 1570,
+      "completion_tokens": 237,
+      "total_tokens": 1807
+    },
+    "diagnostic": "../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/constraint_plan/rep-1/repair/candidate.c: In function ‘op_dasum’:\n../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/constraint_plan/rep-1/repair/candidate.c:12:9: error: unknown type name ‘__m256d’\n   12 |         __m256d vsum = _mm256_setzero_pd();\n      |         ^~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/constraint_plan/rep-1/repair/candidate.c:12:24: error: implicit declaration of function ‘_mm256_setzero_pd’ [-Wimplicit-function-declaration]\n   12 |         __m256d vsum = _mm256_setzero_pd();\n      |                        ^~~~~~~~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/constraint_plan/rep-1/repair/candidate.c:14:20: error: implicit declaration of function ‘_mm256_add_pd’ [-Wimplicit-function-declaration]\n   14 |             vsum = _mm256_add_pd(vsum, _mm256_and_pd(_mm256_loadu_pd(&x[i + j * incx]), _mm256_set1_pd(0.0)));\n      |                    ^~~~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/constraint_plan/rep-1/repair/candidate.c:14:40: error: implicit declaration of function ‘_mm256_and_pd’ [-Wimplicit-function-declaration]\n   14 |             vsum = _mm256_add_pd(vsum, _mm256_and_pd(_mm256_loadu_pd(&x[i + j * incx]), _mm256_set1_pd(0.0)));\n      |                                        ^~~~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/constraint_plan/rep-1/repair/candidate.c:14:54: error: implicit declaration of function ‘_mm256_loadu_pd’ [-Wimplicit-function-declaration]\n   14 |             vsum = _mm256_add_pd(vsum, _mm256_and_pd(_mm256_loadu_pd(&x[i + j * incx]), _mm256_set1_pd(0.0)));\n      |                                                      ^~~~~~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/constraint_plan/rep-1/repair/candidate.c:14:89: error: implicit declaration of function ‘_mm256_set1_pd’ [-Wimplicit-function-declaration]\n   14 |             vsum = _mm256_add_pd(vsum, _mm256_and_pd(_mm256_loadu_pd(&x[i + j * incx]), _mm256_set1_pd(0.0)));\n      |                                                                                         ^~~~~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/constraint_plan/rep-1/repair/candidate.c:16:16: error: implicit declaration of function ‘_mm256_reduce_add_pd’ [-Wimplicit-function-declaration]\n   16 |         sum += _mm256_reduce_add_pd(vsum);\n      |                ^~~~~~~~~~~~~~~~~~~~\n",
+    "candidate_sha256": "8ea25a2f9195af63e732b5b5c75c1817d5771f3024ee53f6a672b77bfe492ea4"
+  }
+}

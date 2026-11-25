@@ -1,0 +1,123 @@
+你是 BLAS 算子优化策略的「综合专家」。下面是同一算子、同一硬件上 top-k 策略的逐条适用性分析结果。请按 4 个标准综合，形成最终的代码生成指导。
+
+【目标算子】daxpy（知识图谱规范名：axpy）
+【目标硬件 profile】k1_rvv256
+【任务函数签名】int daxpy_k(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, double da, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y, double *dummy, BLASLONG dummy2)
+【查询代码特征】{
+  "aligned": true,
+  "dtype": "d",
+  "loop_depth": 1,
+  "precision": "double",
+  "reduction": false,
+  "size_regime": "large",
+  "stride_x": 1,
+  "stride_y": 1,
+  "structural": "none",
+  "tail_divisible": false
+}
+
+【4 个综合标准（必须逐一给出 0~1 分数与理由）】
+- supportive（相互支持性）：各策略的适用条件/参数是否一致、能否同时采用，是否会互相抵消；
+- complementarity（互补性）：策略是否作用于不同阶段（向量化 / 循环展开 / 尾部处理 / 寄存器分块 / 步长特化等），组合后是否覆盖更多场景；
+- accuracy（正确性/数值一致性）：组合实现是否保持 BLAS 语义与数值容差，n<=0 / 尾部 / 任意步长 / 别名等边界是否安全；
+- completeness（覆盖完整性）：是否覆盖主循环、尾部、任意步长、n<=0 等分支，是否遗漏关键实现环节。
+
+【逐条适用性分析（JSON 数组）】
+[
+  {
+    "strategy_id": "stg:axpy:specialize_d",
+    "strategy_name": "LMUL/SEW 向量寄存器分组调优",
+    "applies": true,
+    "confidence": 0.8,
+    "evidence": [
+      "策略条件匹配：dtype 为 'd'，loop_depth >= 1，size_regime 为 'large'",
+      "硬件匹配：策略适用于 rvv 架构，目标硬件为 k1_rvv256",
+      "模板支持：根据 SEW 和 LMUL 参数生成不同路径，适应单位步长和任意步长情况",
+      "证据支持：ev:axpy:geomean 和 ev:axpy:pass_rate 表明在类似平台有性能提升和通过率",
+      "选中原因：策略满足 pat:axpy:core.elementwise_update 模式且符合 size_regime 与 dtype 条件"
+    ],
+    "risks": [
+      "尾部处理风险：tail_divisible 为 false，向量化处理后需额外处理剩余元素",
+      "寄存器压力风险：LMUL=8 可能导致向量寄存器组不足，影响性能",
+      "编译器支持风险：RISC-V Vector Extension 支持可能受限于编译器版本",
+      "数值一致性风险：向量化乘加操作可能导致浮点误差累积差异",
+      "别名风险：x 和 y 指针可能别名，影响向量化执行正确性"
+    ],
+    "parameters": {
+      "SEW": 64,
+      "LMUL": 8
+    },
+    "conflicts": []
+  },
+  {
+    "strategy_id": "stg:axpy:tail_handle_d",
+    "strategy_name": "动态 vl / 掩码尾部处理",
+    "applies": true,
+    "confidence": 0.7473,
+    "evidence": [
+      "策略 conditions 中 dtype 为 [\"d\"]，与目标算子匹配",
+      "loop_depth >= 1 的条件满足查询代码特征中的 loop_depth 为 1",
+      "size_regime 包含 \"large\"，与查询特征一致",
+      "tail_divisible 为 false，策略中为非硬性约束条件",
+      "arch_parameters 中 rvv 的 sew 为 64，lmul 为 8，适配 double 类型和 k1_rvv256 硬件",
+      "evidence 表明在类似平台 (hw:qemu-riscv64-vlen256) 上有性能增益 (speedup 为 1.2134)"
+    ],
+    "risks": [
+      "动态 vl 的尾部处理依赖正确实现的向量长度控制，可能在边界处引入数值一致性问题",
+      "尾部处理未确保 n 能整除 VLMAX，需额外验证在 k1_rvv256 上的行为",
+      "编译器对 RISC-V Vector Extension (RVV) 的支持可能不完全，影响策略落地",
+      "高 LMUL 值 (8) 可能导致寄存器压力过高，影响其他阶段性能",
+      "掩码操作可能引入额外指令开销，影响性能预期增益"
+    ],
+    "parameters": {
+      "sew": 64,
+      "lmul": 8
+    },
+    "conflicts": []
+  },
+  {
+    "strategy_id": "stg:axpy:vectorize_d",
+    "strategy_name": "RVV 向量化内核（vsetvl + vle/vfmacc/vse）",
+    "applies": true,
+    "confidence": 0.8,
+    "evidence": [
+      "conditions_satisfied 包含 dtype、loop_depth、size_regime、stride_x 和 aligned，表明当前查询特征与策略要求匹配",
+      "硬件 k1_rvv256 支持 RVV 指令集，策略中 arch_scope 为 arch_specific 且 arch 为 rvv",
+      "参数 par:sew 设置为 64，par:lmul 设置为 8，par:vector_len 设置为 32，符合当前硬件能力",
+      "证据 ev:axpy:geomean 和 ev:axpy:pass_rate 表明该策略在类似平台上有正向效果"
+    ],
+    "risks": [
+      "尾部处理风险：tail_divisible 为 false，可能需要额外逻辑处理非整除部分",
+      "别名风险：指针别名可能导致向量化失效或错误优化",
+      "寄存器压力风险：LMUL 为 8 可能限制可用寄存器数量，影响性能",
+      "对 large size_regime 的支持依赖于硬件实际向量寄存器长度，可能存在性能瓶颈"
+    ],
+    "parameters": {
+      "sew": 64,
+      "lmul": 8,
+      "vector_len": 32
+    },
+    "conflicts": []
+  }
+]
+
+【综合要求】
+1. 综合判断这些策略能否组合、在哪些阶段互补、组合后正确性与覆盖度是否足够；
+2. `recommended` 只写 JSON 数组里真实出现的策略 id，按建议采用顺序排列；
+3. `guidance` 要能直接指导代码生成（主循环怎么循环分块/向量化、尾部怎么处理、参数取什么量级、哪些策略不要用）；
+4. 不要写 C 代码，不要编造未给出的性能数字。
+
+【输出要求】
+只输出一个严格 JSON 对象（不要 markdown 代码围栏、不要解释文字），格式：
+{
+  "criteria": {
+    "supportive": {"score": 0.0, "reason": "策略之间是否相互支持、条件是否一致"},
+    "complementarity": {"score": 0.0, "reason": "策略是否互补（向量化 / 展开 / 尾部 / 分块 / 参数调优）"},
+    "accuracy": {"score": 0.0, "reason": "组合后正确性与数值一致性风险是否可控"},
+    "completeness": {"score": 0.0, "reason": "是否覆盖主循环、尾部、任意步长、n<=0 等"}
+  },
+  "overall": "一句话综合结论",
+  "recommended": ["策略 id，按优先级"],
+  "guidance": "分条给出代码生成阶段的实现要点",
+  "conflicts": ["生成时需要避免的冲突"]
+}

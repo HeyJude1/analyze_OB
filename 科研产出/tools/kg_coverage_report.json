@@ -1,0 +1,207 @@
+{
+  "operators": [
+    "asum",
+    "axpby",
+    "axpy",
+    "copy",
+    "dot",
+    "gemm",
+    "gemv",
+    "hemv",
+    "nrm2",
+    "rot",
+    "scal",
+    "swap",
+    "symm",
+    "trmm"
+  ],
+  "profiles": [
+    "arm_neon",
+    "arm_sve",
+    "k1_rvv256",
+    "qemu-riscv64-vlen256",
+    "x86_avx2",
+    "x86_avx512"
+  ],
+  "strategies": 262,
+  "matrix": {
+    "asum": {
+      "arm_neon": 5,
+      "arm_sve": 0,
+      "k1_rvv256": 2,
+      "qemu-riscv64-vlen256": 2,
+      "x86_avx2": 2,
+      "x86_avx512": 2
+    },
+    "axpby": {
+      "arm_neon": 0,
+      "arm_sve": 0,
+      "k1_rvv256": 1,
+      "qemu-riscv64-vlen256": 1,
+      "x86_avx2": 0,
+      "x86_avx512": 0
+    },
+    "axpy": {
+      "arm_neon": 7,
+      "arm_sve": 1,
+      "k1_rvv256": 20,
+      "qemu-riscv64-vlen256": 5,
+      "x86_avx2": 20,
+      "x86_avx512": 18
+    },
+    "copy": {
+      "arm_neon": 5,
+      "arm_sve": 6,
+      "k1_rvv256": 5,
+      "qemu-riscv64-vlen256": 5,
+      "x86_avx2": 2,
+      "x86_avx512": 1
+    },
+    "dot": {
+      "arm_neon": 9,
+      "arm_sve": 8,
+      "k1_rvv256": 9,
+      "qemu-riscv64-vlen256": 9,
+      "x86_avx2": 6,
+      "x86_avx512": 4
+    },
+    "gemm": {
+      "arm_neon": 13,
+      "arm_sve": 13,
+      "k1_rvv256": 27,
+      "qemu-riscv64-vlen256": 12,
+      "x86_avx2": 28,
+      "x86_avx512": 28
+    },
+    "gemv": {
+      "arm_neon": 9,
+      "arm_sve": 2,
+      "k1_rvv256": 6,
+      "qemu-riscv64-vlen256": 6,
+      "x86_avx2": 8,
+      "x86_avx512": 2
+    },
+    "hemv": {
+      "arm_neon": 1,
+      "arm_sve": 1,
+      "k1_rvv256": 16,
+      "qemu-riscv64-vlen256": 3,
+      "x86_avx2": 14,
+      "x86_avx512": 14
+    },
+    "nrm2": {
+      "arm_neon": 5,
+      "arm_sve": 2,
+      "k1_rvv256": 7,
+      "qemu-riscv64-vlen256": 7,
+      "x86_avx2": 5,
+      "x86_avx512": 2
+    },
+    "rot": {
+      "arm_neon": 8,
+      "arm_sve": 1,
+      "k1_rvv256": 5,
+      "qemu-riscv64-vlen256": 5,
+      "x86_avx2": 7,
+      "x86_avx512": 7
+    },
+    "scal": {
+      "arm_neon": 5,
+      "arm_sve": 1,
+      "k1_rvv256": 5,
+      "qemu-riscv64-vlen256": 5,
+      "x86_avx2": 3,
+      "x86_avx512": 3
+    },
+    "swap": {
+      "arm_neon": 4,
+      "arm_sve": 1,
+      "k1_rvv256": 5,
+      "qemu-riscv64-vlen256": 5,
+      "x86_avx2": 2,
+      "x86_avx512": 1
+    },
+    "symm": {
+      "arm_neon": 5,
+      "arm_sve": 7,
+      "k1_rvv256": 12,
+      "qemu-riscv64-vlen256": 12,
+      "x86_avx2": 13,
+      "x86_avx512": 13
+    },
+    "symv": {
+      "arm_neon": 0,
+      "arm_sve": 0,
+      "k1_rvv256": 0,
+      "qemu-riscv64-vlen256": 0,
+      "x86_avx2": 3,
+      "x86_avx512": 2
+    },
+    "trmm": {
+      "arm_neon": 12,
+      "arm_sve": 12,
+      "k1_rvv256": 27,
+      "qemu-riscv64-vlen256": 9,
+      "x86_avx2": 28,
+      "x86_avx512": 22
+    }
+  },
+  "cells": {
+    "filled": 79,
+    "total": 84,
+    "ratio": 0.94
+  },
+  "per_operator": {
+    "gemm": 44,
+    "trmm": 40,
+    "axpy": 28,
+    "symm": 22,
+    "dot": 20,
+    "rot": 17,
+    "hemv": 16,
+    "gemv": 15,
+    "copy": 12,
+    "nrm2": 11,
+    "scal": 10,
+    "asum": 8,
+    "swap": 8,
+    "symv": 4,
+    "axpby": 1
+  },
+  "per_profile": {
+    "k1_rvv256": 147,
+    "x86_avx2": 141,
+    "x86_avx512": 119,
+    "arm_neon": 88,
+    "qemu-riscv64-vlen256": 86,
+    "arm_sve": 55
+  },
+  "skew": {
+    "top3_ops": [
+      "gemm",
+      "trmm",
+      "axpy"
+    ],
+    "top3_share": 0.438
+  },
+  "evidence": {
+    "nodes": 88,
+    "by_platform": {
+      "hw:qemu-riscv64-vlen256": 88
+    },
+    "edge_scope": {
+      "operator": 258
+    },
+    "strategies_with_any_evidence": 129,
+    "strategies_with_strategy_scope": 0
+  },
+  "reachability": {
+    "reached": 252,
+    "only_generalizes": 7,
+    "unreachable": [
+      "stg:symv:tile_x86_avx2",
+      "stg:symv:vectorize_x86_avx2",
+      "stg:symv:vectorize_x86_avx512"
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+dscal x86 candidate: check_failed 384 cases, 6182 failures
+
+dscal case 37 cell 1: got 0.78514588859416445 expected 0
+dscal case 37 modified guard 2
+dscal case 39 cell 1: got -2.5437665782493371 expected 2.5437665782493371
+dscal case 39 modified guard 2
+dscal case 40 cell 1: got 0.90981432360742709 expected 0.27385411140583554
+dscal case 40 modified guard 2
+dscal case 41 cell 1: got -0.48010610079575594 expected -0
+dscal case 41 modified guard 3
+dscal case 43 cell 1: got -0.95755968169761274 expected 0.95755968169761274
+dscal case 43 modified guard 3

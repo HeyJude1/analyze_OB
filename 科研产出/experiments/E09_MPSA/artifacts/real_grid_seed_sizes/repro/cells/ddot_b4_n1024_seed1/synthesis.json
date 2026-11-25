@@ -1,0 +1,37 @@
+{
+  "criteria": {
+    "supportive": {
+      "score": 0.8,
+      "reason": "策略之间参数基本一致，sew=64 与 dtype=d 匹配，reduction 和 loop_depth 条件满足，但 lmul 存在差异（建议值 vs 固定值），需协调以避免寄存器压力过高"
+    },
+    "complementarity": {
+      "score": 0.9,
+      "reason": "stg:dot:specialize_d 用于主循环向量化与寄存器分组，stg:dot:split_d 优化归约链结构，stg:dot:tail_handle_d 负责尾部处理，三者分别覆盖主循环、归约、尾部，具备良好阶段互补性"
+    },
+    "accuracy": {
+      "score": 0.7,
+      "reason": "向量化可能影响浮点顺序，尾部处理和别名未明确处理，数值一致性风险中等；建议保留标量归约顺序或使用 faddd 等保证顺序的指令"
+    },
+    "completeness": {
+      "score": 0.8,
+      "reason": "策略覆盖主循环、尾部（动态 vl / 掩码），但未显式处理 n<=0 分支和别名情况，需在代码生成中补充边界处理逻辑"
+    }
+  },
+  "criteria_scores": {
+    "supportive": 0.8,
+    "complementarity": 0.9,
+    "accuracy": 0.7,
+    "completeness": 0.8
+  },
+  "overall": "三策略组合具备良好互补性和中等偏上支持度，适合用于实现高性能 ddot 算子，但需注意寄存器压力、尾部处理和数值一致性风险",
+  "recommended": [
+    "stg:dot:specialize_d",
+    "stg:dot:split_d",
+    "stg:dot:tail_handle_d"
+  ],
+  "guidance": "['主循环采用 stg:dot:specialize_d 进行向量化和寄存器分组，sew=64，lmul 不超过 4 以控制寄存器压力', '使用 stg:dot:split_d 构建归约链以隐藏向量加法延迟，split_factor 可设为 1，视归约延迟调整', '尾部采用 stg:dot:tail_handle_d 的动态 vl 和掩码机制进行处理，确保非对齐尾部正确执行', '主循环与尾部之间需进行分段判断，确保所有剩余元素均被处理', 'n <= 0 分支需在函数入口处显式返回 0.0，避免无效操作', 'x 和 y 指针别名情况需在代码中显式判断，避免因内存重叠导致错误向量化结果']",
+  "conflicts": [
+    "stg:dot:specialize_d 和 stg:dot:split_d 中 lmul 参数设置冲突，建议前者限制 lmul <=4，后者使用 lmul=8",
+    "stg:dot:tail_handle_d 使用固定 lmul=8，可能与主循环策略中建议的 lmul 不一致，需统一协调"
+  ]
+}

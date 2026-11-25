@@ -1,0 +1,49 @@
+{
+  "analogy_source": "dot",
+  "card_ids": [
+    "stg:abstract:register_blocking",
+    "stg:abstract:vector_fma",
+    "stg:abstract:tail_handling",
+    "stg:abstract:stride_dispatch"
+  ],
+  "contract_sha256": "5e998ce525341a58ef53e035e89170cf28355a203166b02971b4de12348a5e90",
+  "knowledge_bytes": 5662,
+  "method": "constraint_plan",
+  "operator": "dasum",
+  "profile": "x86_avx2",
+  "prompt": "dasum/x86_avx2/constraint_plan.json",
+  "prompt_sha256": "9ad4dc7ccc5905598098fcef85735a03fca75e3af799adca2463b64aa73ccd7b",
+  "repetition": 1,
+  "source_sha256": "cc032d0101696873b29211d52155bf01b71bffac2dfd71b1a327b40780dff6cc",
+  "split": "holdout",
+  "status": "prepared",
+  "engine": "ollama",
+  "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+  "repair_attempted": true,
+  "initial": {
+    "status": "compile_failed",
+    "compile_ok": false,
+    "correct": null,
+    "failure_reason": "other_compiler_error",
+    "usage": {
+      "prompt_tokens": 2808,
+      "completion_tokens": 252,
+      "total_tokens": 3060
+    },
+    "diagnostic": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dasum\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c: In function 'op_dasum':\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dasum\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c:19:19: error: implicit declaration of function 'fabs' [-Wimplicit-function-declaration]\n   19 |         sum[0] += fabs(x[i * incx]);\n      |                   ^~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dasum\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c:3:1: note: include '<math.h>' or provide a declaration of 'fabs'\n    2 | #include <immintrin.h>\n  +++ |+#include <math.h>\n    3 | \n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dasum\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c:19:19: warning: incompatible implicit declaration of built-in function 'fabs' [-Wbuiltin-declaration-mismatch]\n   19 |         sum[0] += fabs(x[i * incx]);\n      |                   ^~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dasum\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c:19:19: note: include '<math.h>' or provide a declaration of 'fabs'\n",
+    "candidate_sha256": "01f61bc9bc5d15b433a673a579b090a0897b75cc8624ffe7dad15f0ba514fd0a"
+  },
+  "final": {
+    "status": "runtime_failed",
+    "compile_ok": true,
+    "correct": false,
+    "failure_reason": "execution_aborted",
+    "usage": {
+      "prompt_tokens": 1695,
+      "completion_tokens": 257,
+      "total_tokens": 1952
+    },
+    "diagnostic": "Execution aborted or did not return the expected check status.",
+    "candidate_sha256": "ed44334b34a6078f6cc43e60b236a4537d6ad12e1eff4e433c9d74db2a2dc29e"
+  }
+}

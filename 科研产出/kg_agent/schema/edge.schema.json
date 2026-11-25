@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "kg_agent/schema/edge.schema.json",
+  "title": "kg_agent edge (Schema v1.5)",
+  "type": "object",
+  "required": ["id", "type", "head", "tail", "properties", "provenance"],
+  "additionalProperties": true,
+  "properties": {
+    "id": {"type": "string", "minLength": 3},
+    "type": {
+      "type": "string",
+      "enum": [
+        "OPERATOR_HAS_PATTERN",
+        "PATTERN_HAS_CHARACTERISTIC",
+        "PATTERN_OPTIMIZED_BY",
+        "STRATEGY_HAS_PARAMETER",
+        "STRATEGY_HAS_TEMPLATE",
+        "STRATEGY_APPLIES_WHEN",
+        "STRATEGY_REQUIRES_ISA",
+        "STRATEGY_TARGETS_UARCH",
+        "STRATEGY_EVIDENCED_BY",
+        "EVIDENCE_ON",
+        "EVIDENCE_SOURCE",
+        "STRATEGY_COMPOSES_WITH",
+        "STRATEGY_CONFLICTS_WITH",
+        "STRATEGY_GENERALIZES"
+      ]
+    },
+    "head": {"type": "string", "minLength": 3},
+    "tail": {"type": "string", "minLength": 3},
+    "properties": {"type": "object"},
+    "provenance": {
+      "type": "object",
+      "required": ["source_file"],
+      "additionalProperties": true,
+      "properties": {
+        "source_file": {"type": "string", "minLength": 1}
+      }
+    },
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1}
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "analogy_source": "gemv",
+  "card_ids": [
+    "stg:abstract:k_unroll",
+    "stg:abstract:register_blocking",
+    "stg:abstract:vector_fma",
+    "stg:abstract:tail_handling"
+  ],
+  "contract_sha256": "3ec32f9475c48aa5f192dc136516548d7b094f6fa631cd084582a3f3a806e7b2",
+  "knowledge_bytes": 4560,
+  "method": "strategy_cards",
+  "operator": "dsymv",
+  "profile": "k1_rvv256",
+  "prompt": "dsymv/k1_rvv256/strategy_cards.json",
+  "prompt_sha256": "902e974fae9d3390bdb6b10907e91b5e2978d4c5c1095f1c94c9ecb84d78738b",
+  "repetition": 1,
+  "source_sha256": "8494a5751a22999b7d05267cd907678c866e376873badef34a708eebf2d2588a",
+  "split": "holdout",
+  "status": "prepared",
+  "engine": "ollama",
+  "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+  "repair_attempted": true,
+  "initial": {
+    "status": "compile_failed",
+    "compile_ok": false,
+    "correct": null,
+    "failure_reason": "other_compiler_error",
+    "usage": {
+      "prompt_tokens": 2838,
+      "completion_tokens": 544,
+      "total_tokens": 3382
+    },
+    "diagnostic": "../experiments/thesis/functional_2026-11-19/ollama/dsymv/k1_rvv256/strategy_cards/rep-1/initial/candidate.c: In function ‘op_dsymv’:\n../experiments/thesis/functional_2026-11-19/ollama/dsymv/k1_rvv256/strategy_cards/rep-1/initial/candidate.c:12:32: error: variable-sized object may not be initialized except with an empty initializer\n   12 |         double sum[K_UNROLL] = {0.0};\n      |                                ^\n",
+    "candidate_sha256": "5539fea408b7f2f85118865c1aa2001ad6b994514544e56a2d40c8025fcefef7"
+  },
+  "final": {
+    "status": "runtime_failed",
+    "compile_ok": true,
+    "correct": false,
+    "failure_reason": "execution_aborted",
+    "usage": {
+      "prompt_tokens": 2193,
+      "completion_tokens": 538,
+      "total_tokens": 2731
+    },
+    "diagnostic": "Execution aborted or did not return the expected check status.",
+    "candidate_sha256": "0f59c485a4c409c90e74d07e4203778628f0606c9726ff66c739fdd2ced7b40f"
+  }
+}

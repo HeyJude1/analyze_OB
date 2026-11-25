@@ -1,0 +1,12 @@
+dgemv x86 candidate: check_failed 84 cases, 204 failures
+
+dgemv case 13 cell 1: got nan expected 0
+dgemv case 13 cell 2: got nan expected 0
+dgemv case 13 cell 3: got nan expected 0
+dgemv case 13 cell 4: got nan expected 0
+dgemv case 13 cell 5: got nan expected 0
+dgemv case 16 cell 1: got nan expected 0
+dgemv case 16 cell 2: got nan expected 0
+dgemv case 16 cell 3: got nan expected 0
+dgemv case 16 cell 4: got nan expected 0
+dgemv case 16 cell 5: got nan expected 0

@@ -1,0 +1,13 @@
+{
+  "status": "wrong_answer",
+  "compile_ok": true,
+  "correct": false,
+  "failure_reason": "numerical_or_memory_contract",
+  "usage": {
+    "prompt_tokens": 1896,
+    "completion_tokens": 374,
+    "total_tokens": 2270
+  },
+  "diagnostic": "Numerical or memory-contract check failed on 582 cases. Preserve the full public contract.",
+  "candidate_sha256": "9b610a65aca63bcc74812442882ab8b3f519ffa371ebe28639f0f8aed070f4b0"
+}

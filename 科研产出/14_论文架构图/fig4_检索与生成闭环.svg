@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1820" height="1080" viewBox="0 0 1820 1080">
+<defs><marker id="ar-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2B6CB0"/></marker>
+<marker id="ar-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2F855A"/></marker>
+<marker id="ar-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#C05621"/></marker>
+<marker id="ar-purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#6B46C1"/></marker>
+<marker id="ar-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#C53030"/></marker>
+<marker id="ar-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#4A5568"/></marker>
+<marker id="ar-teal" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2C7A7B"/></marker></defs>
+<rect width="1820" height="1080" fill="#F5F7FB"/>
+<text x="50" y="48" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="27" fill="#1A202C" font-weight="700" text-anchor="start" opacity="1.0">输入进去以后怎么处理：7 步检索 → 结构化 Prompt → 生成与验证闭环</text>
+<text x="50" y="80" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="15" fill="#4A5568" text-anchor="start" opacity="1.0">用一个真实例子走一遍：dgemm，目标平台 x86_avx2。每一步都能在图谱可视化里回放（候选 / 选中 / 淘汰 + 原因）。</text>
+<rect x="40" y="120" width="430" height="120" rx="12" fill="#EBF4FF" stroke="#2B6CB0" stroke-width="2"/>
+<text x="56" y="150" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="17" fill="#2B6CB0" font-weight="700" text-anchor="start" opacity="1.0">查询（Query）</text>
+<text x="56" y="176" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">算子：dgemm（L3，double）</text>
+<text x="56" y="197" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">目标硬件：x86_avx2（AVX2/FMA）</text>
+<text x="56" y="218" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">代码特征：dtype=d、loop_depth=3、stride=1、size=large</text>
+<rect x="40" y="280" width="620" height="88" rx="12" fill="#FFFAF0" stroke="#C05621" stroke-width="2"/>
+<text x="56" y="310" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="15" fill="#C05621" font-weight="700" text-anchor="start" opacity="1.0">① 计算流程匹配</text>
+<text x="56" y="335" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">算子 → 计算流程（注册表/指纹）</text>
+<text x="56" y="355" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">命中：核心微内核 + pack + 尾处理</text>
+<line x1="350" y1="370" x2="350" y2="388" stroke="#4A5568" stroke-width="2.2" marker-end="url(#ar-gray)"/>
+<rect x="40" y="388" width="620" height="88" rx="12" fill="#FFFAF0" stroke="#C05621" stroke-width="2"/>
+<text x="56" y="418" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="15" fill="#C05621" font-weight="700" text-anchor="start" opacity="1.0">② 策略召回</text>
+<text x="56" y="443" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">沿 PATTERN_OPTIMIZED_BY 召回 + 泛化扩展</text>
+<text x="56" y="463" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">候选：策略 A/B/C…（含跨架构抽象策略）</text>
+<line x1="350" y1="478" x2="350" y2="496" stroke="#4A5568" stroke-width="2.2" marker-end="url(#ar-gray)"/>
+<rect x="40" y="496" width="620" height="88" rx="12" fill="#FFFAF0" stroke="#C05621" stroke-width="2"/>
+<text x="56" y="526" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="15" fill="#C05621" font-weight="700" text-anchor="start" opacity="1.0">③ 条件过滤</text>
+<text x="56" y="551" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">对代码特征求值；不满足硬条件即淘汰</text>
+<text x="56" y="571" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">例：dtype 不符 / stride≠1 / 尺寸档不符</text>
+<line x1="350" y1="586" x2="350" y2="604" stroke="#4A5568" stroke-width="2.2" marker-end="url(#ar-gray)"/>
+<rect x="40" y="604" width="620" height="88" rx="12" fill="#F3E8FF" stroke="#6B46C1" stroke-width="2"/>
+<text x="56" y="634" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="15" fill="#6B46C1" font-weight="700" text-anchor="start" opacity="1.0">④ 硬件过滤</text>
+<text x="56" y="659" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">ISA / 微架构 / 向量宽度是否满足</text>
+<text x="56" y="679" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">例：需要 AVX512 的策略在 AVX2 上淘汰</text>
+<line x1="350" y1="694" x2="350" y2="712" stroke="#4A5568" stroke-width="2.2" marker-end="url(#ar-gray)"/>
+<rect x="40" y="712" width="620" height="88" rx="12" fill="#F3E8FF" stroke="#6B46C1" stroke-width="2"/>
+<text x="56" y="742" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="15" fill="#6B46C1" font-weight="700" text-anchor="start" opacity="1.0">⑤ 冲突消解</text>
+<text x="56" y="767" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">同族去重 + CONFLICTS_WITH + 寄存器预算</text>
+<text x="56" y="787" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">例：两个分块策略不能共存；超预算淘汰</text>
+<line x1="350" y1="802" x2="350" y2="820" stroke="#4A5568" stroke-width="2.2" marker-end="url(#ar-gray)"/>
+<rect x="40" y="820" width="620" height="88" rx="12" fill="#F3E8FF" stroke="#6B46C1" stroke-width="2"/>
+<text x="56" y="850" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="15" fill="#6B46C1" font-weight="700" text-anchor="start" opacity="1.0">⑥ 打分排序</text>
+<text x="56" y="875" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">match / fit / hw / evidence / support − 迁移惩罚</text>
+<text x="56" y="895" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">取 top-k（默认 6 条）</text>
+<line x1="350" y1="910" x2="350" y2="928" stroke="#4A5568" stroke-width="2.2" marker-end="url(#ar-gray)"/>
+<rect x="40" y="928" width="620" height="88" rx="12" fill="#E6FFFA" stroke="#2F855A" stroke-width="2"/>
+<text x="56" y="958" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="15" fill="#2F855A" font-weight="700" text-anchor="start" opacity="1.0">⑦ 组装 StrategyPack</text>
+<text x="56" y="983" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">策略卡 + 条件 + 参数 + 模板 + 证据 + 来源</text>
+<text x="56" y="1003" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">可直接注入 prompt 的结构化知识包</text>
+<rect x="720" y="120" width="500" height="150" rx="12" fill="#FFFAF0" stroke="#C05621" stroke-width="2"/>
+<text x="736" y="150" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="16" fill="#C05621" font-weight="700" text-anchor="start" opacity="1.0">4 种 Prompt 条件（同 LLM、同 token 预算）</text>
+<text x="736" y="176" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">B0 零样本：只给代码 + 硬件描述</text>
+<text x="736" y="197" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">B1 + 硬件信息：不给策略知识</text>
+<text x="736" y="218" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">B2 扁平文本 RAG：同内容拍平成文本</text>
+<text x="736" y="239" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">B3 完整 KG：条件 + 模板 + 证据（主方法）</text>
+<line x1="500" y1="180" x2="720" y2="180" stroke="#4A5568" stroke-width="2.2" marker-end="url(#ar-gray)"/>
+<rect x="720" y="300" width="500" height="130" rx="12" fill="#FFFAF0" stroke="#C05621" stroke-width="2"/>
+<text x="736" y="330" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="15" fill="#C05621" font-weight="700" text-anchor="start" opacity="1.0">组装 Prompt（B3 示例）</text>
+<text x="736" y="356" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">系统：你是 BLAS kernel 优化专家</text>
+<text x="736" y="377" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">知识块：策略 1/2/3（条件+参数+模板+来源）</text>
+<text x="736" y="398" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">任务：补全 C 函数，禁止调用 BLAS/内联汇编</text>
+<text x="736" y="419" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">约束：单线程、内存 ≤ 参考实现 2×</text>
+<rect x="720" y="460" width="500" height="170" rx="12" fill="#FFFAF0" stroke="#C05621" stroke-width="2"/>
+<text x="736" y="490" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="15" fill="#C05621" font-weight="700" text-anchor="start" opacity="1.0">LLM 生成</text>
+<text x="736" y="516" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">输入：generic.c + 接口契约 + 硬件画像 + StrategyPack</text>
+<text x="736" y="537" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">输出：单个 C 文件（仅函数体）</text>
+<text x="736" y="558" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">同任务最多 3 个候选（pass@1 主指标）</text>
+<text x="736" y="579" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">失败可回灌编译错误 1 轮（等预算）</text>
+<rect x="720" y="660" width="500" height="170" rx="12" fill="#F3E8FF" stroke="#6B46C1" stroke-width="2"/>
+<text x="736" y="690" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="15" fill="#6B46C1" font-weight="700" text-anchor="start" opacity="1.0">验证闭环（自动）</text>
+<text x="736" y="716" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">编译：x86 gcc / RISC-V 交叉编译</text>
+<text x="736" y="737" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">正确性：D1 随机 / D2 不规则尺寸 / D3 参数边界 / D4 数值极端</text>
+<text x="736" y="758" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">性能：5 warmup + 20 次中位数，固定线程/频率</text>
+<text x="736" y="779" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">失败 → FailureCase 回写，供检索修正</text>
+<path d="M 970 832 L 970 892 L 750 892 L 750 664" fill="none" stroke="#4A5568" stroke-width="2.2" stroke-dasharray="7 5" marker-end="url(#ar-gray)"/>
+<text x="700" y="912" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">验证失败 → FailureCase → 检索/知识修正</text>
+<rect x="1280" y="120" width="500" height="190" rx="12" fill="#F3E8FF" stroke="#6B46C1" stroke-width="2"/>
+<text x="1296" y="150" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="16" fill="#6B46C1" font-weight="700" text-anchor="start" opacity="1.0">产出（每次实验都落 JSONL）</text>
+<text x="1296" y="176" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">生成代码 + 编译日志 + 运行日志</text>
+<text x="1296" y="197" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">指标：CR / FCR / S_C0 / S_C1 / EGC / fast_p</text>
+<text x="1296" y="218" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">token 成本 / 时延 / 失败类型</text>
+<text x="1296" y="239" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">可追溯到：任务、条件、seed、平台、日期</text>
+<rect x="1280" y="340" width="500" height="160" rx="12" fill="#E6FFFA" stroke="#2F855A" stroke-width="2"/>
+<text x="1296" y="370" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="15" fill="#2F855A" font-weight="700" text-anchor="start" opacity="1.0">例：dgemm@x86_avx2 的 trace 实际数字</text>
+<text x="1296" y="396" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">条件过滤：15 条淘汰（dtype 不符等）</text>
+<text x="1296" y="417" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">硬件过滤：4 条淘汰（需要 AVX512/仅 RVV）</text>
+<text x="1296" y="438" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">冲突消解：4 条淘汰（同族/寄存器预算）</text>
+<text x="1296" y="459" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">最终 top-6 策略进入 prompt</text>
+<rect x="1280" y="540" width="500" height="160" rx="12" fill="#E6FFFA" stroke="#2F855A" stroke-width="2"/>
+<text x="1296" y="570" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="15" fill="#2F855A" font-weight="700" text-anchor="start" opacity="1.0">同一套流程查 RISC-V 时</text>
+<text x="1296" y="596" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">profile 换成 k1_rvv256（RVV 1.0 / VLEN=256）</text>
+<text x="1296" y="617" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">过滤条件换成 SEW/LMUL/向量寄存器</text>
+<text x="1296" y="638" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">策略参数换成 RVV 版本（如 LMUL=2/8）</text>
+<text x="1296" y="659" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">生成后 riscv64-gcc 交叉编译 + 板端计时</text>
+<rect x="1280" y="740" width="500" height="120" rx="12" fill="#EDF2F7" stroke="#4A5568" stroke-width="2"/>
+<text x="1296" y="770" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#4A5568" font-weight="700" text-anchor="start" opacity="1.0">为什么需要 7 步（而不是一次向量检索）</text>
+<text x="1296" y="796" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">向量检索只能“找相似文本”；条件/硬件/冲突是硬约束</text>
+<text x="1296" y="817" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">7 步把“知识选择”变成可审计、可回放的决策链</text>
+</svg>

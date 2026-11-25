@@ -1,0 +1,25 @@
+conv1d rvv candidate: compile_error 
+
+wsl: �hKm0R localhost �NtM�n�FO*g\��P0R WSL0NAT !j_N�v WSL N/ec localhost �Nt0
+../experiments/thesis/functional_2026-11-19/ollama/conv1d/k1_rvv256/strategy_cards/rep-1/repair/candidate.c: In function ‘op_conv1d’:
+../experiments/thesis/functional_2026-11-19/ollama/conv1d/k1_rvv256/strategy_cards/rep-1/repair/candidate.c:9:13: error: unknown type name ‘vfloat64m8_t’
+    9 |     typedef vfloat64m8_t vec_t;
+      |             ^~~~~~~~~~~~
+../experiments/thesis/functional_2026-11-19/ollama/conv1d/k1_rvv256/strategy_cards/rep-1/repair/candidate.c:10:20: error: implicit declaration of function ‘vsetvl_e64m8’ [-Wimplicit-function-declaration]
+   10 |     const int vl = vsetvl_e64m8(len);
+      |                    ^~~~~~~~~~~~
+../experiments/thesis/functional_2026-11-19/ollama/conv1d/k1_rvv256/strategy_cards/rep-1/repair/candidate.c:15:14: error: implicit declaration of function ‘vle64_v_f64m8’ [-Wimplicit-function-declaration]
+   15 |         vx = vle64_v_f64m8(x + i, vl);
+      |              ^~~~~~~~~~~~~
+../experiments/thesis/functional_2026-11-19/ollama/conv1d/k1_rvv256/strategy_cards/rep-1/repair/candidate.c:18:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]
+   18 |         for (int j = 0; j < k; ++j) {
+      |                           ^
+../experiments/thesis/functional_2026-11-19/ollama/conv1d/k1_rvv256/strategy_cards/rep-1/repair/candidate.c:20:18: error: implicit declaration of function ‘vfma_vv_f64’ [-Wimplicit-function-declaration]
+   20 |             vy = vfma_vv_f64(vy, vx, vw, vl);
+      |                  ^~~~~~~~~~~
+../experiments/thesis/functional_2026-11-19/ollama/conv1d/k1_rvv256/strategy_cards/rep-1/repair/candidate.c:23:9: error: implicit declaration of function ‘vse64_v_f64m8’ [-Wimplicit-function-declaration]
+   23 |         vse64_v_f64m8(y + i, vy, vl);
+      |         ^~~~~~~~~~~~~
+../experiments/thesis/functional_2026-11-19/ollama/conv1d/k1_rvv256/strategy_cards/rep-1/repair/candidate.c:12:12: warning: unused variable ‘sum’ [-Wunused-variable]
+   12 |     double sum[vl];
+      |            ^~~

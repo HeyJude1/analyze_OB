@@ -1,0 +1,50 @@
+{
+  "analogy_source": null,
+  "card_ids": [
+    "stg:abstract:vector_fma",
+    "stg:abstract:register_blocking",
+    "stg:axpy:specialize_s",
+    "stg:abstract:stride_dispatch"
+  ],
+  "contract_sha256": "371402f379cceaebd4ee2cd5d53b323433b08980d45a6ad1b974b37783189d24",
+  "knowledge_bytes": 5403,
+  "method": "text_rag",
+  "operator": "daxpy",
+  "profile": "x86_avx2",
+  "prompt": "daxpy/x86_avx2/text_rag.json",
+  "prompt_sha256": "f229add38e4c7732c977852eddfda09ce23a2ca74868ee05f52bd22fb2088c1c",
+  "repetition": 1,
+  "source_sha256": "8f5e498023abd606f24e4bad0a2642fa5d658a4b56181cc56da12c1b0dcf383b",
+  "split": "build",
+  "status": "prepared",
+  "engine": "ollama",
+  "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+  "repair_attempted": false,
+  "initial": {
+    "status": "compile_timeout",
+    "compile_ok": null,
+    "correct": null,
+    "failure_reason": "compiler_timed_out",
+    "usage": {
+      "prompt_tokens": 3013,
+      "completion_tokens": 274,
+      "total_tokens": 3287
+    },
+    "diagnostic": "",
+    "candidate_sha256": "7ce230265d7909a49259a455fb66d8070c6204a98fd5c79dd7653029c95851f1"
+  },
+  "final": {
+    "status": "compile_timeout",
+    "compile_ok": null,
+    "correct": null,
+    "failure_reason": "compiler_timed_out",
+    "usage": {
+      "prompt_tokens": 3013,
+      "completion_tokens": 274,
+      "total_tokens": 3287
+    },
+    "diagnostic": "",
+    "candidate_sha256": "7ce230265d7909a49259a455fb66d8070c6204a98fd5c79dd7653029c95851f1"
+  },
+  "normalization": "Compiler timeout extracted from initial/verifier.log. The early verifier exited without JSON; original result retained."
+}

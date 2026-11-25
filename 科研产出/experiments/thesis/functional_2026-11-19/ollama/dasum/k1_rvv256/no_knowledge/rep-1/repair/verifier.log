@@ -1,0 +1,15 @@
+dasum rvv candidate: compile_error 
+
+wsl: �hKm0R localhost �NtM�n�FO*g\��P0R WSL0NAT !j_N�v WSL N/ec localhost �Nt0
+../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/no_knowledge/rep-1/repair/candidate.c: In function ‘op_dasum’:
+../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/no_knowledge/rep-1/repair/candidate.c:15:9: error: implicit declaration of function ‘memcpy’ [-Wimplicit-function-declaration]
+   15 |         memcpy(vec_x1, &x[i], sizeof(double) * 4);
+      |         ^~~~~~
+../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/no_knowledge/rep-1/repair/candidate.c:4:1: note: include ‘<string.h>’ or provide a declaration of ‘memcpy’
+    3 | #include <math.h>
+  +++ |+#include <string.h>
+    4 | 
+../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/no_knowledge/rep-1/repair/candidate.c:15:9: warning: incompatible implicit declaration of built-in function ‘memcpy’ [-Wbuiltin-declaration-mismatch]
+   15 |         memcpy(vec_x1, &x[i], sizeof(double) * 4);
+      |         ^~~~~~
+../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/no_knowledge/rep-1/repair/candidate.c:15:9: note: include ‘<string.h>’ or provide a declaration of ‘memcpy’

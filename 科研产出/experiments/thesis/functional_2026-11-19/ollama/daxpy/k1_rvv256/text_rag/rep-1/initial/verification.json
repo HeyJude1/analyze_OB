@@ -1,0 +1,50 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "x86_64",
+  "results": [
+    {
+      "task": "daxpy",
+      "target": "rvv",
+      "variant": "candidate",
+      "compiler_version": "riscv64-buildroot-linux-gnu-gcc.br_real (Buildroot 2021.11-18033-g83947c7bb6) 14.3.0",
+      "source": "../experiments/thesis/functional_2026-11-19/ollama/daxpy/k1_rvv256/text_rag/rep-1/initial/candidate.c",
+      "source_sha256": "c6fc7228495267acb81777972482eee291aa50a1dd80ddf9f22ec6912c936952",
+      "status": "passed",
+      "compile": {
+        "argv": [
+          "/mnt/c/Users/MSI/Desktop/cx_operator_tool/operator_extract/toolchain/riscv-gcc-14.3/bin/riscv64-buildroot-linux-gnu-gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-march=rv64gcv",
+          "-mabi=lp64d",
+          "-static",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DAXPY",
+          "driver/check.c",
+          "../experiments/thesis/functional_2026-11-19/ollama/daxpy/k1_rvv256/text_rag/rep-1/initial/candidate.c",
+          "-o",
+          "../experiments/thesis/functional_2026-11-19/ollama/daxpy/k1_rvv256/text_rag/rep-1/initial/bin/daxpy-rvv-candidate",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "c9a0c8b1ed110f5b548ea6046b92b21b87d6a7cbd3ad6c2240537d4c556cde6e",
+      "check": {
+        "argv": [
+          "qemu-riscv64",
+          "-cpu",
+          "rv64,v=true,vlen=256,elen=64,vext_spec=v1.0",
+          "/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/thesis/functional_2026-11-19/ollama/daxpy/k1_rvv256/text_rag/rep-1/initial/bin/daxpy-rvv-candidate"
+        ],
+        "exit_code": 0,
+        "stdout": "60 cases, 0 failures\n",
+        "stderr": ""
+      },
+      "environment": "external_runner"
+    }
+  ]
+}

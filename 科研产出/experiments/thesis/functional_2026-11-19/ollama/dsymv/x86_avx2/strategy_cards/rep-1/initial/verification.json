@@ -1,0 +1,36 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "amd64",
+  "results": [
+    {
+      "task": "dsymv",
+      "target": "x86",
+      "variant": "candidate",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymv\\x86_avx2\\strategy_cards\\rep-1\\initial\\candidate.c",
+      "source_sha256": "9c620d027cb56142a285d227c80f986dfbf6092e0535a0c1f5da006370c30258",
+      "status": "compile_error",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DSYMV",
+          "driver/check.c",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymv\\x86_avx2\\strategy_cards\\rep-1\\initial\\candidate.c",
+          "-o",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymv\\x86_avx2\\strategy_cards\\rep-1\\initial\\bin\\dsymv-x86-candidate.exe",
+          "-lm"
+        ],
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymv\\x86_avx2\\strategy_cards\\rep-1\\initial\\candidate.c: In function 'op_dsymv':\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymv\\x86_avx2\\strategy_cards\\rep-1\\initial\\candidate.c:11:32: error: variable-sized object may not be initialized except with an empty initializer\n   11 |         double sum[K_UNROLL] = {0.0, 0.0, 0.0, 0.0};\n      |                                ^\n"
+      }
+    }
+  ]
+}

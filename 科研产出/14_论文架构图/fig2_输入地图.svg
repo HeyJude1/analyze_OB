@@ -1,0 +1,210 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1820" height="1060" viewBox="0 0 1820 1060">
+<defs><marker id="ar-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2B6CB0"/></marker>
+<marker id="ar-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2F855A"/></marker>
+<marker id="ar-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#C05621"/></marker>
+<marker id="ar-purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#6B46C1"/></marker>
+<marker id="ar-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#C53030"/></marker>
+<marker id="ar-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#4A5568"/></marker>
+<marker id="ar-teal" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2C7A7B"/></marker></defs>
+<rect width="1820" height="1060" fill="#F5F7FB"/>
+<text x="50" y="48" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="27" fill="#1A202C" font-weight="700" text-anchor="start" opacity="1.0">输入到底有什么：算子清单 × 架构覆盖 × 文件结构</text>
+<text x="50" y="80" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="15" fill="#4A5568" text-anchor="start" opacity="1.0">当前输入不是“一个架构的几段代码”，而是 14 个 BLAS 算子在 5 类架构上的实现集合；每个实现都能回指到文件与行号。</text>
+<text x="40" y="110" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="17" fill="#2B6CB0" font-weight="700" text-anchor="start" opacity="1.0">A. 算子清单（14 个，按 BLAS 层级）</text>
+<rect x="40" y="140" width="700" height="54" rx="8" fill="#DCE9F7" stroke="#CBD5E0"/>
+<text x="46" y="164" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#1A202C" font-weight="700" text-anchor="start" opacity="1.0">层级</text>
+<text x="156" y="164" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12.5" fill="#1A202C" font-weight="700" text-anchor="start" opacity="1.0">算子</text>
+<text x="476" y="164" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#1A202C" font-weight="700" text-anchor="start" opacity="1.0">角色</text>
+<text x="566" y="164" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#1A202C" font-weight="700" text-anchor="start" opacity="1.0">说明</text>
+<rect x="40" y="194" width="700" height="72" rx="8" fill="#FFFFFF" stroke="#CBD5E0"/>
+<text x="46" y="218" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" font-weight="700" text-anchor="start" opacity="1.0">L1 向量</text>
+<text x="156" y="218" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12.5" fill="#4A5568" text-anchor="start" opacity="1.0">daxpy dasum ddot dscal dnrm2 daxpby</text>
+<text x="476" y="218" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">S1/S2</text>
+<text x="566" y="218" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">向量-标量运算；编译器 -O3</text>
+<text x="566" y="234" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0"> 已很强</text>
+<rect x="40" y="266" width="700" height="72" rx="8" fill="#FFFFFF" stroke="#CBD5E0"/>
+<text x="46" y="290" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" font-weight="700" text-anchor="start" opacity="1.0">L1 扩展</text>
+<text x="156" y="290" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12.5" fill="#4A5568" text-anchor="start" opacity="1.0">copy rot swap</text>
+<text x="476" y="290" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">S1</text>
+<text x="566" y="290" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">内存/交换类，适合看访存优</text>
+<text x="566" y="306" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">化</text>
+<rect x="40" y="338" width="700" height="72" rx="8" fill="#FFFFFF" stroke="#CBD5E0"/>
+<text x="46" y="362" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" font-weight="700" text-anchor="start" opacity="1.0">L2 矩阵-向量</text>
+<text x="156" y="362" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12.5" fill="#4A5568" text-anchor="start" opacity="1.0">dgemv dsymv chemv</text>
+<text x="476" y="362" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">S1/S2</text>
+<text x="566" y="362" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">分块、pack、对称/复数访问</text>
+<rect x="40" y="410" width="700" height="72" rx="8" fill="#FFFFFF" stroke="#CBD5E0"/>
+<text x="46" y="434" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" font-weight="700" text-anchor="start" opacity="1.0">L3 矩阵-矩阵</text>
+<text x="156" y="434" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12.5" fill="#4A5568" text-anchor="start" opacity="1.0">dgemm dsymm trmm</text>
+<text x="476" y="434" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">S1/S2</text>
+<text x="566" y="434" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">微内核、寄存器分块、cache</text>
+<text x="566" y="450" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0"> 分块</text>
+<text x="40" y="506" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">S1 = 进 KG（知识来源）；S2 = 留出（只用于评测，验证跨算子泛化）</text>
+<text x="790" y="110" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="17" fill="#2F855A" font-weight="700" text-anchor="start" opacity="1.0">B. 架构 × 算子覆盖矩阵（单元格 = 实现文件数，颜色越深越多）</text>
+<text x="957.6666666666666" y="156" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">asum</text>
+<text x="1013.0" y="156" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">axpby</text>
+<text x="1068.3333333333335" y="156" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">axpy</text>
+<text x="1123.6666666666667" y="156" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">copy</text>
+<text x="1179.0" y="156" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">dot</text>
+<text x="1234.3333333333335" y="156" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">gemm</text>
+<text x="1289.6666666666667" y="156" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">gemv</text>
+<text x="1345.0000000000002" y="156" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">hemv</text>
+<text x="1400.3333333333335" y="156" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">nrm2</text>
+<text x="1455.6666666666667" y="156" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">rot</text>
+<text x="1511.0000000000002" y="156" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">scal</text>
+<text x="1566.3333333333335" y="156" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">swap</text>
+<text x="1621.6666666666667" y="156" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">symm</text>
+<text x="1677.0000000000002" y="156" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">symv</text>
+<text x="1732.3333333333335" y="156" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">trmm</text>
+<text x="798" y="202" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#2F855A" font-weight="700" text-anchor="start" opacity="1.0">x86_avx2</text>
+<rect x="930.0" y="170" width="52.333333333333336" height="48" rx="5" fill="#9AE6B4" stroke="#E2E8F0"/>
+<text x="956.1666666666666" y="202" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">2</text>
+<rect x="985.3333333333334" y="170" width="52.333333333333336" height="48" rx="5" fill="#FFFFFF" stroke="#E2E8F0"/>
+<rect x="1040.6666666666667" y="170" width="52.333333333333336" height="48" rx="5" fill="#9AE6B4" stroke="#E2E8F0"/>
+<text x="1066.8333333333335" y="202" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">2</text>
+<rect x="1096.0" y="170" width="52.333333333333336" height="48" rx="5" fill="#C6F6D5" stroke="#E2E8F0"/>
+<text x="1122.1666666666667" y="202" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">1</text>
+<rect x="1151.3333333333333" y="170" width="52.333333333333336" height="48" rx="5" fill="#9AE6B4" stroke="#E2E8F0"/>
+<text x="1177.5" y="202" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">2</text>
+<rect x="1206.6666666666667" y="170" width="52.333333333333336" height="48" rx="5" fill="#9AE6B4" stroke="#E2E8F0"/>
+<text x="1232.8333333333335" y="202" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">2</text>
+<rect x="1262.0" y="170" width="52.333333333333336" height="48" rx="5" fill="#68D391" stroke="#E2E8F0"/>
+<text x="1288.1666666666667" y="202" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1C4532" font-weight="700" text-anchor="middle" opacity="1.0">3</text>
+<rect x="1317.3333333333335" y="170" width="52.333333333333336" height="48" rx="5" fill="#FFFFFF" stroke="#E2E8F0"/>
+<rect x="1372.6666666666667" y="170" width="52.333333333333336" height="48" rx="5" fill="#C6F6D5" stroke="#E2E8F0"/>
+<text x="1398.8333333333335" y="202" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">1</text>
+<rect x="1428.0" y="170" width="52.333333333333336" height="48" rx="5" fill="#9AE6B4" stroke="#E2E8F0"/>
+<text x="1454.1666666666667" y="202" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">2</text>
+<rect x="1483.3333333333335" y="170" width="52.333333333333336" height="48" rx="5" fill="#9AE6B4" stroke="#E2E8F0"/>
+<text x="1509.5000000000002" y="202" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">2</text>
+<rect x="1538.6666666666667" y="170" width="52.333333333333336" height="48" rx="5" fill="#C6F6D5" stroke="#E2E8F0"/>
+<text x="1564.8333333333335" y="202" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">1</text>
+<rect x="1594.0" y="170" width="52.333333333333336" height="48" rx="5" fill="#C6F6D5" stroke="#E2E8F0"/>
+<text x="1620.1666666666667" y="202" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">1</text>
+<rect x="1649.3333333333335" y="170" width="52.333333333333336" height="48" rx="5" fill="#9AE6B4" stroke="#E2E8F0"/>
+<text x="1675.5000000000002" y="202" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">2</text>
+<rect x="1704.6666666666667" y="170" width="52.333333333333336" height="48" rx="5" fill="#C6F6D5" stroke="#E2E8F0"/>
+<text x="1730.8333333333335" y="202" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">1</text>
+<text x="798" y="256" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#2F855A" font-weight="700" text-anchor="start" opacity="1.0">x86_avx512</text>
+<rect x="930.0" y="224" width="52.333333333333336" height="48" rx="5" fill="#C6F6D5" stroke="#E2E8F0"/>
+<text x="956.1666666666666" y="256" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">1</text>
+<rect x="985.3333333333334" y="224" width="52.333333333333336" height="48" rx="5" fill="#FFFFFF" stroke="#E2E8F0"/>
+<rect x="1040.6666666666667" y="224" width="52.333333333333336" height="48" rx="5" fill="#C6F6D5" stroke="#E2E8F0"/>
+<text x="1066.8333333333335" y="256" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">1</text>
+<rect x="1096.0" y="224" width="52.333333333333336" height="48" rx="5" fill="#FFFFFF" stroke="#E2E8F0"/>
+<rect x="1151.3333333333333" y="224" width="52.333333333333336" height="48" rx="5" fill="#C6F6D5" stroke="#E2E8F0"/>
+<text x="1177.5" y="256" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">1</text>
+<rect x="1206.6666666666667" y="224" width="52.333333333333336" height="48" rx="5" fill="#68D391" stroke="#E2E8F0"/>
+<text x="1232.8333333333335" y="256" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1C4532" font-weight="700" text-anchor="middle" opacity="1.0">3</text>
+<rect x="1262.0" y="224" width="52.333333333333336" height="48" rx="5" fill="#FFFFFF" stroke="#E2E8F0"/>
+<rect x="1317.3333333333335" y="224" width="52.333333333333336" height="48" rx="5" fill="#FFFFFF" stroke="#E2E8F0"/>
+<rect x="1372.6666666666667" y="224" width="52.333333333333336" height="48" rx="5" fill="#FFFFFF" stroke="#E2E8F0"/>
+<rect x="1428.0" y="224" width="52.333333333333336" height="48" rx="5" fill="#C6F6D5" stroke="#E2E8F0"/>
+<text x="1454.1666666666667" y="256" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">1</text>
+<rect x="1483.3333333333335" y="224" width="52.333333333333336" height="48" rx="5" fill="#C6F6D5" stroke="#E2E8F0"/>
+<text x="1509.5000000000002" y="256" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">1</text>
+<rect x="1538.6666666666667" y="224" width="52.333333333333336" height="48" rx="5" fill="#FFFFFF" stroke="#E2E8F0"/>
+<rect x="1594.0" y="224" width="52.333333333333336" height="48" rx="5" fill="#C6F6D5" stroke="#E2E8F0"/>
+<text x="1620.1666666666667" y="256" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">1</text>
+<rect x="1649.3333333333335" y="224" width="52.333333333333336" height="48" rx="5" fill="#C6F6D5" stroke="#E2E8F0"/>
+<text x="1675.5000000000002" y="256" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">1</text>
+<rect x="1704.6666666666667" y="224" width="52.333333333333336" height="48" rx="5" fill="#FFFFFF" stroke="#E2E8F0"/>
+<text x="798" y="310" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#2F855A" font-weight="700" text-anchor="start" opacity="1.0">arm_neon</text>
+<rect x="930.0" y="278" width="52.333333333333336" height="48" rx="5" fill="#9AE6B4" stroke="#E2E8F0"/>
+<text x="956.1666666666666" y="310" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">2</text>
+<rect x="985.3333333333334" y="278" width="52.333333333333336" height="48" rx="5" fill="#FFFFFF" stroke="#E2E8F0"/>
+<rect x="1040.6666666666667" y="278" width="52.333333333333336" height="48" rx="5" fill="#9AE6B4" stroke="#E2E8F0"/>
+<text x="1066.8333333333335" y="310" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">2</text>
+<rect x="1096.0" y="278" width="52.333333333333336" height="48" rx="5" fill="#C6F6D5" stroke="#E2E8F0"/>
+<text x="1122.1666666666667" y="310" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">1</text>
+<rect x="1151.3333333333333" y="278" width="52.333333333333336" height="48" rx="5" fill="#68D391" stroke="#E2E8F0"/>
+<text x="1177.5" y="310" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1C4532" font-weight="700" text-anchor="middle" opacity="1.0">3</text>
+<rect x="1206.6666666666667" y="278" width="52.333333333333336" height="48" rx="5" fill="#9AE6B4" stroke="#E2E8F0"/>
+<text x="1232.8333333333335" y="310" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">2</text>
+<rect x="1262.0" y="278" width="52.333333333333336" height="48" rx="5" fill="#9AE6B4" stroke="#E2E8F0"/>
+<text x="1288.1666666666667" y="310" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">2</text>
+<rect x="1317.3333333333335" y="278" width="52.333333333333336" height="48" rx="5" fill="#FFFFFF" stroke="#E2E8F0"/>
+<rect x="1372.6666666666667" y="278" width="52.333333333333336" height="48" rx="5" fill="#C6F6D5" stroke="#E2E8F0"/>
+<text x="1398.8333333333335" y="310" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">1</text>
+<rect x="1428.0" y="278" width="52.333333333333336" height="48" rx="5" fill="#C6F6D5" stroke="#E2E8F0"/>
+<text x="1454.1666666666667" y="310" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">1</text>
+<rect x="1483.3333333333335" y="278" width="52.333333333333336" height="48" rx="5" fill="#C6F6D5" stroke="#E2E8F0"/>
+<text x="1509.5000000000002" y="310" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">1</text>
+<rect x="1538.6666666666667" y="278" width="52.333333333333336" height="48" rx="5" fill="#C6F6D5" stroke="#E2E8F0"/>
+<text x="1564.8333333333335" y="310" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">1</text>
+<rect x="1594.0" y="278" width="52.333333333333336" height="48" rx="5" fill="#FFFFFF" stroke="#E2E8F0"/>
+<rect x="1649.3333333333335" y="278" width="52.333333333333336" height="48" rx="5" fill="#FFFFFF" stroke="#E2E8F0"/>
+<rect x="1704.6666666666667" y="278" width="52.333333333333336" height="48" rx="5" fill="#C6F6D5" stroke="#E2E8F0"/>
+<text x="1730.8333333333335" y="310" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">1</text>
+<text x="798" y="364" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#2F855A" font-weight="700" text-anchor="start" opacity="1.0">arm_sve</text>
+<rect x="930.0" y="332" width="52.333333333333336" height="48" rx="5" fill="#FFFFFF" stroke="#E2E8F0"/>
+<rect x="985.3333333333334" y="332" width="52.333333333333336" height="48" rx="5" fill="#FFFFFF" stroke="#E2E8F0"/>
+<rect x="1040.6666666666667" y="332" width="52.333333333333336" height="48" rx="5" fill="#FFFFFF" stroke="#E2E8F0"/>
+<rect x="1096.0" y="332" width="52.333333333333336" height="48" rx="5" fill="#C6F6D5" stroke="#E2E8F0"/>
+<text x="1122.1666666666667" y="364" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">1</text>
+<rect x="1151.3333333333333" y="332" width="52.333333333333336" height="48" rx="5" fill="#C6F6D5" stroke="#E2E8F0"/>
+<text x="1177.5" y="364" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">1</text>
+<rect x="1206.6666666666667" y="332" width="52.333333333333336" height="48" rx="5" fill="#68D391" stroke="#E2E8F0"/>
+<text x="1232.8333333333335" y="364" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1C4532" font-weight="700" text-anchor="middle" opacity="1.0">3</text>
+<rect x="1262.0" y="332" width="52.333333333333336" height="48" rx="5" fill="#FFFFFF" stroke="#E2E8F0"/>
+<rect x="1317.3333333333335" y="332" width="52.333333333333336" height="48" rx="5" fill="#FFFFFF" stroke="#E2E8F0"/>
+<rect x="1372.6666666666667" y="332" width="52.333333333333336" height="48" rx="5" fill="#FFFFFF" stroke="#E2E8F0"/>
+<rect x="1428.0" y="332" width="52.333333333333336" height="48" rx="5" fill="#FFFFFF" stroke="#E2E8F0"/>
+<rect x="1483.3333333333335" y="332" width="52.333333333333336" height="48" rx="5" fill="#FFFFFF" stroke="#E2E8F0"/>
+<rect x="1538.6666666666667" y="332" width="52.333333333333336" height="48" rx="5" fill="#FFFFFF" stroke="#E2E8F0"/>
+<rect x="1594.0" y="332" width="52.333333333333336" height="48" rx="5" fill="#C6F6D5" stroke="#E2E8F0"/>
+<text x="1620.1666666666667" y="364" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">1</text>
+<rect x="1649.3333333333335" y="332" width="52.333333333333336" height="48" rx="5" fill="#FFFFFF" stroke="#E2E8F0"/>
+<rect x="1704.6666666666667" y="332" width="52.333333333333336" height="48" rx="5" fill="#C6F6D5" stroke="#E2E8F0"/>
+<text x="1730.8333333333335" y="364" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">1</text>
+<text x="798" y="418" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#2F855A" font-weight="700" text-anchor="start" opacity="1.0">rvv</text>
+<rect x="930.0" y="386" width="52.333333333333336" height="48" rx="5" fill="#C6F6D5" stroke="#E2E8F0"/>
+<text x="956.1666666666666" y="418" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">1</text>
+<rect x="985.3333333333334" y="386" width="52.333333333333336" height="48" rx="5" fill="#C6F6D5" stroke="#E2E8F0"/>
+<text x="1011.5" y="418" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">1</text>
+<rect x="1040.6666666666667" y="386" width="52.333333333333336" height="48" rx="5" fill="#C6F6D5" stroke="#E2E8F0"/>
+<text x="1066.8333333333335" y="418" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">1</text>
+<rect x="1096.0" y="386" width="52.333333333333336" height="48" rx="5" fill="#C6F6D5" stroke="#E2E8F0"/>
+<text x="1122.1666666666667" y="418" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">1</text>
+<rect x="1151.3333333333333" y="386" width="52.333333333333336" height="48" rx="5" fill="#C6F6D5" stroke="#E2E8F0"/>
+<text x="1177.5" y="418" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">1</text>
+<rect x="1206.6666666666667" y="386" width="52.333333333333336" height="48" rx="5" fill="#C6F6D5" stroke="#E2E8F0"/>
+<text x="1232.8333333333335" y="418" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">1</text>
+<rect x="1262.0" y="386" width="52.333333333333336" height="48" rx="5" fill="#C6F6D5" stroke="#E2E8F0"/>
+<text x="1288.1666666666667" y="418" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">1</text>
+<rect x="1317.3333333333335" y="386" width="52.333333333333336" height="48" rx="5" fill="#C6F6D5" stroke="#E2E8F0"/>
+<text x="1343.5000000000002" y="418" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">1</text>
+<rect x="1372.6666666666667" y="386" width="52.333333333333336" height="48" rx="5" fill="#C6F6D5" stroke="#E2E8F0"/>
+<text x="1398.8333333333335" y="418" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">1</text>
+<rect x="1428.0" y="386" width="52.333333333333336" height="48" rx="5" fill="#C6F6D5" stroke="#E2E8F0"/>
+<text x="1454.1666666666667" y="418" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">1</text>
+<rect x="1483.3333333333335" y="386" width="52.333333333333336" height="48" rx="5" fill="#C6F6D5" stroke="#E2E8F0"/>
+<text x="1509.5000000000002" y="418" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">1</text>
+<rect x="1538.6666666666667" y="386" width="52.333333333333336" height="48" rx="5" fill="#C6F6D5" stroke="#E2E8F0"/>
+<text x="1564.8333333333335" y="418" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">1</text>
+<rect x="1594.0" y="386" width="52.333333333333336" height="48" rx="5" fill="#C6F6D5" stroke="#E2E8F0"/>
+<text x="1620.1666666666667" y="418" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">1</text>
+<rect x="1649.3333333333335" y="386" width="52.333333333333336" height="48" rx="5" fill="#FFFFFF" stroke="#E2E8F0"/>
+<rect x="1704.6666666666667" y="386" width="52.333333333333336" height="48" rx="5" fill="#C6F6D5" stroke="#E2E8F0"/>
+<text x="1730.8333333333335" y="418" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#1A202C" font-weight="700" text-anchor="middle" opacity="1.0">1</text>
+<text x="790" y="464" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">13/14 个算子有 ≥2 个架构实现（仅 hemv 只有 RVV）；30 条跨架构共有策略（同族不同参数）</text>
+<text x="790" y="510" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="17" fill="#C05621" font-weight="700" text-anchor="start" opacity="1.0">C. 一个算子目录长什么样（以 daxpy 为例）</text>
+<rect x="790" y="526" width="640" height="230" rx="12" fill="#FFFAF0" stroke="#C05621" stroke-width="2"/>
+<text x="806" y="556" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="15" fill="#C05621" font-weight="700" text-anchor="start" opacity="1.0">13_daxpy_op/</text>
+<text x="806" y="582" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">daxpy.c          接口层（参数检查 / 分支）</text>
+<text x="806" y="603" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">daxpy_k.c        通用 C 内核（未优化，输入）</text>
+<text x="806" y="624" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">daxpy_k_rvv.c    RVV 内核（优化实现，知识来源）</text>
+<text x="806" y="645" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">zzz_*.i / *.c    预处理/模板文件（可追溯行号）</text>
+<text x="806" y="666" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">daxpy_log.txt    基准日志（QEMU：仅正确性）</text>
+<rect x="790" y="770" width="640" height="150" rx="12" fill="#EBF4FF" stroke="#2B6CB0" stroke-width="2"/>
+<text x="806" y="800" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="15" fill="#2B6CB0" font-weight="700" text-anchor="start" opacity="1.0">D. 输入到 KG 时记录什么</text>
+<text x="806" y="826" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">每个实现：arch / isa / uarch / source_lang（C/汇编）</text>
+<text x="806" y="847" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">每个文件：路径 + sha256 + 行号 + 版本（OpenBLAS 0.3.27）</text>
+<text x="806" y="868" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">每条策略：arch_scope + arch_evidence + 参数 + 证据状态</text>
+<rect x="40" y="545" width="700" height="260" rx="12" fill="#EBF4FF" stroke="#2B6CB0" stroke-width="2"/>
+<text x="56" y="575" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="16" fill="#2B6CB0" font-weight="700" text-anchor="start" opacity="1.0">E. 为什么输入要这样设计（非 HPC 背景也能懂）</text>
+<text x="56" y="601" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">① 算子按 L1/L2/L3 选：L1 看向量化，L2 看访存，L3 看分块，覆盖三类优化。</text>
+<text x="56" y="622" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">② 同一算子要有“通用版 vs 优化版”：两者的差异就是专家做了哪些优化决策。</text>
+<text x="56" y="643" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">③ 多架构：同一策略在 x86/ARM/RVV 上的实现与参数不同，才能回答“能否迁移”。</text>
+<text x="56" y="664" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">④ 证据只认日志/实测：LLM 写的“提升 20%”不算证据，必须能回指到文件与行号。</text>
+<text x="56" y="685" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">⑤ 留出 S2 算子：测试集不参与建图，才能证明“跨算子泛化”不是背答案。</text>
+</svg>

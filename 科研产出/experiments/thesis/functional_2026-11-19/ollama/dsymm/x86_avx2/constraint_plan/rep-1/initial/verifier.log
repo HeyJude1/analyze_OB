@@ -1,0 +1,6 @@
+dsymm x86 candidate: compile_error 
+
+..\experiments\thesis\functional_2026-11-19\ollama\dsymm\x86_avx2\constraint_plan\rep-1\initial\candidate.c: In function 'op_dsymm':
+..\experiments\thesis\functional_2026-11-19\ollama\dsymm\x86_avx2\constraint_plan\rep-1\initial\candidate.c:18:36: error: variable-sized object may not be initialized except with an empty initializer
+   18 |             double sum[K_UNROLL] = {0.0};
+      |                                    ^

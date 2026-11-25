@@ -1,0 +1,2 @@
+op=ddot mode=b4 seed=3 n=1024
+status=ok compile_ok=True correct=True maxdiff=5.684e-13 reldiff=1.117e-15

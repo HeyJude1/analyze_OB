@@ -1,0 +1,1159 @@
+{
+  "trace_id": "trace:20261112T213833:axpy:k1_rvv256",
+  "query": {
+    "operator": "axpy",
+    "raw_operator": "daxpy",
+    "hardware_profile_id": "k1_rvv256",
+    "hardware_profile_node": "hw:k1_rvv256",
+    "code_features": {
+      "dtype": "d",
+      "precision": "double",
+      "stride_x": 1,
+      "stride_y": 1,
+      "loop_depth": 1,
+      "size_regime": "large",
+      "aligned": true,
+      "tail_divisible": false,
+      "structural": "none",
+      "reduction": false
+    },
+    "top_k": 6
+  },
+  "steps": [
+    {
+      "step": 1,
+      "name": "pattern_match",
+      "description": "算子计算流程匹配",
+      "input": {
+        "operator": "op:axpy",
+        "operator_name": "axpy"
+      },
+      "candidates": [
+        "pat:axpy:core.elementwise_update",
+        "pat:axpy:post.tail_case",
+        "pat:axpy:prep.index_pointer_init",
+        "pat:axpy:prep.loop_invariant_calc",
+        "pat:axpy:prep.parameter_validation"
+      ],
+      "selected": [
+        "pat:axpy:core.elementwise_update",
+        "pat:axpy:post.tail_case",
+        "pat:axpy:prep.index_pointer_init",
+        "pat:axpy:prep.loop_invariant_calc",
+        "pat:axpy:prep.parameter_validation"
+      ],
+      "dropped": [],
+      "reason": "算子注册表命中：axpy 注册了 5 个计算流程"
+    },
+    {
+      "step": 2,
+      "name": "strategy_recall",
+      "description": "沿 PATTERN_OPTIMIZED_BY 召回策略 + GENERALIZES 抽象扩展",
+      "input": {
+        "patterns": [
+          "pat:axpy:core.elementwise_update",
+          "pat:axpy:post.tail_case",
+          "pat:axpy:prep.index_pointer_init",
+          "pat:axpy:prep.loop_invariant_calc",
+          "pat:axpy:prep.parameter_validation"
+        ],
+        "channels": [
+          "pattern",
+          "generalizes"
+        ]
+      },
+      "candidates": [
+        "stg:abstract:k_unroll",
+        "stg:abstract:pointer_precompute",
+        "stg:abstract:register_blocking",
+        "stg:abstract:stride_dispatch",
+        "stg:abstract:tail_handling",
+        "stg:abstract:vector_fma",
+        "stg:axpy:fuse_instruction_a",
+        "stg:axpy:prefetch_arm_neon",
+        "stg:axpy:reorder_algorithm_a",
+        "stg:axpy:reorder_algorithm_a_2",
+        "stg:axpy:reorder_code_a",
+        "stg:axpy:reorder_code_a_2",
+        "stg:axpy:specialize_algorithm_a",
+        "stg:axpy:specialize_d",
+        "stg:axpy:specialize_instruction_a",
+        "stg:axpy:specialize_instruction_a_2",
+        "stg:axpy:specialize_s",
+        "stg:axpy:split_instruction_a",
+        "stg:axpy:tail_handle_code_a",
+        "stg:axpy:tail_handle_d",
+        "stg:axpy:tile_algorithm_a",
+        "stg:axpy:tile_arm_neon",
+        "stg:axpy:tile_x",
+        "stg:axpy:tile_x86_avx2",
+        "stg:axpy:unroll_algorithm_a",
+        "stg:axpy:unroll_arm_neon",
+        "stg:axpy:unroll_code_a",
+        "stg:axpy:unroll_instruction_a",
+        "stg:axpy:vectorize_arm_neon",
+        "stg:axpy:vectorize_d",
+        "stg:axpy:vectorize_instruction_a",
+        "stg:axpy:vectorize_x",
+        "stg:axpy:vectorize_x86_avx2",
+        "stg:axpy:vectorize_x86_avx512"
+      ],
+      "selected": [
+        "stg:abstract:k_unroll",
+        "stg:abstract:pointer_precompute",
+        "stg:abstract:register_blocking",
+        "stg:abstract:stride_dispatch",
+        "stg:abstract:tail_handling",
+        "stg:abstract:vector_fma",
+        "stg:axpy:fuse_instruction_a",
+        "stg:axpy:prefetch_arm_neon",
+        "stg:axpy:reorder_algorithm_a",
+        "stg:axpy:reorder_algorithm_a_2",
+        "stg:axpy:reorder_code_a",
+        "stg:axpy:reorder_code_a_2",
+        "stg:axpy:specialize_algorithm_a",
+        "stg:axpy:specialize_d",
+        "stg:axpy:specialize_instruction_a",
+        "stg:axpy:specialize_instruction_a_2",
+        "stg:axpy:specialize_s",
+        "stg:axpy:split_instruction_a",
+        "stg:axpy:tail_handle_code_a",
+        "stg:axpy:tail_handle_d",
+        "stg:axpy:tile_algorithm_a",
+        "stg:axpy:tile_arm_neon",
+        "stg:axpy:tile_x",
+        "stg:axpy:tile_x86_avx2",
+        "stg:axpy:unroll_algorithm_a",
+        "stg:axpy:unroll_arm_neon",
+        "stg:axpy:unroll_code_a",
+        "stg:axpy:unroll_instruction_a",
+        "stg:axpy:vectorize_arm_neon",
+        "stg:axpy:vectorize_d",
+        "stg:axpy:vectorize_instruction_a",
+        "stg:axpy:vectorize_x",
+        "stg:axpy:vectorize_x86_avx2",
+        "stg:axpy:vectorize_x86_avx512"
+      ],
+      "dropped": [],
+      "reason": "沿 5 个计算流程召回 28 条策略，GENERALIZES 扩展 8 条抽象策略"
+    },
+    {
+      "step": 3,
+      "name": "condition_filter",
+      "description": "硬条件过滤：策略 conditions 对查询 code_features 求值",
+      "input": {
+        "code_features": {
+          "dtype": "d",
+          "precision": "double",
+          "stride_x": 1,
+          "stride_y": 1,
+          "loop_depth": 1,
+          "size_regime": "large",
+          "aligned": true,
+          "tail_divisible": false,
+          "structural": "none",
+          "reduction": false
+        }
+      },
+      "candidates": [
+        "stg:abstract:k_unroll",
+        "stg:abstract:pointer_precompute",
+        "stg:abstract:register_blocking",
+        "stg:abstract:stride_dispatch",
+        "stg:abstract:tail_handling",
+        "stg:abstract:vector_fma",
+        "stg:axpy:fuse_instruction_a",
+        "stg:axpy:prefetch_arm_neon",
+        "stg:axpy:reorder_algorithm_a",
+        "stg:axpy:reorder_algorithm_a_2",
+        "stg:axpy:reorder_code_a",
+        "stg:axpy:reorder_code_a_2",
+        "stg:axpy:specialize_algorithm_a",
+        "stg:axpy:specialize_d",
+        "stg:axpy:specialize_instruction_a",
+        "stg:axpy:specialize_instruction_a_2",
+        "stg:axpy:specialize_s",
+        "stg:axpy:split_instruction_a",
+        "stg:axpy:tail_handle_code_a",
+        "stg:axpy:tail_handle_d",
+        "stg:axpy:tile_algorithm_a",
+        "stg:axpy:tile_arm_neon",
+        "stg:axpy:tile_x",
+        "stg:axpy:tile_x86_avx2",
+        "stg:axpy:unroll_algorithm_a",
+        "stg:axpy:unroll_arm_neon",
+        "stg:axpy:unroll_code_a",
+        "stg:axpy:unroll_instruction_a",
+        "stg:axpy:vectorize_arm_neon",
+        "stg:axpy:vectorize_d",
+        "stg:axpy:vectorize_instruction_a",
+        "stg:axpy:vectorize_x",
+        "stg:axpy:vectorize_x86_avx2",
+        "stg:axpy:vectorize_x86_avx512"
+      ],
+      "selected": [
+        "stg:axpy:prefetch_arm_neon",
+        "stg:axpy:specialize_d",
+        "stg:axpy:specialize_s",
+        "stg:axpy:tail_handle_d",
+        "stg:axpy:tile_arm_neon",
+        "stg:axpy:tile_x86_avx2",
+        "stg:axpy:unroll_arm_neon",
+        "stg:axpy:vectorize_arm_neon",
+        "stg:axpy:vectorize_d",
+        "stg:axpy:vectorize_x86_avx2",
+        "stg:axpy:vectorize_x86_avx512"
+      ],
+      "dropped": [
+        {
+          "id": "stg:abstract:k_unroll",
+          "reason": "loop_depth=1 不满足 loop_depth ge 2"
+        },
+        {
+          "id": "stg:abstract:pointer_precompute",
+          "reason": "loop_depth=1 不满足 loop_depth ge 2"
+        },
+        {
+          "id": "stg:abstract:register_blocking",
+          "reason": "loop_depth=1 不满足 loop_depth ge 2"
+        },
+        {
+          "id": "stg:abstract:stride_dispatch",
+          "reason": "loop_depth=1 不满足 loop_depth ge 2"
+        },
+        {
+          "id": "stg:abstract:tail_handling",
+          "reason": "loop_depth=1 不满足 loop_depth ge 2"
+        },
+        {
+          "id": "stg:abstract:vector_fma",
+          "reason": "loop_depth=1 不满足 loop_depth ge 2"
+        },
+        {
+          "id": "stg:axpy:fuse_instruction_a",
+          "reason": "dtype=d 不满足 dtype in ['z']；loop_depth=1 不满足 loop_depth ge 2"
+        },
+        {
+          "id": "stg:axpy:reorder_algorithm_a",
+          "reason": "dtype=d 不满足 dtype in ['c']；loop_depth=1 不满足 loop_depth ge 2；precision=double 不满足 precision eq 'single'"
+        },
+        {
+          "id": "stg:axpy:reorder_algorithm_a_2",
+          "reason": "dtype=d 不满足 dtype in ['c']；loop_depth=1 不满足 loop_depth ge 2；precision=double 不满足 precision eq 'single'"
+        },
+        {
+          "id": "stg:axpy:reorder_code_a",
+          "reason": "dtype=d 不满足 dtype in ['c']；loop_depth=1 不满足 loop_depth ge 2；precision=double 不满足 precision eq 'single'"
+        },
+        {
+          "id": "stg:axpy:reorder_code_a_2",
+          "reason": "dtype=d 不满足 dtype in ['c']；loop_depth=1 不满足 loop_depth ge 2；precision=double 不满足 precision eq 'single'"
+        },
+        {
+          "id": "stg:axpy:specialize_algorithm_a",
+          "reason": "dtype=d 不满足 dtype in ['c']；loop_depth=1 不满足 loop_depth ge 2；precision=double 不满足 precision eq 'single'"
+        },
+        {
+          "id": "stg:axpy:specialize_instruction_a",
+          "reason": "dtype=d 不满足 dtype in ['c']；loop_depth=1 不满足 loop_depth ge 2；precision=double 不满足 precision eq 'single'"
+        },
+        {
+          "id": "stg:axpy:specialize_instruction_a_2",
+          "reason": "dtype=d 不满足 dtype in ['c']；loop_depth=1 不满足 loop_depth ge 2；precision=double 不满足 precision eq 'single'"
+        },
+        {
+          "id": "stg:axpy:split_instruction_a",
+          "reason": "loop_depth=1 不满足 loop_depth ge 2"
+        },
+        {
+          "id": "stg:axpy:tail_handle_code_a",
+          "reason": "dtype=d 不满足 dtype in ['c']；loop_depth=1 不满足 loop_depth ge 2；precision=double 不满足 precision eq 'single'"
+        },
+        {
+          "id": "stg:axpy:tile_algorithm_a",
+          "reason": "dtype=d 不满足 dtype in ['c']；loop_depth=1 不满足 loop_depth ge 2；precision=double 不满足 precision eq 'single'"
+        },
+        {
+          "id": "stg:axpy:tile_x",
+          "reason": "loop_depth=1 不满足 loop_depth ge 2"
+        },
+        {
+          "id": "stg:axpy:unroll_algorithm_a",
+          "reason": "dtype=d 不满足 dtype in ['c']；loop_depth=1 不满足 loop_depth ge 2；precision=double 不满足 precision eq 'single'"
+        },
+        {
+          "id": "stg:axpy:unroll_code_a",
+          "reason": "dtype=d 不满足 dtype in ['c']；loop_depth=1 不满足 loop_depth ge 2；precision=double 不满足 precision eq 'single'"
+        },
+        {
+          "id": "stg:axpy:unroll_instruction_a",
+          "reason": "dtype=d 不满足 dtype in ['c']；loop_depth=1 不满足 loop_depth ge 2；precision=double 不满足 precision eq 'single'"
+        },
+        {
+          "id": "stg:axpy:vectorize_instruction_a",
+          "reason": "dtype=d 不满足 dtype in ['c']；loop_depth=1 不满足 loop_depth ge 2；precision=double 不满足 precision eq 'single'"
+        },
+        {
+          "id": "stg:axpy:vectorize_x",
+          "reason": "loop_depth=1 不满足 loop_depth ge 2"
+        }
+      ],
+      "reason": "谓词求值：11 条通过、23 条硬条件淘汰"
+    },
+    {
+      "step": 4,
+      "name": "hardware_filter",
+      "description": "ISA/硬件 profile 能力过滤（profile 绑定 + hard ISA 要求）",
+      "input": {
+        "profile": "hw:k1_rvv256",
+        "profile_isa": [
+          "RVV 1.0",
+          "Zba",
+          "Zbb",
+          "Zbc",
+          "Zbs"
+        ],
+        "vector_regs": null
+      },
+      "candidates": [
+        "stg:axpy:prefetch_arm_neon",
+        "stg:axpy:specialize_d",
+        "stg:axpy:specialize_s",
+        "stg:axpy:tail_handle_d",
+        "stg:axpy:tile_arm_neon",
+        "stg:axpy:tile_x86_avx2",
+        "stg:axpy:unroll_arm_neon",
+        "stg:axpy:vectorize_arm_neon",
+        "stg:axpy:vectorize_d",
+        "stg:axpy:vectorize_x86_avx2",
+        "stg:axpy:vectorize_x86_avx512"
+      ],
+      "selected": [
+        "stg:axpy:specialize_d",
+        "stg:axpy:specialize_s",
+        "stg:axpy:tail_handle_d",
+        "stg:axpy:vectorize_d"
+      ],
+      "dropped": [
+        {
+          "id": "stg:axpy:prefetch_arm_neon",
+          "reason": "hardware_profile_ids=['arm_neon'] 不含 k1_rvv256"
+        },
+        {
+          "id": "stg:axpy:tile_arm_neon",
+          "reason": "hardware_profile_ids=['arm_neon'] 不含 k1_rvv256"
+        },
+        {
+          "id": "stg:axpy:tile_x86_avx2",
+          "reason": "hardware_profile_ids=['x86_avx2'] 不含 k1_rvv256"
+        },
+        {
+          "id": "stg:axpy:unroll_arm_neon",
+          "reason": "hardware_profile_ids=['arm_neon'] 不含 k1_rvv256"
+        },
+        {
+          "id": "stg:axpy:vectorize_arm_neon",
+          "reason": "hardware_profile_ids=['arm_neon'] 不含 k1_rvv256"
+        },
+        {
+          "id": "stg:axpy:vectorize_x86_avx2",
+          "reason": "hardware_profile_ids=['x86_avx2'] 不含 k1_rvv256"
+        },
+        {
+          "id": "stg:axpy:vectorize_x86_avx512",
+          "reason": "hardware_profile_ids=['x86_avx512'] 不含 k1_rvv256"
+        }
+      ],
+      "reason": "4 条满足 k1_rvv256 的硬件约束，7 条被淘汰"
+    },
+    {
+      "step": 5,
+      "name": "conflict_resolve",
+      "description": "同族去重 + 冲突边消解 + 寄存器预算（参数由硬件推导）",
+      "input": {
+        "register_budget_cap": 25.6,
+        "vector_regs": 32.0,
+        "uarch": "uarch:k1_rvv256"
+      },
+      "candidates": [
+        "stg:axpy:specialize_d",
+        "stg:axpy:specialize_s",
+        "stg:axpy:tail_handle_d",
+        "stg:axpy:vectorize_d"
+      ],
+      "selected": [
+        "stg:axpy:specialize_d",
+        "stg:axpy:tail_handle_d",
+        "stg:axpy:vectorize_d",
+        "stg:axpy:specialize_s"
+      ],
+      "dropped": [],
+      "reason": "4 条通过冲突消解（占用寄存器预算 0 / 26）",
+      "register_budget_used": 0.0
+    },
+    {
+      "step": 6,
+      "name": "score_and_select",
+      "description": "六项加权打分（match_p/fit_c/hw/ev/sup - transfer penalty）并取 top_k",
+      "input": {
+        "top_k": 6,
+        "weights": {
+          "match_p": 0.35,
+          "fit_c": 0.2,
+          "hw": 0.15,
+          "ev": 0.2,
+          "sup": 0.1,
+          "tr_penalty": 0.15
+        }
+      },
+      "candidates": [
+        "stg:axpy:specialize_d",
+        "stg:axpy:tail_handle_d",
+        "stg:axpy:vectorize_d",
+        "stg:axpy:specialize_s"
+      ],
+      "selected": [
+        "stg:axpy:specialize_d",
+        "stg:axpy:tail_handle_d",
+        "stg:axpy:vectorize_d",
+        "stg:axpy:specialize_s"
+      ],
+      "dropped": [],
+      "reason": "按总分降序取 top 4",
+      "scores": {
+        "stg:axpy:specialize_d": 0.7473,
+        "stg:axpy:tail_handle_d": 0.7473,
+        "stg:axpy:vectorize_d": 0.7473,
+        "stg:axpy:specialize_s": 0.7023
+      },
+      "score_breakdown": {
+        "stg:axpy:specialize_d": {
+          "match_p": 1.0,
+          "fit_c": 1.0,
+          "hw": 1.0,
+          "ev": 0.3616,
+          "sup": 0.2,
+          "tr_penalty": 0.3,
+          "total": 0.7473
+        },
+        "stg:axpy:tail_handle_d": {
+          "match_p": 1.0,
+          "fit_c": 1.0,
+          "hw": 1.0,
+          "ev": 0.3616,
+          "sup": 0.2,
+          "tr_penalty": 0.3,
+          "total": 0.7473
+        },
+        "stg:axpy:vectorize_d": {
+          "match_p": 1.0,
+          "fit_c": 1.0,
+          "hw": 1.0,
+          "ev": 0.3616,
+          "sup": 0.2,
+          "tr_penalty": 0.3,
+          "total": 0.7473
+        },
+        "stg:axpy:specialize_s": {
+          "match_p": 1.0,
+          "fit_c": 1.0,
+          "hw": 0.7,
+          "ev": 0.3616,
+          "sup": 0.2,
+          "tr_penalty": 0.3,
+          "total": 0.7023
+        }
+      }
+    },
+    {
+      "step": 7,
+      "name": "pack",
+      "description": "生成 StrategyPack（策略 + 模板 + 参数 + 证据 + 溯源），供生成端注入 prompt",
+      "input": {
+        "selected": [
+          "stg:axpy:specialize_d",
+          "stg:axpy:tail_handle_d",
+          "stg:axpy:vectorize_d",
+          "stg:axpy:specialize_s"
+        ]
+      },
+      "candidates": [
+        "stg:axpy:specialize_d",
+        "stg:axpy:tail_handle_d",
+        "stg:axpy:vectorize_d",
+        "stg:axpy:specialize_s"
+      ],
+      "selected": [
+        "stg:axpy:specialize_d",
+        "stg:axpy:tail_handle_d",
+        "stg:axpy:vectorize_d",
+        "stg:axpy:specialize_s"
+      ],
+      "dropped": [],
+      "reason": "打包 4 条策略 / 4 个模板",
+      "result": {
+        "strategies": [
+          "stg:axpy:specialize_d",
+          "stg:axpy:tail_handle_d",
+          "stg:axpy:vectorize_d",
+          "stg:axpy:specialize_s"
+        ],
+        "templates": [
+          "tpl:axpy:specialize_d",
+          "tpl:axpy:tail_handle_d",
+          "tpl:axpy:vectorize_d",
+          "tpl:axpy:specialize_s"
+        ]
+      }
+    }
+  ],
+  "result": {
+    "strategies": [
+      "stg:axpy:specialize_d",
+      "stg:axpy:tail_handle_d",
+      "stg:axpy:vectorize_d",
+      "stg:axpy:specialize_s"
+    ],
+    "pack": {
+      "schema_version": "pack-v1",
+      "query": {
+        "operator": "axpy",
+        "dtype": "d",
+        "hardware": "hw:k1_rvv256",
+        "patterns": [
+          "pat:axpy:core.elementwise_update",
+          "pat:axpy:post.tail_case",
+          "pat:axpy:prep.index_pointer_init",
+          "pat:axpy:prep.loop_invariant_calc",
+          "pat:axpy:prep.parameter_validation"
+        ],
+        "code_features": {
+          "dtype": "d",
+          "precision": "double",
+          "stride_x": 1,
+          "stride_y": 1,
+          "loop_depth": 1,
+          "size_regime": "large",
+          "aligned": true,
+          "tail_divisible": false,
+          "structural": "none",
+          "reduction": false
+        },
+        "top_k": 6
+      },
+      "strategies": [
+        {
+          "id": "stg:axpy:specialize_d",
+          "name": "LMUL/SEW 向量寄存器分组调优",
+          "family": "SIMD向量指令",
+          "action": "specialize",
+          "level": "instruction",
+          "stage": "core",
+          "arch_scope": "arch_specific",
+          "arch": "rvv",
+          "arches": [
+            "rvv"
+          ],
+          "arch_parameters": {
+            "rvv": {
+              "lmul": 8,
+              "sew": 64
+            }
+          },
+          "score": 0.7473,
+          "score_breakdown": {
+            "match_p": 1.0,
+            "fit_c": 1.0,
+            "hw": 1.0,
+            "ev": 0.3616,
+            "sup": 0.2,
+            "tr_penalty": 0.3,
+            "total": 0.7473
+          },
+          "why_selected": {
+            "patterns": [
+              "pat:axpy:core.elementwise_update"
+            ],
+            "conditions_satisfied": [
+              "dtype",
+              "loop_depth",
+              "size_regime"
+            ],
+            "hardware": "k1_rvv256",
+            "source": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/daxpy_k_rvv.c"
+          },
+          "conditions": [
+            {
+              "hard": true,
+              "op": "in",
+              "pred": "dtype",
+              "value": [
+                "d"
+              ]
+            },
+            {
+              "hard": true,
+              "op": "ge",
+              "pred": "loop_depth",
+              "value": 1
+            },
+            {
+              "hard": true,
+              "op": "in",
+              "pred": "size_regime",
+              "value": [
+                "medium",
+                "large"
+              ]
+            }
+          ],
+          "template": {
+            "id": "tpl:axpy:specialize_d",
+            "language": "c",
+            "skeleton": "if (inc_x == 1 && inc_y == 1) {\n    /* 单位步长快速路径：vle{{SEW}}/vse{{SEW}} */\n} else if (inc_y == 1) {\n    /* 跨步 x：vlse{{SEW}} + 连续 y */\n} else {\n    /* 通用 strided 路径 */\n}",
+            "slots": [
+              {
+                "default": 64,
+                "name": "SEW",
+                "source": "par:sew",
+                "type": "int"
+              },
+              {
+                "default": 8,
+                "name": "LMUL",
+                "source": "par:lmul",
+                "type": "int"
+              }
+            ],
+            "check_hints": [
+              "把最常用路径（stride=1）放在分支最前",
+              "多版本代码用宏展开，避免源码重复"
+            ]
+          },
+          "parameters": [
+            {
+              "id": "par:lmul",
+              "derived_from": "num_vector_regs / 同时活跃向量数",
+              "effect_direction": "LMUL 越大单指令吞吐越高、可用寄存器组越少",
+              "kind": "lmul",
+              "name": "lmul",
+              "range": [
+                1,
+                2,
+                4,
+                8
+              ],
+              "unit": "regs",
+              "used_by_strategies": 38,
+              "value_in_source": 8,
+              "value_in_instance": 8
+            },
+            {
+              "id": "par:sew",
+              "derived_from": "dtype",
+              "effect_direction": "由数据类型决定（double 固定 64）",
+              "kind": "sew",
+              "name": "sew",
+              "range": [
+                32,
+                64
+              ],
+              "unit": "bits",
+              "used_by_strategies": 38,
+              "value_in_source": 64,
+              "value_in_instance": 64
+            }
+          ],
+          "evidence": [
+            {
+              "id": "ev:axpy:geomean",
+              "metric": "speedup",
+              "value": 1.2134,
+              "platform_id": "hw:qemu-riscv64-vlen256",
+              "role": "supports",
+              "scope": "operator",
+              "caveat": "QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据"
+            },
+            {
+              "id": "ev:axpy:pass_rate",
+              "metric": "pass_rate",
+              "value": 1.0,
+              "platform_id": "hw:qemu-riscv64-vlen256",
+              "role": "supports",
+              "scope": "operator",
+              "caveat": "QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据"
+            }
+          ],
+          "provenance": {
+            "commit": "OpenBLAS 0.3.27.dev",
+            "extractor_version": "kgagent-v1.5",
+            "line_confidence": "exact",
+            "line_end": 83,
+            "line_start": 10,
+            "origin_file": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/daxpy_k_rvv.c",
+            "source_file": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/daxpy_k_rvv.c"
+          }
+        },
+        {
+          "id": "stg:axpy:tail_handle_d",
+          "name": "动态 vl / 掩码尾部处理",
+          "family": "尾部处理",
+          "action": "tail_handle",
+          "level": "instruction",
+          "stage": "post",
+          "arch_scope": "arch_specific",
+          "arch": "rvv",
+          "arches": [
+            "rvv"
+          ],
+          "arch_parameters": {
+            "rvv": {
+              "lmul": 8,
+              "sew": 64
+            }
+          },
+          "score": 0.7473,
+          "score_breakdown": {
+            "match_p": 1.0,
+            "fit_c": 1.0,
+            "hw": 1.0,
+            "ev": 0.3616,
+            "sup": 0.2,
+            "tr_penalty": 0.3,
+            "total": 0.7473
+          },
+          "why_selected": {
+            "patterns": [
+              "pat:axpy:post.tail_case"
+            ],
+            "conditions_satisfied": [
+              "dtype",
+              "loop_depth",
+              "size_regime",
+              "tail_divisible"
+            ],
+            "hardware": "k1_rvv256",
+            "source": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/daxpy_k_rvv.c"
+          },
+          "conditions": [
+            {
+              "hard": true,
+              "op": "in",
+              "pred": "dtype",
+              "value": [
+                "d"
+              ]
+            },
+            {
+              "hard": true,
+              "op": "ge",
+              "pred": "loop_depth",
+              "value": 1
+            },
+            {
+              "hard": true,
+              "op": "in",
+              "pred": "size_regime",
+              "value": [
+                "medium",
+                "large"
+              ]
+            },
+            {
+              "hard": false,
+              "op": "eq",
+              "pred": "tail_divisible",
+              "value": false
+            }
+          ],
+          "template": {
+            "id": "tpl:axpy:tail_handle_d",
+            "language": "c",
+            "skeleton": "for (BLASLONG i = 0; i < n; i += vl) {\n    size_t vl = __riscv_vsetvl_e{{SEW}}m{{LMUL}}(n - i);   /* 动态 vl 天然处理尾部 */\n    /* 主体：vle / 计算 / vse */\n}",
+            "slots": [
+              {
+                "default": 64,
+                "name": "SEW",
+                "source": "par:sew",
+                "type": "int"
+              },
+              {
+                "default": 8,
+                "name": "LMUL",
+                "source": "par:lmul",
+                "type": "int"
+              }
+            ],
+            "check_hints": [
+              "vl 是剩余长度与 VLMAX 的较小者",
+              "不要假设 n 整除 VLMAX"
+            ]
+          },
+          "parameters": [
+            {
+              "id": "par:lmul",
+              "derived_from": "num_vector_regs / 同时活跃向量数",
+              "effect_direction": "LMUL 越大单指令吞吐越高、可用寄存器组越少",
+              "kind": "lmul",
+              "name": "lmul",
+              "range": [
+                1,
+                2,
+                4,
+                8
+              ],
+              "unit": "regs",
+              "used_by_strategies": 38,
+              "value_in_source": 8,
+              "value_in_instance": 8
+            },
+            {
+              "id": "par:sew",
+              "derived_from": "dtype",
+              "effect_direction": "由数据类型决定（double 固定 64）",
+              "kind": "sew",
+              "name": "sew",
+              "range": [
+                32,
+                64
+              ],
+              "unit": "bits",
+              "used_by_strategies": 38,
+              "value_in_source": 64,
+              "value_in_instance": 64
+            }
+          ],
+          "evidence": [
+            {
+              "id": "ev:axpy:geomean",
+              "metric": "speedup",
+              "value": 1.2134,
+              "platform_id": "hw:qemu-riscv64-vlen256",
+              "role": "supports",
+              "scope": "operator",
+              "caveat": "QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据"
+            },
+            {
+              "id": "ev:axpy:pass_rate",
+              "metric": "pass_rate",
+              "value": 1.0,
+              "platform_id": "hw:qemu-riscv64-vlen256",
+              "role": "supports",
+              "scope": "operator",
+              "caveat": "QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据"
+            }
+          ],
+          "provenance": {
+            "commit": "OpenBLAS 0.3.27.dev",
+            "extractor_version": "kgagent-v1.5",
+            "line_confidence": "exact",
+            "line_end": 83,
+            "line_start": 10,
+            "origin_file": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/daxpy_k_rvv.c",
+            "source_file": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/daxpy_k_rvv.c"
+          }
+        },
+        {
+          "id": "stg:axpy:vectorize_d",
+          "name": "RVV 向量化内核（vsetvl + vle/vfmacc/vse）",
+          "family": "SIMD向量指令",
+          "action": "vectorize",
+          "level": "instruction",
+          "stage": "core",
+          "arch_scope": "arch_specific",
+          "arch": "rvv",
+          "arches": [
+            "rvv"
+          ],
+          "arch_parameters": {
+            "rvv": {
+              "lmul": 8,
+              "sew": 64,
+              "vector_len": 32
+            }
+          },
+          "score": 0.7473,
+          "score_breakdown": {
+            "match_p": 1.0,
+            "fit_c": 1.0,
+            "hw": 1.0,
+            "ev": 0.3616,
+            "sup": 0.2,
+            "tr_penalty": 0.3,
+            "total": 0.7473
+          },
+          "why_selected": {
+            "patterns": [
+              "pat:axpy:core.elementwise_update"
+            ],
+            "conditions_satisfied": [
+              "dtype",
+              "loop_depth",
+              "size_regime",
+              "stride_x",
+              "aligned"
+            ],
+            "hardware": "k1_rvv256",
+            "source": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/daxpy_k_rvv.c"
+          },
+          "conditions": [
+            {
+              "hard": true,
+              "op": "in",
+              "pred": "dtype",
+              "value": [
+                "d"
+              ]
+            },
+            {
+              "hard": true,
+              "op": "ge",
+              "pred": "loop_depth",
+              "value": 1
+            },
+            {
+              "hard": true,
+              "op": "in",
+              "pred": "size_regime",
+              "value": [
+                "medium",
+                "large"
+              ]
+            },
+            {
+              "hard": true,
+              "op": "eq",
+              "pred": "stride_x",
+              "value": 1
+            },
+            {
+              "hard": false,
+              "op": "eq",
+              "pred": "aligned",
+              "value": true
+            }
+          ],
+          "template": {
+            "id": "tpl:axpy:vectorize_d",
+            "language": "c",
+            "skeleton": "for (BLASLONG i = 0; i < n; i += vl) {\n    size_t vl = __riscv_vsetvl_e{{SEW}}m{{LMUL}}(n - i);\n    vfloat{{SEW}}m{{LMUL}}_t vx = __riscv_vle{{SEW}}_v_f{{SEW}}m{{LMUL}}(x + i, vl);\n    vfloat{{SEW}}m{{LMUL}}_t vy = __riscv_vle{{SEW}}_v_f{{SEW}}m{{LMUL}}(y + i, vl);\n    vy = __riscv_vfmacc_vv_f{{SEW}}m{{LMUL}}(vy, vx, {{ALPHA}}, vl);\n    __riscv_vse{{SEW}}_v_f{{SEW}}m{{LMUL}}(y + i, vy, vl);\n}",
+            "slots": [
+              {
+                "default": 64,
+                "name": "SEW",
+                "source": "par:sew",
+                "type": "int"
+              },
+              {
+                "default": 8,
+                "name": "LMUL",
+                "source": "par:lmul",
+                "type": "int"
+              },
+              {
+                "default": "alpha",
+                "name": "ALPHA",
+                "source": "operator.alpha",
+                "type": "expr"
+              }
+            ],
+            "check_hints": [
+              "vsetvl 必须在循环内按剩余长度重新计算",
+              "vl 与 pack 布局一致",
+              "指针别名会阻止向量化"
+            ]
+          },
+          "parameters": [
+            {
+              "id": "par:lmul",
+              "derived_from": "num_vector_regs / 同时活跃向量数",
+              "effect_direction": "LMUL 越大单指令吞吐越高、可用寄存器组越少",
+              "kind": "lmul",
+              "name": "lmul",
+              "range": [
+                1,
+                2,
+                4,
+                8
+              ],
+              "unit": "regs",
+              "used_by_strategies": 38,
+              "value_in_source": 8,
+              "value_in_instance": 8
+            },
+            {
+              "id": "par:sew",
+              "derived_from": "dtype",
+              "effect_direction": "由数据类型决定（double 固定 64）",
+              "kind": "sew",
+              "name": "sew",
+              "range": [
+                32,
+                64
+              ],
+              "unit": "bits",
+              "used_by_strategies": 38,
+              "value_in_source": 64,
+              "value_in_instance": 64
+            },
+            {
+              "id": "par:vector_len",
+              "derived_from": "VLEN*LMUL/SEW = 256*8/64 = 32",
+              "effect_direction": "等于 VLMAX 时无尾部开销；VLEN 越大单指令处理元素越多",
+              "kind": "vector_len",
+              "name": "vector_len",
+              "range": [
+                4,
+                8,
+                16,
+                32
+              ],
+              "unit": "elements",
+              "used_by_strategies": 16,
+              "value_in_source": 32,
+              "value_in_instance": 32
+            }
+          ],
+          "evidence": [
+            {
+              "id": "ev:axpy:geomean",
+              "metric": "speedup",
+              "value": 1.2134,
+              "platform_id": "hw:qemu-riscv64-vlen256",
+              "role": "supports",
+              "scope": "operator",
+              "caveat": "QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据"
+            },
+            {
+              "id": "ev:axpy:pass_rate",
+              "metric": "pass_rate",
+              "value": 1.0,
+              "platform_id": "hw:qemu-riscv64-vlen256",
+              "role": "supports",
+              "scope": "operator",
+              "caveat": "QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据"
+            }
+          ],
+          "provenance": {
+            "commit": "OpenBLAS 0.3.27.dev",
+            "extractor_version": "kgagent-v1.5",
+            "line_confidence": "exact",
+            "line_end": 83,
+            "line_start": 10,
+            "origin_file": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/daxpy_k_rvv.c",
+            "source_file": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/daxpy_k_rvv.c"
+          }
+        },
+        {
+          "id": "stg:axpy:specialize_s",
+          "name": "任意步长 inc 累加访问",
+          "family": "指针/索引优化",
+          "action": "specialize",
+          "level": "code",
+          "stage": "core",
+          "arch_scope": "arch_agnostic",
+          "arch": null,
+          "arches": [],
+          "arch_parameters": {},
+          "score": 0.7023,
+          "score_breakdown": {
+            "match_p": 1.0,
+            "fit_c": 1.0,
+            "hw": 0.7,
+            "ev": 0.3616,
+            "sup": 0.2,
+            "tr_penalty": 0.3,
+            "total": 0.7023
+          },
+          "why_selected": {
+            "patterns": [
+              "pat:axpy:core.elementwise_update"
+            ],
+            "conditions_satisfied": [
+              "dtype",
+              "loop_depth",
+              "size_regime"
+            ],
+            "hardware": "k1_rvv256",
+            "source": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/daxpy_k.c"
+          },
+          "conditions": [
+            {
+              "hard": true,
+              "op": "in",
+              "pred": "dtype",
+              "value": [
+                "d"
+              ]
+            },
+            {
+              "hard": true,
+              "op": "ge",
+              "pred": "loop_depth",
+              "value": 1
+            },
+            {
+              "hard": false,
+              "op": "in",
+              "pred": "size_regime",
+              "value": [
+                "medium",
+                "large"
+              ],
+              "weight": 1.0
+            }
+          ],
+          "template": {
+            "id": "tpl:axpy:specialize_s",
+            "language": "c",
+            "skeleton": "if (inc_x == 1) {\n    for (BLASLONG i = 0; i + {{BLOCK_SIZE}} <= n; i += {{BLOCK_SIZE}}) { /* 连续快速路径 */ }\n} else {\n    for (BLASLONG i = 0; i < n; i++) { /* 跨步路径：inc_x 逐次累加，消除索引乘法 */ }\n}",
+            "slots": [
+              {
+                "default": 4,
+                "name": "BLOCK_SIZE",
+                "source": "derived:isa_defaults",
+                "type": "int"
+              }
+            ],
+            "check_hints": [
+              "分支预测友好的顺序",
+              "消除跨步访问的索引乘法"
+            ]
+          },
+          "parameters": [],
+          "evidence": [
+            {
+              "id": "ev:axpy:geomean",
+              "metric": "speedup",
+              "value": 1.2134,
+              "platform_id": "hw:qemu-riscv64-vlen256",
+              "role": "supports",
+              "scope": "operator",
+              "caveat": "QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据"
+            },
+            {
+              "id": "ev:axpy:pass_rate",
+              "metric": "pass_rate",
+              "value": 1.0,
+              "platform_id": "hw:qemu-riscv64-vlen256",
+              "role": "supports",
+              "scope": "operator",
+              "caveat": "QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据"
+            }
+          ],
+          "provenance": {
+            "commit": "OpenBLAS 0.3.27.dev",
+            "extractor_version": "kgagent-v1.5",
+            "line_confidence": "exact",
+            "line_end": 29,
+            "line_start": 7,
+            "origin_file": "kernel/mips/axpy.c",
+            "source_file": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/daxpy_k.c"
+          }
+        }
+      ]
+    },
+    "prompt_preview": "你是 OpenBLAS kernel 优化专家。目标算子：axpy（dtype=d，loop_depth=1，stride_x=1，size_regime=large）。\n目标硬件 profile：k1_rvv256。请只使用下列知识块中的策略与模板槽位，不要引入未给出的性能数字。\n1) LMUL/SEW 向量寄存器分组调优（SIMD向量指令/specialize，score=0.747）：条件 dtype in ['d']、loop_depth ge 1、size_regime in ['medium', 'large']；参数 lmul=8、sew=64。\n2) 动态 vl / 掩码尾部处理（尾部处理/tail_handle，score=0.747）：条件 dtype in ['d']、loop_depth ge 1、size_regime in ['medium', 'large']、tail_divisible eq False；参数 lmul=8、sew=64。\n3) RVV 向量化内核（vsetvl + vle/vfmacc/vse）（SIMD向量指令/vectorize，"
+  },
+  "created_at": "2026-11-12T21:38:33+08:00"
+}

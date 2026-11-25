@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "task": "dasum",
+  "symbol": "op_dasum",
+  "split": "holdout",
+  "features": {
+    "dtype": "d",
+    "precision": "double",
+    "loop_depth": 1,
+    "structural": "none",
+    "reduction": true,
+    "layout": "strided_vector"
+  },
+  "pattern": "absolute_value_reduction",
+  "dimensions": [
+    "n"
+  ],
+  "semantics": "Return sum(fabs(x[i*incx])) for 0 <= i < n, without modifying x. n==0 returns 0.0 without memory access and x may be NULL.",
+  "parameters": [
+    "n",
+    "x",
+    "incx"
+  ],
+  "memory_contract": "Vector increments are signed and nonzero. For negative increments, the caller passes the address of logical element zero. Inputs and outputs occupy disjoint storage except for DSCAL's in-place operand. Leading dimensions are in elements and at least the stored row width.",
+  "numeric_contract": "Binary64 finite data unless a coefficient disables access and the harness provides inaccessible inputs or poison. Reassociation and FMA are allowed within |observed-reference| <= 2e-12 + 3e-12*|reference|. Only logical output elements may be written; input bytes, output padding and guards must remain unchanged."
+}

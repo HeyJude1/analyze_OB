@@ -1,0 +1,90 @@
+{
+  "schema": "e09-repro-v1",
+  "experiment": "E09_MPSA",
+  "run_id": "real_repair1_all",
+  "created_at": "2026-11-12T21:38:58+08:00",
+  "source_records": "results.jsonl",
+  "provider": "dashscope",
+  "model": "qwen-plus-2025-04-28",
+  "profile": "k1_rvv256",
+  "top_k": 6,
+  "repair_rounds": 0,
+  "mpsa_impl": {
+    "kgagent_version": "1.5.0",
+    "mpsa_py_sha256": "48badce182d4fb6e08eaef106e04e4565b9de904980b54999d252a83533585ee",
+    "kg_src": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\kg_agent\\src",
+    "cli_py_sha256": "8e6a3b596ac5c44e445fecf74b6395441b192012b370300eee3bfb521be117d6"
+  },
+  "cells": [
+    {
+      "cell": "daxpy_b3_seed1",
+      "op": "daxpy",
+      "mode": "b3",
+      "seed": 1,
+      "size": 16384,
+      "status": "ok",
+      "correct": true,
+      "maxdiff": 0.0,
+      "compile_ok": true,
+      "repair_rounds": 0,
+      "input": "inputs/daxpy/generic.c",
+      "retrieval_trace": "inputs/retrieval/daxpy_k1_rvv256_k6_trace.json",
+      "final_dir": "cells/daxpy_b3_seed1/final"
+    },
+    {
+      "cell": "daxpy_b4_seed1",
+      "op": "daxpy",
+      "mode": "b4",
+      "seed": 1,
+      "size": 16384,
+      "status": "ok",
+      "correct": true,
+      "maxdiff": 0.0,
+      "compile_ok": true,
+      "repair_rounds": 0,
+      "input": "inputs/daxpy/generic.c",
+      "retrieval_trace": "inputs/retrieval/daxpy_k1_rvv256_k6_trace.json",
+      "final_dir": "cells/daxpy_b4_seed1/final"
+    },
+    {
+      "cell": "ddot_b3_seed1",
+      "op": "ddot",
+      "mode": "b3",
+      "seed": 1,
+      "size": 16384,
+      "status": "ok",
+      "correct": true,
+      "maxdiff": 0.0,
+      "compile_ok": true,
+      "repair_rounds": 0,
+      "input": "inputs/ddot/generic.c",
+      "retrieval_trace": "inputs/retrieval/ddot_k1_rvv256_k6_trace.json",
+      "final_dir": "cells/ddot_b3_seed1/final"
+    },
+    {
+      "cell": "ddot_b4_seed1",
+      "op": "ddot",
+      "mode": "b4",
+      "seed": 1,
+      "size": 16384,
+      "status": "ok",
+      "correct": true,
+      "maxdiff": 0.0,
+      "compile_ok": true,
+      "repair_rounds": 0,
+      "input": "inputs/ddot/generic.c",
+      "retrieval_trace": "inputs/retrieval/ddot_k1_rvv256_k6_trace.json",
+      "final_dir": "cells/ddot_b4_seed1/final"
+    }
+  ],
+  "env": [
+    "gcc: riscv64-linux-gnu-gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+    "qemu: qemu-riscv64 version 8.2.2 (Debian 1:8.2.2+ds-0ubuntu1.18)",
+    "os: PRETTY_NAME=\"Ubuntu 24.04.2 LTS\"\nNAME=\"Ubuntu\""
+  ],
+  "commands": {
+    "retrieve_example": "cd kg_agent/src && python -m kgagent.cli retrieve --op daxpy --profile k1_rvv256 --top-k 6",
+    "build_example": "cd cells/daxpy_b3_seed1_n1024/final && bash build.sh",
+    "run_example": "cd cells/daxpy_b3_seed1_n1024/final && bash run.sh"
+  }
+}

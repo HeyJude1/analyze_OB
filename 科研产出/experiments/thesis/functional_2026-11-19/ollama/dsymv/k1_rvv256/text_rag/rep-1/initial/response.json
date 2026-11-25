@@ -1,0 +1,9 @@
+{
+  "raw": "```c\n#include \"opbench.h\"\n\nvoid op_dsymv(char uplo, size_t n, double alpha, const double *a, size_t lda,\n              const double *x, ptrdiff_t incx, double beta, double *y, ptrdiff_t incy) {\n    if (n == 0 || (alpha == 0.0 && beta == 1.0)) return;\n\n    // Vectorize the inner loop using SIMD instructions\n    size_t i, j;\n    for (i = 0; i < n; ++i) {\n        double sum = 0.0;\n        if (alpha != 0.0) {\n            for (j = 0; j < n; j += 4) { // Unroll factor of 4\n                const int stored1 = uplo == 'U' ? i <= j : i >= j;\n                const int stored2 = uplo == 'U' ? i <= j + 1 : i >= j + 1;\n                const int stored3 = uplo == 'U' ? i <= j + 2 : i >= j + 2;\n                const int stored4 = uplo == 'U' ? i <= j + 3 : i >= j + 3;\n\n                const double aij1 = stored1 ? a[i * lda + j] : a[j * lda + i];\n                const double aij2 = stored2 ? a[i * lda + j + 1] : a[j + 1 * lda + i];\n                const double aij3 = stored3 ? a[i * lda + j + 2] : a[j + 2 * lda + i];\n                const double aij4 = stored4 ? a[i * lda + j + 3] : a[j + 3 * lda + i];\n\n                sum += aij1 * x[(ptrdiff_t)j * incx];\n                sum += aij2 * x[(ptrdiff_t)(j + 1) * incx];\n                sum += aij3 * x[(ptrdiff_t)(j + 2) * incx];\n                sum += aij4 * x[(ptrdiff_t)(j + 3) * incx];\n            }\n        }\n        const ptrdiff_t index = (ptrdiff_t)i * incy;\n        y[index] = alpha * sum + (beta == 0.0 ? 0.0 : beta * y[index]);\n    }\n}\n```",
+  "usage": {
+    "prompt_tokens": 2911,
+    "completion_tokens": 516,
+    "total_tokens": 3427
+  },
+  "stop_reason": "stop"
+}

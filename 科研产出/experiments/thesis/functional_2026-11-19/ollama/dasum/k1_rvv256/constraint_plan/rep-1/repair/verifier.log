@@ -1,0 +1,25 @@
+dasum rvv candidate: compile_error 
+
+wsl: �hKm0R localhost �NtM�n�FO*g\��P0R WSL0NAT !j_N�v WSL N/ec localhost �Nt0
+../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/constraint_plan/rep-1/repair/candidate.c: In function ‘op_dasum’:
+../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/constraint_plan/rep-1/repair/candidate.c:12:9: error: unknown type name ‘__m256d’
+   12 |         __m256d vsum = _mm256_setzero_pd();
+      |         ^~~~~~~
+../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/constraint_plan/rep-1/repair/candidate.c:12:24: error: implicit declaration of function ‘_mm256_setzero_pd’ [-Wimplicit-function-declaration]
+   12 |         __m256d vsum = _mm256_setzero_pd();
+      |                        ^~~~~~~~~~~~~~~~~
+../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/constraint_plan/rep-1/repair/candidate.c:14:20: error: implicit declaration of function ‘_mm256_add_pd’ [-Wimplicit-function-declaration]
+   14 |             vsum = _mm256_add_pd(vsum, _mm256_and_pd(_mm256_loadu_pd(&x[i + j * incx]), _mm256_set1_pd(0.0)));
+      |                    ^~~~~~~~~~~~~
+../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/constraint_plan/rep-1/repair/candidate.c:14:40: error: implicit declaration of function ‘_mm256_and_pd’ [-Wimplicit-function-declaration]
+   14 |             vsum = _mm256_add_pd(vsum, _mm256_and_pd(_mm256_loadu_pd(&x[i + j * incx]), _mm256_set1_pd(0.0)));
+      |                                        ^~~~~~~~~~~~~
+../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/constraint_plan/rep-1/repair/candidate.c:14:54: error: implicit declaration of function ‘_mm256_loadu_pd’ [-Wimplicit-function-declaration]
+   14 |             vsum = _mm256_add_pd(vsum, _mm256_and_pd(_mm256_loadu_pd(&x[i + j * incx]), _mm256_set1_pd(0.0)));
+      |                                                      ^~~~~~~~~~~~~~~
+../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/constraint_plan/rep-1/repair/candidate.c:14:89: error: implicit declaration of function ‘_mm256_set1_pd’ [-Wimplicit-function-declaration]
+   14 |             vsum = _mm256_add_pd(vsum, _mm256_and_pd(_mm256_loadu_pd(&x[i + j * incx]), _mm256_set1_pd(0.0)));
+      |                                                                                         ^~~~~~~~~~~~~~
+../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/constraint_plan/rep-1/repair/candidate.c:16:16: error: implicit declaration of function ‘_mm256_reduce_add_pd’ [-Wimplicit-function-declaration]
+   16 |         sum += _mm256_reduce_add_pd(vsum);
+      |                ^~~~~~~~~~~~~~~~~~~~

@@ -1,0 +1,49 @@
+{
+  "analogy_source": "gemv",
+  "card_ids": [
+    "stg:abstract:k_unroll",
+    "stg:abstract:register_blocking",
+    "stg:abstract:vector_fma",
+    "stg:abstract:tail_handling"
+  ],
+  "contract_sha256": "3ec32f9475c48aa5f192dc136516548d7b094f6fa631cd084582a3f3a806e7b2",
+  "knowledge_bytes": 4560,
+  "method": "strategy_cards",
+  "operator": "dsymv",
+  "profile": "x86_avx2",
+  "prompt": "dsymv/x86_avx2/strategy_cards.json",
+  "prompt_sha256": "b5651db701a39ae22ee77ad4e3f49fbe2d04657885c392a56e2f4c7354e22c02",
+  "repetition": 1,
+  "source_sha256": "8494a5751a22999b7d05267cd907678c866e376873badef34a708eebf2d2588a",
+  "split": "holdout",
+  "status": "prepared",
+  "engine": "ollama",
+  "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+  "repair_attempted": true,
+  "initial": {
+    "status": "compile_failed",
+    "compile_ok": false,
+    "correct": null,
+    "failure_reason": "other_compiler_error",
+    "usage": {
+      "prompt_tokens": 2804,
+      "completion_tokens": 619,
+      "total_tokens": 3423
+    },
+    "diagnostic": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymv\\x86_avx2\\strategy_cards\\rep-1\\initial\\candidate.c: In function 'op_dsymv':\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymv\\x86_avx2\\strategy_cards\\rep-1\\initial\\candidate.c:11:32: error: variable-sized object may not be initialized except with an empty initializer\n   11 |         double sum[K_UNROLL] = {0.0, 0.0, 0.0, 0.0};\n      |                                ^\n",
+    "candidate_sha256": "9c620d027cb56142a285d227c80f986dfbf6092e0535a0c1f5da006370c30258"
+  },
+  "final": {
+    "status": "wrong_answer",
+    "compile_ok": true,
+    "correct": false,
+    "failure_reason": "numerical_or_memory_contract",
+    "usage": {
+      "prompt_tokens": 2251,
+      "completion_tokens": 611,
+      "total_tokens": 2862
+    },
+    "diagnostic": "Numerical or memory-contract check failed on 1108 cases. Preserve the full public contract.",
+    "candidate_sha256": "53d9d900465d2c5383e26d03c6fff1c5c2985152e55587a65457b8afe67f67d4"
+  }
+}

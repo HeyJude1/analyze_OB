@@ -1,0 +1,114 @@
+# OpOptBench-12 任务清单（v0.1，2026-11-12）
+# 由 tools/gen_optbench_list.py 从 op_pairing_audit.csv 生成
+benchmark: OpOptBench-12
+platforms: [x86_64, riscv64_k1_vlen256]
+conditions: [C0, C1, P1, B0, B1, B2, B3]
+tasks:
+  - op: daxpy
+    level: L1
+    role: S1_seen
+    dir: 13_daxpy_op
+    input: daxpy_k.c
+    rvv_expert: daxpy_k_rvv.c
+    pair_status: ok
+    sizes: [1024, 16384, 1048576]
+    note: QEMU 日志 geomean=1.2134（只作 sanity，不作性能）
+  - op: dasum
+    level: L1
+    role: S1_seen
+    dir: 11_dasum_op
+    input: dasum_k.c
+    rvv_expert: dasum_k_rvv.c
+    pair_status: ok
+    sizes: [1024, 16384, 1048576]
+    note: QEMU 日志 geomean=1.303（只作 sanity，不作性能）
+  - op: ddot
+    level: L1
+    role: S1_seen
+    dir: 15_ddot_op
+    input: ddot_k.c
+    rvv_expert: ddot_k_rvv.c
+    pair_status: ok
+    sizes: [1024, 16384, 1048576]
+    note: QEMU 日志 geomean=1.1584（只作 sanity，不作性能）
+  - op: dgemv
+    level: L2
+    role: S1_seen
+    dir: 17_dgemv_op
+    input: dgemv_k.c
+    rvv_expert: dgemv_k_rvv.c
+    pair_status: ok
+    sizes: [256, 1024, 4096]
+    note: QEMU 日志 geomean=2.5729（只作 sanity，不作性能）
+  - op: dgemm
+    level: L3
+    role: S1_seen
+    dir: 16_dgemm_op5
+    input: dgemm_k.c
+    rvv_expert: dgemm_k_rvv.c
+    pair_status: ok
+    sizes: [64, 128, 512]
+    note: QEMU 日志 geomean=2.0351（只作 sanity，不作性能）
+  - op: dtrmm
+    level: L3
+    role: S1_seen
+    dir: 37_dtrmm_op1
+    input: dtrmm_k.c
+    rvv_expert: dtrmm_k_rvv.c
+    pair_status: ok
+    sizes: [64, 128, 512]
+    note: QEMU 日志 geomean=1.374（只作 sanity，不作性能）
+  - op: dscal
+    level: L1
+    role: S2_unseen
+    dir: 24_dscal_op
+    input: dscal_k.c
+    rvv_expert: dscal_k_rvv.c
+    pair_status: ok
+    sizes: [1024, 16384, 1048576]
+    note: QEMU 日志 geomean=1.2473（只作 sanity，不作性能）
+  - op: dnrm2
+    level: L1
+    role: S2_unseen
+    dir: 22_dnrm2_op
+    input: dnrm2_k.c
+    rvv_expert: dnrm2_k_rvv.c
+    pair_status: ok
+    sizes: [1024, 16384, 1048576]
+    note: QEMU 日志 geomean=0.5574（只作 sanity，不作性能）
+  - op: daxpby
+    level: L1
+    role: S2_unseen
+    dir: 12_daxpby_op
+    input: daxpby_k.c
+    rvv_expert: daxpby_k_rvv.c
+    pair_status: ok
+    sizes: [1024, 16384, 1048576]
+    note: QEMU 日志 geomean=1.2022（只作 sanity，不作性能）
+  - op: dsymv
+    level: L2
+    role: S2_unseen
+    dir: 30_dsymv_op
+    input: dsymv_k.c
+    rvv_expert: dsymv_k_rvv.c
+    pair_status: ok
+    sizes: [256, 1024, 4096]
+    note: QEMU 日志 geomean=1.0077（只作 sanity，不作性能）
+  - op: chemv
+    level: L2
+    role: S2_unseen
+    dir: 03_chemv_op
+    input: chemv_k.c
+    rvv_expert: chemv_k_rvv.c
+    pair_status: ok
+    sizes: [256, 1024, 4096]
+    note: QEMU 日志 geomean=1.0206（只作 sanity，不作性能）
+  - op: dsymm
+    level: L3
+    role: S2_unseen
+    dir: 29_dsymm_op1
+    input: dsymm_k.c
+    rvv_expert: dsymm_k_rvv.c
+    pair_status: mispair_k(dgemm_kernel)
+    sizes: [64, 128, 512]
+    note: QEMU 日志 geomean=2.4542（只作 sanity，不作性能）

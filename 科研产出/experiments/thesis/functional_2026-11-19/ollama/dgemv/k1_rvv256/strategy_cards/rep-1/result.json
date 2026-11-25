@@ -1,0 +1,49 @@
+{
+  "analogy_source": null,
+  "card_ids": [
+    "stg:gemv:fuse_s",
+    "stg:gemv:specialize_s",
+    "stg:abstract:k_unroll",
+    "stg:abstract:register_blocking"
+  ],
+  "contract_sha256": "a4cb7aea401aa9189eede64a0587f45673d95f4b8e0ad9486c612b630f90ed4c",
+  "knowledge_bytes": 5179,
+  "method": "strategy_cards",
+  "operator": "dgemv",
+  "profile": "k1_rvv256",
+  "prompt": "dgemv/k1_rvv256/strategy_cards.json",
+  "prompt_sha256": "246867c1fbf737ed166319ccea44ae3bd1eebc34129427e5716f15e6680fd71b",
+  "repetition": 1,
+  "source_sha256": "49fc8d60ab4796b4e2b1b2314d12013386d9e5cae521be5dcd4cfc130a9dc72f",
+  "split": "build",
+  "status": "prepared",
+  "engine": "ollama",
+  "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+  "repair_attempted": false,
+  "initial": {
+    "status": "passed",
+    "compile_ok": true,
+    "correct": true,
+    "failure_reason": null,
+    "usage": {
+      "prompt_tokens": 3023,
+      "completion_tokens": 347,
+      "total_tokens": 3370
+    },
+    "diagnostic": "",
+    "candidate_sha256": "61e570e5648cb1f2fb91f2fa116f6aaee14e0b2617c8554d74b301874d3aecb3"
+  },
+  "final": {
+    "status": "passed",
+    "compile_ok": true,
+    "correct": true,
+    "failure_reason": null,
+    "usage": {
+      "prompt_tokens": 3023,
+      "completion_tokens": 347,
+      "total_tokens": 3370
+    },
+    "diagnostic": "",
+    "candidate_sha256": "61e570e5648cb1f2fb91f2fa116f6aaee14e0b2617c8554d74b301874d3aecb3"
+  }
+}

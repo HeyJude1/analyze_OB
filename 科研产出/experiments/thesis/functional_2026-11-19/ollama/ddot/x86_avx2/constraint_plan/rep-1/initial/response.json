@@ -1,0 +1,9 @@
+{
+  "raw": "```c\n#include \"opbench.h\"\n\ndouble op_ddot(size_t n, const double *x, ptrdiff_t incx,\n               const double *y, ptrdiff_t incy) {\n    if (incx == 1 && incy == 1) {\n        double sum = 0.0;\n        for (size_t i = 0; i < n; ++i) {\n            sum += x[i] * y[i];\n        }\n        return sum;\n    } else {\n        double sum = 0.0;\n        for (size_t i = 0; i < n; ++i) {\n            sum += x[(ptrdiff_t)i * incx] * y[(ptrdiff_t)i * incy];\n        }\n        return sum;\n    }\n}\n```",
+  "usage": {
+    "prompt_tokens": 3152,
+    "completion_tokens": 164,
+    "total_tokens": 3316
+  },
+  "stop_reason": "stop"
+}

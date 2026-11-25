@@ -1,0 +1,36 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "amd64",
+  "results": [
+    {
+      "task": "dsymm",
+      "target": "x86",
+      "variant": "candidate",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymm\\x86_avx2\\no_knowledge\\rep-1\\initial\\candidate.c",
+      "source_sha256": "5e93ca2ccca6f5008fff1b0a4acbdc6ba6b60c6cc962febeb36c126f1541557a",
+      "status": "compile_error",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DSYMM",
+          "driver/check.c",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymm\\x86_avx2\\no_knowledge\\rep-1\\initial\\candidate.c",
+          "-o",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymm\\x86_avx2\\no_knowledge\\rep-1\\initial\\bin\\dsymm-x86-candidate.exe",
+          "-lm"
+        ],
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymm\\x86_avx2\\no_knowledge\\rep-1\\initial\\candidate.c: In function 'op_dsymm':\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymm\\x86_avx2\\no_knowledge\\rep-1\\initial\\candidate.c:28:30: error: 'i' undeclared (first use in this function)\n   28 |                     sum += b[i * ldb + p] * symmetric_at(a, lda, m - 1, p, uplo);\n      |                              ^\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymm\\x86_avx2\\no_knowledge\\rep-1\\initial\\candidate.c:28:30: note: each undeclared identifier is reported only once for each function it appears in\n"
+      }
+    }
+  ]
+}

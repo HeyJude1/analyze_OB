@@ -1,0 +1,37 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "x86_64",
+  "results": [
+    {
+      "task": "dscal",
+      "target": "rvv",
+      "variant": "candidate",
+      "compiler_version": "riscv64-buildroot-linux-gnu-gcc.br_real (Buildroot 2021.11-18033-g83947c7bb6) 14.3.0",
+      "source": "../experiments/thesis/functional_2026-11-19/ollama/dscal/k1_rvv256/no_knowledge/rep-1/initial/candidate.c",
+      "source_sha256": "5ea1b4ddcd8575606166adda33420264de61b2bf108ffead30197c259c9e4706",
+      "status": "compile_error",
+      "compile": {
+        "argv": [
+          "/mnt/c/Users/MSI/Desktop/cx_operator_tool/operator_extract/toolchain/riscv-gcc-14.3/bin/riscv64-buildroot-linux-gnu-gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-march=rv64gcv",
+          "-mabi=lp64d",
+          "-static",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DSCAL",
+          "driver/check.c",
+          "../experiments/thesis/functional_2026-11-19/ollama/dscal/k1_rvv256/no_knowledge/rep-1/initial/candidate.c",
+          "-o",
+          "../experiments/thesis/functional_2026-11-19/ollama/dscal/k1_rvv256/no_knowledge/rep-1/initial/bin/dscal-rvv-candidate",
+          "-lm"
+        ],
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "../experiments/thesis/functional_2026-11-19/ollama/dscal/k1_rvv256/no_knowledge/rep-1/initial/candidate.c: In function ‘op_dscal’:\n../experiments/thesis/functional_2026-11-19/ollama/dscal/k1_rvv256/no_knowledge/rep-1/initial/candidate.c:8:13: error: unknown type name ‘__m256d’\n    8 |             __m256d v_x = _mm256_loadu_pd(&x[i]);\n      |             ^~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dscal/k1_rvv256/no_knowledge/rep-1/initial/candidate.c:8:27: error: implicit declaration of function ‘_mm256_loadu_pd’ [-Wimplicit-function-declaration]\n    8 |             __m256d v_x = _mm256_loadu_pd(&x[i]);\n      |                           ^~~~~~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dscal/k1_rvv256/no_knowledge/rep-1/initial/candidate.c:9:13: error: unknown type name ‘__m256d’\n    9 |             __m256d v_alpha = _mm256_set1_pd(alpha);\n      |             ^~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dscal/k1_rvv256/no_knowledge/rep-1/initial/candidate.c:9:31: error: implicit declaration of function ‘_mm256_set1_pd’ [-Wimplicit-function-declaration]\n    9 |             __m256d v_alpha = _mm256_set1_pd(alpha);\n      |                               ^~~~~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dscal/k1_rvv256/no_knowledge/rep-1/initial/candidate.c:10:19: error: implicit declaration of function ‘_mm256_mul_pd’ [-Wimplicit-function-declaration]\n   10 |             v_x = _mm256_mul_pd(v_x, v_alpha);\n      |                   ^~~~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dscal/k1_rvv256/no_knowledge/rep-1/initial/candidate.c:11:13: error: implicit declaration of function ‘_mm256_storeu_pd’ [-Wimplicit-function-declaration]\n   11 |             _mm256_storeu_pd(&x[i], v_x);\n      |             ^~~~~~~~~~~~~~~~\n"
+      }
+    }
+  ]
+}

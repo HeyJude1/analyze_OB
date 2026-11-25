@@ -1,0 +1,180 @@
+# kg_agent 配置（SPEC §1 config.yaml）
+# 路径解析规则：workspace_root 相对本文件所在目录（kg_agent/）；其余路径相对 workspace_root 解析。
+# 所有输出 UTF-8；仅用 Python 标准库；离线 build 不联网。
+
+schema_version: kg-v1.5
+extractor_version: kgagent-v1.5
+prompt_version: s3-rules-v1
+model_version: offline-rules-v1
+
+paths:
+  workspace_root: ../..
+  analysis_results: 开题/analyze_OB/20251114_153700/analysis_results
+  operator_corpus: ../cx_operator_tool/operator_extract/openblas_newtest1
+  log_summary: 科研产出/data/riscv_log_summary.csv
+  data_dir: data
+  viz_dir: viz
+
+# 12 个算子：4 个有分析 JSON（gemm/trmm/hemv/axpy）+ 8 个仅语料差分
+# dtype 为该语料实例的数据类型（dgemm 的 d / chemv 的 c）；analysis 会再按文件名细分
+corpus:
+  analysis_operators: [gemm, trmm, hemv, axpy]
+  operators:
+    gemm:     {dir: 16_dgemm_op5, dtype: d, blas_level: 3, op_class: matrix, structural: none, reduction: false, flops_formula: "2*M*N*K", bytes_formula: "(M*K+K*N+M*N)*sizeof(T)"}
+    trmm:     {dir: 37_dtrmm_op1, dtype: d, blas_level: 3, op_class: triangular, structural: triangular, reduction: false, flops_formula: "M*M*N", bytes_formula: "(M*M+M*N)*sizeof(T)"}
+    hemv:     {dir: 03_chemv_op, dtype: c, blas_level: 2, op_class: matrix, structural: hermitian, reduction: false, flops_formula: "4*N*N", bytes_formula: "(N*N+N)*sizeof(T)"}
+    axpy:     {dir: 13_daxpy_op, dtype: d, blas_level: 1, op_class: vector, structural: none, reduction: false, flops_formula: "2*N", bytes_formula: "(2*N)*sizeof(T)"}
+    gemv:     {dir: 17_dgemv_op, dtype: d, blas_level: 2, op_class: matrix, structural: none, reduction: false, flops_formula: "2*M*N", bytes_formula: "(M*N+M+N)*sizeof(T)"}
+    dot:      {dir: 15_ddot_op, dtype: d, blas_level: 1, op_class: vector, structural: none, reduction: true, flops_formula: "2*N", bytes_formula: "(2*N)*sizeof(T)"}
+    scal:     {dir: 24_dscal_op, dtype: d, blas_level: 1, op_class: vector, structural: none, reduction: false, flops_formula: "N", bytes_formula: "(2*N)*sizeof(T)"}
+    copy:     {dir: 14_dcopy_op, dtype: d, blas_level: 1, op_class: vector, structural: none, reduction: false, flops_formula: "0", bytes_formula: "(2*N)*sizeof(T)"}
+    nrm2:     {dir: 22_dnrm2_op, dtype: d, blas_level: 1, op_class: vector, structural: none, reduction: true, flops_formula: "3*N", bytes_formula: "N*sizeof(T)"}
+    symm:     {dir: 29_dsymm_op1, dtype: d, blas_level: 3, op_class: matrix, structural: symmetric, reduction: false, flops_formula: "2*M*M*N", bytes_formula: "(M*M+M*N+M*N)*sizeof(T)"}
+    swap:     {dir: 28_dswap_op, dtype: d, blas_level: 1, op_class: vector, structural: none, reduction: false, flops_formula: "0", bytes_formula: "(2*N)*sizeof(T)"}
+    rot:      {dir: 23_drot_op, dtype: d, blas_level: 1, op_class: vector, structural: none, reduction: false, flops_formula: "6*N", bytes_formula: "(2*N)*sizeof(T)"}
+
+# 证据平台：CSV 全部来自 QEMU（measure_env=qemu），只作 operator 级线索，不参与策略级性能排序
+evidence:
+  platform_id: hw:qemu-riscv64-vlen256
+  protocol: "qemu-user-tcg / 单次运行 / size 1..200 / 取 size>=32 的几何平均"
+  confidence: 0.35
+  measured_at: "2025-11-14T15:37:00+08:00"
+
+# 多架构扩展（v1.5+）：x86 AVX2/AVX512、ARM NEON/SVE、RISC-V RVV
+# 说明：
+#   1) x86/arm 源文件从 ../openblas_src 自动发现（glob）后复制到 data/corpus_multiarch/<arch>/<op>/，
+#      图谱只依赖复制后的文件 + sha256，不再依赖外部 repo 路径；
+#   2) rvv 复用已经抽取过的 cx_operator_tool 语料（12 个算子），仅新增算子 asum/axpby 从 openblas_src 复制；
+#   3) 每个 arch_sources.<arch>.files.<op> 是 glob 模式列表；auto_*_globs 用于自动补登记 microk/变体文件。
+multiarch:
+  repo: ../openblas_src
+  commit: "OpenBLAS 0.3.27 (git ce3f668)"
+  corpus_dir: data/corpus_multiarch
+  operators:
+    asum:  {dir: 11_dasum_op, dtype: d, blas_level: 1, op_class: vector, structural: none, reduction: true, flops_formula: "N", bytes_formula: "N*sizeof(T)"}
+    axpby: {dir: 12_daxpby_op, dtype: d, blas_level: 1, op_class: vector, structural: none, reduction: false, flops_formula: "3*N", bytes_formula: "(3*N)*sizeof(T)"}
+  arch_sources:
+    x86_avx2:
+      label: "x86 AVX2"
+      arch_family: x86
+      kernel_dir: kernel/x86_64
+      isa_node: isa:avx2.fma.f64
+      isa: AVX2
+      profiles: [x86_avx2]
+      compiler: "gcc -O3 -mavx2 -mfma"
+      auto_microk_globs: ["{kernel_dir}/d{op}_microk_haswell-*.c"]
+      files:
+        gemm: [kernel/x86_64/dgemm_kernel_4x8_haswell.S, kernel/x86_64/dgemm_kernel_16x2_haswell.S]
+        trmm: [kernel/x86_64/dtrmm_kernel_4x8_haswell.c]
+        symm: [kernel/x86_64/dgemm_kernel_4x8_haswell.S]
+        axpy: [kernel/x86_64/daxpy.c, kernel/x86_64/daxpy_microk_haswell-2.c]
+        asum: [kernel/x86_64/dasum.c, kernel/x86_64/dasum_microk_haswell-2.c]
+        dot: [kernel/x86_64/ddot.c, kernel/x86_64/ddot_microk_haswell-2.c]
+        scal: [kernel/x86_64/dscal.c, kernel/x86_64/dscal_microk_haswell-2.c]
+        gemv: [kernel/x86_64/dgemv_n_4.c, kernel/x86_64/dgemv_n_microk_haswell-4.c, kernel/x86_64/dgemv_t_4.c]
+        symv: [kernel/x86_64/dsymv_L.c, kernel/x86_64/dsymv_L_microk_haswell-2.c]
+        nrm2: [kernel/x86_64/nrm2.S]
+        copy: [kernel/x86_64/copy.S]
+        swap: [kernel/x86_64/swap.S]
+        rot: [kernel/x86_64/drot.c, kernel/x86_64/drot_microk_haswell-2.c]
+    x86_avx512:
+      label: "x86 AVX512"
+      arch_family: x86
+      kernel_dir: kernel/x86_64
+      isa_node: isa:avx512.fma.f64
+      isa: AVX512F
+      profiles: [x86_avx512]
+      compiler: "gcc -O3 -mavx512f"
+      auto_microk_globs: ["{kernel_dir}/d{op}_microk_skylakex-*.c"]
+      files:
+        gemm: [kernel/x86_64/dgemm_kernel_16x2_skylakex.S, kernel/x86_64/dgemm_kernel_16x2_skylakex.c, kernel/x86_64/dgemm_ncopy_8_skylakex.c]
+        symm: [kernel/x86_64/dgemm_kernel_16x2_skylakex.S]
+        axpy: [kernel/x86_64/daxpy_microk_skylakex-2.c]
+        asum: [kernel/x86_64/dasum_microk_skylakex-2.c]
+        dot: [kernel/x86_64/ddot_microk_skylakex-2.c]
+        scal: [kernel/x86_64/dscal_microk_skylakex-2.c]
+        symv: [kernel/x86_64/dsymv_L_microk_skylakex-2.c]
+        rot: [kernel/x86_64/drot_microk_skylakex-2.c]
+    arm_neon:
+      label: "ARM NEON"
+      arch_family: arm
+      kernel_dir: kernel/arm64
+      isa_node: isa:neon.fma.f64
+      isa: NEON
+      profiles: [arm_neon]
+      compiler: "aarch64-linux-gcc -O3 -march=armv8-a"
+      auto_globs: ["{kernel_dir}/d{op}_thunderx2t99.c"]
+      files:
+        axpy: [kernel/arm64/daxpy_thunderx.c, kernel/arm64/axpy.S]
+        asum: [kernel/arm64/dasum_thunderx2t99.c, kernel/arm64/asum.S]
+        dot: [kernel/arm64/dot_kernel_asimd.c, kernel/arm64/ddot_thunderx.c, kernel/arm64/dot.S]
+        scal: [kernel/arm64/scal.S]
+        gemv: [kernel/arm64/gemv_n.S, kernel/arm64/gemv_t.S]
+        gemm: [kernel/arm64/dgemm_kernel_4x4_cortexa53.c, kernel/arm64/dgemm_kernel_4x8.S]
+        trmm: [kernel/arm64/dtrmm_kernel_4x8.S]
+        nrm2: [kernel/arm64/nrm2.S]
+        copy: [kernel/arm64/copy.S]
+        swap: [kernel/arm64/swap.S]
+        rot: [kernel/arm64/rot.S]
+    arm_sve:
+      label: "ARM SVE"
+      arch_family: arm
+      kernel_dir: kernel/arm64
+      isa_node: isa:sve.fma.f64
+      isa: SVE
+      profiles: [arm_sve]
+      compiler: "aarch64-linux-gcc -O3 -march=armv8.2-a+sve"
+      auto_globs: ["{kernel_dir}/d{op}_kernel_sve*.S", "{kernel_dir}/d{op}_*sve*.c"]
+      files:
+        gemm: [kernel/arm64/dgemm_kernel_sve_v1x8.S, kernel/arm64/gemm_ncopy_sve_v1x8.c, kernel/arm64/gemm_tcopy_sve_v1x8.c]
+        trmm: [kernel/arm64/dtrmm_kernel_sve_v1x8.S]
+        symm: [kernel/arm64/symm_lcopy_sve.c]
+        dot: [kernel/arm64/dot_kernel_sve.c]
+        copy: [kernel/arm64/gemm_ncopy_sve_v1x8.c]
+    rvv:
+      label: "RISC-V RVV"
+      arch_family: rvv
+      kernel_dir: kernel/riscv64
+      isa_node: isa:rvv1.0.fma.f64
+      isa: "RVV 1.0"
+      profiles: [k1_rvv256, qemu-riscv64-vlen256]
+      compiler: "riscv64-linux-gcc 14.3 -O3 -march=rv64gcv_zvl256b"
+      reuse_existing_ops: [gemm, trmm, hemv, axpy, gemv, dot, scal, copy, nrm2, symm, swap, rot]
+      auto_globs: ["{kernel_dir}/{op}_rvv.c"]
+      files:
+        asum: [kernel/riscv64/asum_rvv.c]
+        axpby: [kernel/riscv64/axpby_rvv.c]
+
+splits:
+  thesis:
+    operators: [axpy, dot, gemv, gemm]
+    architectures: [x86_avx2, rvv]
+    additional_holdout_dirs: [30_dsymv_op]
+    shared_source_cases: [symm]
+
+retrieval:
+  top_k: 6
+  weights: {match_p: 0.35, fit_c: 0.20, hw: 0.15, ev: 0.20, sup: 0.10, tr_penalty: 0.15}
+  transfer_penalty:
+    platform_mismatch: 0.30
+    evidence_scope_operator: 0.15
+  register_budget_ratio: 0.8
+
+llm:
+  backend: offline
+  model: qwen-plus
+  api_base: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+  api_key_env: DASHSCOPE_API_KEY
+  timeout_s: 60
+  prompt_version: s3-rules-v1
+  cache_dir: data/llm_cache
+
+# MPSA（多视角策略分析 B3/B4，供 E09 实验调用）：python -m kgagent.cli mpsa ...
+# key 只从环境变量 mpsa.api_key_env 读取，不得写进本文件/仓库；离线用 --provider mock。
+mpsa:
+  model: qwen-plus-2025-04-28
+  api_base: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+  api_key_env: DASHSCOPE_API_KEY
+  top_k: 6
+  analysis_k: 3
+  timeout_s: 120

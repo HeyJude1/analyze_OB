@@ -1,0 +1,49 @@
+{
+  "analogy_source": null,
+  "card_ids": [
+    "stg:axpy:specialize_s",
+    "stg:abstract:register_blocking",
+    "stg:abstract:vector_fma",
+    "stg:abstract:tail_handling"
+  ],
+  "contract_sha256": "371402f379cceaebd4ee2cd5d53b323433b08980d45a6ad1b974b37783189d24",
+  "knowledge_bytes": 6631,
+  "method": "constraint_plan",
+  "operator": "daxpy",
+  "profile": "k1_rvv256",
+  "prompt": "daxpy/k1_rvv256/constraint_plan.json",
+  "prompt_sha256": "dcdd5d45c58905ce086d1829e8af5b889cb5ec357566ae57e9115aebd91f1b45",
+  "repetition": 1,
+  "source_sha256": "8f5e498023abd606f24e4bad0a2642fa5d658a4b56181cc56da12c1b0dcf383b",
+  "split": "build",
+  "status": "prepared",
+  "engine": "ollama",
+  "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+  "repair_attempted": true,
+  "initial": {
+    "status": "wrong_answer",
+    "compile_ok": true,
+    "correct": false,
+    "failure_reason": "numerical_or_memory_contract",
+    "usage": {
+      "prompt_tokens": 3328,
+      "completion_tokens": 270,
+      "total_tokens": 3598
+    },
+    "diagnostic": "Numerical or memory-contract check failed on 758 cases. Preserve the full public contract.",
+    "candidate_sha256": "21b819b14c8ba50b51731cb5339c52bb22ebc408e79d71e7c0a858c50bacd50a"
+  },
+  "final": {
+    "status": "compile_failed",
+    "compile_ok": false,
+    "correct": null,
+    "failure_reason": "missing_header",
+    "usage": {
+      "prompt_tokens": 1593,
+      "completion_tokens": 259,
+      "total_tokens": 1852
+    },
+    "diagnostic": "../experiments/thesis/functional_2026-11-19/ollama/daxpy/k1_rvv256/constraint_plan/rep-1/repair/candidate.c:1:10: fatal error: immintrin.h: No such file or directory\n    1 | #include <immintrin.h>\n      |          ^~~~~~~~~~~~~\ncompilation terminated.\n",
+    "candidate_sha256": "3eb9115f254b6961dd1766e25923804deec9e0f1e6f532021a87590624d45112"
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "ok": true,
+  "compile_ok": true,
+  "correct": true,
+  "maxdiff": 1.182e-11,
+  "reldiff": 1.444e-15,
+  "qemu_exit": 0,
+  "stdout": "ddot n=16384 maxdiff=1.182e-11 reldiff=1.444e-15 best=0.097168 ms (2.70 GB/s) sink=8.188e+04\n",
+  "stderr": "vector version is not specified, use the default value v1.0\n",
+  "timeout": false,
+  "best_ms": 0.097168,
+  "qemu_only": true,
+  "n": 16384,
+  "reps": 10,
+  "tolerance": 1e-05,
+  "op": "ddot",
+  "task_dir": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\tasks\\ddot",
+  "driver": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\tasks\\ddot\\driver\\test_ddot.c",
+  "generated_c": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\real_grid_seed_sizes\\ddot_b3_n16384\\harness_r1\\generated.c",
+  "out_dir": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\real_grid_seed_sizes\\ddot_b3_n16384\\harness_r1",
+  "scripts": {
+    "build": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\real_grid_seed_sizes\\ddot_b3_n16384\\harness_r1\\build.sh",
+    "run": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\real_grid_seed_sizes\\ddot_b3_n16384\\harness_r1\\run.sh"
+  },
+  "logs": {
+    "build_stdout": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\real_grid_seed_sizes\\ddot_b3_n16384\\harness_r1\\build.stdout.log",
+    "build_stderr": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\real_grid_seed_sizes\\ddot_b3_n16384\\harness_r1\\build.stderr.log",
+    "qemu_stdout": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\real_grid_seed_sizes\\ddot_b3_n16384\\harness_r1\\qemu.stdout.log",
+    "qemu_stderr": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\real_grid_seed_sizes\\ddot_b3_n16384\\harness_r1\\qemu.stderr.log"
+  },
+  "commands": {
+    "build": [
+      "wsl.exe",
+      "-d",
+      "Ubuntu",
+      "-e",
+      "bash",
+      "/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_grid_seed_sizes/ddot_b3_n16384/harness_r1/build.sh"
+    ],
+    "run": [
+      "wsl.exe",
+      "-d",
+      "Ubuntu",
+      "-e",
+      "bash",
+      "/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_grid_seed_sizes/ddot_b3_n16384/harness_r1/run.sh"
+    ]
+  },
+  "compile_timeout": false,
+  "elapsed_build_s": 0.418,
+  "elapsed_run_s": 0.071,
+  "elapsed_s": 0.488,
+  "error": null,
+  "env": {
+    "wsl_distro": "Ubuntu",
+    "cc": "riscv64-linux-gnu-gcc",
+    "cflags": [
+      "-O3",
+      "-march=rv64gcv_zvl256b_zba_zbb_zbc_zbs",
+      "-mabi=lp64d",
+      "-static"
+    ],
+    "qemu": "qemu-riscv64",
+    "qemu_cpu": "rv64,v=true,vlen=256,zba=true,zbb=true,zbc=true,zbs=true",
+    "flags_source": "experiments/harness/qemu.py"
+  },
+  "line": "ddot n=16384 maxdiff=1.182e-11 reldiff=1.444e-15 best=0.097168 ms (2.70 GB/s) sink=8.188e+04"
+}

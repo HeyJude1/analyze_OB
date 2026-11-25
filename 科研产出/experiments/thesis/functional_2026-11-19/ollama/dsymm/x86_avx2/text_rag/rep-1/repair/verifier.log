@@ -1,0 +1,4 @@
+dsymm x86 candidate: compile_error 
+
+C:/msys64/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: C:\Users\MSI\AppData\Local\Temp\ccvL5taw.o:candidate.c:(.text+0x21b): undefined reference to `op_dscal'
+collect2.exe: error: ld returned 1 exit status

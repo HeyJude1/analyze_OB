@@ -1,0 +1,50 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "x86_64",
+  "results": [
+    {
+      "task": "dgemm",
+      "target": "rvv",
+      "variant": "candidate",
+      "compiler_version": "riscv64-buildroot-linux-gnu-gcc.br_real (Buildroot 2021.11-18033-g83947c7bb6) 14.3.0",
+      "source": "../experiments/thesis/functional_2026-11-19/ollama/dgemm/k1_rvv256/constraint_plan/rep-1/initial/candidate.c",
+      "source_sha256": "e5aa0c2728881ac2b767276646065e2e6e96eca08f82d958bbbfc9a007dad449",
+      "status": "check_failed",
+      "compile": {
+        "argv": [
+          "/mnt/c/Users/MSI/Desktop/cx_operator_tool/operator_extract/toolchain/riscv-gcc-14.3/bin/riscv64-buildroot-linux-gnu-gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-march=rv64gcv",
+          "-mabi=lp64d",
+          "-static",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DGEMM",
+          "driver/check.c",
+          "../experiments/thesis/functional_2026-11-19/ollama/dgemm/k1_rvv256/constraint_plan/rep-1/initial/candidate.c",
+          "-o",
+          "../experiments/thesis/functional_2026-11-19/ollama/dgemm/k1_rvv256/constraint_plan/rep-1/initial/bin/dgemm-rvv-candidate",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": "../experiments/thesis/functional_2026-11-19/ollama/dgemm/k1_rvv256/constraint_plan/rep-1/initial/candidate.c: In function ‘op_dgemm’:\n../experiments/thesis/functional_2026-11-19/ollama/dgemm/k1_rvv256/constraint_plan/rep-1/initial/candidate.c:17:18: warning: unused variable ‘init_value’ [-Wunused-variable]\n   17 |     const double init_value = 0.0;\n      |                  ^~~~~~~~~~\n"
+      },
+      "binary_sha256": "5346f1d84759ddbe1fa7ea34c93e462f6c92bf4ad24b37ea07cd43e3f1c4a8ed",
+      "check": {
+        "argv": [
+          "qemu-riscv64",
+          "-cpu",
+          "rv64,v=true,vlen=256,elen=64,vext_spec=v1.0",
+          "/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/thesis/functional_2026-11-19/ollama/dgemm/k1_rvv256/constraint_plan/rep-1/initial/bin/dgemm-rvv-candidate"
+        ],
+        "exit_code": 1,
+        "stdout": "32 cases, 1558 failures\n",
+        "stderr": "dgemm case 9 cell 1: got nan expected 0\ndgemm case 9 cell 2: got nan expected 0\ndgemm case 9 cell 3: got nan expected 0\ndgemm case 9 cell 4: got nan expected 0\ndgemm case 9 cell 5: got nan expected 0\ndgemm case 9 cell 6: got nan expected 0\ndgemm case 9 cell 7: got nan expected 0\ndgemm case 9 cell 8: got nan expected 0\ndgemm case 9 cell 9: got nan expected 0\ndgemm case 9 cell 13: got nan expected 0\n"
+      },
+      "environment": "external_runner"
+    }
+  ]
+}

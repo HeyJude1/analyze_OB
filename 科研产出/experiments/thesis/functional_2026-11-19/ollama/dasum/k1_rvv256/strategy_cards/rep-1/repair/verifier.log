@@ -1,0 +1,28 @@
+dasum rvv candidate: compile_error 
+
+wsl: �hKm0R localhost �NtM�n�FO*g\��P0R WSL0NAT !j_N�v WSL N/ec localhost �Nt0
+../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/strategy_cards/rep-1/repair/candidate.c: In function ‘op_dasum’:
+../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/strategy_cards/rep-1/repair/candidate.c:13:9: error: unknown type name ‘__m256d’
+   13 |         __m256d v_x1 = _mm256_loadu_pd(&x[i]);
+      |         ^~~~~~~
+../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/strategy_cards/rep-1/repair/candidate.c:13:24: error: implicit declaration of function ‘_mm256_loadu_pd’ [-Wimplicit-function-declaration]
+   13 |         __m256d v_x1 = _mm256_loadu_pd(&x[i]);
+      |                        ^~~~~~~~~~~~~~~
+../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/strategy_cards/rep-1/repair/candidate.c:14:9: error: unknown type name ‘__m256d’
+   14 |         __m256d v_x2 = _mm256_loadu_pd(&x[i + 2]);
+      |         ^~~~~~~
+../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/strategy_cards/rep-1/repair/candidate.c:15:9: error: unknown type name ‘__m256d’
+   15 |         __m256d v_abs1 = _mm256_andnot_pd(_mm256_set1_pd(-0.0), v_x1);
+      |         ^~~~~~~
+../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/strategy_cards/rep-1/repair/candidate.c:15:26: error: implicit declaration of function ‘_mm256_andnot_pd’ [-Wimplicit-function-declaration]
+   15 |         __m256d v_abs1 = _mm256_andnot_pd(_mm256_set1_pd(-0.0), v_x1);
+      |                          ^~~~~~~~~~~~~~~~
+../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/strategy_cards/rep-1/repair/candidate.c:15:43: error: implicit declaration of function ‘_mm256_set1_pd’ [-Wimplicit-function-declaration]
+   15 |         __m256d v_abs1 = _mm256_andnot_pd(_mm256_set1_pd(-0.0), v_x1);
+      |                                           ^~~~~~~~~~~~~~
+../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/strategy_cards/rep-1/repair/candidate.c:16:9: error: unknown type name ‘__m256d’
+   16 |         __m256d v_abs2 = _mm256_andnot_pd(_mm256_set1_pd(-0.0), v_x2);
+      |         ^~~~~~~
+../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/strategy_cards/rep-1/repair/candidate.c:17:16: error: implicit declaration of function ‘_mm256_reduce_add_pd’ [-Wimplicit-function-declaration]
+   17 |         sum += _mm256_reduce_add_pd(v_abs1) + _mm256_reduce_add_pd(v_abs2);
+      |                ^~~~~~~~~~~~~~~~~~~~

@@ -1,0 +1,9 @@
+{
+  "raw": "```c\n#include <immintrin.h>\n#include \"opbench.h\"\n\nvoid op_daxpy(size_t n, double alpha, const double *x, ptrdiff_t incx,\n              double *y, ptrdiff_t incy) {\n    if (alpha == 0.0) return;\n\n    size_t i;\n    const size_t unroll_factor = 4;\n    for (i = 0; i + unroll_factor <= n; i += unroll_factor) {\n        __m256d y_vec = _mm256_loadu_pd(&y[i * incy]);\n        __m256d x_vec = _mm256_loadu_pd(&x[i * incx]);\n        __m256d alpha_vec = _mm256_set1_pd(alpha);\n        y_vec = _mm256_add_pd(y_vec, _mm256_mul_pd(x_vec, alpha_vec));\n        _mm256_storeu_pd(&y[i * incy], y_vec);\n    }\n\n    for (; i < n; ++i) {\n        y[(ptrdiff_t)i * incy] += alpha * x[(ptrdiff_t)i * incx];\n    }\n}\n```",
+  "usage": {
+    "prompt_tokens": 1593,
+    "completion_tokens": 259,
+    "total_tokens": 1852
+  },
+  "stop_reason": "stop"
+}

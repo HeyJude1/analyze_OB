@@ -1,0 +1,12 @@
+dsymv x86 candidate: check_failed 720 cases, 1108 failures
+
+dsymv case 61 modified guard 2
+dsymv case 61 modified guard 3
+dsymv case 61 modified guard 4
+dsymv triangle/stride/alpha/beta case 62 cell 1: got -4.6920294960212203 expected -1.8123713527851459
+dsymv case 62 modified guard 2
+dsymv case 62 modified guard 3
+dsymv case 62 modified guard 4
+dsymv triangle/stride/alpha/beta case 63 cell 1: got -0.035331564986737396 expected 0.058885941644562331
+dsymv case 63 modified guard 2
+dsymv case 63 modified guard 3

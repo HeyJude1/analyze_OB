@@ -1,0 +1,18 @@
+/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_grid_seed_sizes/ddot_b4_n1024/harness/generated.c: In function ‘ddot_k’:
+/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_grid_seed_sizes/ddot_b4_n1024/harness/generated.c:31:110: error: incompatible type for argument 3 of ‘__riscv_vfmacc_vf_f64m8’
+   31 |                 vsum_lane = __riscv_vfmacc_vf_f64m8(vsum_lane, ((double *)x)[lane * inc_x + i], ((double *)y)[lane * inc_y + i], vlmax);
+      |                                                                                                 ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+      |                                                                                                              |
+      |                                                                                                              double
+In file included from /mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_grid_seed_sizes/ddot_b4_n1024/harness/generated.c:1:
+/usr/lib/gcc-cross/riscv64-linux-gnu/13/include/riscv_vector.h:94:9: note: expected ‘vfloat64m8_t’ but argument is of type ‘double’
+   94 | #pragma riscv intrinsic "vector"
+      |         ^~~~~
+/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_grid_seed_sizes/ddot_b4_n1024/harness/generated.c:41:110: error: incompatible type for argument 3 of ‘__riscv_vfmacc_vf_f64m8’
+   41 |                 vsum_lane = __riscv_vfmacc_vf_f64m8(vsum_lane, ((double *)x)[lane * inc_x + i], ((double *)y)[lane * inc_y + i], vl);
+      |                                                                                                 ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+      |                                                                                                              |
+      |                                                                                                              double
+/usr/lib/gcc-cross/riscv64-linux-gnu/13/include/riscv_vector.h:94:9: note: expected ‘vfloat64m8_t’ but argument is of type ‘double’
+   94 | #pragma riscv intrinsic "vector"
+      |         ^~~~~

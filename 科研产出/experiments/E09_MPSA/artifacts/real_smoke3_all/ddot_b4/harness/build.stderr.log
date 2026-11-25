@@ -1,0 +1,6 @@
+/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_smoke3_all/ddot_b4/harness/generated.c: In function ‘ddot_k’:
+/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_smoke3_all/ddot_b4/harness/generated.c:23:29: warning: implicit declaration of function ‘__riscv_vfredusum_vs_f64m8_f64’; did you mean ‘__riscv_vfredusum_vs_f64m8_f64m1’? [-Wimplicit-function-declaration]
+   23 |         vfloat64m1_t vred = __riscv_vfredusum_vs_f64m8_f64(vsum, __riscv_vfmv_v_f_f64m1(0.0, 1), vlmax);
+      |                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |                             __riscv_vfredusum_vs_f64m8_f64m1
+/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_smoke3_all/ddot_b4/harness/generated.c:23:29: error: incompatible types when initializing type ‘vfloat64m1_t’ using type ‘int’

@@ -1,0 +1,50 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "x86_64",
+  "results": [
+    {
+      "task": "dsymv",
+      "target": "rvv",
+      "variant": "candidate",
+      "compiler_version": "riscv64-buildroot-linux-gnu-gcc.br_real (Buildroot 2021.11-18033-g83947c7bb6) 14.3.0",
+      "source": "../experiments/thesis/functional_2026-11-19/ollama/dsymv/k1_rvv256/text_rag/rep-1/initial/candidate.c",
+      "source_sha256": "bc1499cafad9a6faf39d00d1080aaf7ece00468fc76882c64f80b45ebc006735",
+      "status": "check_failed",
+      "compile": {
+        "argv": [
+          "/mnt/c/Users/MSI/Desktop/cx_operator_tool/operator_extract/toolchain/riscv-gcc-14.3/bin/riscv64-buildroot-linux-gnu-gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-march=rv64gcv",
+          "-mabi=lp64d",
+          "-static",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DSYMV",
+          "driver/check.c",
+          "../experiments/thesis/functional_2026-11-19/ollama/dsymv/k1_rvv256/text_rag/rep-1/initial/candidate.c",
+          "-o",
+          "../experiments/thesis/functional_2026-11-19/ollama/dsymv/k1_rvv256/text_rag/rep-1/initial/bin/dsymv-rvv-candidate",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "1b2d8ae603c063d4f2c42fa3930244e790489488956bb7077722660100b247c6",
+      "check": {
+        "argv": [
+          "qemu-riscv64",
+          "-cpu",
+          "rv64,v=true,vlen=256,elen=64,vext_spec=v1.0",
+          "/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/thesis/functional_2026-11-19/ollama/dsymv/k1_rvv256/text_rag/rep-1/initial/bin/dsymv-rvv-candidate"
+        ],
+        "exit_code": 1,
+        "stdout": "720 cases, 3787 failures\n",
+        "stderr": "dsymv triangle/stride/alpha/beta case 61 cell 1: got nan expected -5.4676666971554013\ndsymv triangle/stride/alpha/beta case 62 cell 1: got nan expected -1.8123713527851459\ndsymv triangle/stride/alpha/beta case 66 cell 1: got nan expected -5.5474392981024288\ndsymv triangle/stride/alpha/beta case 67 cell 1: got nan expected 5.6614061873368566\ndsymv triangle/stride/alpha/beta case 68 cell 1: got nan expected 3.652440318302387\ndsymv triangle/stride/alpha/beta case 72 cell 1: got nan expected -3.0951916920544011\ndsymv triangle/stride/alpha/beta case 73 cell 1: got nan expected -0.27242856841320212\ndsymv triangle/stride/alpha/beta case 74 cell 1: got nan expected 1.5443236074270554\ndsymv triangle/stride/alpha/beta case 78 cell 1: got nan expected 9.302250068599653\ndsymv triangle/stride/alpha/beta case 79 cell 1: got nan expected -4.9465204145529773\n"
+      },
+      "environment": "external_runner"
+    }
+  ]
+}

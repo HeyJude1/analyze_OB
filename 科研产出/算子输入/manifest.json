@@ -1,0 +1,325 @@
+{
+  "schema_version": 1,
+  "header": "include/opbench.h",
+  "driver": "driver/check.c",
+  "targets": {
+    "x86_avx2": {
+      "flags": [
+        "-mavx2",
+        "-mfma"
+      ],
+      "requires": [
+        "x86_64",
+        "AVX2",
+        "FMA"
+      ]
+    },
+    "riscv_rvv": {
+      "flags": [
+        "-march=rv64gcv",
+        "-mabi=lp64d"
+      ],
+      "requires": [
+        "riscv64",
+        "RVV 1.0",
+        "FP64",
+        "compatible RVV intrinsics"
+      ]
+    }
+  },
+  "tasks": {
+    "daxpy": {
+      "split": "build",
+      "contract": "tasks/daxpy/contract.json",
+      "generic": "tasks/daxpy/generic.c",
+      "implementations": {
+        "x86_avx2": "tasks/daxpy/x86_avx2.c",
+        "riscv_rvv": "tasks/daxpy/riscv_rvv.c"
+      },
+      "sources": [
+        {
+          "repo": "https://github.com/OpenMathLib/OpenBLAS",
+          "commit": "ce3f668c992cb3cc80849d5c30ed637f5adbd5b2",
+          "path": "lapack-netlib/BLAS/SRC/daxpy.f",
+          "local_path": "vendor/openblas/lapack-netlib/BLAS/SRC/daxpy.f",
+          "sha256": "c7e83442809841cd4beccd194d5c2b2b4f78c9e784e1e9dd79c9fc27577a6387",
+          "architecture": "portable",
+          "interface_scope": "reference_interface",
+          "observations": []
+        },
+        {
+          "repo": "https://github.com/OpenMathLib/OpenBLAS",
+          "commit": "ce3f668c992cb3cc80849d5c30ed637f5adbd5b2",
+          "path": "kernel/x86_64/daxpy_microk_haswell-2.c",
+          "local_path": "vendor/openblas/kernel/x86_64/daxpy_microk_haswell-2.c",
+          "sha256": "090fcef22df43134bd461781b99f125748edbcf67fe129e6055887ad6fcd8518",
+          "architecture": "x86_avx2",
+          "interface_scope": "microkernel_observations",
+          "observations": [
+            {
+              "line_start": 44,
+              "line_end": 55,
+              "note": "4 路 YMM 向量 FMA 与多段存储"
+            }
+          ]
+        },
+        {
+          "repo": "https://github.com/OpenMathLib/OpenBLAS",
+          "commit": "ce3f668c992cb3cc80849d5c30ed637f5adbd5b2",
+          "path": "kernel/riscv64/axpy_rvv.c",
+          "local_path": "vendor/openblas/kernel/riscv64/axpy_rvv.c",
+          "sha256": "f64f537f69fccb9fccf070ed901ac1a76d096734442369976679bccd55782f19",
+          "architecture": "riscv_rvv",
+          "interface_scope": "kernel_observations",
+          "observations": [
+            {
+              "line_start": 43,
+              "line_end": 53,
+              "note": "FP64 向量类型和 LMUL=m8"
+            },
+            {
+              "line_start": 60,
+              "line_end": 76,
+              "note": "单位步长分支与动态 vl"
+            }
+          ]
+        }
+      ]
+    },
+    "ddot": {
+      "split": "build",
+      "contract": "tasks/ddot/contract.json",
+      "generic": "tasks/ddot/generic.c",
+      "implementations": {
+        "x86_avx2": "tasks/ddot/x86_avx2.c",
+        "riscv_rvv": "tasks/ddot/riscv_rvv.c"
+      },
+      "sources": [
+        {
+          "repo": "https://github.com/OpenMathLib/OpenBLAS",
+          "commit": "ce3f668c992cb3cc80849d5c30ed637f5adbd5b2",
+          "path": "lapack-netlib/BLAS/SRC/ddot.f",
+          "local_path": "vendor/openblas/lapack-netlib/BLAS/SRC/ddot.f",
+          "sha256": "755ca04883a190a716ffe29156a7d435b4d8b55f58b71680889da5cdce742c5d",
+          "architecture": "portable",
+          "interface_scope": "reference_interface",
+          "observations": []
+        },
+        {
+          "repo": "https://github.com/OpenMathLib/OpenBLAS",
+          "commit": "ce3f668c992cb3cc80849d5c30ed637f5adbd5b2",
+          "path": "kernel/x86_64/ddot_microk_haswell-2.c",
+          "local_path": "vendor/openblas/kernel/x86_64/ddot_microk_haswell-2.c",
+          "sha256": "acaf2fd46c4db4167f32dba7c84718628905310fedc5f64e101861ab17fef0dd",
+          "architecture": "x86_avx2",
+          "interface_scope": "microkernel_observations",
+          "observations": [
+            {
+              "line_start": 42,
+              "line_end": 59,
+              "note": "多个 YMM 累加链和 FMA"
+            }
+          ]
+        },
+        {
+          "repo": "https://github.com/OpenMathLib/OpenBLAS",
+          "commit": "ce3f668c992cb3cc80849d5c30ed637f5adbd5b2",
+          "path": "kernel/riscv64/dot_rvv.c",
+          "local_path": "vendor/openblas/kernel/riscv64/dot_rvv.c",
+          "sha256": "67b2776644de89a8d6c5c214e9de1ebbfd736b0a3152581ab873a18f67344c88",
+          "architecture": "riscv_rvv",
+          "interface_scope": "kernel_observations",
+          "observations": [
+            {
+              "line_start": 40,
+              "line_end": 58,
+              "note": "动态 vl 和尾元素不破坏累加状态"
+            },
+            {
+              "line_start": 119,
+              "line_end": 124,
+              "note": "归约全部累加 lane"
+            }
+          ]
+        }
+      ]
+    },
+    "dgemv": {
+      "split": "build",
+      "contract": "tasks/dgemv/contract.json",
+      "generic": "tasks/dgemv/generic.c",
+      "implementations": {
+        "x86_avx2": "tasks/dgemv/x86_avx2.c",
+        "riscv_rvv": "tasks/dgemv/riscv_rvv.c"
+      },
+      "sources": [
+        {
+          "repo": "https://github.com/OpenMathLib/OpenBLAS",
+          "commit": "ce3f668c992cb3cc80849d5c30ed637f5adbd5b2",
+          "path": "lapack-netlib/BLAS/SRC/dgemv.f",
+          "local_path": "vendor/openblas/lapack-netlib/BLAS/SRC/dgemv.f",
+          "sha256": "616f2522cb3184699ac293dca8d5c1857c6ca4518b6f247e3847e1cb733c8194",
+          "architecture": "portable",
+          "interface_scope": "reference_interface",
+          "observations": []
+        },
+        {
+          "repo": "https://github.com/OpenMathLib/OpenBLAS",
+          "commit": "ce3f668c992cb3cc80849d5c30ed637f5adbd5b2",
+          "path": "kernel/x86_64/dgemv_n_microk_haswell-4.c",
+          "local_path": "vendor/openblas/kernel/x86_64/dgemv_n_microk_haswell-4.c",
+          "sha256": "6ebcd80f704518ef1892dae6259389a7864970f5e8f32d7f87fcd4e30f51e6be",
+          "architecture": "x86_avx2",
+          "interface_scope": "microkernel_observations",
+          "observations": [
+            {
+              "line_start": 30,
+              "line_end": 40,
+              "note": "4×4 内核"
+            },
+            {
+              "line_start": 56,
+              "line_end": 70,
+              "note": "向量化的多路乘加"
+            }
+          ]
+        },
+        {
+          "repo": "https://github.com/OpenMathLib/OpenBLAS",
+          "commit": "ce3f668c992cb3cc80849d5c30ed637f5adbd5b2",
+          "path": "kernel/riscv64/gemv_t_rvv.c",
+          "local_path": "vendor/openblas/kernel/riscv64/gemv_t_rvv.c",
+          "sha256": "b4a7b079af9025aabb475cfd5fbe74414e1c602af8cc50113ee7be3a0a9c4815",
+          "architecture": "riscv_rvv",
+          "interface_scope": "kernel_observations",
+          "observations": [
+            {
+              "line_start": 63,
+              "line_end": 89,
+              "note": "单位步长分支使用动态 vl、尾部保留乘加和向量归约"
+            }
+          ]
+        }
+      ]
+    },
+    "dgemm": {
+      "split": "build",
+      "contract": "tasks/dgemm/contract.json",
+      "generic": "tasks/dgemm/generic.c",
+      "implementations": {
+        "x86_avx2": "tasks/dgemm/x86_avx2.c",
+        "riscv_rvv": "tasks/dgemm/riscv_rvv.c"
+      },
+      "sources": [
+        {
+          "repo": "https://github.com/OpenMathLib/OpenBLAS",
+          "commit": "ce3f668c992cb3cc80849d5c30ed637f5adbd5b2",
+          "path": "lapack-netlib/BLAS/SRC/dgemm.f",
+          "local_path": "vendor/openblas/lapack-netlib/BLAS/SRC/dgemm.f",
+          "sha256": "ce66985980aacc6e9fa93eef8fdda294926885b2e5a1255e2d2b2d447eaef00e",
+          "architecture": "portable",
+          "interface_scope": "reference_interface",
+          "observations": []
+        },
+        {
+          "repo": "https://github.com/OpenMathLib/OpenBLAS",
+          "commit": "ce3f668c992cb3cc80849d5c30ed637f5adbd5b2",
+          "path": "kernel/x86_64/dgemm_kernel_4x8_haswell.S",
+          "local_path": "vendor/openblas/kernel/x86_64/dgemm_kernel_4x8_haswell.S",
+          "sha256": "95c550302f6e52781ceedafc2d34cdc9086b7b8ed271d049de1ce3060738bc90",
+          "architecture": "x86_avx2",
+          "interface_scope": "packed_microkernel_observations",
+          "observations": [
+            {
+              "line_start": 183,
+              "line_end": 221,
+              "note": "微内核寄存器分块、FMA 和预取"
+            }
+          ]
+        },
+        {
+          "repo": "https://github.com/OpenMathLib/OpenBLAS",
+          "commit": "ce3f668c992cb3cc80849d5c30ed637f5adbd5b2",
+          "path": "kernel/riscv64/dgemm_kernel_8x8_zvl256b.c",
+          "local_path": "vendor/openblas/kernel/riscv64/dgemm_kernel_8x8_zvl256b.c",
+          "sha256": "f318dfec06280c6bad5a866d0381fcaf13772f16706c559d385133478957347a",
+          "architecture": "riscv_rvv",
+          "interface_scope": "packed_microkernel_observations",
+          "observations": [
+            {
+              "line_start": 54,
+              "line_end": 90,
+              "note": "按 M/N 的 8 元素主块遍历；每个 8×8 块由多组向量累加状态保存"
+            }
+          ]
+        },
+        {
+          "repo": "https://github.com/OpenMathLib/OpenBLAS",
+          "commit": "ce3f668c992cb3cc80849d5c30ed637f5adbd5b2",
+          "path": "kernel/riscv64/gemm_ncopy_rvv_v1.c",
+          "local_path": "vendor/openblas/kernel/riscv64/gemm_ncopy_rvv_v1.c",
+          "sha256": "55d14a4a5165ee454f693fec98f9a5a92e2eecd03621658f33ae8dd1074ef069",
+          "architecture": "riscv_rvv",
+          "interface_scope": "packing_observations",
+          "observations": [
+            {
+              "line_start": 60,
+              "line_end": 72,
+              "note": "跨步读取与连续写入以生成打包缓冲区"
+            }
+          ]
+        }
+      ]
+    },
+    "dscal": {
+      "split": "holdout",
+      "contract": "tasks/dscal/contract.json",
+      "generic": "tasks/dscal/generic.c",
+      "implementations": {
+        "x86_avx2": "tasks/dscal/x86_avx2.c",
+        "riscv_rvv": "tasks/dscal/riscv_rvv.c"
+      },
+      "sources": []
+    },
+    "dasum": {
+      "split": "holdout",
+      "contract": "tasks/dasum/contract.json",
+      "generic": "tasks/dasum/generic.c",
+      "implementations": {
+        "x86_avx2": "tasks/dasum/x86_avx2.c",
+        "riscv_rvv": "tasks/dasum/riscv_rvv.c"
+      },
+      "sources": []
+    },
+    "dsymv": {
+      "split": "holdout",
+      "contract": "tasks/dsymv/contract.json",
+      "generic": "tasks/dsymv/generic.c",
+      "implementations": {
+        "x86_avx2": "tasks/dsymv/x86_avx2.c",
+        "riscv_rvv": "tasks/dsymv/riscv_rvv.c"
+      },
+      "sources": []
+    },
+    "dsymm": {
+      "split": "near_transfer",
+      "contract": "tasks/dsymm/contract.json",
+      "generic": "tasks/dsymm/generic.c",
+      "implementations": {
+        "x86_avx2": "tasks/dsymm/x86_avx2.c",
+        "riscv_rvv": "tasks/dsymm/riscv_rvv.c"
+      },
+      "sources": []
+    },
+    "conv1d": {
+      "split": "external_holdout",
+      "contract": "tasks/conv1d/contract.json",
+      "generic": "tasks/conv1d/generic.c",
+      "implementations": {
+        "x86_avx2": "tasks/conv1d/x86_avx2.c",
+        "riscv_rvv": "tasks/conv1d/riscv_rvv.c"
+      },
+      "sources": []
+    }
+  }
+}

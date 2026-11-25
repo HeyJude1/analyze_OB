@@ -1,0 +1,9 @@
+{
+  "raw": "```c\n#include \"opbench.h\"\n\nstatic double symmetric_at(const double *a, size_t lda, size_t i, size_t j, char uplo) {\n    const int stored = uplo == 'U' ? i <= j : i >= j;\n    return stored ? a[i * lda + j] : a[j * lda + i];\n}\n\nvoid op_dsymm(char side, char uplo, size_t m, size_t n, double alpha,\n              const double *a, size_t lda, const double *b, size_t ldb,\n              double beta, double *c, size_t ldc) {\n    if (m == 0 || n == 0 || (alpha == 0.0 && beta == 1.0)) return;\n\n    if (side == 'L') {\n        for (size_t i = 0; i < m; ++i) {\n            double sum = 0.0;\n            if (alpha != 0.0) {\n                for (size_t p = 0; p < m; ++p)\n                    sum += symmetric_at(a, lda, i, p, uplo) * b[p * ldb + n - 1];\n            }\n            const size_t index = i * ldc + n - 1;\n            c[index] = alpha * sum + (beta == 0.0 ? 0.0 : beta * c[index]);\n        }\n    } else {\n        for (size_t j = 0; j < n; ++j) {\n            double sum = 0.0;\n            if (alpha != 0.0) {\n                for (size_t p = 0; p < n; ++p)\n                    sum += b[i * ldb + p] * symmetric_at(a, lda, m - 1, p, uplo);\n            }\n            const size_t index = (m - 1) * ldc + j;\n            c[index] = alpha * sum + (beta == 0.0 ? 0.0 : beta * c[index]);\n        }\n    }\n}\n```",
+  "usage": {
+    "prompt_tokens": 1561,
+    "completion_tokens": 436,
+    "total_tokens": 1997
+  },
+  "stop_reason": "stop"
+}

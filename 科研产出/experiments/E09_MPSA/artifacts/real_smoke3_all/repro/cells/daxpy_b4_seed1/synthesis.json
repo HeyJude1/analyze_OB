@@ -1,0 +1,36 @@
+{
+  "criteria": {
+    "supportive": {
+      "score": 0.9,
+      "reason": "所有策略均采用 LMUL=8 和 SEW=64，参数一致；向量化策略与尾部处理策略在阶段上分离，可同时应用；无明显冲突项"
+    },
+    "complementarity": {
+      "score": 0.85,
+      "reason": "stg:axpy:vectorize_d 覆盖主循环向量化，stg:axpy:tail_handle_d 处理尾部，stg:axpy:specialize_d 提供寄存器分组参数调优，三者分别作用于不同实现阶段"
+    },
+    "accuracy": {
+      "score": 0.7,
+      "reason": "尾部处理依赖动态 vl 可能引入数值一致性风险；未明确处理 x 和 y 别名问题；向量化实现需确保与标量语义一致"
+    },
+    "completeness": {
+      "score": 0.8,
+      "reason": "主循环、尾部处理已覆盖；stride_x 和 stride_y 均为 1，未处理任意步长情况；n<=0 分支未显式提及，需补充"
+    }
+  },
+  "criteria_scores": {
+    "supportive": 0.9,
+    "complementarity": 0.85,
+    "accuracy": 0.7,
+    "completeness": 0.8
+  },
+  "overall": "三个策略可组合应用，覆盖主循环向量化、尾部处理和寄存器参数调优，但需特别注意尾部处理和内存别名问题",
+  "recommended": [
+    "stg:axpy:vectorize_d",
+    "stg:axpy:tail_handle_d",
+    "stg:axpy:specialize_d"
+  ],
+  "guidance": "['主循环采用 RVV 向量化内核，使用 vsetvl + vle/vfmacc/vse 指令模式', '向量化阶段采用 LMUL=8 和 SEW=64 参数，对应 double 类型和硬件能力', '尾部处理使用动态 vl 和掩码方式，适配 tail_divisible=false 的情况', '对 n<=0 分支进行单独判断处理，确保边界安全', '考虑内存别名问题，必要时加入 restrict 修饰符或标量回退路径', '注意寄存器压力管理，避免 LMUL=8 导致调度瓶颈']",
+  "conflicts": [
+    "stg:axpy:vectorize_d 的尾部处理未覆盖非整除情况，需与 stg:axpy:tail_handle_d 协调"
+  ]
+}

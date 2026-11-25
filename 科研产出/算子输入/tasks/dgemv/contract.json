@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "task": "dgemv",
+  "symbol": "op_dgemv",
+  "split": "build",
+  "features": {
+    "dtype": "d",
+    "precision": "double",
+    "loop_depth": 2,
+    "structural": "none",
+    "reduction": true,
+    "layout": "row_major_nn"
+  },
+  "pattern": "row_dot_product",
+  "dimensions": [
+    "m",
+    "n"
+  ],
+  "semantics": "y[i*incy] = alpha*sum(A[i*lda+j]*x[j*incx]) + beta*y[i*incy]. m==0 writes nothing. For n==0 or alpha==0 the sum product is zero and A/x are not read; beta==0 overwrites instead of reading y. This benchmark's n==0 rule may differ from public BLAS wrappers.",
+  "parameters": [
+    "m",
+    "n",
+    "alpha",
+    "a",
+    "lda",
+    "x",
+    "incx",
+    "beta",
+    "y",
+    "incy"
+  ],
+  "benchmark_cases": [
+    {
+      "id": "small",
+      "m": 63,
+      "n": 31,
+      "incx": 1,
+      "incy": 1,
+      "lda_pad": 0,
+      "alpha": 1.13,
+      "beta": 0
+    },
+    {
+      "id": "medium",
+      "m": 511,
+      "n": 257,
+      "incx": 1,
+      "incy": 1,
+      "lda_pad": 0,
+      "alpha": 1.13,
+      "beta": 0
+    },
+    {
+      "id": "large",
+      "m": 2047,
+      "n": 2053,
+      "incx": 1,
+      "incy": 1,
+      "lda_pad": 0,
+      "alpha": 1.13,
+      "beta": 0
+    },
+    {
+      "id": "strided",
+      "m": 127,
+      "n": 259,
+      "incx": 2,
+      "incy": 3,
+      "lda_pad": 3,
+      "alpha": 1.13,
+      "beta": -0.64
+    }
+  ],
+  "memory_contract": "Arrays referenced by the same call occupy disjoint storage. Negative increments are valid and the supplied pointer is logical element zero. Increments are nonzero and leading dimensions at least the corresponding row width. Offsets are representable in ptrdiff_t.",
+  "numeric_contract": "FP64 finite inputs in the validation domain; FMA and reassociation in explicit vector reductions permitted within numerical tolerance. Smoke comparator: |observed-reference| <= 2e-12 + 3e-12*|reference|; exact guard/unchanged-input checks where applicable."
+}

@@ -1,0 +1,12 @@
+dgemv x86 candidate: check_failed 84 cases, 30 failures
+
+dgemv case 15 cell 1: got -2.557029177718833 expected 1.5342175066312997
+dgemv case 15 cell 2: got -2.3687002652519893 expected 1.4212201591511935
+dgemv case 15 cell 3: got -0.35013262599469497 expected 0.21007957559681698
+dgemv case 15 cell 4: got -0.1830238726790451 expected 0.10981432360742706
+dgemv case 15 cell 5: got -2.249336870026525 expected 1.3496021220159149
+dgemv case 16 cell 1: got nan expected 0
+dgemv case 16 cell 2: got nan expected 0
+dgemv case 16 cell 3: got nan expected 0
+dgemv case 16 cell 4: got nan expected 0
+dgemv case 16 cell 5: got nan expected 0

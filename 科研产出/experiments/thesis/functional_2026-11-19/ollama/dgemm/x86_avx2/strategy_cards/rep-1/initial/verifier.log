@@ -1,0 +1,6 @@
+dgemm x86 candidate: compile_error 
+
+..\experiments\thesis\functional_2026-11-19\ollama\dgemm\x86_avx2\strategy_cards\rep-1\initial\candidate.c: In function 'op_dgemm':
+..\experiments\thesis\functional_2026-11-19\ollama\dgemm\x86_avx2\strategy_cards\rep-1\initial\candidate.c:21:50: error: variable-sized object may not be initialized except with an empty initializer
+   21 |             double acc[block_size][block_size] = {init_value};
+      |                                                  ^

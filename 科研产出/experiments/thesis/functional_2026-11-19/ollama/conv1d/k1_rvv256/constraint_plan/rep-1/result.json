@@ -1,0 +1,49 @@
+{
+  "analogy_source": "dot",
+  "card_ids": [
+    "stg:abstract:register_blocking",
+    "stg:abstract:vector_fma",
+    "stg:abstract:tail_handling",
+    "stg:abstract:stride_dispatch"
+  ],
+  "contract_sha256": "9e62426eba09d560fb0ec7aced9891cf8683858e1e989fbaa3becff476df28bb",
+  "knowledge_bytes": 5810,
+  "method": "constraint_plan",
+  "operator": "conv1d",
+  "profile": "k1_rvv256",
+  "prompt": "conv1d/k1_rvv256/constraint_plan.json",
+  "prompt_sha256": "5ce3504e63755561c830a7dcff6a12cb5ff1a781c7aef1369813747358f88e7f",
+  "repetition": 1,
+  "source_sha256": "b4dfcd553e1a84044d9fad60edacba88b7ba1b4abdddee5d5c71b992152cc043",
+  "split": "external_holdout",
+  "status": "prepared",
+  "engine": "ollama",
+  "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+  "repair_attempted": true,
+  "initial": {
+    "status": "compile_failed",
+    "compile_ok": false,
+    "correct": null,
+    "failure_reason": "other_compiler_error",
+    "usage": {
+      "prompt_tokens": 3018,
+      "completion_tokens": 286,
+      "total_tokens": 3304
+    },
+    "diagnostic": "../experiments/thesis/functional_2026-11-19/ollama/conv1d/k1_rvv256/constraint_plan/rep-1/initial/candidate.c: In function ‘op_conv1d’:\n../experiments/thesis/functional_2026-11-19/ollama/conv1d/k1_rvv256/constraint_plan/rep-1/initial/candidate.c:18:34: error: variable-sized object may not be initialized except with an empty initializer\n   18 |         double sum[block_size] = {0.0};\n      |                                  ^\n../experiments/thesis/functional_2026-11-19/ollama/conv1d/k1_rvv256/constraint_plan/rep-1/initial/candidate.c:10:15: warning: unused variable ‘reserved_vector_registers’ [-Wunused-variable]\n   10 |     const int reserved_vector_registers = 4;\n      |               ^~~~~~~~~~~~~~~~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/conv1d/k1_rvv256/constraint_plan/rep-1/initial/candidate.c:9:15: warning: unused variable ‘vector_elements_per_register’ [-Wunused-variable]\n    9 |     const int vector_elements_per_register = 4;\n      |               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/conv1d/k1_rvv256/constraint_plan/rep-1/initial/candidate.c:8:15: warning: unused variable ‘unroll_factor’ [-Wunused-variable]\n    8 |     const int unroll_factor = 4;\n      |               ^~~~~~~~~~~~~\n",
+    "candidate_sha256": "65bd495242f7266d4f442d60df280a0204073f12bb18bc914fceff7dc6d9d185"
+  },
+  "final": {
+    "status": "compile_failed",
+    "compile_ok": false,
+    "correct": null,
+    "failure_reason": "other_compiler_error",
+    "usage": {
+      "prompt_tokens": 1841,
+      "completion_tokens": 286,
+      "total_tokens": 2127
+    },
+    "diagnostic": "../experiments/thesis/functional_2026-11-19/ollama/conv1d/k1_rvv256/constraint_plan/rep-1/repair/candidate.c: In function ‘op_conv1d’:\n../experiments/thesis/functional_2026-11-19/ollama/conv1d/k1_rvv256/constraint_plan/rep-1/repair/candidate.c:18:34: error: variable-sized object may not be initialized except with an empty initializer\n   18 |         double sum[block_size] = {0.0};\n      |                                  ^\n../experiments/thesis/functional_2026-11-19/ollama/conv1d/k1_rvv256/constraint_plan/rep-1/repair/candidate.c:10:15: warning: unused variable ‘reserved_vector_registers’ [-Wunused-variable]\n   10 |     const int reserved_vector_registers = 4;\n      |               ^~~~~~~~~~~~~~~~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/conv1d/k1_rvv256/constraint_plan/rep-1/repair/candidate.c:9:15: warning: unused variable ‘vector_elements_per_register’ [-Wunused-variable]\n    9 |     const int vector_elements_per_register = 4;\n      |               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/conv1d/k1_rvv256/constraint_plan/rep-1/repair/candidate.c:8:15: warning: unused variable ‘unroll_factor’ [-Wunused-variable]\n    8 |     const int unroll_factor = 4;\n      |               ^~~~~~~~~~~~~\n",
+    "candidate_sha256": "65bd495242f7266d4f442d60df280a0204073f12bb18bc914fceff7dc6d9d185"
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "schema_version": "mpsa-repair-v1",
+  "op": "ddot",
+  "op_canonical": "dot",
+  "profile": "k1_rvv256",
+  "mode": "b3",
+  "provider": "mock",
+  "model": "mock",
+  "model_requested": "qwen-plus-2025-04-28",
+  "created_at": "2026-11-12T20:57:08+08:00",
+  "input_error": "ddot n=16384 maxdiff=8.188e+03 reldiff=1.000e+00 best=0.000000 ms (0.00 GB/s) sink=0.000e+00",
+  "error_source": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\selftest_repair_wrong\\ddot_b3\\harness\\qemu.stdout.log",
+  "calls": 1,
+  "fix_summary": {
+    "changed": true,
+    "original_chars": 458,
+    "repaired_chars": 318,
+    "intrinsics_used": [],
+    "mock": true
+  },
+  "prompt": {
+    "repair": "你是 OpenBLAS 风格高性能 BLAS 内核的「修复工程师」。下面是一段由 LLM 生成的 C 内核代码，它在该目标平台上**编译失败**或**运行结果错误**。请输出修复后的完整 C 函数。\n\n【目标算子】ddot（知识图谱规范名：dot）\n【目标硬件 profile】k1_rvv256\n【任务函数签名（修复后必须逐字一致）】double ddot_k(BLASLONG n, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y)\n\n【待修复的原代码】\n/* E09 修复回路自测夹具：数值错误（wrong_answer 分支）\n * 编译通过、但恒返回 0.0 → driver 的 maxdiff≈8192 / reldiff≈1 → exit 2。\n * 用法（mock 生成用）：run_smoke.py --mock-code selftest/wrong_answer_ddot.c\n *   → 初始 wrong_answer（--error 传 qemu.stdout.log）→ repair 兜底返回 tasks/ddot/input/generic.c → 重跑通过。\n */\ntypedef long long BLASLONG;\ndouble ddot_k(BLASLONG n, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y)\n{\n    (void)n; (void)x; (void)inc_x; (void)y; (void)inc_y;\n    return 0.0;\n}\n\n【编译器 stderr / 运行输出（真实错误；可能是长日志或 mojibake，请从中提取关键信息）】\nddot n=16384 maxdiff=8.188e+03 reldiff=1.000e+00 best=0.000000 ms (0.00 GB/s) sink=0.000e+00\n\n【修复原则（按优先级）】\n1. **正确性优先**：如果错误来自 intrinsic 名称/参数/类型不匹配（典型关键字：`implicit declaration of function`、`incompatible types when initializing`、`expected ... but argument is of type 'int'`），说明原代码用了不存在的 intrinsic 或参数顺序错误。不要猜测 intrinsic 名，**直接把该实现退回纯标量 C 循环**（最稳，保证编译通过 + 数值正确）；只有在 100% 确定名称与参数时才保留向量化。\n2. 若错误是**运行结果错误**（输出里有很大的 `maxdiff=... reldiff=...`，或注释说明结果只等于部分和/lane0），重点检查**归约**：点积/范数等 reduction 必须把累加向量的所有 lane 相加后再返回，不能只取 lane0 或只处理第一个向量块。无法确定向量归约写法时同样退回标量实现。\n3. 若 k1_rvv256 是 RISC-V RVV 且你确定要保留向量化，只允许使用 GCC 13 `riscv_vector.h` 中**实测可编译**的以下 API（不要发明名字）：\n   - 长度控制：`__riscv_vsetvl_e64m1/m2/m4/m8`、`__riscv_vsetvlmax_e64m8`\n   - 访存：`__riscv_vle64_v_f64m1/m8(ptr, vl)`、`__riscv_vlse64_v_f64m1/m8(ptr, (ptrdiff_t)(stride_bytes), vl)`、`__riscv_vse64_v_f64m1/m8(ptr, vec, vl)`\n   - 乘加：`__riscv_vfmacc_vv_f64m1/m8(vd, vs1, vs2, vl)`、`__riscv_vfmacc_vf_f64m1/m8(vd, scalar, vs2, vl)`\n   - 广播/取回：`__riscv_vfmv_v_f_f64m1`、`__riscv_vfmv_v_f_f64m8`；取回标量只支持 m1 结果：`__riscv_vfmv_f_s_f64m1_f64(vec)`\n   - 归约：`__riscv_vfredusum_vs_f64m1_f64m1(v, __riscv_vfmv_v_f_f64m1(0.0, 1), vl)`；m8 版本为 `__riscv_vfredusum_vs_f64m8_f64m1(vm8, __riscv_vfmv_v_f_f64m1(0.0, 1), vlmax)`——注意 m8 的归约结果类型是 **m1**，名字必须以 `..._f64m8_f64m1` 结尾。\n   - **已证实会编译失败的幻觉名字（禁止使用）**：`__riscv_vmvinf_f64m8`、`__riscv_vlseg1e64_v_f64m8`、`__riscv_vse64`（无后缀）、`__riscv_vfmv_f_s_f64m8`、`__riscv_vfredusum_vs_f64m8_f64`、`__riscv_vlxei64_v_f64m8`、`__riscv_vsxei64`。\n4. 保持与基线一致的语义：`n <= 0`、`da == 0`（axpy）、任意 `inc_x/inc_y`（含负步长）、尾部元素都要正确；不要改变函数名/返回类型/参数列表。\n5. 如果原代码包含 `#include <riscv_vector.h>` 但修复后不再使用 intrinsic，可以删掉该 include；保留编译器需要的标准头文件即可。\n6. 只输出一个完整 C 函数（可以带前置 `#include` 或 `static` 辅助函数）；不要输出 `main`、不要 BLAS/OpenBLAS 头文件、不要 markdown 代码围栏、不要解释文字、不要 TODO 或伪代码；不要引入未定义符号或未给出的性能数字。\n\n【输出】\n直接输出修复后的完整 C 函数源码。\n",
+    "chars": 2618
+  },
+  "code": "typedef long long BLASLONG;\n\ndouble ddot_k(BLASLONG n, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y)\n{\n    BLASLONG i;\n    BLASLONG ix = 0;\n    BLASLONG iy = 0;\n    double acc = 0.0;\n\n    for (i = 0; i < n; i++) {\n        acc += x[ix] * y[iy];\n        ix += inc_x;\n        iy += inc_y;\n    }\n    return acc;\n}\n",
+  "code_meta": {
+    "signature": "double ddot_k(BLASLONG n, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y)",
+    "function_name": "ddot_k",
+    "wrapped_body": false,
+    "fences_removed": false,
+    "prologue_added": true,
+    "repairs": [],
+    "char_count": 318
+  },
+  "usage": {
+    "calls": 1,
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0,
+    "by_stage": {
+      "analysis": {
+        "calls": 0,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "synthesis": {
+        "calls": 0,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "generate": {
+        "calls": 0,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "repair": {
+        "calls": 1,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      }
+    }
+  },
+  "elapsed_s": 0.001,
+  "warnings": [],
+  "artifacts": {
+    "out_dir": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\selftest_repair_wrong\\ddot_b3\\repair_r1",
+    "result_path": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\selftest_repair_wrong\\ddot_b3\\repair_r1\\repair_result.json",
+    "repaired_c_path": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\selftest_repair_wrong\\ddot_b3\\repair_r1\\repaired.c"
+  }
+}

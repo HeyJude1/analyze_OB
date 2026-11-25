@@ -1,0 +1,36 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "amd64",
+  "results": [
+    {
+      "task": "dscal",
+      "target": "x86",
+      "variant": "candidate",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c",
+      "source_sha256": "967133f615d7605ced9eb0603e28fca4f1f5b344e9091400409aaafaa500f8be",
+      "status": "compile_error",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DSCAL",
+          "driver/check.c",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c",
+          "-o",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\constraint_plan\\rep-1\\initial\\bin\\dscal-x86-candidate.exe",
+          "-lm"
+        ],
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c: In function 'op_dscal':\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c:8:13: error: unknown type name '__m256d'\n    8 |             __m256d v_x0 = _mm256_loadu_pd(&x[i]);\n      |             ^~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c:8:28: error: implicit declaration of function '_mm256_loadu_pd' [-Wimplicit-function-declaration]\n    8 |             __m256d v_x0 = _mm256_loadu_pd(&x[i]);\n      |                            ^~~~~~~~~~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c:9:13: error: unknown type name '__m256d'\n    9 |             __m256d v_alpha = _mm256_set1_pd(alpha);\n      |             ^~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c:9:31: error: implicit declaration of function '_mm256_set1_pd' [-Wimplicit-function-declaration]\n    9 |             __m256d v_alpha = _mm256_set1_pd(alpha);\n      |                               ^~~~~~~~~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c:10:13: error: unknown type name '__m256d'\n   10 |             __m256d v_result = _mm256_mul_pd(v_x0, v_alpha);\n      |             ^~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c:10:32: error: implicit declaration of function '_mm256_mul_pd' [-Wimplicit-function-declaration]\n   10 |             __m256d v_result = _mm256_mul_pd(v_x0, v_alpha);\n      |                                ^~~~~~~~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c:11:13: error: implicit declaration of function '_mm256_storeu_pd' [-Wimplicit-function-declaration]\n   11 |             _mm256_storeu_pd(&x[i], v_result);\n      |             ^~~~~~~~~~~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c:21:13: error: unknown type name '__m256d'\n   21 |             __m256d v_x0 = _mm256_loadu_pd(&x[(ptrdiff_t)i * incx]);\n      |             ^~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c:22:13: error: unknown type name '__m256d'\n   22 |             __m256d v_alpha = _mm256_set1_pd(alpha);\n      |             ^~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c:23:13: error: unknown type name '__m256d'\n   23 |             __m256d v_result = _mm256_mul_pd(v_x0, v_alpha);\n      |             ^~~~~~~\n"
+      }
+    }
+  ]
+}

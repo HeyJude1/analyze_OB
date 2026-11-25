@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "task": "dgemm",
+  "symbol": "op_dgemm",
+  "split": "build",
+  "features": {
+    "dtype": "d",
+    "precision": "double",
+    "loop_depth": 3,
+    "structural": "none",
+    "reduction": true,
+    "layout": "row_major_nn"
+  },
+  "pattern": "dense_matrix_product",
+  "dimensions": [
+    "m",
+    "n",
+    "k"
+  ],
+  "semantics": "C[i*ldc+j] = alpha*sum(A[i*lda+p]*B[p*ldb+j]) + beta*C[i*ldc+j]. m==0 or n==0 writes nothing. k==0 or alpha==0 leaves only beta*C and does not read A/B. beta==0 overwrites instead of reading C. The task progresses from unpacked matrices to the final result; any packing is inside the measured call.",
+  "parameters": [
+    "m",
+    "n",
+    "k",
+    "alpha",
+    "a",
+    "lda",
+    "b",
+    "ldb",
+    "beta",
+    "c",
+    "ldc"
+  ],
+  "benchmark_cases": [
+    {
+      "id": "small",
+      "m": 47,
+      "n": 61,
+      "k": 37,
+      "lda_pad": 0,
+      "ldb_pad": 0,
+      "ldc_pad": 0,
+      "alpha": 1.13,
+      "beta": 0
+    },
+    {
+      "id": "medium",
+      "m": 127,
+      "n": 131,
+      "k": 129,
+      "lda_pad": 0,
+      "ldb_pad": 0,
+      "ldc_pad": 0,
+      "alpha": 1.13,
+      "beta": 0
+    },
+    {
+      "id": "large",
+      "m": 383,
+      "n": 389,
+      "k": 379,
+      "lda_pad": 0,
+      "ldb_pad": 0,
+      "ldc_pad": 0,
+      "alpha": 1.13,
+      "beta": 0
+    },
+    {
+      "id": "padded",
+      "m": 113,
+      "n": 97,
+      "k": 83,
+      "lda_pad": 3,
+      "ldb_pad": 5,
+      "ldc_pad": 7,
+      "alpha": 1.13,
+      "beta": -0.64
+    }
+  ],
+  "memory_contract": "Arrays referenced by the same call occupy disjoint storage. Negative increments are valid and the supplied pointer is logical element zero. Increments are nonzero and leading dimensions at least the corresponding row width. Offsets are representable in ptrdiff_t.",
+  "numeric_contract": "FP64 finite inputs in the validation domain; FMA and reassociation in explicit vector reductions permitted within numerical tolerance. Smoke comparator: |observed-reference| <= 2e-12 + 3e-12*|reference|; exact guard/unchanged-input checks where applicable."
+}

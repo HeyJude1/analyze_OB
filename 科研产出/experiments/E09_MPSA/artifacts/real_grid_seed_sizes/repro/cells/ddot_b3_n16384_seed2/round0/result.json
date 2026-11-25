@@ -1,0 +1,59 @@
+{
+  "ok": false,
+  "compile_ok": false,
+  "correct": false,
+  "maxdiff": null,
+  "reldiff": null,
+  "qemu_exit": null,
+  "stdout": "[build] cc=riscv64-linux-gnu-gcc\n[build] driver=/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/tasks/ddot/driver/test_ddot.c\n[build] generated=/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_grid_seed_sizes/ddot_b3_n16384/harness/generated.c\n[build] gcc_exit=1\n[build] FAIL（见 build.stderr.log）\n",
+  "stderr": "/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_grid_seed_sizes/ddot_b3_n16384/harness/generated.c: In function ‘ddot_k’:\n/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_grid_seed_sizes/ddot_b3_n16384/harness/generated.c:19:20: warning: implicit declaration of function ‘__riscv_vfmvvp_vv_f64m8’; did you mean ‘__riscv_vfmax_vv_f64m8’? [-Wimplicit-function-declaration]\n   19 |             vsum = __riscv_vfmvvp_vv_f64m8(vsum, vx, vy, vl);\n      |                    ^~~~~~~~~~~~~~~~~~~~~~~\n      |                    __riscv_vfmax_vv_f64m8\n/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_grid_seed_sizes/ddot_b3_n16384/harness/generated.c:19:20: error: incompatible types when assigning to type ‘vfloat64m8_t’ from type ‘int’\n/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_grid_seed_sizes/ddot_b3_n16384/harness/generated.c:35:20: error: incompatible types when assigning to type ‘vfloat64m8_t’ from type ‘int’\n   35 |             vsum = __riscv_vfmvvp_vv_f64m8(vsum, vx, vy, vl);\n      |                    ^~~~~~~~~~~~~~~~~~~~~~~\n",
+  "timeout": false,
+  "best_ms": null,
+  "qemu_only": true,
+  "n": 16384,
+  "reps": 10,
+  "tolerance": 1e-05,
+  "op": "ddot",
+  "task_dir": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\tasks\\ddot",
+  "driver": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\tasks\\ddot\\driver\\test_ddot.c",
+  "generated_c": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\real_grid_seed_sizes\\ddot_b3_n16384\\harness\\generated.c",
+  "out_dir": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\real_grid_seed_sizes\\ddot_b3_n16384\\harness",
+  "scripts": {
+    "build": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\real_grid_seed_sizes\\ddot_b3_n16384\\harness\\build.sh",
+    "run": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\real_grid_seed_sizes\\ddot_b3_n16384\\harness\\run.sh"
+  },
+  "logs": {
+    "build_stdout": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\real_grid_seed_sizes\\ddot_b3_n16384\\harness\\build.stdout.log",
+    "build_stderr": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\real_grid_seed_sizes\\ddot_b3_n16384\\harness\\build.stderr.log",
+    "qemu_stdout": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\real_grid_seed_sizes\\ddot_b3_n16384\\harness\\qemu.stdout.log",
+    "qemu_stderr": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\real_grid_seed_sizes\\ddot_b3_n16384\\harness\\qemu.stderr.log"
+  },
+  "commands": {
+    "build": [
+      "wsl.exe",
+      "-d",
+      "Ubuntu",
+      "-e",
+      "bash",
+      "/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_grid_seed_sizes/ddot_b3_n16384/harness/build.sh"
+    ]
+  },
+  "compile_timeout": false,
+  "elapsed_build_s": 0.169,
+  "elapsed_run_s": null,
+  "elapsed_s": 0.171,
+  "error": "compile_failed：/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_grid_seed_sizes/ddot_b3_n16384/harness/generated.c:19:20: warning: implicit declaration of function ‘__riscv_vfmvvp_vv_f64m8’; did you mean ‘__riscv_vfmax_vv_f64m8’? [-Wimplicit-function-declaration] |    19 |             vsum = __riscv_vfmvvp_vv_f64m8(vsum, vx, vy, vl); |       |                    ^~~~~~~~~~~~~~~~~~~~~~~ |       |                    __riscv_vfmax_vv_f64m8 | /mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_grid_seed_sizes/ddot_b3_n16384/harness/generated.c:19:20: error: incompatible types when assigning to type ‘vfloat64m8_t’ from type ‘int’ | /mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_grid_seed_sizes/ddot_b3_n16384/harness/generated.c:35:20: error: incompatible types when assigning to type ‘vfloat64m8_t’ from type ‘int’ |    35 |             vsum = __riscv_vfmvvp_vv_f64m8(vsum, vx, vy, vl); |       |                    ^~~~~~~~~~~~~~~~~~~~~~~（见 C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\real_grid_seed_sizes\\ddot_b3_n16384\\harness\\build.stderr.log）",
+  "env": {
+    "wsl_distro": "Ubuntu",
+    "cc": "riscv64-linux-gnu-gcc",
+    "cflags": [
+      "-O3",
+      "-march=rv64gcv_zvl256b_zba_zbb_zbc_zbs",
+      "-mabi=lp64d",
+      "-static"
+    ],
+    "qemu": "qemu-riscv64",
+    "qemu_cpu": "rv64,v=true,vlen=256,zba=true,zbb=true,zbc=true,zbs=true",
+    "flags_source": "experiments/harness/qemu.py"
+  }
+}

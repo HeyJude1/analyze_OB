@@ -1,0 +1,50 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "x86_64",
+  "results": [
+    {
+      "task": "dgemm",
+      "target": "rvv",
+      "variant": "candidate",
+      "compiler_version": "riscv64-buildroot-linux-gnu-gcc.br_real (Buildroot 2021.11-18033-g83947c7bb6) 14.3.0",
+      "source": "../experiments/thesis/functional_2026-11-19/ollama/dgemm/k1_rvv256/text_rag/rep-1/repair/candidate.c",
+      "source_sha256": "c3d171bc2fa59331f1daa810c1e5f7cbc1c32fe02ee5a21c1deb45d61bb552f4",
+      "status": "check_failed",
+      "compile": {
+        "argv": [
+          "/mnt/c/Users/MSI/Desktop/cx_operator_tool/operator_extract/toolchain/riscv-gcc-14.3/bin/riscv64-buildroot-linux-gnu-gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-march=rv64gcv",
+          "-mabi=lp64d",
+          "-static",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DGEMM",
+          "driver/check.c",
+          "../experiments/thesis/functional_2026-11-19/ollama/dgemm/k1_rvv256/text_rag/rep-1/repair/candidate.c",
+          "-o",
+          "../experiments/thesis/functional_2026-11-19/ollama/dgemm/k1_rvv256/text_rag/rep-1/repair/bin/dgemm-rvv-candidate",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "40cdf618787cbf0e1259ad6082e466373d0a454d60e0e513805d47ce0d503862",
+      "check": {
+        "argv": [
+          "qemu-riscv64",
+          "-cpu",
+          "rv64,v=true,vlen=256,elen=64,vext_spec=v1.0",
+          "/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/thesis/functional_2026-11-19/ollama/dgemm/k1_rvv256/text_rag/rep-1/repair/bin/dgemm-rvv-candidate"
+        ],
+        "exit_code": 1,
+        "stdout": "32 cases, 1566 failures\n",
+        "stderr": "dgemm case 9 cell 1: got nan expected 0\ndgemm case 9 cell 2: got nan expected 0\ndgemm case 9 cell 3: got nan expected 0\ndgemm case 9 cell 4: got nan expected 0\ndgemm case 9 cell 5: got nan expected 0\ndgemm case 9 cell 6: got nan expected 0\ndgemm case 9 cell 7: got nan expected 0\ndgemm case 9 cell 8: got nan expected 0\ndgemm case 9 cell 9: got nan expected 0\ndgemm case 9 cell 13: got nan expected 0\n"
+      },
+      "environment": "external_runner"
+    }
+  ]
+}

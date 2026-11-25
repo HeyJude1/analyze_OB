@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1820" height="1000" viewBox="0 0 1820 1000">
+<defs><marker id="ar-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2B6CB0"/></marker>
+<marker id="ar-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2F855A"/></marker>
+<marker id="ar-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#C05621"/></marker>
+<marker id="ar-purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#6B46C1"/></marker>
+<marker id="ar-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#C53030"/></marker>
+<marker id="ar-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#4A5568"/></marker>
+<marker id="ar-teal" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2C7A7B"/></marker></defs>
+<rect width="1820" height="1000" fill="#F5F7FB"/>
+<text x="50" y="48" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="27" fill="#1A202C" font-weight="700" text-anchor="start" opacity="1.0">知识图谱怎么建：S0–S6 七段流水线（每段的输入 / 方法 / 输出）</text>
+<text x="50" y="80" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="15" fill="#4A5568" text-anchor="start" opacity="1.0">原则：结构事实全部由规则/日志产生；LLM 只负责命名与解释，禁止写性能数字。所有产物可离线重跑、字节级幂等。</text>
+<rect x="40" y="130" width="236" height="430" rx="12" fill="#EBF4FF" stroke="#2B6CB0" stroke-width="2"/>
+<text x="56" y="160" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="16" fill="#2B6CB0" font-weight="700" text-anchor="start" opacity="1.0">S0 语料清单</text>
+<text x="56" y="196" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#2B6CB0" font-weight="700" text-anchor="start" opacity="1.0">输入</text>
+<text x="56" y="218" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">OpenBLAS 源码 + 用户语料 + 日志</text>
+<text x="56" y="300" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#2B6CB0" font-weight="700" text-anchor="start" opacity="1.0">方法</text>
+<text x="56" y="322" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">扫描 / 复制 / 记 sha256、arch、</text>
+<text x="56" y="340" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">行号</text>
+<text x="56" y="450" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#2B6CB0" font-weight="700" text-anchor="start" opacity="1.0">输出</text>
+<text x="56" y="472" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">corpus_manifest.jsonl （112 个</text>
+<text x="56" y="490" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">输入文件）</text>
+<line x1="278" y1="365" x2="296" y2="365" stroke="#4A5568" stroke-width="2" marker-end="url(#ar-gray)"/>
+<rect x="298" y="130" width="236" height="430" rx="12" fill="#EBF4FF" stroke="#2B6CB0" stroke-width="2"/>
+<text x="314" y="160" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="16" fill="#2B6CB0" font-weight="700" text-anchor="start" opacity="1.0">S1 静态特征</text>
+<text x="314" y="196" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#2B6CB0" font-weight="700" text-anchor="start" opacity="1.0">输入</text>
+<text x="314" y="218" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">C / 汇编实现</text>
+<text x="314" y="300" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#2B6CB0" font-weight="700" text-anchor="start" opacity="1.0">方法</text>
+<text x="314" y="322" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">正则 + 轻量 AST；抽 intrinsic、</text>
+<text x="314" y="340" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">
+mnemonics、循环、unroll、寄存器</text>
+<text x="314" y="358" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">块</text>
+<text x="314" y="450" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#2B6CB0" font-weight="700" text-anchor="start" opacity="1.0">输出</text>
+<text x="314" y="472" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">characteristics.jsonl （371 条</text>
+<text x="314" y="490" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">静态特征）</text>
+<line x1="536" y1="365" x2="554" y2="365" stroke="#4A5568" stroke-width="2" marker-end="url(#ar-gray)"/>
+<rect x="556" y="130" width="236" height="430" rx="12" fill="#E6FFFA" stroke="#2F855A" stroke-width="2"/>
+<text x="572" y="160" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="16" fill="#2F855A" font-weight="700" text-anchor="start" opacity="1.0">S2 差分抽取</text>
+<text x="572" y="196" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#2F855A" font-weight="700" text-anchor="start" opacity="1.0">输入</text>
+<text x="572" y="218" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">同架构 generic vs 优化实现</text>
+<text x="572" y="300" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#2F855A" font-weight="700" text-anchor="start" opacity="1.0">方法</text>
+<text x="572" y="322" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">C 对做结构差分；汇编-only 抽特征</text>
+<text x="572" y="340" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">
+（method=diff / static）</text>
+<text x="572" y="450" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#2F855A" font-weight="700" text-anchor="start" opacity="1.0">输出</text>
+<text x="572" y="472" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">diffs.jsonl （18 条差分 + 21 条</text>
+<text x="572" y="490" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">静态）</text>
+<line x1="794" y1="365" x2="812" y2="365" stroke="#4A5568" stroke-width="2" marker-end="url(#ar-gray)"/>
+<rect x="814" y="130" width="236" height="430" rx="12" fill="#E6FFFA" stroke="#2F855A" stroke-width="2"/>
+<text x="830" y="160" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="16" fill="#2F855A" font-weight="700" text-anchor="start" opacity="1.0">S3 策略抽取</text>
+<text x="830" y="196" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#2F855A" font-weight="700" text-anchor="start" opacity="1.0">输入</text>
+<text x="830" y="218" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">差分 + 静态特征 + 算子上下文</text>
+<text x="830" y="300" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#2F855A" font-weight="700" text-anchor="start" opacity="1.0">方法</text>
+<text x="830" y="322" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">规则命名/归类；LLM 只写解释
+（禁</text>
+<text x="830" y="340" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">止数字，schema 校验+重试）</text>
+<text x="830" y="450" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#2F855A" font-weight="700" text-anchor="start" opacity="1.0">输出</text>
+<text x="830" y="472" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">strategies_raw.jsonl （策略/条</text>
+<text x="830" y="490" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">件/参数/模板草案）</text>
+<line x1="1052" y1="365" x2="1070" y2="365" stroke="#4A5568" stroke-width="2" marker-end="url(#ar-gray)"/>
+<rect x="1072" y="130" width="236" height="430" rx="12" fill="#FFFAF0" stroke="#C05621" stroke-width="2"/>
+<text x="1088" y="160" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="16" fill="#C05621" font-weight="700" text-anchor="start" opacity="1.0">S4 规范化对齐</text>
+<text x="1088" y="196" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#C05621" font-weight="700" text-anchor="start" opacity="1.0">输入</text>
+<text x="1088" y="218" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">原始策略 + 闭集词表</text>
+<text x="1088" y="300" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#C05621" font-weight="700" text-anchor="start" opacity="1.0">方法</text>
+<text x="1088" y="322" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">ID 稳定化、同义合并、跨架构对齐
+</text>
+<text x="1088" y="340" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">arch_scope = 无关/参数化/特定</text>
+<text x="1088" y="450" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#C05621" font-weight="700" text-anchor="start" opacity="1.0">输出</text>
+<text x="1088" y="472" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">262 条策略 + 262 个模板</text>
+<line x1="1310" y1="365" x2="1328" y2="365" stroke="#4A5568" stroke-width="2" marker-end="url(#ar-gray)"/>
+<rect x="1330" y="130" width="236" height="430" rx="12" fill="#FFFAF0" stroke="#C05621" stroke-width="2"/>
+<text x="1346" y="160" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="16" fill="#C05621" font-weight="700" text-anchor="start" opacity="1.0">S5 性能证据</text>
+<text x="1346" y="196" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#C05621" font-weight="700" text-anchor="start" opacity="1.0">输入</text>
+<text x="1346" y="218" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">QEMU 日志 + 真机实测</text>
+<text x="1346" y="300" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#C05621" font-weight="700" text-anchor="start" opacity="1.0">方法</text>
+<text x="1346" y="322" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">解析日志；标 qemu_only / </text>
+<text x="1346" y="340" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">measured；
+只出现在证据节点</text>
+<text x="1346" y="450" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#C05621" font-weight="700" text-anchor="start" opacity="1.0">输出</text>
+<text x="1346" y="472" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">88 条证据 （含 idamax 0.18× 负</text>
+<text x="1346" y="490" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">例）</text>
+<line x1="1568" y1="365" x2="1586" y2="365" stroke="#4A5568" stroke-width="2" marker-end="url(#ar-gray)"/>
+<rect x="1588" y="130" width="236" height="430" rx="12" fill="#F3E8FF" stroke="#6B46C1" stroke-width="2"/>
+<text x="1604" y="160" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="16" fill="#6B46C1" font-weight="700" text-anchor="start" opacity="1.0">S6 校验导出</text>
+<text x="1604" y="196" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#6B46C1" font-weight="700" text-anchor="start" opacity="1.0">输入</text>
+<text x="1604" y="218" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">全部 JSONL</text>
+<text x="1604" y="300" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#6B46C1" font-weight="700" text-anchor="start" opacity="1.0">方法</text>
+<text x="1604" y="322" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">Schema / 边端 / 闭集 / 冲突对称 </text>
+<text x="1604" y="340" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">/
+版本四元组 + 输入 sha256</text>
+<text x="1604" y="450" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#6B46C1" font-weight="700" text-anchor="start" opacity="1.0">输出</text>
+<text x="1604" y="472" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">nodes / edges / manifest / </text>
+<text x="1604" y="490" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#4A5568" text-anchor="start" opacity="1.0">arch_coverage</text>
+<text x="40" y="610" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="16" fill="#2F855A" font-weight="700" text-anchor="start" opacity="1.0">Schema v1.5：12 类实体（节点）</text>
+<rect x="40" y="630" width="276" height="40" rx="8" fill="#E6FFFA" stroke="#2F855A" stroke-width="1.5"/><text x="178.0" y="654.32" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#2F855A" text-anchor="middle" opacity="1.0">算子  Operator</text>
+<rect x="330" y="630" width="276" height="40" rx="8" fill="#E6FFFA" stroke="#2F855A" stroke-width="1.5"/><text x="468.0" y="654.32" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#2F855A" text-anchor="middle" opacity="1.0">计算流程  ComputationPattern</text>
+<rect x="620" y="630" width="276" height="40" rx="8" fill="#E6FFFA" stroke="#2F855A" stroke-width="1.5"/><text x="758.0" y="654.32" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#2F855A" text-anchor="middle" opacity="1.0">代码特征  CodeCharacteristic</text>
+<rect x="910" y="630" width="276" height="40" rx="8" fill="#E6FFFA" stroke="#2F855A" stroke-width="1.5"/><text x="1048.0" y="654.32" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#2F855A" text-anchor="middle" opacity="1.0">优化策略  OptimizationStrategy</text>
+<rect x="1200" y="630" width="276" height="40" rx="8" fill="#E6FFFA" stroke="#2F855A" stroke-width="1.5"/><text x="1338.0" y="654.32" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#2F855A" text-anchor="middle" opacity="1.0">实施模板  ImplementationTemplate</text>
+<rect x="1490" y="630" width="276" height="40" rx="8" fill="#E6FFFA" stroke="#2F855A" stroke-width="1.5"/><text x="1628.0" y="654.32" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#2F855A" text-anchor="middle" opacity="1.0">可调参数  TunableParameter</text>
+<rect x="40" y="682" width="276" height="40" rx="8" fill="#E6FFFA" stroke="#2F855A" stroke-width="1.5"/><text x="178.0" y="706.32" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#2F855A" text-anchor="middle" opacity="1.0">指令集能力  ISACapability</text>
+<rect x="330" y="682" width="276" height="40" rx="8" fill="#E6FFFA" stroke="#2F855A" stroke-width="1.5"/><text x="468.0" y="706.32" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#2F855A" text-anchor="middle" opacity="1.0">微架构  Microarchitecture</text>
+<rect x="620" y="682" width="276" height="40" rx="8" fill="#E6FFFA" stroke="#2F855A" stroke-width="1.5"/><text x="758.0" y="706.32" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#2F855A" text-anchor="middle" opacity="1.0">硬件实例  HardwareProfile</text>
+<rect x="910" y="682" width="276" height="40" rx="8" fill="#E6FFFA" stroke="#2F855A" stroke-width="1.5"/><text x="1048.0" y="706.32" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#2F855A" text-anchor="middle" opacity="1.0">性能证据  PerformanceEvidence</text>
+<rect x="1200" y="682" width="276" height="40" rx="8" fill="#E6FFFA" stroke="#2F855A" stroke-width="1.5"/><text x="1338.0" y="706.32" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#2F855A" text-anchor="middle" opacity="1.0">来源  SourceArtifact</text>
+<rect x="1490" y="682" width="276" height="40" rx="8" fill="#E6FFFA" stroke="#2F855A" stroke-width="1.5"/><text x="1628.0" y="706.32" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="12" fill="#2F855A" text-anchor="middle" opacity="1.0">失败案例  FailureCase</text>
+<text x="40" y="760" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#4A5568" text-anchor="start" opacity="1.0">14 类关系（边）：算子—计算流程—策略—模板/参数/条件/ISA/硬件—证据—来源；另有组合/冲突/泛化/跨架构实现</text>
+<text x="40" y="790" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="14" fill="#4A5568" text-anchor="start" opacity="1.0">输出文件：data/nodes.jsonl（862 节点）｜ data/edges.jsonl（3656 边）｜ data/manifest.json（版本+sha256）｜ data/arch_coverage.json</text>
+<rect x="40" y="820" width="1740" height="150" rx="12" fill="#EDF2F7" stroke="#4A5568" stroke-width="2"/>
+<text x="56" y="850" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="15" fill="#4A5568" font-weight="700" text-anchor="start" opacity="1.0">为什么这样建（答辩可讲的三句话）</text>
+<text x="56" y="876" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">① 差分而不是“让 LLM 读代码猜策略”：同一算子两版实现的差异可核查、带行号，幻觉空间最小。</text>
+<text x="56" y="897" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">② LLM 只做“起名和解释”，结构事实（dtype、循环深度、参数值、性能数字、行号）全部来自规则或日志。</text>
+<text x="56" y="918" font-family="Microsoft YaHei, Noto Sans CJK SC, Segoe UI, sans-serif" font-size="13" fill="#4A5568" text-anchor="start" opacity="1.0">③ 多架构对齐后，同一条策略能带不同架构参数（如 unroll=4 vs 8、vector_width=128/256/512），这是“可迁移性”分析的基础。</text>
+</svg>

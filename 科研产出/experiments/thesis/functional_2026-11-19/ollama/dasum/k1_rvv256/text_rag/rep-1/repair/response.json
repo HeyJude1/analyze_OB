@@ -1,0 +1,9 @@
+{
+  "raw": "```c\n#include \"opbench.h\"\n\n#include <math.h>\n\ndouble op_dasum(size_t n, const double *x, ptrdiff_t incx) {\n    double sum = 0.0;\n    for (size_t i = 0; i < n; ++i) sum += fabs(x[(ptrdiff_t)i * incx]);\n    return sum;\n}\n```",
+  "usage": {
+    "prompt_tokens": 1810,
+    "completion_tokens": 80,
+    "total_tokens": 1890
+  },
+  "stop_reason": "stop"
+}

@@ -1,0 +1,9 @@
+{
+  "raw": "```c\n#include \"opbench.h\"\n\nvoid op_dsymv(char uplo, size_t n, double alpha, const double *a, size_t lda,\n              const double *x, ptrdiff_t incx, double beta, double *y, ptrdiff_t incy) {\n    if (n == 0 || (alpha == 0.0 && beta == 1.0)) return;\n\n    // Unroll factor\n    const int K_UNROLL = 4;\n\n    for (size_t i = 0; i < n; i += K_UNROLL) {\n        double sum[K_UNROLL] = {0.0};\n\n        if (alpha != 0.0) {\n            for (size_t j = 0; j < n; ++j) {\n                const int stored = uplo == 'U' ? i <= j : i >= j;\n                const double aij = stored ? a[i * lda + j] : a[j * lda + i];\n                for (int k = 0; k < K_UNROLL && i + k < n; ++k) {\n                    sum[k] += aij * x[(ptrdiff_t)(j * incx + k * incx)];\n                }\n            }\n        }\n\n        for (int k = 0; k < K_UNROLL && i + k < n; ++k) {\n            const ptrdiff_t index = (ptrdiff_t)(i + k) * incy;\n            y[index] = alpha * sum[k] + (beta == 0.0 ? 0.0 : beta * y[index]);\n        }\n    }\n}\n```",
+  "usage": {
+    "prompt_tokens": 3093,
+    "completion_tokens": 341,
+    "total_tokens": 3434
+  },
+  "stop_reason": "stop"
+}

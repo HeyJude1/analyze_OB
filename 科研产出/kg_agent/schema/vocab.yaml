@@ -1,0 +1,46 @@
+# kg_agent 受控词表（Schema v1.5，方案 §2.4）
+# LLM 只能在闭集内填值；开放词只允许出现在 description。normalize.py 用它做 S4 规范化。
+
+strategy_family:
+  - 分块Tiling
+  - SIMD向量指令
+  - 并行化计算
+  - 数据重排
+  - 循环分块
+  - 循环展开
+  - 循环重排
+  - 循环融合
+  - 循环拆分
+  - 预取
+  - 指针/索引优化
+  - 尾部处理
+  - 精度/数值变换
+
+strategy_action:
+  - vectorize
+  - tile
+  - unroll
+  - reorder
+  - pack
+  - prefetch
+  - split
+  - fuse
+  - scalarize
+  - specialize
+  - tail_handle
+  - reduce_register_pressure
+
+strategy_level: [algorithm, code, instruction]
+strategy_stage: [prep, transform, core, post]
+strategy_status: [raw, merged, inferred, verified, rejected]
+arch_scope: [arch_agnostic, parameterized, arch_specific]
+arch_family: [x86, arm, rvv, agnostic]
+arch_names: [x86_avx2, x86_avx512, arm_neon, arm_sve, rvv]
+isa_names: [AVX2, AVX512F, "RVV 1.0", NEON, SVE, ASIMD, FMA]
+extraction_method: [static, diff, llm, manual]
+char_type: [dtype, precision, complex, loop_depth, stride, alignment, packing_layout, data_dependency, structural_property, size_regime, tail_divisibility, template_unroll]
+pattern_stage: [prep, transform, core, post]
+pattern_category: [parameter_check, index_init, loop_invariant, packing, special_structure, mm_microkernel, elementwise_update, reduction, scale_accumulation, tail_case, branch_elimination]
+evidence_metric: [speedup, throughput, pass_rate, latency, icount]
+aggregation: [geo_mean, median, min, max, ratio]
+measure_env: [native, qemu]

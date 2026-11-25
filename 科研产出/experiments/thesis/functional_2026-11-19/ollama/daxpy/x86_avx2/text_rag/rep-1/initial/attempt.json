@@ -1,0 +1,13 @@
+{
+  "status": "infra_error",
+  "compile_ok": null,
+  "correct": null,
+  "failure_reason": "verifier_process_failed",
+  "usage": {
+    "prompt_tokens": 3013,
+    "completion_tokens": 274,
+    "total_tokens": 3287
+  },
+  "diagnostic": "",
+  "candidate_sha256": "7ce230265d7909a49259a455fb66d8070c6204a98fd5c79dd7653029c95851f1"
+}

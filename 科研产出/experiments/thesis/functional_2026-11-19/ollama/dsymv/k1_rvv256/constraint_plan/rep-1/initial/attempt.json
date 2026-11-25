@@ -1,0 +1,13 @@
+{
+  "status": "compile_failed",
+  "compile_ok": false,
+  "correct": null,
+  "failure_reason": "other_compiler_error",
+  "usage": {
+    "prompt_tokens": 3231,
+    "completion_tokens": 475,
+    "total_tokens": 3706
+  },
+  "diagnostic": "../experiments/thesis/functional_2026-11-19/ollama/dsymv/k1_rvv256/constraint_plan/rep-1/initial/candidate.c: In function ‘op_dsymv’:\n../experiments/thesis/functional_2026-11-19/ollama/dsymv/k1_rvv256/constraint_plan/rep-1/initial/candidate.c:31:39: error: implicit declaration of function ‘__builtin_reduce_add’; did you mean ‘__builtin_huge_val’? [-Wimplicit-function-declaration]\n   31 |                             sum[m] += __builtin_reduce_add(va * vx);\n      |                                       ^~~~~~~~~~~~~~~~~~~~\n      |                                       __builtin_huge_val\n../experiments/thesis/functional_2026-11-19/ollama/dsymv/k1_rvv256/constraint_plan/rep-1/initial/candidate.c:14:21: warning: variable ‘vy’ set but not used [-Wunused-but-set-variable]\n   14 |     vdouble va, vx, vy;\n      |                     ^~\n",
+  "candidate_sha256": "e8c34a852ee1386fcd3d4eed4d6d69b7f13ed6219a16b886f9f7ab751586642c"
+}

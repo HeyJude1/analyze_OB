@@ -1,0 +1,46 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "amd64",
+  "results": [
+    {
+      "task": "dsymm",
+      "target": "x86",
+      "variant": "candidate",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymm\\x86_avx2\\strategy_cards\\rep-1\\repair\\candidate.c",
+      "source_sha256": "3035dde639bffc93e96e375221db329790d5ba1b87061f3c5b14ba3087a0d394",
+      "status": "check_failed",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DSYMM",
+          "driver/check.c",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymm\\x86_avx2\\strategy_cards\\rep-1\\repair\\candidate.c",
+          "-o",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymm\\x86_avx2\\strategy_cards\\rep-1\\repair\\bin\\dsymm-x86-candidate.exe",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "eb1fe4799b7ca78fae191ad755fd0d2e256ee01957174d602d4953dd3347a7a8",
+      "check": {
+        "argv": [
+          "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymm\\x86_avx2\\strategy_cards\\rep-1\\repair\\bin\\dsymm-x86-candidate.exe"
+        ],
+        "exit_code": 1,
+        "stdout": "288 cases, 3136 failures\n",
+        "stderr": "dsymm case 49 modified guard 2\ndsymm case 49 modified guard 3\ndsymm case 49 modified guard 4\ndsymm case 50 modified guard 2\ndsymm case 50 modified guard 3\ndsymm case 50 modified guard 4\ndsymm case 51 modified guard 2\ndsymm case 51 modified guard 3\ndsymm case 51 modified guard 4\ndsymm case 52 modified guard 2\n"
+      },
+      "environment": "native"
+    }
+  ]
+}

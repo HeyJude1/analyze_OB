@@ -1,0 +1,13 @@
+conv1d rvv candidate: check_failed 8 cases, 126 failures
+
+wsl: �hKm0R localhost �NtM�n�FO*g\��P0R WSL0NAT !j_N�v WSL N/ec localhost �Nt0
+conv1d case 4 cell 1: got 719317.7424179794 expected 3.6174179794412118
+conv1d case 5 cell 1: got 719305.97094980616 expected -0.93326485094526801
+conv1d case 5 cell 2: got 719314.125 expected -3.8570031450302187
+conv1d case 5 cell 3: got 719314.125 expected 1.8276847089615771
+conv1d case 5 cell 4: got 719314.125 expected 0.55228700687403665
+conv1d case 5 cell 5: got 719314.125 expected -6.9442619029191786
+conv1d case 6 cell 1: got 719313.74554190214 expected 3.3438144221094919
+conv1d case 7 cell 1: got 719290.6670850073 expected 0.36931238522750565
+conv1d case 7 cell 2: got 719314.125 expected -5.1653286802834035
+conv1d case 7 cell 3: got 719314.125 expected -4.0390349611972232

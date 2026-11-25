@@ -1,0 +1,78 @@
+{
+  "status": "ok",
+  "op": "daxpy",
+  "op_canonical": "axpy",
+  "profile": "k1_rvv256",
+  "mode": "b4",
+  "provider": "dashscope",
+  "model": "qwen-plus-2025-04-28",
+  "out_dir": "C:\\Users\\MSI\\Desktop\\����\\���в���\\experiments\\E09_MPSA\\runs\\real_grid_seed_sizes\\daxpy_b4_n16384",
+  "result_path": "C:\\Users\\MSI\\Desktop\\����\\���в���\\experiments\\E09_MPSA\\runs\\real_grid_seed_sizes\\daxpy_b4_n16384\\mpsa_result.json",
+  "generated_c_path": "C:\\Users\\MSI\\Desktop\\����\\���в���\\experiments\\E09_MPSA\\runs\\real_grid_seed_sizes\\daxpy_b4_n16384\\generated.c",
+  "retrieved": {
+    "count": 4,
+    "top_k": 6,
+    "strategy_ids": [
+      "stg:axpy:specialize_d",
+      "stg:axpy:tail_handle_d",
+      "stg:axpy:vectorize_d",
+      "stg:axpy:specialize_s"
+    ],
+    "trace_id": "trace:20261112T211831:axpy:k1_rvv256"
+  },
+  "analysis": {
+    "analysis_k": 3,
+    "count": 3,
+    "strategy_ids": [
+      "stg:axpy:specialize_d",
+      "stg:axpy:tail_handle_d",
+      "stg:axpy:vectorize_d"
+    ]
+  },
+  "synthesis": {
+    "criteria_scores": {
+      "supportive": 0.85,
+      "complementarity": 0.9,
+      "accuracy": 0.75,
+      "completeness": 0.8
+    },
+    "overall": "���������ڲ���һ�¡��׶λ�����ǰ���¿����ʹ�ã��γ���� large size_regime��double ���ȡ�RISC-V Vector Extension ������ daxpy ʵ�֣�����ע��β��������߽��֧����ʽʵ�֡�"
+  },
+  "usage": {
+    "calls": 5,
+    "prompt_tokens": 17116,
+    "completion_tokens": 2403,
+    "total_tokens": 19519,
+    "by_stage": {
+      "analysis": {
+        "calls": 3,
+        "prompt_tokens": 6783,
+        "completion_tokens": 943,
+        "total_tokens": 7726
+      },
+      "synthesis": {
+        "calls": 1,
+        "prompt_tokens": 1864,
+        "completion_tokens": 771,
+        "total_tokens": 2635
+      },
+      "generate": {
+        "calls": 1,
+        "prompt_tokens": 8469,
+        "completion_tokens": 689,
+        "total_tokens": 9158
+      }
+    }
+  },
+  "elapsed_s": 55.068,
+  "code_meta": {
+    "signature": "int daxpy_k(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, double da, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y, double *dummy, BLASLONG dummy2)",
+    "function_name": "daxpy_k",
+    "wrapped_body": false,
+    "fences_removed": true,
+    "prologue_added": false,
+    "repairs": [],
+    "char_count": 1824
+  },
+  "code_preview": "#include <riscv_vector.h>\ntypedef long long BLASLONG;\nint daxpy_k(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, double da, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y, double *dummy, BLASLONG"
+}

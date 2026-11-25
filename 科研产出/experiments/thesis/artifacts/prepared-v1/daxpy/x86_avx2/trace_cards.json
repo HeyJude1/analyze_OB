@@ -1,0 +1,898 @@
+{
+  "created_at": "2026-11-19T21:22:28+08:00",
+  "query": {
+    "code_features": {
+      "dtype": "d",
+      "loop_depth": 1,
+      "precision": "double",
+      "reduction": false,
+      "structural": "none"
+    },
+    "feature_mode": "explicit",
+    "hardware_profile_id": "x86_avx2",
+    "hardware_profile_node": "hw:x86_avx2",
+    "operator": "axpy",
+    "raw_operator": "daxpy",
+    "source_operator": null,
+    "top_k": 1000
+  },
+  "result": {
+    "pack": {
+      "plan": null,
+      "query": {
+        "baseline": null,
+        "code_features": {
+          "dtype": "d",
+          "loop_depth": 1,
+          "precision": "double",
+          "reduction": false,
+          "structural": "none"
+        },
+        "dtype": "d",
+        "feature_mode": "explicit",
+        "hardware": "hw:x86_avx2",
+        "operator": "axpy",
+        "patterns": [
+          "pat:axpy:core.elementwise_update",
+          "pat:axpy:post.tail_case",
+          "pat:axpy:prep.index_pointer_init",
+          "pat:axpy:prep.parameter_validation"
+        ],
+        "source_operator": null,
+        "top_k": 1000,
+        "workload": null
+      },
+      "schema_version": "pack-v1",
+      "strategies": [
+        {
+          "action": "specialize",
+          "arch": null,
+          "arch_parameters": {},
+          "arch_scope": "arch_agnostic",
+          "arches": [],
+          "conditions": [
+            {
+              "hard": true,
+              "op": "in",
+              "pred": "dtype",
+              "value": [
+                "d"
+              ]
+            },
+            {
+              "hard": true,
+              "op": "ge",
+              "pred": "loop_depth",
+              "value": 1
+            },
+            {
+              "hard": false,
+              "op": "in",
+              "pred": "size_regime",
+              "value": [
+                "medium",
+                "large"
+              ],
+              "weight": 1.0
+            }
+          ],
+          "evidence": [],
+          "family": "指针/索引优化",
+          "id": "stg:axpy:specialize_s",
+          "level": "code",
+          "name": "任意步长 inc 累加访问",
+          "parameters": [],
+          "provenance": {
+            "commit": "OpenBLAS 0.3.27.dev",
+            "extractor_version": "kgagent-v1.5",
+            "line_confidence": "exact",
+            "line_end": 29,
+            "line_start": 7,
+            "origin_file": "kernel/mips/axpy.c",
+            "source_file": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/daxpy_k.c"
+          },
+          "score": 0.675,
+          "score_breakdown": {
+            "ev": 0.0,
+            "fit_c": 1.0,
+            "hw": 0.7,
+            "match_p": 1.0,
+            "sup": 0.2,
+            "total": 0.675,
+            "tr_penalty": 0.0
+          },
+          "stage": "core",
+          "target_parameters": {},
+          "template": {
+            "check_hints": [
+              "分支预测友好的顺序",
+              "消除跨步访问的索引乘法"
+            ],
+            "id": "tpl:axpy:specialize_s",
+            "kind": "illustrative_skeleton",
+            "language": "c",
+            "preconditions": [
+              "步长可能不为 1"
+            ],
+            "skeleton": "if (inc_x == 1) {\n    for (BLASLONG i = 0; i + {{BLOCK_SIZE}} <= n; i += {{BLOCK_SIZE}}) { /* 连续快速路径 */ }\n} else {\n    for (BLASLONG i = 0; i < n; i++) { /* 跨步路径：inc_x 逐次累加，消除索引乘法 */ }\n}",
+            "slots": [
+              {
+                "default": 4,
+                "name": "BLOCK_SIZE",
+                "source": "derived:isa_defaults",
+                "type": "int"
+              }
+            ]
+          },
+          "why_selected": {
+            "abstracted_from": [],
+            "conditions_satisfied": [
+              "dtype",
+              "loop_depth"
+            ],
+            "hardware": "x86_avx2",
+            "patterns": [
+              "pat:axpy:core.elementwise_update"
+            ],
+            "source": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/daxpy_k.c"
+          }
+        },
+        {
+          "action": "tile",
+          "arch": null,
+          "arch_parameters": {},
+          "arch_scope": "arch_agnostic",
+          "arches": [],
+          "conditions": [
+            {
+              "hard": true,
+              "op": "in",
+              "pred": "dtype",
+              "value": [
+                "s",
+                "d",
+                "c",
+                "z"
+              ]
+            },
+            {
+              "hard": true,
+              "op": "ge",
+              "pred": "loop_depth",
+              "value": 1
+            },
+            {
+              "hard": false,
+              "op": "in",
+              "pred": "size_regime",
+              "value": [
+                "medium",
+                "large"
+              ]
+            }
+          ],
+          "evidence": [],
+          "family": "分块Tiling",
+          "id": "stg:abstract:register_blocking",
+          "level": "algorithm",
+          "name": "寄存器分块（以寄存器复用换访存）",
+          "parameters": [],
+          "provenance": {
+            "commit": "OpenBLAS 0.3.27.dev",
+            "extractor_version": "kgagent-v1.5",
+            "line_confidence": "exact",
+            "line_end": 106,
+            "line_start": 13,
+            "origin_file": "../cx_operator_tool/operator_extract/openblas_newtest1/15_ddot_op/ddot_k_rvv.c",
+            "source_file": "../cx_operator_tool/operator_extract/openblas_newtest1/15_ddot_op/ddot_k_rvv.c"
+          },
+          "score": 0.615,
+          "score_breakdown": {
+            "ev": 0.0,
+            "fit_c": 1.0,
+            "hw": 0.7,
+            "match_p": 0.6,
+            "sup": 1.0,
+            "total": 0.615,
+            "tr_penalty": 0.0
+          },
+          "stage": "core",
+          "target_parameters": {},
+          "template": {
+            "check_hints": [
+              "累加器数量受标量寄存器限制",
+              "注意 ldc 步长与 C 的列主序布局"
+            ],
+            "id": "tpl:abstract:register_blocking",
+            "kind": "illustrative_skeleton",
+            "language": "c",
+            "preconditions": [
+              "C 按列主序存储"
+            ],
+            "skeleton": "for (j = 0; j < bn; j += {{REG_BLOCK_N}}) {\n    for (i = 0; i < bm; i += {{REG_BLOCK_M}}) {\n        double acc[{{REG_BLOCK_M}}][{{REG_BLOCK_N}}] = {{INIT}};\n        for (k = 0; k < bk; k++) { /* acc 中复用装入的 A/B */ }\n    }\n}",
+            "slots": [
+              {
+                "default": 2,
+                "name": "REG_BLOCK_M",
+                "source": "derived:isa_defaults",
+                "type": "int"
+              },
+              {
+                "default": 2,
+                "name": "REG_BLOCK_N",
+                "source": "derived:isa_defaults",
+                "type": "int"
+              },
+              {
+                "default": "0.0",
+                "name": "INIT",
+                "source": "operator.init",
+                "type": "code"
+              }
+            ]
+          },
+          "why_selected": {
+            "abstracted_from": [
+              "stg:axpy:tile_x86_avx2"
+            ],
+            "conditions_satisfied": [
+              "dtype",
+              "loop_depth"
+            ],
+            "hardware": "x86_avx2",
+            "patterns": [],
+            "source": "../cx_operator_tool/operator_extract/openblas_newtest1/15_ddot_op/ddot_k_rvv.c"
+          }
+        },
+        {
+          "action": "vectorize",
+          "arch": null,
+          "arch_parameters": {},
+          "arch_scope": "arch_agnostic",
+          "arches": [],
+          "conditions": [
+            {
+              "hard": true,
+              "op": "in",
+              "pred": "dtype",
+              "value": [
+                "s",
+                "d",
+                "c",
+                "z"
+              ]
+            },
+            {
+              "hard": true,
+              "op": "ge",
+              "pred": "loop_depth",
+              "value": 1
+            },
+            {
+              "hard": false,
+              "op": "in",
+              "pred": "size_regime",
+              "value": [
+                "medium",
+                "large"
+              ]
+            }
+          ],
+          "evidence": [],
+          "family": "SIMD向量指令",
+          "id": "stg:abstract:vector_fma",
+          "level": "instruction",
+          "name": "向量化（跨算子抽象）",
+          "parameters": [],
+          "provenance": {
+            "commit": "OpenBLAS 0.3.27.dev",
+            "extractor_version": "kgagent-v1.5",
+            "line_confidence": "exact",
+            "line_end": 83,
+            "line_start": 10,
+            "origin_file": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/daxpy_k_rvv.c",
+            "source_file": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/daxpy_k_rvv.c"
+          },
+          "score": 0.615,
+          "score_breakdown": {
+            "ev": 0.0,
+            "fit_c": 1.0,
+            "hw": 0.7,
+            "match_p": 0.6,
+            "sup": 1.0,
+            "total": 0.615,
+            "tr_penalty": 0.0
+          },
+          "stage": "core",
+          "target_parameters": {
+            "element_bits": 64,
+            "elements_per_register": 4,
+            "reserved_vector_registers": 4,
+            "simd": {
+              "fixed_lane_count": 4,
+              "max_accumulators": 10,
+              "tail": "remainder_loop_or_supported_mask"
+            },
+            "source": "declared_target_profile",
+            "status": "candidate_only",
+            "vector_register_budget": 12
+          },
+          "template": {
+            "check_hints": [
+              "用 restrict 或局部指针消除别名假设",
+              "尾部循环避免越界"
+            ],
+            "id": "tpl:abstract:vector_fma",
+            "kind": "illustrative_skeleton",
+            "language": "c",
+            "preconditions": [
+              "数据连续（stride=1）"
+            ],
+            "skeleton": "BLASLONG i = 0;\nfor (; i + {{UNROLL_FACTOR}} <= n; i += {{UNROLL_FACTOR}}) {\n    for (int lane = 0; lane < {{UNROLL_FACTOR}}; ++lane) {\n        y[i + lane] = y[i + lane] + {{ALPHA}} * x[i + lane];\n    }\n}\nfor (; i < n; ++i) { y[i] = y[i] + {{ALPHA}} * x[i]; }",
+            "slots": [
+              {
+                "default": 4,
+                "name": "UNROLL_FACTOR",
+                "source": "derived:isa_defaults",
+                "type": "int"
+              },
+              {
+                "default": "alpha",
+                "name": "ALPHA",
+                "source": "operator.alpha",
+                "type": "expr"
+              }
+            ]
+          },
+          "why_selected": {
+            "abstracted_from": [
+              "stg:axpy:specialize_d",
+              "stg:axpy:vectorize_d",
+              "stg:axpy:vectorize_x",
+              "stg:axpy:vectorize_x86_avx2"
+            ],
+            "conditions_satisfied": [
+              "dtype",
+              "loop_depth"
+            ],
+            "hardware": "x86_avx2",
+            "patterns": [],
+            "source": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/daxpy_k_rvv.c"
+          }
+        },
+        {
+          "action": "tail_handle",
+          "arch": null,
+          "arch_parameters": {},
+          "arch_scope": "arch_agnostic",
+          "arches": [],
+          "conditions": [
+            {
+              "hard": true,
+              "op": "in",
+              "pred": "dtype",
+              "value": [
+                "s",
+                "d",
+                "c",
+                "z"
+              ]
+            },
+            {
+              "hard": true,
+              "op": "ge",
+              "pred": "loop_depth",
+              "value": 1
+            },
+            {
+              "hard": false,
+              "op": "in",
+              "pred": "size_regime",
+              "value": [
+                "medium",
+                "large"
+              ]
+            }
+          ],
+          "evidence": [],
+          "family": "尾部处理",
+          "id": "stg:abstract:tail_handling",
+          "level": "code",
+          "name": "尾部/余数处理",
+          "parameters": [],
+          "provenance": {
+            "commit": "OpenBLAS 0.3.27.dev",
+            "extractor_version": "kgagent-v1.5",
+            "line_confidence": "exact",
+            "line_end": 83,
+            "line_start": 10,
+            "origin_file": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/daxpy_k_rvv.c",
+            "source_file": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/daxpy_k_rvv.c"
+          },
+          "score": 0.595,
+          "score_breakdown": {
+            "ev": 0.0,
+            "fit_c": 1.0,
+            "hw": 0.7,
+            "match_p": 0.6,
+            "sup": 0.8,
+            "total": 0.595,
+            "tr_penalty": 0.0
+          },
+          "stage": "post",
+          "target_parameters": {
+            "element_bits": 64,
+            "elements_per_register": 4,
+            "reserved_vector_registers": 4,
+            "simd": {
+              "fixed_lane_count": 4,
+              "max_accumulators": 10,
+              "tail": "remainder_loop_or_supported_mask"
+            },
+            "source": "declared_target_profile",
+            "status": "candidate_only",
+            "vector_register_budget": 12
+          },
+          "template": {
+            "check_hints": [
+              "尾部循环必须覆盖所有余数",
+              "避免尾部写越界"
+            ],
+            "id": "tpl:abstract:tail_handling",
+            "kind": "illustrative_skeleton",
+            "language": "c",
+            "preconditions": [
+              "n 可能不整除块大小"
+            ],
+            "skeleton": "for (i = 0; i + {{BLOCK_SIZE}} <= n; i += {{BLOCK_SIZE}}) { /* 主块 */ }\nfor (; i < n; ++i) { /* 尾部余数逐元素处理，避免越界 */ }",
+            "slots": [
+              {
+                "default": 4,
+                "name": "BLOCK_SIZE",
+                "source": "derived:isa_defaults",
+                "type": "int"
+              }
+            ]
+          },
+          "why_selected": {
+            "abstracted_from": [
+              "stg:axpy:tail_handle_d"
+            ],
+            "conditions_satisfied": [
+              "dtype",
+              "loop_depth"
+            ],
+            "hardware": "x86_avx2",
+            "patterns": [],
+            "source": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/daxpy_k_rvv.c"
+          }
+        },
+        {
+          "action": "specialize",
+          "arch": null,
+          "arch_parameters": {},
+          "arch_scope": "arch_agnostic",
+          "arches": [],
+          "conditions": [
+            {
+              "hard": true,
+              "op": "in",
+              "pred": "dtype",
+              "value": [
+                "s",
+                "d",
+                "c",
+                "z"
+              ]
+            },
+            {
+              "hard": true,
+              "op": "ge",
+              "pred": "loop_depth",
+              "value": 1
+            },
+            {
+              "hard": false,
+              "op": "in",
+              "pred": "size_regime",
+              "value": [
+                "medium",
+                "large"
+              ]
+            }
+          ],
+          "evidence": [],
+          "family": "指针/索引优化",
+          "id": "stg:abstract:stride_dispatch",
+          "level": "code",
+          "name": "步长分支派发",
+          "parameters": [],
+          "provenance": {
+            "commit": "OpenBLAS 0.3.27.dev",
+            "extractor_version": "kgagent-v1.5",
+            "line_confidence": "exact",
+            "line_end": 83,
+            "line_start": 10,
+            "origin_file": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/daxpy_k_rvv.c",
+            "source_file": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/daxpy_k_rvv.c"
+          },
+          "score": 0.575,
+          "score_breakdown": {
+            "ev": 0.0,
+            "fit_c": 1.0,
+            "hw": 0.7,
+            "match_p": 0.6,
+            "sup": 0.6,
+            "total": 0.575,
+            "tr_penalty": 0.0
+          },
+          "stage": "core",
+          "target_parameters": {},
+          "template": {
+            "check_hints": [
+              "分支预测友好的顺序",
+              "消除跨步访问的索引乘法"
+            ],
+            "id": "tpl:abstract:stride_dispatch",
+            "kind": "illustrative_skeleton",
+            "language": "c",
+            "preconditions": [
+              "步长可能不为 1"
+            ],
+            "skeleton": "if (inc_x == 1) {\n    for (BLASLONG i = 0; i + {{BLOCK_SIZE}} <= n; i += {{BLOCK_SIZE}}) { /* 连续快速路径 */ }\n} else {\n    for (BLASLONG i = 0; i < n; i++) { /* 跨步路径：inc_x 逐次累加，消除索引乘法 */ }\n}",
+            "slots": [
+              {
+                "default": 4,
+                "name": "BLOCK_SIZE",
+                "source": "derived:isa_defaults",
+                "type": "int"
+              }
+            ]
+          },
+          "why_selected": {
+            "abstracted_from": [
+              "stg:axpy:specialize_s"
+            ],
+            "conditions_satisfied": [
+              "dtype",
+              "loop_depth"
+            ],
+            "hardware": "x86_avx2",
+            "patterns": [],
+            "source": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/daxpy_k_rvv.c"
+          }
+        }
+      ]
+    },
+    "prompt_preview": "目标算子：axpy（dtype=d，loop_depth=1，stride_x=None，size_regime=None）。\n目标硬件 profile：x86_avx2。请只使用下列知识块中的策略与模板槽位，不要引入未给出的性能数字。\n1) 任意步长 inc 累加访问（指针/索引优化/specialize，score=0.675）：条件 dtype in ['d']、loop_depth ge 1、size_regime in ['medium', 'large']；参数 。\n2) 寄存器分块（以寄存器复用换访存）（分块Tiling/tile，score=0.615）：条件 dtype in ['s', 'd', 'c', 'z']、loop_depth ge 1、size_regime in ['medium', 'large']；参数 。\n3) 向量化（跨算子抽象）（SIMD向量指令/vectorize，score=0.615）：条件 dtype in ['s', 'd', 'c', 'z']、loop_depth ge 1、size_regime in ['medium', '",
+    "strategies": [
+      "stg:axpy:specialize_s",
+      "stg:abstract:register_blocking",
+      "stg:abstract:vector_fma",
+      "stg:abstract:tail_handling",
+      "stg:abstract:stride_dispatch"
+    ]
+  },
+  "steps": [
+    {
+      "candidates": [
+        "pat:axpy:core.elementwise_update",
+        "pat:axpy:post.tail_case",
+        "pat:axpy:prep.index_pointer_init",
+        "pat:axpy:prep.parameter_validation"
+      ],
+      "description": "算子计算流程匹配",
+      "dropped": [],
+      "input": {
+        "analogy_source": null,
+        "operator": "op:axpy",
+        "operator_name": "axpy"
+      },
+      "name": "pattern_match",
+      "reason": "计算流程来源：axpy 注册了 4 个计算流程",
+      "selected": [
+        "pat:axpy:core.elementwise_update",
+        "pat:axpy:post.tail_case",
+        "pat:axpy:prep.index_pointer_init",
+        "pat:axpy:prep.parameter_validation"
+      ],
+      "step": 1
+    },
+    {
+      "candidates": [
+        "stg:abstract:register_blocking",
+        "stg:abstract:stride_dispatch",
+        "stg:abstract:tail_handling",
+        "stg:abstract:vector_fma",
+        "stg:axpy:specialize_d",
+        "stg:axpy:specialize_s",
+        "stg:axpy:tail_handle_d",
+        "stg:axpy:tile_x86_avx2",
+        "stg:axpy:vectorize_d",
+        "stg:axpy:vectorize_x",
+        "stg:axpy:vectorize_x86_avx2"
+      ],
+      "description": "沿 PATTERN_OPTIMIZED_BY 召回策略 + GENERALIZES 抽象扩展",
+      "dropped": [],
+      "input": {
+        "channels": [
+          "pattern",
+          "generalizes"
+        ],
+        "patterns": [
+          "pat:axpy:core.elementwise_update",
+          "pat:axpy:post.tail_case",
+          "pat:axpy:prep.index_pointer_init",
+          "pat:axpy:prep.parameter_validation"
+        ]
+      },
+      "name": "strategy_recall",
+      "reason": "沿 4 个计算流程召回 7 条策略，GENERALIZES 扩展 5 条抽象策略",
+      "selected": [
+        "stg:abstract:register_blocking",
+        "stg:abstract:stride_dispatch",
+        "stg:abstract:tail_handling",
+        "stg:abstract:vector_fma",
+        "stg:axpy:specialize_d",
+        "stg:axpy:specialize_s",
+        "stg:axpy:tail_handle_d",
+        "stg:axpy:tile_x86_avx2",
+        "stg:axpy:vectorize_d",
+        "stg:axpy:vectorize_x",
+        "stg:axpy:vectorize_x86_avx2"
+      ],
+      "step": 2
+    },
+    {
+      "candidates": [
+        "stg:abstract:register_blocking",
+        "stg:abstract:stride_dispatch",
+        "stg:abstract:tail_handling",
+        "stg:abstract:vector_fma",
+        "stg:axpy:specialize_d",
+        "stg:axpy:specialize_s",
+        "stg:axpy:tail_handle_d",
+        "stg:axpy:tile_x86_avx2",
+        "stg:axpy:vectorize_d",
+        "stg:axpy:vectorize_x",
+        "stg:axpy:vectorize_x86_avx2"
+      ],
+      "description": "硬条件过滤：策略 conditions 对查询 code_features 求值",
+      "dropped": [
+        {
+          "id": "stg:axpy:specialize_d",
+          "reason": "size_regime 特征缺失（未知），无法满足硬条件 size_regime in ['medium', 'large']"
+        },
+        {
+          "id": "stg:axpy:tail_handle_d",
+          "reason": "size_regime 特征缺失（未知），无法满足硬条件 size_regime in ['medium', 'large']"
+        },
+        {
+          "id": "stg:axpy:tile_x86_avx2",
+          "reason": "size_regime 特征缺失（未知），无法满足硬条件 size_regime in ['medium', 'large']"
+        },
+        {
+          "id": "stg:axpy:vectorize_d",
+          "reason": "size_regime 特征缺失（未知），无法满足硬条件 size_regime in ['medium', 'large']；stride_x 特征缺失（未知），无法满足硬条件 stride_x eq 1"
+        },
+        {
+          "id": "stg:axpy:vectorize_x",
+          "reason": "loop_depth=1 不满足 loop_depth ge 2；size_regime 特征缺失（未知），无法满足硬条件 size_regime in ['medium', 'large']"
+        },
+        {
+          "id": "stg:axpy:vectorize_x86_avx2",
+          "reason": "size_regime 特征缺失（未知），无法满足硬条件 size_regime in ['medium', 'large']"
+        }
+      ],
+      "input": {
+        "code_features": {
+          "dtype": "d",
+          "loop_depth": 1,
+          "precision": "double",
+          "reduction": false,
+          "structural": "none"
+        }
+      },
+      "name": "condition_filter",
+      "reason": "谓词求值：5 条通过、6 条硬条件淘汰",
+      "selected": [
+        "stg:abstract:register_blocking",
+        "stg:abstract:stride_dispatch",
+        "stg:abstract:tail_handling",
+        "stg:abstract:vector_fma",
+        "stg:axpy:specialize_s"
+      ],
+      "step": 3
+    },
+    {
+      "candidates": [
+        "stg:abstract:register_blocking",
+        "stg:abstract:stride_dispatch",
+        "stg:abstract:tail_handling",
+        "stg:abstract:vector_fma",
+        "stg:axpy:specialize_s"
+      ],
+      "description": "ISA/硬件 profile 能力过滤（profile 绑定 + hard ISA 要求）",
+      "dropped": [],
+      "input": {
+        "profile": "hw:x86_avx2",
+        "profile_isa": [
+          "AVX2",
+          "FMA",
+          "SSE4.2"
+        ],
+        "vector_regs": null
+      },
+      "name": "hardware_filter",
+      "reason": "5 条满足 x86_avx2 的硬件约束，0 条被淘汰",
+      "selected": [
+        "stg:abstract:register_blocking",
+        "stg:abstract:stride_dispatch",
+        "stg:abstract:tail_handling",
+        "stg:abstract:vector_fma",
+        "stg:axpy:specialize_s"
+      ],
+      "step": 4
+    },
+    {
+      "candidates": [
+        "stg:abstract:register_blocking",
+        "stg:abstract:stride_dispatch",
+        "stg:abstract:tail_handling",
+        "stg:abstract:vector_fma",
+        "stg:axpy:specialize_s"
+      ],
+      "description": "逐张筛选，无跨策略约束",
+      "dropped": [],
+      "input": {
+        "register_budget_cap": 12.8,
+        "uarch": "uarch:x86_avx2",
+        "vector_regs": 16.0
+      },
+      "name": "conflict_resolve",
+      "reason": "5 条通过冲突消解（占用寄存器预算 0 / 13）",
+      "register_budget_used": 0.0,
+      "selected": [
+        "stg:axpy:specialize_s",
+        "stg:abstract:register_blocking",
+        "stg:abstract:vector_fma",
+        "stg:abstract:tail_handling",
+        "stg:abstract:stride_dispatch"
+      ],
+      "step": 5
+    },
+    {
+      "candidates": [
+        "stg:axpy:specialize_s",
+        "stg:abstract:register_blocking",
+        "stg:abstract:vector_fma",
+        "stg:abstract:tail_handling",
+        "stg:abstract:stride_dispatch"
+      ],
+      "description": "六项加权打分（match_p/fit_c/hw/ev/sup - transfer penalty）并取 top_k",
+      "dropped": [],
+      "input": {
+        "top_k": 1000,
+        "weights": {
+          "ev": 0.2,
+          "fit_c": 0.2,
+          "hw": 0.15,
+          "match_p": 0.35,
+          "sup": 0.1,
+          "tr_penalty": 0.15
+        }
+      },
+      "name": "score_and_select",
+      "reason": "按总分降序取 top 5",
+      "score_breakdown": {
+        "stg:abstract:register_blocking": {
+          "ev": 0.0,
+          "fit_c": 1.0,
+          "hw": 0.7,
+          "match_p": 0.6,
+          "sup": 1.0,
+          "total": 0.615,
+          "tr_penalty": 0.0
+        },
+        "stg:abstract:stride_dispatch": {
+          "ev": 0.0,
+          "fit_c": 1.0,
+          "hw": 0.7,
+          "match_p": 0.6,
+          "sup": 0.6,
+          "total": 0.575,
+          "tr_penalty": 0.0
+        },
+        "stg:abstract:tail_handling": {
+          "ev": 0.0,
+          "fit_c": 1.0,
+          "hw": 0.7,
+          "match_p": 0.6,
+          "sup": 0.8,
+          "total": 0.595,
+          "tr_penalty": 0.0
+        },
+        "stg:abstract:vector_fma": {
+          "ev": 0.0,
+          "fit_c": 1.0,
+          "hw": 0.7,
+          "match_p": 0.6,
+          "sup": 1.0,
+          "total": 0.615,
+          "tr_penalty": 0.0
+        },
+        "stg:axpy:specialize_s": {
+          "ev": 0.0,
+          "fit_c": 1.0,
+          "hw": 0.7,
+          "match_p": 1.0,
+          "sup": 0.2,
+          "total": 0.675,
+          "tr_penalty": 0.0
+        }
+      },
+      "scores": {
+        "stg:abstract:register_blocking": 0.615,
+        "stg:abstract:stride_dispatch": 0.575,
+        "stg:abstract:tail_handling": 0.595,
+        "stg:abstract:vector_fma": 0.615,
+        "stg:axpy:specialize_s": 0.675
+      },
+      "selected": [
+        "stg:axpy:specialize_s",
+        "stg:abstract:register_blocking",
+        "stg:abstract:vector_fma",
+        "stg:abstract:tail_handling",
+        "stg:abstract:stride_dispatch"
+      ],
+      "step": 6
+    },
+    {
+      "candidates": [
+        "stg:axpy:specialize_s",
+        "stg:abstract:register_blocking",
+        "stg:abstract:vector_fma",
+        "stg:abstract:tail_handling",
+        "stg:abstract:stride_dispatch"
+      ],
+      "description": "生成 StrategyPack（策略 + 模板 + 参数 + 证据 + 溯源），供生成端注入 prompt",
+      "dropped": [],
+      "input": {
+        "selected": [
+          "stg:axpy:specialize_s",
+          "stg:abstract:register_blocking",
+          "stg:abstract:vector_fma",
+          "stg:abstract:tail_handling",
+          "stg:abstract:stride_dispatch"
+        ]
+      },
+      "name": "pack",
+      "reason": "打包 5 条策略 / 5 个模板",
+      "result": {
+        "strategies": [
+          "stg:axpy:specialize_s",
+          "stg:abstract:register_blocking",
+          "stg:abstract:vector_fma",
+          "stg:abstract:tail_handling",
+          "stg:abstract:stride_dispatch"
+        ],
+        "templates": [
+          "tpl:axpy:specialize_s",
+          "tpl:abstract:register_blocking",
+          "tpl:abstract:vector_fma",
+          "tpl:abstract:tail_handling",
+          "tpl:abstract:stride_dispatch"
+        ]
+      },
+      "selected": [
+        "stg:axpy:specialize_s",
+        "stg:abstract:register_blocking",
+        "stg:abstract:vector_fma",
+        "stg:abstract:tail_handling",
+        "stg:abstract:stride_dispatch"
+      ],
+      "step": 7
+    }
+  ],
+  "trace_id": "trace:20261119T212228:axpy:x86_avx2:b1bcca7a"
+}

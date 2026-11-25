@@ -1,0 +1,9 @@
+{
+  "raw": "```c\n#include \"opbench.h\"\n#include <immintrin.h>\n#include <math.h>\n\ndouble op_dasum(size_t n, const double *x, ptrdiff_t incx) {\n    if (n == 0) return 0.0;\n\n    __m256d sum_vec = _mm256_setzero_pd();\n    size_t i = 0;\n    for (; i <= n - 4; i += 4) {\n        __m256d vec = _mm256_loadu_pd(&x[i * incx]);\n        __m256d abs_vec = _mm256_andnot_pd(_mm256_set1_pd(-0.0), vec);\n        sum_vec = _mm256_add_pd(sum_vec, _mm256_hadd_pd(abs_vec, abs_vec));\n    }\n\n    double sum[4];\n    _mm256_storeu_pd(sum, sum_vec);\n\n    for (; i < n; ++i) {\n        sum[0] += fabs(x[i * incx]);\n    }\n\n    return sum[0] + sum[1] + sum[2] + sum[3];\n}\n```",
+  "usage": {
+    "prompt_tokens": 1695,
+    "completion_tokens": 257,
+    "total_tokens": 1952
+  },
+  "stop_reason": "stop"
+}

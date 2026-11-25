@@ -1,0 +1,40 @@
+{
+  "usage": {
+    "calls": 5,
+    "prompt_tokens": 20037,
+    "completion_tokens": 2456,
+    "total_tokens": 22493,
+    "by_stage": {
+      "analysis": {
+        "calls": 3,
+        "prompt_tokens": 6405,
+        "completion_tokens": 981,
+        "total_tokens": 7386
+      },
+      "synthesis": {
+        "calls": 1,
+        "prompt_tokens": 1857,
+        "completion_tokens": 670,
+        "total_tokens": 2527
+      },
+      "generate": {
+        "calls": 1,
+        "prompt_tokens": 11775,
+        "completion_tokens": 805,
+        "total_tokens": 12580
+      }
+    }
+  },
+  "code_meta": {
+    "signature": "double ddot_k(BLASLONG n, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y)",
+    "function_name": "ddot_k",
+    "wrapped_body": false,
+    "fences_removed": true,
+    "prologue_added": false,
+    "repairs": [],
+    "char_count": 1991
+  },
+  "provider": "dashscope",
+  "model": "qwen-plus-2025-04-28",
+  "elapsed_s": 52.069
+}

@@ -1,0 +1,12 @@
+dsymv x86 candidate: check_failed 720 cases, 2850 failures
+
+dsymv triangle/stride/alpha/beta case 121 cell 2: got nan expected 0.32497238424248359
+dsymv triangle/stride/alpha/beta case 122 cell 2: got nan expected -7.071538461538462
+dsymv triangle/stride/alpha/beta case 126 cell 2: got nan expected 1.3263813155654371
+dsymv triangle/stride/alpha/beta case 127 cell 4: got nan expected 1.9895165659365794
+dsymv triangle/stride/alpha/beta case 128 cell 4: got nan expected -4.3821724137931035
+dsymv triangle/stride/alpha/beta case 132 cell 4: got nan expected 2.9897276417902048
+dsymv triangle/stride/alpha/beta case 133 cell 2: got -5.2038640952937119 expected -7.3090220855701507
+dsymv triangle/stride/alpha/beta case 134 cell 2: got 3.3635278514588864 expected -3.4176737400530501
+dsymv triangle/stride/alpha/beta case 138 cell 2: got -2.8218097643689886 expected -0.21625248893610702
+dsymv triangle/stride/alpha/beta case 139 cell 1: got nan expected 12.076754216240175

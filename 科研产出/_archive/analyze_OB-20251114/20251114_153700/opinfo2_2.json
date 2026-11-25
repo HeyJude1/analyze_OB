@@ -1,0 +1,480 @@
+{
+  "source_file": "/home/dgc/mjs/project/analyze_OB/KG/trmm.txt",
+  "patterns_detected": [
+    {
+      "pattern_type": "prep.parameter_validation",
+      "name": "参数合法性校验",
+      "description": "检查 M 和 N 是否为零，若为零则提前返回；检查 alpha 是否为 0.0f，若为零则清零 B 矩阵并返回。",
+      "code": "if (M == 0 || N == 0) {\n        return;\n    }\n\n    // 如果 alpha 为 0，则将 B 矩阵清零并返回。\n    if (alpha == 0.0f) {\n        for (int j = 0; j < N; ++j) {\n            for (int i = 0; i < M; ++i) {\n                B(i, j) = 0.0f;\n            }\n        }\n        return;\n    }",
+      "data_object_features": {
+        "numeric_kind": "N/A",
+        "numeric_precision": "N/A",
+        "structural_properties": "N/A",
+        "storage_layout": "N/A"
+      }
+    },
+    {
+      "pattern_type": "prep.loop_invariant_calc",
+      "name": "循环不变量计算",
+      "description": "在循环外定义分块大小常量 MC、KC、NC，用于后续分块循环中控制块尺寸，避免在循环内重复计算。",
+      "code": "const int MC = 256; // 块大小 M-dimension\n    const int KC = 128; // 块大小 K-dimension\n    const int NC = 4096; // 块大小 N-dimension",
+      "data_object_features": {
+        "numeric_kind": "实数",
+        "numeric_precision": "N/A",
+        "structural_properties": "N/A",
+        "storage_layout": "N/A"
+      }
+    },
+    {
+      "pattern_type": "core.tiled_loop",
+      "name": "分块矩阵处理循环",
+      "description": "使用三层嵌套循环（j, p, i）遍历矩阵分块，外层遍历N方向块，中层遍历K方向块，内层遍历M方向块，驱动微内核执行，块大小为MC=256、KC=128、NC=4096，以优化缓存复用。",
+      "code": "for (int j = 0; j < N; j += NC) {\n    int nc = min(N - j, NC);\n\n    for (int p = 0; p < M; p += KC) {\n        int kc = min(M - p, KC);\n\n        pack_matrix_B(nc, kc, &B(p, j), ldb, packed_b);\n\n        for (int i = p; i < M; i += MC) {\n            int mc = min(M - i, MC);\n            \n            pack_matrix_A(mc, kc, &A(i, p), lda, packed_a);\n\n            gemm_micro_kernel(mc, nc, kc, 1.0f, packed_a, &B(i, j), ldb);\n        }\n    }\n}",
+      "data_object_features": {
+        "numeric_kind": "实数",
+        "numeric_precision": "单精度",
+        "structural_properties": "通用",
+        "storage_layout": "跨步"
+      }
+    },
+    {
+      "pattern_type": "core.mm_microkernel",
+      "name": "矩阵乘法微内核",
+      "description": "实现一个三重循环的矩阵乘法微内核，内层执行 c[i,j] += pack_a[p*mc+i] * B(p,j) 的累加操作，虽为简化版本，但结构符合寄存器级FMA微内核的典型模式，输入数据为连续打包格式。",
+      "code": "void gemm_micro_kernel(int mc, int nc, int kc, float alpha, float *pack_a, float *c, int ldc) {\n    for (int j = 0; j < nc; ++j) {\n        for (int i = 0; i < mc; ++i) {\n            for (int p = 0; p < kc; ++p) {\n                c[j * ldc + i] += pack_a[p * mc + i] * B(p,j); // 假设 B 此时也已打包\n            }\n        }\n    }\n}",
+      "data_object_features": {
+        "numeric_kind": "实数",
+        "numeric_precision": "单精度",
+        "structural_properties": "通用",
+        "storage_layout": "连续"
+      }
+    },
+    {
+      "pattern_type": "post.scale_accumulation",
+      "name": "结果缩放与累加",
+      "description": "根据实际代码生成具体描述，说明如何进行结果缩放和累加、涉及的系数处理和写回方式。识别标准，C=alpha*Temp + beta*C 写回；包含 alpha/beta 分支与目标内存写回。",
+      "code": "if (alpha != 1.0f) {\n        for (int j = 0; j < N; ++j) {\n            for (int i = 0; i < M; ++i) {\n                B(i, j) *= alpha;\n            }\n        }\n    }",
+      "data_object_features": {
+        "numeric_kind": "实数",
+        "numeric_precision": "单精度",
+        "structural_properties": "通用",
+        "storage_layout": "跨步"
+      }
+    }
+  ],
+  "similar_patterns_found": [
+    {
+      "uid": "f690e473606770fdc7189a8f350c576a",
+      "name": "参数合法性校验",
+      "type": "prep.parameter_validation",
+      "similarity": 0.7618488073348999,
+      "query_pattern": "参数合法性校验"
+    },
+    {
+      "uid": "0b0fcd148b2b3a7911a757b63ed21798",
+      "name": "参数合法性校验",
+      "type": "prep.parameter_validation",
+      "similarity": 0.744327187538147,
+      "query_pattern": "参数合法性校验"
+    },
+    {
+      "uid": "e9e452e1a3b290bd50e3ddc31b0c9221",
+      "name": "循环不变量计算",
+      "type": "prep.loop_invariant_calc",
+      "similarity": 0.7741081714630127,
+      "query_pattern": "循环不变量计算"
+    },
+    {
+      "uid": "0203503d38c50b1a0200ecf73e20da38",
+      "name": "循环不变量计算",
+      "type": "prep.loop_invariant_calc",
+      "similarity": 0.7719977498054504,
+      "query_pattern": "循环不变量计算"
+    },
+    {
+      "uid": "5c9d0d97ab36f9db42eb4f696eab5d1a",
+      "name": "分块矩阵处理循环",
+      "type": "core.tiled_loop",
+      "similarity": 0.860099196434021,
+      "query_pattern": "分块矩阵处理循环"
+    },
+    {
+      "uid": "4a361bcdd2f5b94962ab947f24c3472d",
+      "name": "分块矩阵处理循环",
+      "type": "core.tiled_loop",
+      "similarity": 0.8589174151420593,
+      "query_pattern": "分块矩阵处理循环"
+    },
+    {
+      "uid": "cc71e9faf8783431633a177b5827e6de",
+      "name": "矩阵乘法微内核",
+      "type": "core.mm_microkernel",
+      "similarity": 0.7910236120223999,
+      "query_pattern": "矩阵乘法微内核"
+    },
+    {
+      "uid": "837da8633445d2a922de35d2ae951b7f",
+      "name": "矩阵乘法微内核",
+      "type": "core.mm_microkernel",
+      "similarity": 0.7683005928993225,
+      "query_pattern": "矩阵乘法微内核"
+    },
+    {
+      "uid": "f516e1b6d941d09c03bfbcc88c2f31b0",
+      "name": "结果缩放与累加",
+      "type": "post.scale_accumulation",
+      "similarity": 0.8570069670677185,
+      "query_pattern": "结果缩放与累加"
+    },
+    {
+      "uid": "fae27a14ac19d4078dfd9c0236b69129",
+      "name": "结果缩放与累加",
+      "type": "post.scale_accumulation",
+      "similarity": 0.8489921689033508,
+      "query_pattern": "结果缩放与累加"
+    }
+  ],
+  "top_patterns_per_type": [
+    {
+      "uid": "f690e473606770fdc7189a8f350c576a",
+      "name": "参数合法性校验",
+      "type": "prep.parameter_validation",
+      "similarity": 0.7618488073348999,
+      "query_pattern": "参数合法性校验"
+    },
+    {
+      "uid": "e9e452e1a3b290bd50e3ddc31b0c9221",
+      "name": "循环不变量计算",
+      "type": "prep.loop_invariant_calc",
+      "similarity": 0.7741081714630127,
+      "query_pattern": "循环不变量计算"
+    },
+    {
+      "uid": "5c9d0d97ab36f9db42eb4f696eab5d1a",
+      "name": "分块矩阵处理循环",
+      "type": "core.tiled_loop",
+      "similarity": 0.860099196434021,
+      "query_pattern": "分块矩阵处理循环"
+    },
+    {
+      "uid": "cc71e9faf8783431633a177b5827e6de",
+      "name": "矩阵乘法微内核",
+      "type": "core.mm_microkernel",
+      "similarity": 0.7910236120223999,
+      "query_pattern": "矩阵乘法微内核"
+    },
+    {
+      "uid": "f516e1b6d941d09c03bfbcc88c2f31b0",
+      "name": "结果缩放与累加",
+      "type": "post.scale_accumulation",
+      "similarity": 0.8570069670677185,
+      "query_pattern": "结果缩放与累加"
+    }
+  ],
+  "search_strategies": [
+    {
+      "strategy_uid": "78c7fba8c57a8964bff8cb93e7700d26",
+      "canonical_name": "SIMD向量化复数数据处理",
+      "cluster_size": 7,
+      "pattern_counts": {
+        "transform.packing": 3,
+        "core.mm_microkernel": 3,
+        "core.tiled_loop": 3,
+        "core.gemv_like": 1,
+        "core.vector_reduction": 1
+      },
+      "core_patterns": [],
+      "contextual_patterns": {
+        "transform.packing": "0.428571",
+        "core.mm_microkernel": "0.428571",
+        "core.tiled_loop": "0.428571",
+        "core.gemv_like": "0.142857",
+        "core.vector_reduction": "0.142857"
+      },
+      "score": 0.428571
+    },
+    {
+      "strategy_uid": "02c3072945af12c082997f8c97ce5d6d",
+      "canonical_name": "分支消除与短路返回",
+      "cluster_size": 10,
+      "pattern_counts": {
+        "prep.parameter_validation": 10
+      },
+      "core_patterns": [
+        "prep.parameter_validation"
+      ],
+      "contextual_patterns": {},
+      "score": 0.2
+    },
+    {
+      "strategy_uid": "b7905437f874d22735cb33368840a5b1",
+      "canonical_name": "循环不变量外提",
+      "cluster_size": 7,
+      "pattern_counts": {
+        "prep.loop_invariant_calc": 7,
+        "core.elementwise_update": 6
+      },
+      "core_patterns": [
+        "prep.loop_invariant_calc",
+        "core.elementwise_update"
+      ],
+      "contextual_patterns": {},
+      "score": 0.2
+    },
+    {
+      "strategy_uid": "29625a085e26cced64b1a87c4456172a",
+      "canonical_name": "残差处理分离",
+      "cluster_size": 9,
+      "pattern_counts": {
+        "core.mm_microkernel": 3,
+        "core.tiled_loop": 6,
+        "prep.index_pointer_init": 3,
+        "transform.packing": 1
+      },
+      "core_patterns": [
+        "core.tiled_loop"
+      ],
+      "contextual_patterns": {
+        "core.mm_microkernel": "0.333333",
+        "prep.index_pointer_init": "0.333333",
+        "transform.packing": "0.111111"
+      },
+      "score": 0.3666665
+    },
+    {
+      "strategy_uid": "13c70809b91e59cfa03d706ee851fb9e",
+      "canonical_name": "复数乘法融合与SIMD向量化优化",
+      "cluster_size": 16,
+      "pattern_counts": {
+        "core.mm_microkernel": 9,
+        "post.scale_accumulation": 7,
+        "core.elementwise_update": 6,
+        "transform.packing": 1
+      },
+      "core_patterns": [],
+      "contextual_patterns": {
+        "core.mm_microkernel": "0.562500",
+        "post.scale_accumulation": "0.437500",
+        "core.elementwise_update": "0.375000",
+        "transform.packing": "0.062500"
+      },
+      "score": 0.5
+    },
+    {
+      "strategy_uid": "02ac627c31428b9d7b26772c1227184f",
+      "canonical_name": "寄存器累积变量分组布局",
+      "cluster_size": 10,
+      "pattern_counts": {
+        "core.mm_microkernel": 8,
+        "post.scale_accumulation": 5,
+        "core.elementwise_update": 2,
+        "transform.packing": 2,
+        "prep.index_pointer_init": 1
+      },
+      "core_patterns": [
+        "core.mm_microkernel"
+      ],
+      "contextual_patterns": {
+        "post.scale_accumulation": "0.500000",
+        "core.elementwise_update": "0.200000",
+        "transform.packing": "0.200000",
+        "prep.index_pointer_init": "0.100000"
+      },
+      "score": 0.45
+    },
+    {
+      "strategy_uid": "0ad5432f7acf2b2e2e618d310216dad8",
+      "canonical_name": "内存访问与算术操作重叠设计",
+      "cluster_size": 1,
+      "pattern_counts": {
+        "core.elementwise_update": 1,
+        "prep.loop_invariant_calc": 1
+      },
+      "core_patterns": [
+        "core.elementwise_update",
+        "prep.loop_invariant_calc"
+      ],
+      "contextual_patterns": {},
+      "score": 0.2
+    },
+    {
+      "strategy_uid": "b3c0f6131b5d9d55133e1b21c7c41dd5",
+      "canonical_name": "四重循环展开",
+      "cluster_size": 10,
+      "pattern_counts": {
+        "core.mm_microkernel": 7,
+        "transform.packing": 3,
+        "core.tiled_loop": 2
+      },
+      "core_patterns": [
+        "core.mm_microkernel"
+      ],
+      "contextual_patterns": {
+        "transform.packing": "0.300000",
+        "core.tiled_loop": "0.200000"
+      },
+      "score": 0.30000000000000004
+    },
+    {
+      "strategy_uid": "1d03eac350a93a29a4d750ae2181d01a",
+      "canonical_name": "指针算术优化与双缓冲指针调度",
+      "cluster_size": 12,
+      "pattern_counts": {
+        "transform.packing": 5,
+        "prep.index_pointer_init": 6,
+        "core.mm_microkernel": 7,
+        "core.tiled_loop": 3,
+        "prep.loop_invariant_calc": 2
+      },
+      "core_patterns": [],
+      "contextual_patterns": {
+        "transform.packing": "0.416667",
+        "prep.index_pointer_init": "0.500000",
+        "core.mm_microkernel": "0.583333",
+        "core.tiled_loop": "0.250000",
+        "prep.loop_invariant_calc": "0.166667"
+      },
+      "score": 0.5
+    },
+    {
+      "strategy_uid": "00009e903cbc1119cc3b6824eb36f756",
+      "canonical_name": "循环内索引增量展开",
+      "cluster_size": 13,
+      "pattern_counts": {
+        "core.elementwise_update": 5,
+        "prep.index_pointer_init": 8,
+        "transform.packing": 5,
+        "core.gemv_like": 2,
+        "core.tiled_loop": 2,
+        "core.mm_microkernel": 2
+      },
+      "core_patterns": [
+        "prep.index_pointer_init"
+      ],
+      "contextual_patterns": {
+        "core.elementwise_update": "0.384615",
+        "transform.packing": "0.384615",
+        "core.gemv_like": "0.153846",
+        "core.tiled_loop": "0.153846",
+        "core.mm_microkernel": "0.153846"
+      },
+      "score": 0.153846
+    },
+    {
+      "strategy_uid": "31ecf9af854aea2663e57d3e3f55688f",
+      "canonical_name": "分块矩阵计算",
+      "cluster_size": 6,
+      "pattern_counts": {
+        "core.tiled_loop": 2,
+        "core.mm_microkernel": 2,
+        "transform.packing": 2,
+        "transform.unpacking_special": 1,
+        "core.gemv_like": 2,
+        "core.rank1_update": 1,
+        "prep.loop_invariant_calc": 1,
+        "prep.index_pointer_init": 1,
+        "post.scale_accumulation": 1
+      },
+      "core_patterns": [],
+      "contextual_patterns": {
+        "core.tiled_loop": "0.333333",
+        "core.mm_microkernel": "0.333333",
+        "transform.packing": "0.333333",
+        "transform.unpacking_special": "0.166667",
+        "core.gemv_like": "0.333333",
+        "core.rank1_update": "0.166667",
+        "prep.loop_invariant_calc": "0.166667",
+        "prep.index_pointer_init": "0.166667",
+        "post.scale_accumulation": "0.166667"
+      },
+      "score": 0.5
+    },
+    {
+      "strategy_uid": "16a30efcf18dd5a51bb7fe77d4602389",
+      "canonical_name": "部分累积与延迟归约",
+      "cluster_size": 2,
+      "pattern_counts": {
+        "core.mm_microkernel": 2,
+        "post.scale_accumulation": 1
+      },
+      "core_patterns": [
+        "core.mm_microkernel"
+      ],
+      "contextual_patterns": {
+        "post.scale_accumulation": "0.500000"
+      },
+      "score": 0.45
+    }
+  ],
+  "final_strategies": [
+    {
+      "strategy_uid": "13c70809b91e59cfa03d706ee851fb9e",
+      "canonical_name": "复数乘法融合与SIMD向量化优化",
+      "cluster_size": 16,
+      "pattern_counts": {
+        "core.mm_microkernel": 9,
+        "post.scale_accumulation": 7,
+        "core.elementwise_update": 6,
+        "transform.packing": 1
+      },
+      "core_patterns": [],
+      "contextual_patterns": {
+        "core.mm_microkernel": "0.562500",
+        "post.scale_accumulation": "0.437500",
+        "core.elementwise_update": "0.375000",
+        "transform.packing": "0.062500"
+      },
+      "score": 0.5
+    },
+    {
+      "strategy_uid": "1d03eac350a93a29a4d750ae2181d01a",
+      "canonical_name": "指针算术优化与双缓冲指针调度",
+      "cluster_size": 12,
+      "pattern_counts": {
+        "transform.packing": 5,
+        "prep.index_pointer_init": 6,
+        "core.mm_microkernel": 7,
+        "core.tiled_loop": 3,
+        "prep.loop_invariant_calc": 2
+      },
+      "core_patterns": [],
+      "contextual_patterns": {
+        "transform.packing": "0.416667",
+        "prep.index_pointer_init": "0.500000",
+        "core.mm_microkernel": "0.583333",
+        "core.tiled_loop": "0.250000",
+        "prep.loop_invariant_calc": "0.166667"
+      },
+      "score": 0.5
+    },
+    {
+      "strategy_uid": "31ecf9af854aea2663e57d3e3f55688f",
+      "canonical_name": "分块矩阵计算",
+      "cluster_size": 6,
+      "pattern_counts": {
+        "core.tiled_loop": 2,
+        "core.mm_microkernel": 2,
+        "transform.packing": 2,
+        "transform.unpacking_special": 1,
+        "core.gemv_like": 2,
+        "core.rank1_update": 1,
+        "prep.loop_invariant_calc": 1,
+        "prep.index_pointer_init": 1,
+        "post.scale_accumulation": 1
+      },
+      "core_patterns": [],
+      "contextual_patterns": {
+        "core.tiled_loop": "0.333333",
+        "core.mm_microkernel": "0.333333",
+        "transform.packing": "0.333333",
+        "transform.unpacking_special": "0.166667",
+        "core.gemv_like": "0.333333",
+        "core.rank1_update": "0.166667",
+        "prep.loop_invariant_calc": "0.166667",
+        "prep.index_pointer_init": "0.166667",
+        "post.scale_accumulation": "0.166667"
+      },
+      "score": 0.5
+    }
+  ]
+}

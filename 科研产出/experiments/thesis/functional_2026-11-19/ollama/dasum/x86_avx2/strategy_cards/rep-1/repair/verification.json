@@ -1,0 +1,36 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "amd64",
+  "results": [
+    {
+      "task": "dasum",
+      "target": "x86",
+      "variant": "candidate",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dasum\\x86_avx2\\strategy_cards\\rep-1\\repair\\candidate.c",
+      "source_sha256": "61bdf41f11546c10d603e5aa1c4f248a7f7e3cfef5eee00ac306926cfee42012",
+      "status": "compile_error",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DASUM",
+          "driver/check.c",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dasum\\x86_avx2\\strategy_cards\\rep-1\\repair\\candidate.c",
+          "-o",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dasum\\x86_avx2\\strategy_cards\\rep-1\\repair\\bin\\dasum-x86-candidate.exe",
+          "-lm"
+        ],
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dasum\\x86_avx2\\strategy_cards\\rep-1\\repair\\candidate.c: In function 'op_dasum':\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dasum\\x86_avx2\\strategy_cards\\rep-1\\repair\\candidate.c:18:16: error: implicit declaration of function '_mm256_reduce_add_pd'; did you mean '_mm256_reduce_add_ph'? [-Wimplicit-function-declaration]\n   18 |         sum += _mm256_reduce_add_pd(vsum);\n      |                ^~~~~~~~~~~~~~~~~~~~\n      |                _mm256_reduce_add_ph\n"
+      }
+    }
+  ]
+}

@@ -1,0 +1,636 @@
+{
+  "build_mode": "offline",
+  "data": {
+    "edges.jsonl": {
+      "lines": 3656,
+      "sha256": "66a841b9d5ceda306a65646847625a97b9192ac1b14d4f29a8886b5112cc935d"
+    },
+    "nodes.jsonl": {
+      "lines": 862,
+      "sha256": "761512222f0e2200c7cc5f825c8b8879f5815e3779970f3c6ff6332bb73a3562"
+    }
+  },
+  "extractor_version": "kgagent-v1.5",
+  "generated_at": "2026-11-12T18:57:27+08:00",
+  "inputs": [
+    {
+      "bytes": 6021,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/03_chemv_op/_command.txt",
+      "sha256": "b033cfea813bc79d260a66390478c799169a0b29de54bbe56b5aef51477f6e86"
+    },
+    {
+      "bytes": 28989,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/03_chemv_op/chemv_k.c",
+      "sha256": "31fb8b4a04ea6326be8d52d016e6052f771f276b6e1d2155f139be4dbf3ea15e"
+    },
+    {
+      "bytes": 5746,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/03_chemv_op/chemv_k_rvv.c",
+      "sha256": "522ebea9531ff5495bcc4a2b94415c7de83c5c85794063474526cb45b214f41b"
+    },
+    {
+      "bytes": 23613,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/03_chemv_op/chemv_log.txt",
+      "sha256": "e586d2253045a2ed56c7da757667e3e91b98b0d2f907129a15acc56403d83a44"
+    },
+    {
+      "bytes": 5963,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/_command.txt",
+      "sha256": "bf8db798ace16a5711d9cd4f96aaf8e53a08339a98b99a9c4194435fcd6edd07"
+    },
+    {
+      "bytes": 467,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/daxpy_k.c",
+      "sha256": "32352a9efe234c46502a42b88877f0bda9502331c82d767485a1d890cead9f20"
+    },
+    {
+      "bytes": 2742,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/daxpy_k_rvv.c",
+      "sha256": "05e31a1de8e8c6266da52cc505dc3f55a6ba7e88c31a6bcf6fbd73b72612a3f8"
+    },
+    {
+      "bytes": 23600,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/13_daxpy_op/daxpy_log.txt",
+      "sha256": "646004709ffe9a3cbbac932287068ab7a5a8bef049bf737201d9cfc6a576c388"
+    },
+    {
+      "bytes": 6019,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/14_dcopy_op/_command.txt",
+      "sha256": "a672fdfaab19610f5fc84b3b38b6468b2c5efa52ab2ed1c83402aa00d042be11"
+    },
+    {
+      "bytes": 23600,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/14_dcopy_op/copy_log.txt",
+      "sha256": "67593d4ef0e99f89bfb837266f4415f874a31280ab11c5b050e4a6b167f8ea4a"
+    },
+    {
+      "bytes": 340,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/14_dcopy_op/dcopy_k.c",
+      "sha256": "e40cbc3a4f83a2da9d196fe1d384167c128537697424d3dcd665e419fc341033"
+    },
+    {
+      "bytes": 1579,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/14_dcopy_op/dcopy_k_rvv.c",
+      "sha256": "7ffb8aa7d27626db3fa620c67e068653ff2d52dff64913327db40690782934ae"
+    },
+    {
+      "bytes": 5883,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/15_ddot_op/_command.txt",
+      "sha256": "47a78d5764efcdab04059e361361c74ca0862474773bd004708bd57b1fec9199"
+    },
+    {
+      "bytes": 377,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/15_ddot_op/ddot_k.c",
+      "sha256": "da070977341a487f99f87e9fa2de6f7c53765949b349e9a5ce4f1a2efd7c6714"
+    },
+    {
+      "bytes": 2244,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/15_ddot_op/ddot_k_rvv.c",
+      "sha256": "81158123c1972c9479bac98c475ce0cb0e2688bbe8ede5ad7fefe5bcd6e4c8cc"
+    },
+    {
+      "bytes": 23602,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/15_ddot_op/dot_log.txt",
+      "sha256": "ce3b0dcea546b48c466a5e0d571c4b6e8f5e61c222c13208abee57ba0111f00b"
+    },
+    {
+      "bytes": 25788,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/16_dgemm_op5/_command.txt",
+      "sha256": "7480b14e71c3e4ba9ed3736400524cf38cc63cdb532ea0455a4af907b214e0f5"
+    },
+    {
+      "bytes": 4906,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/16_dgemm_op5/dgemm_k.c",
+      "sha256": "7ba4cb1ade402b62eee0bbbac172c062cab6fab2411065db427e3907e2380414"
+    },
+    {
+      "bytes": 20798,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/16_dgemm_op5/dgemm_k_rvv.c",
+      "sha256": "0fe8b55dc32fbb0f3dc12c882f15d431fb5026fbe5f9a45ef7b5b8365ca52cfc"
+    },
+    {
+      "bytes": 36614,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/16_dgemm_op5/gemm_log.txt",
+      "sha256": "480eda098bd79528ca5b0238799840c04d1c0af95fbcb21e9223e25d3fc476ea"
+    },
+    {
+      "bytes": 6087,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/17_dgemv_op/_command.txt",
+      "sha256": "cf5f2e4c6b0a7413b5348995d355b79fe032e0090283b8262e3cba08e57ce8e7"
+    },
+    {
+      "bytes": 543,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/17_dgemv_op/dgemv_k.c",
+      "sha256": "663a05f573de734575aecba2ff210c1deed0bafa75d91e6f2916bf86b71091f4"
+    },
+    {
+      "bytes": 1615,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/17_dgemv_op/dgemv_k_rvv.c",
+      "sha256": "025f863d834d86552ef6c90521bb4c843198c920e1af7ba60940cbd7ebc870ba"
+    },
+    {
+      "bytes": 23611,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/17_dgemv_op/gemv_log.txt",
+      "sha256": "afca816d206a54847cccc86e1990d8aa40352c34b9d4a7c2f0cc5114ebbce286"
+    },
+    {
+      "bytes": 5963,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/22_dnrm2_op/_command.txt",
+      "sha256": "53d621c8268fc63979d4939eb7bec76a5992cf8f2cb94f07f0b359fb1de4c24f"
+    },
+    {
+      "bytes": 682,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/22_dnrm2_op/dnrm2_k.c",
+      "sha256": "dc7ab6fba58460dd8c8f4987b57fd9174e01cc6e4349a37cd1744512222902d2"
+    },
+    {
+      "bytes": 4832,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/22_dnrm2_op/dnrm2_k_rvv.c",
+      "sha256": "c62faaa586fd0bdbf052e205a0951b2f8d0b516f6b7d9e1479886f244675c31d"
+    },
+    {
+      "bytes": 23590,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/22_dnrm2_op/dnrm2_log.txt",
+      "sha256": "fb170cfdb12a8537626e22c8c286eb902ac4c07fe45505fc393f177fd90a5fae"
+    },
+    {
+      "bytes": 5927,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/23_drot_op/_command.txt",
+      "sha256": "f77db0d83313f9e98d9f3c3b8b7286787d743d358287dc7d8054577264af95d7"
+    },
+    {
+      "bytes": 430,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/23_drot_op/drot_k.c",
+      "sha256": "133a1fca8c0122e19455fa3b5e1b5554eaa589906987ee7545f410f2d37be7b2"
+    },
+    {
+      "bytes": 3245,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/23_drot_op/drot_k_rvv.c",
+      "sha256": "da1eeadc9436cfc802ecda887b788e7e189eab89f86de13f0db7f4220283d57b"
+    },
+    {
+      "bytes": 23570,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/23_drot_op/rot_log.txt",
+      "sha256": "f28c471f96b378b2d68863bbc223c9c081dd61decdcfe1320ef267d41e87fc95"
+    },
+    {
+      "bytes": 5963,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/24_dscal_op/_command.txt",
+      "sha256": "6fa5dc32d307777e8fab023017ae53106975286da75283fe38ae91fb64855310"
+    },
+    {
+      "bytes": 399,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/24_dscal_op/dscal_k.c",
+      "sha256": "c2b4489ada94397a37795b80f53abeedda74443ee945423f8424c8d3ba69462e"
+    },
+    {
+      "bytes": 1793,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/24_dscal_op/dscal_k_rvv.c",
+      "sha256": "6800909c8616516124d9f347f0044a1892b88efb296599f28030e2a1f79f1ccf"
+    },
+    {
+      "bytes": 23590,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/24_dscal_op/scal_log.txt",
+      "sha256": "1bb8fedcba6dd54ac787067381a5c8c8fe9a472578613745f3b57c8531f40e9e"
+    },
+    {
+      "bytes": 5963,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/28_dswap_op/_command.txt",
+      "sha256": "f8ed2212410ca02401ce501d488d141d3ae94d3a659db32ee300613e59a9e3d3"
+    },
+    {
+      "bytes": 471,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/28_dswap_op/dswap_k.c",
+      "sha256": "87456b6ee092024aa0919a1cc70bb8bc46c4170ee5714d988aa3e17437153023"
+    },
+    {
+      "bytes": 3228,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/28_dswap_op/dswap_k_rvv.c",
+      "sha256": "5aeab8291304eb76cb12f563618d8798bc411f3c19c034d440d670919f0f2ebd"
+    },
+    {
+      "bytes": 23600,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/28_dswap_op/swap_log.txt",
+      "sha256": "141b9edd146bf24d19d39d607c2986375689ad2354088a7f660d84ed7be293a9"
+    },
+    {
+      "bytes": 23480,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/29_dsymm_op1/_command.txt",
+      "sha256": "be92aab9e005b0a9f226330b0823d9510577b36c77cf6db81577c457b1532edd"
+    },
+    {
+      "bytes": 4906,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/29_dsymm_op1/dsymm_k.c",
+      "sha256": "7ba4cb1ade402b62eee0bbbac172c062cab6fab2411065db427e3907e2380414"
+    },
+    {
+      "bytes": 20798,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/29_dsymm_op1/dsymm_k_rvv.c",
+      "sha256": "0fe8b55dc32fbb0f3dc12c882f15d431fb5026fbe5f9a45ef7b5b8365ca52cfc"
+    },
+    {
+      "bytes": 23824,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/29_dsymm_op1/dsymm_rvv_log.txt",
+      "sha256": "e88d84c45c65c0eb3b0842a5bccb70db765f67302274a65ddb842b1f92ca67d1"
+    },
+    {
+      "bytes": 32127,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/37_dtrmm_op1/_command.txt",
+      "sha256": "209bd4834d6ff3ae3024adb2fbe22812514be1de52f51a6ea7a2b2a311448e10"
+    },
+    {
+      "bytes": 5236,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/37_dtrmm_op1/dtrmm_k.c",
+      "sha256": "09a0ab510864394a97da69006a9a580e9d085d05b79655f07a36008354a6082d"
+    },
+    {
+      "bytes": 20485,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/37_dtrmm_op1/dtrmm_k_rvv.c",
+      "sha256": "0767e44df77da7ff62c501209b1849732b6a095e7dd5eabddfaf364cee711c4b"
+    },
+    {
+      "bytes": 23843,
+      "path": "../cx_operator_tool/operator_extract/openblas_newtest1/37_dtrmm_op1/dtrmm_log.txt",
+      "sha256": "4000928d3b30ba2c49f17b0e3420c672d3207400c9e577b5ac3adb1541daf068"
+    },
+    {
+      "bytes": 95413,
+      "path": "开题/analyze_OB/20251114_153700/analysis_results/axpy_analysis.json",
+      "sha256": "5eeef019a05dd662193dc6b94c1ca6e74787aaded3da45dcc59e976c7e7caa1a"
+    },
+    {
+      "bytes": 132620,
+      "path": "开题/analyze_OB/20251114_153700/analysis_results/gemm_analysis.json",
+      "sha256": "a276218fe3e338038477d18e6626fca3f72869b8ecf45bd573edf95a595db011"
+    },
+    {
+      "bytes": 143008,
+      "path": "开题/analyze_OB/20251114_153700/analysis_results/hemv_analysis.json",
+      "sha256": "7e769d0ace801b50d4faaf3e151fcf199f6f0e6592aa18809bc64a4069497b71"
+    },
+    {
+      "bytes": 174910,
+      "path": "开题/analyze_OB/20251114_153700/analysis_results/trmm_analysis.json",
+      "sha256": "5b15a7dacce3d5469a6df3d87c66fc31ce3fd20bc9fb343cedd5a7fe18c5bd41"
+    },
+    {
+      "bytes": 4552,
+      "path": "科研产出/data/riscv_log_summary.csv",
+      "sha256": "affcd5455f8d62f42f62ef791774cd75cac4437930d58261f4a71471192b7eb8"
+    },
+    {
+      "bytes": 8809,
+      "path": "科研产出/kg_agent/config.yaml",
+      "sha256": "4a4313a88818d0e77f3d08106d0c24ca4e9e78984efca2b797266b47faa92e54"
+    },
+    {
+      "bytes": 4589,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/arm_neon/asum/asum.S",
+      "sha256": "0b52e88dcfb07f7657e0aaf06648f129ddc9c78195cff0bed4a28094b225ba10"
+    },
+    {
+      "bytes": 7700,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/arm_neon/asum/dasum_thunderx2t99.c",
+      "sha256": "28f7c0edec44486d428f269b9838f6d40cfedf032bb310988acc09f1bf859423"
+    },
+    {
+      "bytes": 4887,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/arm_neon/axpy/axpy.S",
+      "sha256": "3df70c05ae5e8dc397b1bffac151df034f2d710955e111eddfcbcc91c720a6f5"
+    },
+    {
+      "bytes": 4121,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/arm_neon/axpy/daxpy_thunderx.c",
+      "sha256": "432a46a13eadc812956d6af4c50992b3baef92a7a44b3911da732c9f8e74055a"
+    },
+    {
+      "bytes": 4919,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/arm_neon/copy/copy.S",
+      "sha256": "383eab14d45c46981b15ca278097fb0adcaac6dd36a2113d2910ac2a8d69323f"
+    },
+    {
+      "bytes": 3406,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/arm_neon/dot/ddot_thunderx.c",
+      "sha256": "c459a4ec1cda54a89bdb4b4ce2805aa575da6b15f09649944b97c6ab4a1b9e45"
+    },
+    {
+      "bytes": 5225,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/arm_neon/dot/dot.S",
+      "sha256": "53d0ece6e4f9e60c22e8d40bf7e6a27c14b43dad3e03889760b5bb1ee40d5327"
+    },
+    {
+      "bytes": 11046,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/arm_neon/dot/dot_kernel_asimd.c",
+      "sha256": "b5b8798eac42bebed65aad4da8cfb0ec02f3e50cf77d525a16e65af717ac265c"
+    },
+    {
+      "bytes": 34842,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/arm_neon/gemm/dgemm_kernel_4x4_cortexa53.c",
+      "sha256": "60db7e3be18e6ba58def587e53a9676b524d26d9318b3eac5c56eafb7190776c"
+    },
+    {
+      "bytes": 32860,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/arm_neon/gemm/dgemm_kernel_4x8.S",
+      "sha256": "e934900f3b7db11b7e751cf09087ad3bc1eb7382de96972c020c9b43b60373ea"
+    },
+    {
+      "bytes": 7692,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/arm_neon/gemv/gemv_n.S",
+      "sha256": "c5e3519b7aed65bf2f5f1951e6e28238c9045ae90667b8900da08ad2649295e8"
+    },
+    {
+      "bytes": 8700,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/arm_neon/gemv/gemv_t.S",
+      "sha256": "d59d526e665dedf71432a6b1584d8fac14741a0a889805fbb846c068076e5771"
+    },
+    {
+      "bytes": 5041,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/arm_neon/nrm2/nrm2.S",
+      "sha256": "771003038ee41826172f92a0fa265e449fb808c34711000e5e67128bf44ecdb5"
+    },
+    {
+      "bytes": 6249,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/arm_neon/rot/rot.S",
+      "sha256": "492b7b92eb461fe083de1262c53a8be37290762c5ada0281041cca0d0443302c"
+    },
+    {
+      "bytes": 5396,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/arm_neon/scal/scal.S",
+      "sha256": "d01a3ced55f935896d497619054a2f3b8de0c9536532e4461b72cb0d3d858f73"
+    },
+    {
+      "bytes": 5885,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/arm_neon/swap/swap.S",
+      "sha256": "7988a1d31cfce5dbc315fdb99a31df46b71dc46ad30ad138400c995c3a501bbe"
+    },
+    {
+      "bytes": 40800,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/arm_neon/trmm/dtrmm_kernel_4x8.S",
+      "sha256": "ba44c6241a53a602c2c965212c6c944c5a809772e3dee5c4b59c2b0a314dc629"
+    },
+    {
+      "bytes": 5198,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/arm_sve/copy/gemm_ncopy_sve_v1x8.c",
+      "sha256": "43cf2aa54aedf3f9f3bddd68b3256055700636cc44d68ffebb099068c56ade5f"
+    },
+    {
+      "bytes": 5156,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/arm_sve/dot/dot_kernel_sve.c",
+      "sha256": "d02eb81c176cf2b9a9175f62c424a4ed61e26e23166ce0d7296d9c225098afda"
+    },
+    {
+      "bytes": 20859,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/arm_sve/gemm/dgemm_kernel_sve_v1x8.S",
+      "sha256": "82e6c5813353640ec5807971ac36cc6211eaa99b55f5b9cf637acd59920f164c"
+    },
+    {
+      "bytes": 5198,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/arm_sve/gemm/gemm_ncopy_sve_v1x8.c",
+      "sha256": "43cf2aa54aedf3f9f3bddd68b3256055700636cc44d68ffebb099068c56ade5f"
+    },
+    {
+      "bytes": 4954,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/arm_sve/gemm/gemm_tcopy_sve_v1x8.c",
+      "sha256": "7ee0a146750b8dc6c9f42ace4eee91b64d7040a85040059f169b40dd17b52dbe"
+    },
+    {
+      "bytes": 5866,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/arm_sve/symm/symm_lcopy_sve.c",
+      "sha256": "76c5d4a0d77c2863f1e04c1385ce407f06132dee1f3fe6e3c361dbfa868566b2"
+    },
+    {
+      "bytes": 23602,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/arm_sve/trmm/dtrmm_kernel_sve_v1x8.S",
+      "sha256": "c3531f46d5b3df493a8d929f4191a2a7ab367d291ba695f9fc442d59c8d06f92"
+    },
+    {
+      "bytes": 4184,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/rvv/asum/asum_rvv.c",
+      "sha256": "5ab5a918fb7f4aa3ab8206232ec9856f3f8f65f314ca0e77691d7c476615b0c9"
+    },
+    {
+      "bytes": 7743,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/rvv/axpby/axpby_rvv.c",
+      "sha256": "8ddfd7660a65764fda4850783c860559ec1d07bb5fb1ffe77d057157a5d2ec9c"
+    },
+    {
+      "bytes": 3229,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/x86_avx2/asum/dasum.c",
+      "sha256": "758d8b55edc5f51f6a58431e223e07c7ccbbc8ee69ea3c8265c5880ad55543d6"
+    },
+    {
+      "bytes": 3031,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/x86_avx2/asum/dasum_microk_haswell-2.c",
+      "sha256": "14b3edb613b77ad7ef68c2164cb1e29b4a24b9f0f2f231998e7134992d62d335"
+    },
+    {
+      "bytes": 4106,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/x86_avx2/axpy/daxpy.c",
+      "sha256": "69bb6727f4f80b60ecb630529cc126701c9887c6ad7204f905d7d7567c97f34c"
+    },
+    {
+      "bytes": 3387,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/x86_avx2/axpy/daxpy_microk_haswell-2.c",
+      "sha256": "e30bbc70df79aeaac17a9e63a6f49f400d4c58c4d739a6de238a6c2b79304169"
+    },
+    {
+      "bytes": 7271,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/x86_avx2/copy/copy.S",
+      "sha256": "5eae775eb0c9964c08aa7cf7b660b5c2a0e89739e35111e11a82b6d01d334449"
+    },
+    {
+      "bytes": 5348,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/x86_avx2/dot/ddot.c",
+      "sha256": "19c3fdf5384bf4311729fb8f4f1607489bee76f0b9937a08007606d7e00d149c"
+    },
+    {
+      "bytes": 3877,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/x86_avx2/dot/ddot_microk_haswell-2.c",
+      "sha256": "d3d0bd26bd77da72e3750c530ba9d9d4355394bfa50d53bea8e132b6fed680ea"
+    },
+    {
+      "bytes": 109703,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/x86_avx2/gemm/dgemm_kernel_16x2_haswell.S",
+      "sha256": "76aac28da0adcf30ebfe28c30ec6c0b22e647c03363659f8fa974baf9956da8f"
+    },
+    {
+      "bytes": 99496,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/x86_avx2/gemm/dgemm_kernel_4x8_haswell.S",
+      "sha256": "2ecd6f246c110605b7ef140f11fae2253d074d5fd12514db41067a66ec1dab11"
+    },
+    {
+      "bytes": 11534,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/x86_avx2/gemv/dgemv_n_4.c",
+      "sha256": "62020f2bc92022b80a4deae0e54590f6094529589b5f9d1fa35289ce7a29efa6"
+    },
+    {
+      "bytes": 6116,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/x86_avx2/gemv/dgemv_n_microk_haswell-4.c",
+      "sha256": "62d6650929802c762c7aaaf00b66895e68bf2244ed104643857082d81947c1ed"
+    },
+    {
+      "bytes": 14657,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/x86_avx2/gemv/dgemv_t_4.c",
+      "sha256": "c5c385c9b77ed26a604b067aa858088c67eb0d3ef70cda75f2197335336dc1b8"
+    },
+    {
+      "bytes": 4867,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/x86_avx2/nrm2/nrm2.S",
+      "sha256": "f496435eedd0f2d64faabc42d5224ccd8d8c46f543e2736d7e728eea4d9df388"
+    },
+    {
+      "bytes": 5228,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/x86_avx2/rot/drot.c",
+      "sha256": "ab14792cdbcb58c6bbb2d694b77775e26ccf558b4f336a1ea4a31fb2f6064d0a"
+    },
+    {
+      "bytes": 2513,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/x86_avx2/rot/drot_microk_haswell-2.c",
+      "sha256": "77a03b6fcf25d11821626096c4c70a769c37187854e61a853bc6e0e00ef6c746"
+    },
+    {
+      "bytes": 5763,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/x86_avx2/scal/dscal.c",
+      "sha256": "227300d340feca267ca02767130fa604d4a584156abea1b43a1e8a037c53c857"
+    },
+    {
+      "bytes": 5173,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/x86_avx2/scal/dscal_microk_haswell-2.c",
+      "sha256": "c062013a978bc3901c757b598e717034ccb468462fa2e14085ac05ba3f53f2d6"
+    },
+    {
+      "bytes": 9109,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/x86_avx2/swap/swap.S",
+      "sha256": "1c6d9ff433922ff075904cbbd49eb9bb084ff85bc44c21e064b2e7e09a6e3fea"
+    },
+    {
+      "bytes": 99496,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/x86_avx2/symm/dgemm_kernel_4x8_haswell.S",
+      "sha256": "2ecd6f246c110605b7ef140f11fae2253d074d5fd12514db41067a66ec1dab11"
+    },
+    {
+      "bytes": 7348,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/x86_avx2/symv/dsymv_L.c",
+      "sha256": "ff8f58af98987b68f3f058879404799658fc31dc476eb91782aa58b362fd0e45"
+    },
+    {
+      "bytes": 5299,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/x86_avx2/symv/dsymv_L_microk_haswell-2.c",
+      "sha256": "af78884b3b3bcd0d8eff29c13064f560a6af76b1f0889ba0afa8daf5b842ced2"
+    },
+    {
+      "bytes": 28100,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/x86_avx2/trmm/dtrmm_kernel_4x8_haswell.c",
+      "sha256": "53e326260dbccd96a21ec0bcfa848627d5ff98af5d721e50137d6c55541bb571"
+    },
+    {
+      "bytes": 2706,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/x86_avx512/asum/dasum_microk_skylakex-2.c",
+      "sha256": "24fc5195387119c078e4f8920892ea08542f230cbee3ebb6d755432e8f6de20d"
+    },
+    {
+      "bytes": 3313,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/x86_avx512/axpy/daxpy_microk_skylakex-2.c",
+      "sha256": "f54931d6a5da8d927ec3430e89315315ea7084ddf4485fd7e89a4e4af2bf333a"
+    },
+    {
+      "bytes": 4336,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/x86_avx512/dot/ddot_microk_skylakex-2.c",
+      "sha256": "7f76961ef72ddadb39bea167686ebd9ccbfdb50f122ab22ba292c00166fd10d2"
+    },
+    {
+      "bytes": 106808,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/x86_avx512/gemm/dgemm_kernel_16x2_skylakex.S",
+      "sha256": "a1edc862d2db7992c40015197cc8bd4440cf07f2de2faa1f5e2f0fff1d609a3d"
+    },
+    {
+      "bytes": 33572,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/x86_avx512/gemm/dgemm_kernel_16x2_skylakex.c",
+      "sha256": "e2ea5a2fea1b41c6ded06f0bc6ee40488744721731627f65fb61d23091ce3757"
+    },
+    {
+      "bytes": 12263,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/x86_avx512/gemm/dgemm_ncopy_8_skylakex.c",
+      "sha256": "fbeb1c7b38b41889ba5703ee4fac3d4160aa5b375ba0f1cb8c8a1b1cb0cbb4c7"
+    },
+    {
+      "bytes": 3302,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/x86_avx512/rot/drot_microk_skylakex-2.c",
+      "sha256": "13360a3fd193718307f9824bc2a24305bfbb16ac6e78b18df3a158613fdbc8f4"
+    },
+    {
+      "bytes": 3152,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/x86_avx512/scal/dscal_microk_skylakex-2.c",
+      "sha256": "08190fdb40de5b624b9ed4c969913e7231b9c410b24e4fe92c8c7a287c200a99"
+    },
+    {
+      "bytes": 106808,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/x86_avx512/symm/dgemm_kernel_16x2_skylakex.S",
+      "sha256": "a1edc862d2db7992c40015197cc8bd4440cf07f2de2faa1f5e2f0fff1d609a3d"
+    },
+    {
+      "bytes": 6999,
+      "path": "科研产出/kg_agent/data/corpus_multiarch/x86_avx512/symv/dsymv_L_microk_skylakex-2.c",
+      "sha256": "d31251ddc9c3ea882ae7e772922be1a5a32a3daec1882e08c25f449e708e0c17"
+    }
+  ],
+  "model_version": "offline-rules-v1",
+  "prompt_version": "s3-rules-v1",
+  "schema_version": "kg-v1.5",
+  "snapshot_id": "snap-kg-v1.5",
+  "source_stats": {
+    "characteristics": 893,
+    "corpus_artifacts": 53,
+    "diffs": 51,
+    "evidences": 88,
+    "multiarch_artifacts": 58,
+    "multiarch_commit": "OpenBLAS 0.3.27 (git ce3f668)",
+    "multiarch_diffs": 39,
+    "multiarch_impls": 39,
+    "multiarch_repo": "../openblas_src",
+    "normalized_strategies": 262,
+    "operators": 14,
+    "parameters": 14,
+    "patterns": 76,
+    "raw_strategies": 262,
+    "templates": 262
+  },
+  "stats": {
+    "arch_correction": "多架构实现 = cx_operator_tool RVV 语料 + openblas_src 复制件",
+    "cross_arch_shared_count": 30,
+    "edges": 3656,
+    "edges_by_type": {
+      "EVIDENCE_ON": 88,
+      "EVIDENCE_SOURCE": 88,
+      "OPERATOR_HAS_PATTERN": 76,
+      "PATTERN_HAS_CHARACTERISTIC": 215,
+      "PATTERN_OPTIMIZED_BY": 252,
+      "STRATEGY_APPLIES_WHEN": 1015,
+      "STRATEGY_COMPOSES_WITH": 4,
+      "STRATEGY_CONFLICTS_WITH": 14,
+      "STRATEGY_EVIDENCED_BY": 258,
+      "STRATEGY_GENERALIZES": 313,
+      "STRATEGY_HAS_PARAMETER": 236,
+      "STRATEGY_HAS_TEMPLATE": 262,
+      "STRATEGY_REQUIRES_ISA": 163,
+      "STRATEGY_TARGETS_UARCH": 672
+    },
+    "implementation_files": 70,
+    "nodes": 862,
+    "nodes_by_type": {
+      "CodeCharacteristic": 17,
+      "ComputationPattern": 76,
+      "HardwareProfile": 6,
+      "ISACapability": 6,
+      "ImplementationTemplate": 262,
+      "Microarchitecture": 6,
+      "Operator": 14,
+      "OptimizationStrategy": 262,
+      "PerformanceEvidence": 88,
+      "SourceArtifact": 111,
+      "TunableParameter": 14
+    },
+    "ops_with_multi_arch": 13,
+    "strategies_with_arch_scope": 262
+  }
+}

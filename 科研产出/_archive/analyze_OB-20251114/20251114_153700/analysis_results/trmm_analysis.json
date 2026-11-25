@@ -1,0 +1,2033 @@
+{
+  "algorithm": "trmm",
+  "total_files": 5,
+  "analyzed_files": 5,
+  "individual_analyses": [
+    {
+      "algorithm": "trmm",
+      "file_path": "ctrmm_kernel_LC.clean.c",
+      "architecture": "通用",
+      "computational_patterns": [
+        {
+          "pattern_type": "prep.index_pointer_init",
+          "name": "索引与指针初始化",
+          "description": "初始化循环变量 j 对应的偏移量 off、结果矩阵指针 C0 和 C1、以及输入矩阵 A 的指针 ptrba。C0 指向当前列块起始位置，C1 指向 C0 下两行，ptrba 指向矩阵 A 当前子块起始地址。",
+          "code": "off = offset;\nC0 = C;\nC1 = C0+2*ldc;\nptrba = ba;",
+          "data_object_features": {
+            "numeric_kind": "复数",
+            "numeric_precision": "单精度",
+            "structural_properties": "N/A",
+            "storage_layout": "N/A"
+          }
+        },
+        {
+          "pattern_type": "core.mm_microkernel",
+          "name": "矩阵乘法微内核",
+          "description": "实现了复数矩阵乘法的微内核，使用寄存器级展开和FMA-like操作序列。核心为4x4的累加器更新，通过分块加载ptrba和ptrbb数据，执行规律性的load与乘加操作（resX += loadY * loadZ），最后乘以标量alphar/alphai并写回结果矩阵C。",
+          "code": "    load0 = ptrba[4*0+0];\n    load1 = ptrbb[4*0+0];\n    res0 = res0+load0*load1;\n    load2 = ptrba[4*0+1];\n    res1 = res1-load2*load1;\n    load3 = ptrbb[4*0+1];\n    res0 = res0+load2*load3;\n    res1 = res1+load0*load3;\n    load4 = ptrba[4*0+2];\n    res2 = res2+load4*load1;\n    load5 = ptrba[4*0+3];\n    res3 = res3-load5*load1;\n    res2 = res2+load5*load3;\n    res3 = res3+load4*load3;\n    load6 = ptrbb[4*0+2];\n    res4 = res4+load0*load6;\n    res5 = res5-load2*load6;\n    load7 = ptrbb[4*0+3];\n    res4 = res4+load2*load7;\n    res5 = res5+load0*load7;\n    res6 = res6+load4*load6;\n    res7 = res7-load5*load6;\n    res6 = res6+load5*load7;\n    res7 = res7+load4*load7;\n    load8 = ptrba[4*1+0];\n    load9 = ptrbb[4*1+0];\n    res0 = res0+load8*load9;\n    load10 = ptrba[4*1+1];\n    res1 = res1-load10*load9;\n    load11 = ptrbb[4*1+1];\n    res0 = res0+load10*load11;\n    res1 = res1+load8*load11;\n    load12 = ptrba[4*1+2];\n    res2 = res2+load12*load9;\n    load13 = ptrba[4*1+3];\n    res3 = res3-load13*load9;\n    res2 = res2+load13*load11;\n    res3 = res3+load12*load11;\n    load14 = ptrbb[4*1+2];\n    res4 = res4+load8*load14;\n    res5 = res5-load10*load14;\n    load15 = ptrbb[4*1+3];\n    res4 = res4+load10*load15;\n    res5 = res5+load8*load15;\n    res6 = res6+load12*load14;\n    res7 = res7-load13*load14;\n    res6 = res6+load13*load15;\n    res7 = res7+load12*load15;\n    load0 = ptrba[4*2+0];\n    load1 = ptrbb[4*2+0];\n    res0 = res0+load0*load1;\n    load2 = ptrba[4*2+1];\n    res1 = res1-load2*load1;\n    load3 = ptrbb[4*2+1];\n    res0 = res0+load2*load3;\n    res1 = res1+load0*load3;\n    load4 = ptrba[4*2+2];\n    res2 = res2+load4*load1;\n    load5 = ptrba[4*2+3];\n    res3 = res3-load5*load1;\n    res2 = res2+load5*load3;\n    res3 = res3+load4*load3;\n    load6 = ptrbb[4*2+2];\n    res4 = res4+load0*load6;\n    res5 = res5-load2*load6;\n    load7 = ptrbb[4*2+3];\n    res4 = res4+load2*load7;\n    res5 = res5+load0*load7;\n    res6 = res6+load4*load6;\n    res7 = res7-load5*load6;\n    res6 = res6+load5*load7;\n    res7 = res7+load4*load7;\n    load8 = ptrba[4*3+0];\n    load9 = ptrbb[4*3+0];\n    res0 = res0+load8*load9;\n    load10 = ptrba[4*3+1];\n    res1 = res1-load10*load9;\n    load11 = ptrbb[4*3+1];\n    res0 = res0+load10*load11;\n    res1 = res1+load8*load11;\n    load12 = ptrba[4*3+2];\n    res2 = res2+load12*load9;\n    load13 = ptrba[4*3+3];\n    res3 = res3-load13*load9;\n    res2 = res2+load13*load11;\n    res3 = res3+load12*load11;\n    load14 = ptrbb[4*3+2];\n    res4 = res4+load8*load14;\n    res5 = res5-load10*load14;\n    load15 = ptrbb[4*3+3];\n    res4 = res4+load10*load15;\n    res5 = res5+load8*load15;\n    res6 = res6+load12*load14;\n    res7 = res7-load13*load14;\n    res6 = res6+load13*load15;\n    res7 = res7+load12*load15;",
+          "data_object_features": {
+            "numeric_kind": "复数",
+            "numeric_precision": "单精度",
+            "structural_properties": "通用",
+            "storage_layout": "连续"
+          }
+        },
+        {
+          "pattern_type": "core.tiled_loop",
+          "name": "分块矩阵处理循环",
+          "description": "外层循环对矩阵进行分块处理，驱动微内核计算。j循环按列方向遍历bn/2块，i循环按行方向遍历bm/2块，k循环控制内部归约长度（由offset和bk决定）。存在额外的尾部处理循环用于处理未对齐的行列。",
+          "code": " for (j=0; j<bn/2; j+=1)\n {\n  off = offset;\n  C0 = C;\n  C1 = C0+2*ldc;\n  ptrba = ba;\n  for (i=0; i<bm/2; i+=1)\n  {\n   ptrbb = bb;\n   res0 = 0;\n   res1 = 0;\n   res2 = 0;\n   res3 = 0;\n   res4 = 0;\n   res5 = 0;\n   res6 = 0;\n   res7 = 0;\n   temp = off + 2;\n   for (k=0; k<temp/4; k+=1)\n   {\n    // ... microkernel body ...\n    ptrba = ptrba+16;\n    ptrbb = ptrbb+16;\n   }\n   for (k=0; k<(temp&3); k+=1)\n   {\n    // ... residual kernel body ...\n    ptrba = ptrba+4;\n    ptrbb = ptrbb+4;\n   }\n   // ... store results ...\n   ptrba += temp*2*2;\n   ptrbb += temp*2*2;\n   off += 2;\n   C0 = C0+4;\n   C1 = C1+4;\n  }\n  for (i=0; i<(bm&1); i+=1)\n  {\n   // ... handle odd row ...\n  }\n  k = (bk<<2);\n  bb = bb+k;\n  i = (ldc<<2);\n  C = C+i;\n }",
+          "data_object_features": {
+            "numeric_kind": "复数",
+            "numeric_precision": "单精度",
+            "structural_properties": "通用",
+            "storage_layout": "跨步"
+          }
+        },
+        {
+          "pattern_type": "post.scale_accumulation",
+          "name": "结果缩放与累加",
+          "description": "将累加结果 res0-res7 与复数 alpha 系数 (alphar, alphai) 进行复数乘法运算，实现 C = alpha * Temp 的写回过程。无 beta 分支，直接覆盖写回目标内存。",
+          "code": "   load0 = res0*alphar-res1*alphai;\n   load1 = res1*alphar+res0*alphai;\n   C0[0] = load0;\n   C0[1] = load1;\n   load2 = res2*alphar-res3*alphai;\n   load3 = res3*alphar+res2*alphai;\n   C0[2] = load2;\n   C0[3] = load3;\n   load4 = res4*alphar-res5*alphai;\n   load5 = res5*alphar+res4*alphai;\n   C1[0] = load4;\n   C1[1] = load5;\n   load6 = res6*alphar-res7*alphai;\n   load7 = res7*alphar+res6*alphai;\n   C1[2] = load6;\n   C1[3] = load7;",
+          "data_object_features": {
+            "numeric_kind": "复数",
+            "numeric_precision": "单精度",
+            "structural_properties": "通用",
+            "storage_layout": "跨步"
+          }
+        }
+      ],
+      "algorithm_level_optimizations": [
+        {
+          "optimization_name": "寄存器级循环展开与累加器分块",
+          "level": "algorithm",
+          "description": {
+            "strategy_rationale": "通过在寄存器中维护多个独立的累加器（res0-res7），将连续的复数乘加操作分解为并行更新路径，减少循环控制开销并提高指令级并行性。该策略基于流水线延迟隐藏和寄存器重用理论，避免频繁内存访问导致的停顿。",
+            "implementation_pattern": "使用固定数量的局部浮点变量作为累加器（res0~res7），每个对应输出矩阵2x2子块中的一个复数元素；在内层k循环中，每4次迭代批量加载ptrba和ptrbb数据，并执行多路乘加更新，实现软件流水。",
+            "performance_impact": "显著减少循环分支频率，提升CPU指令发射效率；通过最大化寄存器利用率降低对L1缓存的压力，减少内存带宽需求，从而加快微内核执行速度。",
+            "trade_offs": "增加了函数局部变量数量，占用更多寄存器资源，可能引发寄存器溢出至栈空间的风险；代码体积增大，可读性和维护难度上升。"
+          },
+          "applicability_conditions": "适用于复数矩阵乘法微内核场景，且目标架构具有至少8个可用浮点寄存器；输入数据以实部虚部交错方式存储，支持按步长访问模式。",
+          "tunable_parameters": [
+            {
+              "parameter_name": "unroll_factor",
+              "value_in_code": 4,
+              "description": "内层循环展开因子，决定每次迭代处理的数据组数",
+              "typical_range": [
+                1,
+                2,
+                4,
+                8
+              ],
+              "impact": "较大的展开因子可进一步减少循环开销，但受限于寄存器容量；过大会导致性能下降"
+            }
+          ],
+          "target_hardware_feature_name": "寄存器文件",
+          "target_hardware_feature": "利用现代CPU丰富的浮点寄存器资源，通过寄存器分配实现数据重用和中间结果暂存，避免频繁访问高速缓存或内存，发挥寄存器级数据局部性优势。",
+          "code_example": {
+            "snippet": "res0 = 0;\nres1 = 0;\nres2 = 0;\nres3 = 0;\nres4 = 0;\nres5 = 0;\nres6 = 0;\nres7 = 0;\nfor (k=0; k<temp/4; k+=1)\n{\n    load0 = ptrba[4*0+0];\n    load1 = ptrbb[4*0+0];\n    res0 = res0+load0*load1;\n    load2 = ptrba[4*0+1];\n    res1 = res1-load2*load1;\n    // ... 多路乘加更新\n    ptrba = ptrba+16;\n    ptrbb = ptrbb+16;\n}",
+            "explanation": "此代码段初始化8个累加器变量用于保存2x2复数结果块的实部与虚部，并在展开的循环体内并行更新这些寄存器值，体现了寄存器级展开与分块累加的设计思想。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel"
+          ]
+        },
+        {
+          "optimization_name": "分块矩阵处理与尾部填充补偿",
+          "level": "algorithm",
+          "description": {
+            "strategy_rationale": "采用分块（tiling）策略将大矩阵运算分解为适合缓存大小的小块处理，提升空间局部性；同时引入尾部循环专门处理无法整除分块尺寸的剩余行列，确保边界正确性，兼顾性能与通用性。",
+            "implementation_pattern": "外层j/i循环以2列为单位遍历bn/bm维度，驱动2x2微内核执行；额外嵌套针对(bn&1)和(bm&1)的尾部循环，单独处理奇数维度残差部分。",
+            "performance_impact": "主路径高效运行于规整数据块，提高缓存命中率；尾部逻辑保证算法完整性，避免因舍入造成精度损失或越界访问。",
+            "trade_offs": "增加控制流复杂度，需维护多套相似逻辑；尾部路径未充分优化可能导致轻微性能下降。"
+          },
+          "applicability_conditions": "矩阵维度允许被2整除的部分优先处理，剩余部分由专用逻辑覆盖；存储布局支持跨步行进（如ldc偏移）；指针算术能安全跳转到下一数据块。",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "Cache",
+          "target_hardware_feature": "利用CPU多级缓存体系结构，通过小尺寸分块使工作集适配L1/L2缓存，减少DRAM访问次数，基于数据局部性原理提升整体吞吐率。",
+          "code_example": {
+            "snippet": "for (j=0; j<bn/2; j+=1)\n{\n    // 主分块处理...\n}\nfor (j=0; j<(bn&1); j+=1)\n{\n    // 尾部列处理...\n}",
+            "explanation": "该结构清晰展示了主循环与尾部循环的分离设计，前者处理完整的2列块，后者仅当bn为奇数时激活，完成最后单列计算，体现分块+残差补偿的典型模式。"
+          },
+          "related_patterns": [
+            "core.tiled_loop"
+          ]
+        },
+        {
+          "optimization_name": "复数乘法融合与延迟缩放",
+          "level": "algorithm",
+          "description": {
+            "strategy_rationale": "将alpha系数的复数乘法延迟至所有累加完成后统一执行，避免在内层循环中重复进行标量乘法，符合‘延迟计算’与‘公共子表达式消除’原则，减少总运算量。",
+            "implementation_pattern": "先在内层循环完成全部A*B的累加得到临时结果resX，再在外层写回阶段执行loadX = resX*alphar - resY*alphai形式的复数乘法。",
+            "performance_impact": "节省了大量重复的标量乘法操作（从O(mnk)降至O(mn)），显著降低浮点运算总量，尤其在大规模矩阵乘中效果明显。",
+            "trade_offs": "需要额外寄存器或临时变量保存未缩放结果；若alpha为1则可跳过，但当前代码未做特例判断，存在潜在冗余。"
+          },
+          "applicability_conditions": "alpha为常量且在整个微内核执行期间不变；输出写回前无需中间归一化；累加器精度足以容纳未缩放结果而不溢出。",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "浮点运算单元",
+          "target_hardware_feature": "利用FPU的高吞吐乘法能力，在最后阶段集中执行标量缩放，减少对关键路径上乘法资源的竞争，优化整体流水线效率。",
+          "code_example": {
+            "snippet": "res0 = 0;\n// ... 累加过程 ...\nload0 = res0*alphar-res1*alphai;\nload1 = res1*alphar+res0*alphai;\nC0[0] = load0;\nC0[1] = load1;",
+            "explanation": "此处先累积res0/res1代表的复数部分，最后才与alphar/alphai做一次复数乘法，实现了缩放操作的延迟合并，减少了内层循环负担。"
+          },
+          "related_patterns": [
+            "post.scale_accumulation"
+          ]
+        },
+        {
+          "optimization_name": "指针预增量与地址计算优化",
+          "level": "algorithm",
+          "description": {
+            "strategy_rationale": "通过预先计算并递增指针而非反复使用索引乘法，将地址计算从O(1)复杂度简化为指针自增操作，减少地址生成开销，属于经典的‘强度削弱’优化。",
+            "implementation_pattern": "使用ptrba、ptrbb等指针变量代替数组下标访问，每次迭代后直接ptrba += 16或+4等方式前进，避免在每次load时计算base + i*stride。",
+            "performance_impact": "消除大量乘法和加法地址计算指令，减轻ALU压力，加快内存加载速度，特别有利于深层循环体性能。",
+            "trade_offs": "失去部分数组语义清晰性，调试困难；需精确管理指针边界以防越界访问。"
+          },
+          "applicability_conditions": "数据连续或规则跨步存储；编译器难以自动优化复杂索引表达式；硬件支持快速指针更新。",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "地址生成单元",
+          "target_hardware_feature": "利用CPU内置的高效地址加法器和指针寄存器，将复杂的基址+偏移寻址转换为简单的寄存器自增操作，缩短访存延迟。",
+          "code_example": {
+            "snippet": "ptrba = ba;\nfor (i=0; i<bm/2; i+=1)\n{\n    ptrbb = bb;\n    for (k=0; k<temp/4; k+=1)\n    {\n        load0 = ptrba[4*0+0];\n        // ...\n        ptrba = ptrba+16;\n        ptrbb = ptrbb+16;\n    }\n}",
+            "explanation": "ptrba初始指向ba起始位置，每次内循环后直接加16字节前进到下一个数据块，替代了每次重新计算ptrba + k*16的方式，提升了地址访问效率。"
+          },
+          "related_patterns": [
+            "prep.index_pointer_init",
+            "core.mm_microkernel"
+          ]
+        }
+      ],
+      "code_level_optimizations": [
+        {
+          "optimization_name": "四重循环展开",
+          "level": "code",
+          "description": {
+            "strategy_rationale": "通过手动展开内层循环4次，减少循环条件判断和跳转指令的执行频率，从而降低CPU流水线因分支预测失败或循环开销带来的停顿，提升指令级并行性。",
+            "implementation_pattern": "在k循环中，每次迭代处理4个数据块（每块4个float），显式写出16次load和32次乘加操作，替代原本需要4次循环完成的操作。",
+            "performance_impact": "显著减少循环控制指令（cmp, jmp）的数量，提高基本块长度，有利于编译器调度和CPU乱序执行引擎挖掘更多并行性，减少每元素的平均CPU周期数。",
+            "trade_offs": "增加代码体积，可能导致指令缓存压力增大；同时使代码可读性下降，维护成本上升。"
+          },
+          "applicability_conditions": "内层循环具有固定步长且迭代次数较大，且每次迭代操作具有规律性和独立性，适合展开为批量操作。",
+          "tunable_parameters": [
+            {
+              "parameter_name": "unroll_factor",
+              "description": "循环展开因子，表示每次迭代处理的数据组数",
+              "value_in_code": 4,
+              "typical_range": [
+                2,
+                4,
+                8
+              ],
+              "impact": "较大的展开因子进一步减少循环开销，但可能引起寄存器溢出或ICache未命中；较小则保留较多控制开销"
+            }
+          ],
+          "target_hardware_feature_name": "指令流水线",
+          "target_hardware_feature": "CPU指令流水线和分支预测器，通过减少分支密度来降低流水线停顿概率",
+          "code_example": {
+            "snippet": "for (k=0; k<temp/4; k+=1)\n{\n    load0 = ptrba[4*0+0];\n    load1 = ptrbb[4*0+0];\n    res0 = res0+load0*load1;\n    // ... 接续15个load和32个乘加 ...\n    ptrba = ptrba+16;\n    ptrbb = ptrbb+16;\n}",
+            "explanation": "该循环体被完全展开为处理4组连续数据，每次前进16个float（即4×4），避免了4次单独循环的开销，体现了典型的循环展开优化。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel"
+          ]
+        },
+        {
+          "optimization_name": "指针递增代替索引计算",
+          "level": "code",
+          "description": {
+            "strategy_rationale": "使用指针自增替代数组下标乘法运算，消除每次访问时的地址计算开销（如i*stride），利用硬件对简单指针操作的高效支持。",
+            "implementation_pattern": "用`ptrba += 16`和`ptrbb += 16`更新指针位置，而非重新计算`ba + k*16`等形式的偏移量。",
+            "performance_impact": "减少地址生成所需的算术运算（乘法、加法），降低ALU压力，加快内存访问速度，尤其在高频循环中效果显著。",
+            "trade_offs": "牺牲了部分代码的可读性和安全性（指针越界风险增加），调试难度提高。"
+          },
+          "applicability_conditions": "数据按固定步长连续访问，且访问顺序为前向递增，适合用指针追踪当前位置。",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "地址生成单元",
+          "target_hardware_feature": "现代CPU中的地址生成单元（AGU）能高效处理简单的指针自增，但复杂索引表达式需额外ALU参与",
+          "code_example": {
+            "snippet": "ptrba = ptrba+16;\nptrbb = ptrbb+16;",
+            "explanation": "在每次四重展开后，直接将输入矩阵A和B的指针前进16个float，避免重复计算基址+偏移，属于经典的强度削弱优化。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel",
+            "core.tiled_loop"
+          ]
+        },
+        {
+          "optimization_name": "尾部循环分离",
+          "level": "code",
+          "description": {
+            "strategy_rationale": "将主循环无法整除的部分（余数）提取到独立的尾部循环中处理，避免在主循环中插入条件判断，保持主路径无分支。",
+            "implementation_pattern": "主循环以/4或/2方式推进，随后使用单独的循环处理`(temp & 3)`或`(bm & 1)`等剩余项。",
+            "performance_impact": "保证主循环路径高度规整，利于流水线稳定运行和编译器优化；尾部处理仅执行一次，总体性能损失最小化。",
+            "trade_offs": "增加了代码冗余和维护复杂度，需确保主循环与尾部逻辑一致性。"
+          },
+          "applicability_conditions": "循环总长度不能保证被展开因子整除，且尾部数据量较小（通常小于展开因子）。",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "分支预测器",
+          "target_hardware_feature": "通过消除主循环内的条件分支，降低分支预测错误率，维持指令流水线效率",
+          "code_example": {
+            "snippet": "for (k=0; k<temp/4; k+=1) { /* 展开主体 */ }\nfor (k=0; k<(temp&3); k+=1) { /* 尾部处理 */ }",
+            "explanation": "先以4为单位展开处理大部分数据，再单独处理剩余不足4项的部分，避免在主循环中加入if判断，提升了主路径性能。"
+          },
+          "related_patterns": [
+            "core.tiled_loop",
+            "core.mm_microkernel"
+          ]
+        },
+        {
+          "optimization_name": "寄存器变量局部化",
+          "level": "code",
+          "description": {
+            "strategy_rationale": "将频繁使用的中间结果声明为局部变量（尤其是浮点累加器），提示编译器尽可能将其分配至CPU寄存器，减少内存往返。",
+            "implementation_pattern": "定义多个`float res0..res7, load0..load15`作为临时存储，所有运算在这些变量间进行，最后才写回内存。",
+            "performance_impact": "极大减少对栈内存的访问频率，充分利用寄存器高速特性，降低访存延迟对计算的阻塞。",
+            "trade_offs": "消耗大量寄存器资源，可能导致寄存器溢出（spill）反而增加内存访问；依赖编译器寄存器分配能力。"
+          },
+          "applicability_conditions": "存在大量中间计算值需跨多条指令使用，且变量生命周期明确、作用域局限。",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "寄存器",
+          "target_hardware_feature": "通用寄存器文件和浮点/SIMD寄存器，提供最快的存储访问层级",
+          "code_example": {
+            "snippet": "float res0,res1,res2,res3,res4,res5,res6,res7,load0,load1,...,load15;\n// ...\nres0 = res0+load0*load1;\n// 多次使用resX和loadY进行计算\nC0[0] = load0; // 最终写回",
+            "explanation": "所有中间乘加结果保存在局部浮点变量中，直到最终阶段才写回内存，最大限度减少内存交互，体现寄存器重用思想。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel",
+            "post.scale_accumulation"
+          ]
+        },
+        {
+          "optimization_name": "跨步指针预计算",
+          "level": "code",
+          "description": {
+            "strategy_rationale": "在进入内层循环前预先设置好指向不同行或列的指针（如C0和C1），避免重复计算跨步偏移。",
+            "implementation_pattern": "使用`C1 = C0 + 2*ldc`初始化第二行结果指针，在后续写回时直接使用C0[i], C1[i]而无需动态计算C + i + j*ldc。",
+            "performance_impact": "减少每次写入时的地址计算开销，特别是在二维矩阵访问中显著提升效率。",
+            "trade_offs": "需要额外指针变量占用寄存器空间，适用于已知固定跨度的场景。"
+          },
+          "applicability_conditions": "矩阵按列主序或行主序存储，且访问模式具有固定跨步（如ldc），且跨步步长已知。",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "地址生成单元",
+          "target_hardware_feature": "通过预计算消除运行时地址计算，减轻AGU负担，加速内存访问",
+          "code_example": {
+            "snippet": "C0 = C;\nC1 = C0+2*ldc;\n// ...\nC0[0] = load0;\nC1[0] = load4;",
+            "explanation": "提前设定C0和C1分别指向当前块的第一行和第三行起始位置，后续直接偏移写入，避免反复计算C + row*ldc。"
+          },
+          "related_patterns": [
+            "prep.index_pointer_init",
+            "post.scale_accumulation"
+          ]
+        }
+      ],
+      "instruction_level_optimizations": [
+        {
+          "optimization_name": "寄存器级复数乘加融合",
+          "level": "instruction",
+          "description": {
+            "strategy_rationale": "复数乘法 (a+bi)(c+di) = (ac−bd) + (ad+bc)i 在硬件层面涉及多个独立的乘法与加减操作。通过将实部与虚部分解到独立累加器（res0-res7），可使这些操作在 CPU 的多个执行单元上并行执行，隐藏浮点运算延迟。",
+            "implementation_pattern": "使用 8 个独立的 float 类型变量 res0~res7 分别存储 2×2 输出块中每个复数元素的实部和虚部累加值，并在内层循环中交替更新，形成固定模式的乘加序列。",
+            "performance_impact": "最大化浮点乘加（FMA-like）指令吞吐，减少因数据依赖导致的停顿；为后续向量化时打包复数运算提供结构基础。",
+            "trade_offs": "增加寄存器压力，可能引发溢出到栈；代码可读性降低；对小规模问题可能不划算。"
+          },
+          "applicability_conditions": "复数矩阵乘法运算，目标架构支持多执行单元并行浮点运算",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "浮点执行单元并行性",
+          "target_hardware_feature": "现代 CPU 具有多个独立的浮点乘法和加法执行单元（如 Intel Haswell 起的双 FMA 单元），允许同时执行多个浮点操作。",
+          "code_example": {
+            "snippet": "res0 = res0+load0*load1;\nres1 = res1-load2*load1;\nres0 = res0+load2*load3;\nres1 = res1+load0*load3;",
+            "explanation": "这四行构成一个完整的复数乘加步骤：前两行计算实部部分贡献，后两行完成虚部更新。这种交错模式允许编译器或汇编器将其映射到并行执行的乘加指令流中。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel"
+          ]
+        },
+        {
+          "optimization_name": "四路循环展开以支持向量化打包",
+          "level": "instruction",
+          "description": {
+            "strategy_rationale": "SIMD 指令（如 SSE/AVX）一次处理多个数据元素。手动展开循环4次，使得每次迭代处理4组数据，正好匹配 128 位寄存器可容纳的4个单精度浮点数，便于后续用向量指令替换标量操作。",
+            "implementation_pattern": "内层 k 循环被显式展开为4次连续的数据加载与累加操作，每轮处理 ptrba 和 ptrbb 的4个连续元素。",
+            "performance_impact": "提高指令级并行性（ILP），减少分支预测开销，并为自动或手动向量化提供清晰的数据访问模式，提升 SIMD 利用率。",
+            "trade_offs": "代码体积增大；若数据未对齐或长度不足，需额外尾部处理逻辑；可能干扰编译器调度。"
+          },
+          "applicability_conditions": "数据类型为单精度浮点，内存连续存储，数组长度可被4整除（主路径），无跨迭代强数据依赖",
+          "tunable_parameters": [
+            {
+              "parameter_name": "unroll_factor",
+              "description": "循环展开因子",
+              "value_in_code": 4,
+              "typical_range": [
+                2,
+                4,
+                8
+              ],
+              "impact": "因子越大，ILP越高，但代码膨胀越严重；需与 SIMD 寄存器宽度匹配（如 SSE=4, AVX=8）"
+            }
+          ],
+          "target_hardware_feature_name": "SIMD",
+          "target_hardware_feature": "SIMD (Single Instruction, Multiple Data) 执行单元，例如 x86 平台上的 SSE/AVX 指令集，能够在一个指令周期内对多个数据执行相同操作。",
+          "code_example": {
+            "snippet": "for (k=0; k<temp/4; k+=1)\n{\n    load0 = ptrba[4*0+0]; ... // 第1组\n    ...\n    load8 = ptrba[4*1+0]; ... // 第2组\n    ...\n    load0 = ptrba[4*2+0]; ... // 第3组\n    ...\n    load8 = ptrba[4*3+0]; ... // 第4组\n    ptrba = ptrba+16;\n    ptrbb = ptrbb+16;\n}",
+            "explanation": "该循环体显式展开了4次操作，每次处理4个float（16字节），共64字节。这种规律性结构可被汇编层直接映射为4条 SIMD 加载与乘加指令，实现向量化加速。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel",
+            "core.tiled_loop"
+          ]
+        },
+        {
+          "optimization_name": "访存与计算重叠的流水线友好结构",
+          "level": "instruction",
+          "description": {
+            "strategy_rationale": "现代 CPU 采用深度流水线，内存访问延迟较高。通过交错安排加载（load）、乘法（mul）和加法（add）操作，可以掩盖内存延迟，让计算单元在等待数据时继续执行其他指令。",
+            "implementation_pattern": "在每一轮计算中，先加载数据到临时变量（load0~load15），然后立即用于更新累加器，形成‘加载 → 计算’交替的长指令序列。",
+            "performance_impact": "提高 CPU 流水线利用率，减少因 load-use 延迟导致的停顿，提升整体 CPI（Cycle Per Instruction）效率。",
+            "trade_offs": "需要大量临时变量，增加寄存器需求；若缓存未命中，仍无法完全掩盖延迟。"
+          },
+          "applicability_conditions": "存在高延迟内存访问（如 L3 或主存），处理器支持乱序执行和超标量架构",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "乱序执行与超标量流水线",
+          "target_hardware_feature": "现代处理器具备乱序执行（Out-of-Order Execution）和超标量（Superscalar）能力，能同时发射多条指令并在不同功能单元并行执行，前提是无数据冒险。",
+          "code_example": {
+            "snippet": "load0 = ptrba[4*0+0];\nload1 = ptrbb[4*0+0];\nres0 = res0+load0*load1;\nload2 = ptrba[4*0+1];\nres1 = res1-load2*load1;\nload3 = ptrbb[4*0+1];\nres0 = res0+load2*load3;",
+            "explanation": "此序列交替进行加载与计算，使得后续的 load 可在前一个乘加运算执行时并发进行地址计算或数据获取，从而实现指令级流水。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel"
+          ]
+        }
+      ],
+      "implementation_details": "该 kernel 采用 2x2 分块输出结构，使用 8 个累加器（res0-res7）维护中间结果，输入指针 ptrba 和 ptrbb 在内层循环中以固定步长（+16/+4）递增。主循环按 4 次展开处理主体，剩余部分由单独尾部循环处理。C0 和 C1 指针分别指向当前列块的两行，实现跨步写回。所有地址计算均通过指针自增完成，避免重复索引乘法。",
+      "performance_insights": "该实现通过寄存器分块和循环展开最大化 ILP，为 SIMD 向量化预留接口。预期在支持乱序执行和多 FPU 的现代 CPU 上达到较高 FLOPS。性能瓶颈主要在于内存带宽和 L1 缓存容量，尤其当 bk 较大时。实际性能高度依赖于编译器能否有效向量化该展开结构，或是否有对应平台的手写汇编版本替代。"
+    },
+    {
+      "algorithm": "trmm",
+      "file_path": "ctrmm_kernel_LN.clean.c",
+      "architecture": "通用",
+      "computational_patterns": [
+        {
+          "pattern_type": "prep.index_pointer_init",
+          "name": "索引与指针初始化",
+          "description": "初始化循环变量 j、i、k，以及指针 off、C0、C1、ptrba、ptrbb 和累加器 res0-res7。其中 off 初始化为 0，用于控制偏移；C0 指向矩阵 C 起始位置；ptrba 和 ptrbb 分别指向矩阵 A 和 B 的起始块；res0-res7 初始化为 0，作为复数乘加运算的累加器。",
+          "code": "off = 0;\nfor (j=0; j<bn/2; j+=1)\n{\n off = offset;\n C0 = C;\n C1 = C0+2*ldc;\n ptrba = ba;\n for (i=0; i<bm/2; i+=1)\n {\n  ptrba += off*2*2;\n  ptrbb = bb+off*2*2;\n  res0 = 0;\n  res1 = 0;\n  res2 = 0;\n  res3 = 0;\n  res4 = 0;\n  res5 = 0;\n  res6 = 0;\n  res7 = 0;",
+          "data_object_features": {
+            "numeric_kind": "复数",
+            "numeric_precision": "单精度",
+            "structural_properties": "N/A",
+            "storage_layout": "N/A"
+          }
+        },
+        {
+          "pattern_type": "core.mm_microkernel",
+          "name": "矩阵乘法微内核",
+          "description": "实现了一个复数矩阵乘法的微内核，采用2x2分块结构。内部循环展开处理4个元素，使用多个load变量加载数据，并通过FMA-like操作（res += load * load）进行累加，最后将结果乘以标量alphar/alphai并写回C矩阵。",
+          "code": "    for (k=0; k<temp/4; k+=1)\n    {\n     load0 = ptrba[4*0+0];\n     load1 = ptrbb[4*0+0];\n     res0 = res0+load0*load1;\n     load2 = ptrba[4*0+1];\n     res1 = res1+load2*load1;\n     load3 = ptrbb[4*0+1];\n     res0 = res0-load2*load3;\n     res1 = res1+load0*load3;\n     load4 = ptrba[4*0+2];\n     res2 = res2+load4*load1;\n     load5 = ptrba[4*0+3];\n     res3 = res3+load5*load1;\n     res2 = res2-load5*load3;\n     res3 = res3+load4*load3;\n     load6 = ptrbb[4*0+2];\n     res4 = res4+load0*load6;\n     res5 = res5+load2*load6;\n     load7 = ptrbb[4*0+3];\n     res4 = res4-load2*load7;\n     res5 = res5+load0*load7;\n     res6 = res6+load4*load6;\n     res7 = res7+load5*load6;\n     res6 = res6-load5*load7;\n     res7 = res7+load4*load7;\n     load8 = ptrba[4*1+0];\n     load9 = ptrbb[4*1+0];\n     res0 = res0+load8*load9;\n     load10 = ptrba[4*1+1];\n     res1 = res1+load10*load9;\n     load11 = ptrbb[4*1+1];\n     res0 = res0-load10*load11;\n     res1 = res1+load8*load11;\n     load12 = ptrba[4*1+2];\n     res2 = res2+load12*load9;\n     load13 = ptrba[4*1+3];\n     res3 = res3+load13*load9;\n     res2 = res2-load13*load11;\n     res3 = res3+load12*load11;\n     load14 = ptrbb[4*1+2];\n     res4 = res4+load8*load14;\n     res5 = res5+load10*load14;\n     load15 = ptrbb[4*1+3];\n     res4 = res4-load10*load15;\n     res5 = res5+load8*load15;\n     res6 = res6+load12*load14;\n     res7 = res7+load13*load14;\n     res6 = res6-load13*load15;\n     res7 = res7+load12*load15;\n     load0 = ptrba[4*2+0];\n     load1 = ptrbb[4*2+0];\n     res0 = res0+load0*load1;\n     load2 = ptrba[4*2+1];\n     res1 = res1+load2*load1;\n     load3 = ptrbb[4*2+1];\n     res0 = res0-load2*load3;\n     res1 = res1+load0*load3;\n     load4 = ptrba[4*2+2];\n     res2 = res2+load4*load1;\n     load5 = ptrba[4*2+3];\n     res3 = res3+load5*load1;\n     res2 = res2-load5*load3;\n     res3 = res3+load4*load3;\n     load6 = ptrbb[4*2+2];\n     res4 = res4+load0*load6;\n     res5 = res5+load2*load6;\n     load7 = ptrbb[4*2+3];\n     res4 = res4-load2*load7;\n     res5 = res5+load0*load7;\n     res6 = res6+load4*load6;\n     res7 = res7+load5*load6;\n     res6 = res6-load5*load7;\n     res7 = res7+load4*load7;\n     load8 = ptrba[4*3+0];\n     load9 = ptrbb[4*3+0];\n     res0 = res0+load8*load9;\n     load10 = ptrba[4*3+1];\n     res1 = res1+load10*load9;\n     load11 = ptrbb[4*3+1];\n     res0 = res0-load10*load11;\n     res1 = res1+load8*load11;\n     load12 = ptrba[4*3+2];\n     res2 = res2+load12*load9;\n     load13 = ptrba[4*3+3];\n     res3 = res3+load13*load9;\n     res2 = res2-load13*load11;\n     res3 = res3+load12*load11;\n     load14 = ptrbb[4*3+2];\n     res4 = res4+load8*load14;\n     res5 = res5+load10*load14;\n     load15 = ptrbb[4*3+3];\n     res4 = res4-load10*load15;\n     res5 = res5+load8*load15;\n     res6 = res6+load12*load14;\n     res7 = res7+load13*load14;\n     res6 = res6-load13*load15;\n     res7 = res7+load12*load15;\n# 446 \"../kernel/x86_64/../generic/ztrmmkernel_2x2.c\"\n     ptrba = ptrba+16;\n     ptrbb = ptrbb+16;\n    }",
+          "data_object_features": {
+            "numeric_kind": "复数",
+            "numeric_precision": "单精度",
+            "structural_properties": "通用",
+            "storage_layout": "连续"
+          }
+        },
+        {
+          "pattern_type": "core.tiled_loop",
+          "name": "分块矩阵处理循环",
+          "description": "外层循环对矩阵进行分块处理，按2x2块遍历bn和bm维度。包含主循环j和i，分别控制列块和行块的移动，并通过ptrba、ptrbb指针偏移访问子矩阵。循环中调用微内核完成实际计算，并在边界处处理未对齐部分。",
+          "code": " for (j=0; j<bn/2; j+=1)\n {\n  off = offset;\n  C0 = C;\n  C1 = C0+2*ldc;\n  ptrba = ba;\n  for (i=0; i<bm/2; i+=1)\n  {\n   ptrba += off*2*2;\n   ptrbb = bb+off*2*2;\n   res0 = 0;\n   res1 = 0;\n   res2 = 0;\n   res3 = 0;\n   res4 = 0;\n   res5 = 0;\n   res6 = 0;\n   res7 = 0;\n   temp = bk - off;\n   for (k=0; k<temp/4; k+=1)\n   {\n    // ... microkernel body ...\n   }\n   for (k=0; k<(temp&3); k+=1)\n   {\n    // ... cleanup loop ...\n   }\n   load0 = res0*alphar-res1*alphai;\n   load1 = res1*alphar+res0*alphai;\n   C0[0] = load0;\n   C0[1] = load1;\n   load2 = res2*alphar-res3*alphai;\n   load3 = res3*alphar+res2*alphai;\n   C0[2] = load2;\n   C0[3] = load3;\n   load4 = res4*alphar-res5*alphai;\n   load5 = res5*alphar+res4*alphai;\n   C1[0] = load4;\n   C1[1] = load5;\n   load6 = res6*alphar-res7*alphai;\n   load7 = res7*alphar+res6*alphai;\n   C1[2] = load6;\n   C1[3] = load7;\n# 589 \"../kernel/x86_64/../generic/ztrmmkernel_2x2.c\"\n   off += 2;\n   C0 = C0+4;\n   C1 = C1+4;\n  }\n  for (i=0; i<(bm&1); i+=1)\n  {\n   // ... handle odd bm ...\n  }\n  k = (bk<<2);\n  bb = bb+k;\n  i = (ldc<<2);\n  C = C+i;\n }",
+          "data_object_features": {
+            "numeric_kind": "复数",
+            "numeric_precision": "单精度",
+            "structural_properties": "通用",
+            "storage_layout": "跨步"
+          }
+        },
+        {
+          "pattern_type": "post.scale_accumulation",
+          "name": "结果缩放与累加",
+          "description": "将累加结果 res0-res7 与复数 alpha 系数进行复数乘法运算，实现 C = alpha * Temp 的写回过程。代码中通过实部和虚部分别计算完成复数乘法，并直接写回到输出矩阵 C 的对应位置。",
+          "code": "   load0 = res0*alphar-res1*alphai;\n   load1 = res1*alphar+res0*alphai;\n   C0[0] = load0;\n   C0[1] = load1;\n   load2 = res2*alphar-res3*alphai;\n   load3 = res3*alphar+res2*alphai;\n   C0[2] = load2;\n   C0[3] = load3;\n   load4 = res4*alphar-res5*alphai;\n   load5 = res5*alphar+res4*alphai;\n   C1[0] = load4;\n   C1[1] = load5;\n   load6 = res6*alphar-res7*alphai;\n   load7 = res7*alphar+res6*alphai;\n   C1[2] = load6;\n   C1[3] = load7;",
+          "data_object_features": {
+            "numeric_kind": "复数",
+            "numeric_precision": "单精度",
+            "structural_properties": "通用",
+            "storage_layout": "跨步"
+          }
+        }
+      ],
+      "algorithm_level_optimizations": [
+        {
+          "optimization_name": "2x2分块矩阵乘法",
+          "level": "algorithm",
+          "description": {
+            "strategy_rationale": "通过将矩阵划分为固定大小的2x2小块，提高数据局部性，减少对主存的频繁访问。这种分块策略符合缓存层级结构的设计原理，使得在微内核执行期间所需的数据更可能驻留在高速缓存中。",
+            "implementation_pattern": "外层循环按2x2块遍历bm和bn维度，每个块对应C矩阵中的4个复数元素（共8个单精度浮点数），并在内部使用独立指针C0、C1指向当前处理块的起始位置。",
+            "performance_impact": "显著提升缓存命中率，降低内存带宽压力，从而加快整体计算速度，尤其在大矩阵场景下效果明显。",
+            "trade_offs": "增加了代码复杂度，需要额外管理块边界条件；对于非常小的矩阵，分块开销可能抵消失效增益。"
+          },
+          "applicability_conditions": "输入矩阵C的行数bm和列数bn至少为2，且参与乘法的内维度bk足够大以使分块有意义；矩阵存储布局支持跨步访问。",
+          "tunable_parameters": [
+            {
+              "parameter_name": "block_size",
+              "description": "分块大小，决定每次微内核处理的矩阵子块尺寸",
+              "value_in_code": 2,
+              "typical_range": [
+                1,
+                2,
+                4
+              ],
+              "impact": "较大的块可提高数据复用，但可能超出L1缓存容量；较小的块适合小矩阵或高并发场景"
+            }
+          ],
+          "target_hardware_feature_name": "Cache",
+          "target_hardware_feature": "CPU Cache Line架构和数据局部性原理，利用时间与空间局部性减少主存访问延迟",
+          "code_example": {
+            "snippet": "for (j=0; j<bn/2; j+=1)\n{\n off = offset;\n C0 = C;\n C1 = C0+2*ldc;\n ptrba = ba;\n for (i=0; i<bm/2; i+=1)\n {\n  ptrba += off*2*2;\n  ptrbb = bb+off*2*2;\n  res0 = 0; res1 = 0; ...",
+            "explanation": "外层双循环以2x2为单位遍历输出矩阵C的行列维度，形成逻辑上的分块结构，为后续微内核提供局部化数据视图。"
+          },
+          "related_patterns": [
+            "core.tiled_loop",
+            "core.mm_microkernel"
+          ]
+        },
+        {
+          "optimization_name": "循环展开与批量加载",
+          "level": "algorithm",
+          "description": {
+            "strategy_rationale": "通过手动展开内层k循环（每次处理4个元素），减少循环控制开销，并暴露更多指令级并行机会，便于编译器调度和流水线填充。",
+            "implementation_pattern": "在temp/4的主循环中，连续加载16个数据（load0~load15），执行多组复数乘加操作，显式展开原本需迭代4次的操作。",
+            "performance_impact": "降低分支预测失败率，提升指令吞吐量，充分利用现代处理器的超标量执行能力。",
+            "trade_offs": "增加代码体积，可能导致指令缓存压力上升；对短向量或剩余部分不适用，需额外清理循环处理残差。"
+          },
+          "applicability_conditions": "内循环迭代次数较大（>4）且可被4整除的部分适用展开；否则进入残差处理分支。",
+          "tunable_parameters": [
+            {
+              "parameter_name": "unroll_factor",
+              "description": "循环展开因子，控制每次迭代处理的元素数量",
+              "value_in_code": 4,
+              "typical_range": [
+                2,
+                4,
+                8
+              ],
+              "impact": "更高的展开因子提升ILP但增加寄存器压力；需平衡与目标架构寄存器数量的关系"
+            }
+          ],
+          "target_hardware_feature_name": "流水线与超标量执行",
+          "target_hardware_feature": "现代CPU的多发射、乱序执行和深度流水线特性，依赖低分支密度和高指令并行度实现高效执行",
+          "code_example": {
+            "snippet": "for (k=0; k<temp/4; k+=1)\n{\n load0 = ptrba[4*0+0];\n load1 = ptrbb[4*0+0];\n res0 = res0+load0*load1;\n load2 = ptrba[4*0+1];\n res1 = res1+load2*load1;\n ...（连续多组load与res更新）...\n ptrba = ptrba+16;\n ptrbb = ptrbb+16;\n}",
+            "explanation": "内层循环以4为步长展开，一次性处理4组复数乘加，显著减少循环跳转次数，并允许编译器更好地调度内存加载与算术运算。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel"
+          ]
+        },
+        {
+          "optimization_name": "复数乘法融合与累加优化",
+          "level": "algorithm",
+          "description": {
+            "strategy_rationale": "将复数乘法 a*b = (ar*br - ai*bi) + i(ar*bi + ai*br) 直接嵌入到累加过程中，避免中间结果分离存储，减少临时变量和内存访问。",
+            "implementation_pattern": "在每一步乘加中同时更新实部和虚部，如 res0 += ar*br, res1 += ai*br, res0 -= ai*bi 等组合方式完成复数乘积累加（CMACC）。",
+            "performance_impact": "减少寄存器压力和内存读写次数，提升计算密度，有效利用FMA单元潜力。",
+            "trade_offs": "代码可读性下降，调试困难；依赖程序员正确维护复杂的依赖关系。"
+          },
+          "applicability_conditions": "输入数据为交错存储的复数格式（实部/虚部交替），且运算是标准的复数矩阵乘法或三角矩阵乘法。",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "FPU与FMA单元",
+          "target_hardware_feature": "浮点运算单元支持高效的乘加融合操作，通过减少舍入误差和提升吞吐量加速复数运算",
+          "code_example": {
+            "snippet": "load0 = ptrba[4*0+0];\nload1 = ptrbb[4*0+0];\nres0 = res0+load0*load1;\nload2 = ptrba[4*0+1];\nres1 = res1+load2*load1;\nload3 = ptrbb[4*0+1];\nres0 = res0-load2*load3;\nres1 = res1+load0*load3;",
+            "explanation": "通过四步操作完成一个复数乘加：先累加实部乘积，再减去虚部乘积修正实部，同时加上交叉项更新虚部，实现完整的复数乘积累加。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel",
+            "post.scale_accumulation"
+          ]
+        },
+        {
+          "optimization_name": "边界残差处理",
+          "level": "algorithm",
+          "description": {
+            "strategy_rationale": "为了兼容任意矩阵尺寸，在主分块和展开循环后，使用专门的小循环处理无法被2或4整除的剩余行、列或内维度，确保功能完整性。",
+            "implementation_pattern": "使用位运算 & 操作判断残差长度（如 bn&1, bm&1, temp&3），并分别进入单行、单列或少于4次的k循环进行逐元素处理。",
+            "performance_impact": "保证算法通用性，虽残差部分效率较低，但占比小，不影响整体性能主导部分。",
+            "trade_offs": "增加代码分支和重复逻辑，破坏了主路径的简洁性；若频繁调用小尺寸问题，残差路径将成为性能瓶颈。"
+          },
+          "applicability_conditions": "矩阵维度不能被分块大小或展开因子整除时必须启用此机制。",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "通用性保障",
+          "target_hardware_feature": "无特定硬件依赖，属于软件鲁棒性设计，确保算法在各种输入条件下都能正确运行",
+          "code_example": {
+            "snippet": "for (i=0; i<(bm&1); i+=1)\n{\n ptrba += off*2;\n ptrbb = bb + off*2*2;\n res0 = 0; res1 = 0; res2 = 0; res3 = 0;\n temp = bk - off;\n for (k=0; k<temp; k+=1)\n {\n  load0 = ptrba[2*0+0];\n  load1 = ptrbb[4*0+0];\n  res0 = res0+load0*load1;\n  ...",
+            "explanation": "当bm为奇数时，主循环(bm/2)会遗漏最后一行，此处通过单独循环处理该行，确保所有输出元素都被计算。"
+          },
+          "related_patterns": [
+            "core.tiled_loop",
+            "prep.index_pointer_init"
+          ]
+        },
+        {
+          "optimization_name": "指针偏移预计算",
+          "level": "algorithm",
+          "description": {
+            "strategy_rationale": "通过预先计算ptrba和ptrbb的起始偏移量（off * 2 * 2等），避免在内层循环中重复进行复杂地址计算，节省CPU周期。",
+            "implementation_pattern": "在外层i循环开始前，根据当前off值一次性调整ptrba和ptrbb指针位置，使其指向正确的子矩阵起始地址。",
+            "performance_impact": "减少每次内层循环的地址计算开销，特别是在高频率执行的微内核中累积效益显著。",
+            "trade_offs": "需要维护额外的指针状态变量，略微增加寄存器占用；逻辑稍显复杂。"
+          },
+          "applicability_conditions": "存在固定的访问模式和已知偏移量（如三角矩阵下标变换），且偏移可在外层确定。",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "地址生成单元",
+          "target_hardware_feature": "CPU的地址计算单元效率有限，简化指针运算有助于减少AGU压力和延迟",
+          "code_example": {
+            "snippet": "ptrba += off*2*2;\nptrbb = bb+off*2*2;",
+            "explanation": "利用off表示当前块的上三角偏移，在进入i循环前直接将A/B矩阵指针定位到有效起始位置，避免在k循环中反复计算无效区域。"
+          },
+          "related_patterns": [
+            "prep.index_pointer_init",
+            "core.tiled_loop"
+          ]
+        }
+      ],
+      "code_level_optimizations": [
+        {
+          "optimization_name": "四重循环展开",
+          "level": "code",
+          "description": {
+            "strategy_rationale": "通过手动展开内层循环4次，减少循环控制指令（如条件判断、跳转、计数器递增）的执行频率，从而降低CPU流水线因分支预测失败或控制依赖带来的停顿，提升指令级并行度。",
+            "implementation_pattern": "在k维度的主计算循环中，每次迭代处理4个数据元素，显式写出16次加载和32次乘加操作，替代原本每次处理1个元素的循环体。",
+            "performance_impact": "显著减少循环开销，提高基本块大小，有利于编译器进行寄存器分配和指令调度，增加每个循环迭代的算术逻辑运算密度，提升CPU利用率。",
+            "trade_offs": "增加代码体积，可能导致指令缓存压力增大；同时提高寄存器需求，可能引发寄存器溢出到栈上的额外开销。"
+          },
+          "applicability_conditions": "内层循环迭代次数较大且可被4整除，或可通过残差循环处理剩余部分；目标架构具有足够多的浮点寄存器以容纳展开后的临时变量。",
+          "tunable_parameters": [
+            {
+              "parameter_name": "unroll_factor",
+              "value_in_code": 4,
+              "description": "循环展开因子，表示每次迭代处理的数据元素个数",
+              "typical_range": [
+                1,
+                2,
+                4,
+                8
+              ],
+              "impact": "较大的值可进一步减少循环开销，但会增加寄存器压力和代码大小；需根据目标平台寄存器数量权衡"
+            }
+          ],
+          "target_hardware_feature_name": "指令流水线",
+          "target_hardware_feature": "CPU指令流水线和分支预测单元。循环展开减少了跳转指令频率，降低了分支预测错误带来的流水线冲刷代价，同时增加了连续无分支指令流长度，利于流水线满载运行。",
+          "code_example": {
+            "snippet": "for (k=0; k<temp/4; k+=1)\n{\n load0 = ptrba[4*0+0];\n load1 = ptrbb[4*0+0];\n res0 = res0+load0*load1;\n load2 = ptrba[4*0+1];\n res1 = res1+load2*load1;\n ...\n ptrba = ptrba+16;\n ptrbb = ptrbb+16;\n}",
+            "explanation": "该循环每次前进16字节（4组复数对），并在单次迭代中完成4组数据的完整计算，体现了四重循环展开。指针步进也相应调整为+16，匹配展开粒度。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel"
+          ]
+        },
+        {
+          "optimization_name": "指针算术优化",
+          "level": "code",
+          "description": {
+            "strategy_rationale": "使用指针直接寻址替代基于索引的数组访问，避免在每次内存访问时重复进行基址+偏移量的地址计算，尤其当偏移涉及复杂表达式时能显著节省ALU操作。",
+            "implementation_pattern": "通过维护ptrba和ptrbb两个移动指针，在循环中仅进行简单的指针增量（如ptrba += 16），而非每次用i,j,k组合计算绝对索引。",
+            "performance_impact": "减少地址计算相关的CPU周期消耗，特别是在嵌套循环中累积效果明显；同时有助于提高缓存预取效率，因为指针顺序移动表现出良好的空间局部性。",
+            "trade_offs": "牺牲了部分代码可读性；需要额外维护指针变量状态，增加寄存器占用；若指针更新逻辑出错则难以调试。"
+          },
+          "applicability_conditions": "存在连续或规则步长的内存访问模式；编译器无法自动优化出高效指针版本；目标数据结构支持指针遍历。",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "地址生成单元",
+          "target_hardware_feature": "CPU的地址生成单元（AGU）。通过将复杂的地址计算提前或简化为简单的加法操作，减轻AGU的压力，避免地址计算成为内存访问瓶颈。",
+          "code_example": {
+            "snippet": "ptrba = ba;\nfor (i=0; i<bm/2; i+=1)\n{\n ptrba += off*2*2;\n ptrbb = bb+off*2*2;\n ...\n for (k=0; k<temp/4; k+=1)\n {\n  load0 = ptrba[4*0+0];\n  ...\n  ptrba = ptrba+16;\n  ptrbb = ptrbb+16;\n }",
+            "explanation": "ptrba和ptrbb在进入内层循环前通过一次偏移定位起始位置，之后在内循环中以固定步长递增，避免了每次访问都重新计算全局索引，实现了高效的指针算术优化。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel",
+            "core.tiled_loop"
+          ]
+        },
+        {
+          "optimization_name": "标量替换与寄存器驻留",
+          "level": "code",
+          "description": {
+            "strategy_rationale": "将频繁访问的中间结果和累加器声明为局部标量变量（如res0-res7, load0-load15），促使编译器将其分配至CPU寄存器，避免反复读写内存造成的延迟。",
+            "implementation_pattern": "预先定义多个float类型的局部变量用于暂存加载值和累加结果，并在整个微内核执行期间保持其生命周期，最大限度利用寄存器文件。",
+            "performance_impact": "极大减少对栈内存的访问次数，充分利用现代CPU丰富的浮点寄存器资源，降低访存延迟对计算吞吐率的影响，提升FLOPs效率。",
+            "trade_offs": "高寄存器压力可能导致寄存器溢出，迫使编译器将部分变量存储到栈上，反而引入额外的load/store开销；同时也限制了函数内联等优化的可能性。"
+          },
+          "applicability_conditions": "函数内部有大量重复使用的中间变量；目标架构提供充足的通用或浮点寄存器；编译器支持有效的寄存器分配策略。",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "寄存器",
+          "target_hardware_feature": "CPU通用寄存器和浮点寄存器文件。通过将热点数据保留在寄存器中，绕过L1缓存甚至更深层级的内存系统，实现接近处理器峰值性能的数据供给速率。",
+          "code_example": {
+            "snippet": "float res0,res1,res2,res3,res4,res5,res6,res7,load0,load1,...,load15;\n...\nres0 = 0;\nload0 = ptrba[4*0+0];\nres0 = res0+load0*load1;\n...",
+            "explanation": "所有计算均在预声明的局部标量变量之间进行，这些变量理想情况下会被映射到x86-64架构的XMM寄存器中，形成完全寄存器驻留的计算核心，避免任何中间结果落盘。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel"
+          ]
+        },
+        {
+          "optimization_name": "边界残差循环分离",
+          "level": "code",
+          "description": {
+            "strategy_rationale": "将主循环与处理非对齐边界的残差部分分开，使主路径能够专注于高度优化的向量化或展开逻辑，而残差路径仅在必要时执行，不影响主要性能路径。",
+            "implementation_pattern": "使用位运算(bm & 1)和(bn & 1)检测奇数维度，并设置独立的小规模循环专门处理剩余的一行或一列。",
+            "performance_impact": "保证主循环可以安全地采用SIMD指令或大粒度展开，无需插入条件判断打断流水线；同时确保算法功能完整性，适用于任意矩阵尺寸。",
+            "trade_offs": "增加代码复杂性和维护成本；需要编写和测试额外的控制逻辑；对于小尺寸矩阵可能主导执行时间。"
+          },
+          "applicability_conditions": "数据结构维度可能无法被分块大小或SIMD宽度整除；存在高性能主路径与低开销残差路径的设计需求。",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "分支预测器",
+          "target_hardware_feature": "CPU分支预测器。通过将罕见的残差处理路径分离，使得主循环的退出分支具有极高可预测性（几乎总是继续），减少预测错误导致的流水线惩罚。",
+          "code_example": {
+            "snippet": "for (i=0; i<(bm&1); i+=1)\n{\n ptrba += off*2;\n ptrbb = bb + off*2*2;\n res0 = 0; res1 = 0; ...\n for (k=0; k<temp; k+=1)\n {\n  load0 = ptrba[2*0+0];\n  ...\n }\n ...\n}",
+            "explanation": "该循环仅在bm为奇数时执行一次，专门处理最后一行未对齐的数据块，与主循环解耦，确保主路径始终运行在2的倍数维度上。"
+          },
+          "related_patterns": [
+            "core.tiled_loop"
+          ]
+        }
+      ],
+      "instruction_level_optimizations": [
+        {
+          "optimization_name": "手动SIMD向量化",
+          "level": "instruction",
+          "description": {
+            "strategy_rationale": "通过将多个数据元素打包到标量变量中并并行处理，模拟SIMD（单指令多数据）行为，以提高每条指令的计算吞吐量。该策略利用现代CPU的宽寄存器和算术逻辑单元的并行性，在不依赖编译器自动向量化的情况下确保向量化执行。",
+            "implementation_pattern": "使用多个load变量（如load0–load15）同时加载4组复数矩阵块数据，并在一次循环迭代中对这4组数据执行相同的乘加操作。每个res寄存器（res0–res7）累加对应位置的结果，形成2x2输出块的并行更新。",
+            "performance_impact": "显著提升FLOPs/Cycle比率，减少内存访问延迟的影响；通过暴露细粒度并行性，使流水线更高效，降低控制开销占比。",
+            "trade_offs": "增加代码复杂性和维护难度；需要手动管理数据布局与对齐；若底层硬件支持原生SIMD指令，则可能不如内联汇编或intrinsics高效。"
+          },
+          "applicability_conditions": "数据按连续内存存储，无跨步访问冲突；矩阵维度可被向量化因子（此处为4）整除的部分适用主循环；需保证无写后读（RAW）依赖冲突。",
+          "tunable_parameters": [
+            {
+              "parameter_name": "vectorization_factor",
+              "description": "每次循环迭代处理的数据组数，决定SIMD模拟的宽度",
+              "value_in_code": 4,
+              "typical_range": [
+                2,
+                4,
+                8
+              ],
+              "impact": "增大可提升计算密度但增加寄存器压力；过大会导致溢出至栈内存，反而降低性能"
+            }
+          ],
+          "target_hardware_feature_name": "SIMD",
+          "target_hardware_feature": "SIMD (Single Instruction, Multiple Data) execution units, such as SSE/AVX on x86 platforms, allowing parallel arithmetic operations on multiple data elements within a wide register.",
+          "code_example": {
+            "snippet": "for (k=0; k<temp/4; k+=1)\n{\n load0 = ptrba[4*0+0];\n load1 = ptrbb[4*0+0];\n res0 = res0+load0*load1;\n load2 = ptrba[4*0+1];\n res1 = res1+load2*load1;\n load3 = ptrbb[4*0+1];\n res0 = res0-load2*load3;\n res1 = res1+load0*load3;\n\n load4 = ptrba[4*0+2];\n res2 = res2+load4*load1;\n load5 = ptrba[4*0+3];\n res3 = res3+load5*load1;\n res2 = res2-load5*load3;\n res3 = res3+load4*load3;\n\n load6 = ptrbb[4*0+2];\n res4 = res4+load0*load6;\n res5 = res5+load2*load6;\n load7 = ptrbb[4*0+3];\n res4 = res4-load2*load7;\n res5 = res5+load0*load7;\n\n res6 = res6+load4*load6;\n res7 = res7+load5*load6;\n res6 = res6-load5*load7;\n res7 = res7+load4*load7;\n\n ptrba = ptrba+16;\n ptrbb = ptrbb+16;\n}",
+            "explanation": "此代码段在一个循环体内处理4个连续的复数乘加操作，分别作用于不同的load/res变量组合，等效于一条SIMD指令处理4个数据对。指针每次前进16字节（4×4字节float），匹配4组复数输入的大小，实现手动向量化。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel",
+            "core.tiled_loop"
+          ]
+        },
+        {
+          "optimization_name": "复数乘法融合指令序列",
+          "level": "instruction",
+          "description": {
+            "strategy_rationale": "将复数乘法运算 a*b = (ar*br - ai*bi) + i(ar*bi + ai*br) 编译为一系列直接嵌入累加过程的浮点运算，避免中间结果暂存和额外函数调用，最大化利用ALU并行性。",
+            "implementation_pattern": "在加载两个复数元组后，立即展开其实部与虚部的乘减与乘加组合，并直接累加到对应的res寄存器中。例如：res0 += ar*br - ai*bi，res1 += ar*bi + ai*br。",
+            "performance_impact": "减少临时变量数量和内存访问次数；合并乘法与累加操作接近FMA语义，提升每周期完成的有效运算数。",
+            "trade_offs": "代码膨胀明显；对寄存器资源需求高；难以被通用编译器进一步优化，需高度定制化维护。"
+          },
+          "applicability_conditions": "参与运算的数据为单精度复数；运算模式固定且可预测；目标平台支持高吞吐浮点运算。",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "浮点执行单元",
+          "target_hardware_feature": "现代CPU中的多通道浮点执行单元（FP ALUs），支持同时执行多个独立的浮点乘法和加法操作，尤其适用于密集线性代数运算。",
+          "code_example": {
+            "snippet": "load0 = ptrba[4*0+0]; // ar\nload1 = ptrbb[4*0+0]; // br\nres0 = res0 + load0 * load1;        // += ar*br\nload2 = ptrba[4*0+1]; // ai\nres1 = res1 + load2 * load1;        // += ai*br\nload3 = ptrbb[4*0+1]; // bi\nres0 = res0 - load2 * load3;        // -= ai*bi → real part\nres1 = res1 + load0 * load3;        // += ar*bi → imag part",
+            "explanation": "该片段展示了完整的复数乘法融合过程：从两个复数中提取实部与虚部，执行四次基本运算（两乘两加减），并将结果直接累积到最终输出寄存器中，避免任何中间存储步骤，充分利用了浮点流水线的并行能力。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel",
+            "post.scale_accumulation"
+          ]
+        },
+        {
+          "optimization_name": "寄存器级累加器分配",
+          "level": "instruction",
+          "description": {
+            "strategy_rationale": "通过声明大量局部标量变量（如res0-res7, load0-load15），显式提示编译器尽可能将这些变量驻留在CPU寄存器中，从而最小化内存访问延迟，提升数据重用效率。",
+            "implementation_pattern": "所有中间计算值均使用局部float变量表示，并在整个微内核执行期间保持活跃状态，仅在最后阶段写回内存。这种设计减少了load/store频率，符合寄存器文件容量限制下的最优分配原则。",
+            "performance_impact": "极大降低缓存和内存访问压力；提升指令级并行性，因操作数来自寄存器而非内存；有助于隐藏内存延迟。",
+            "trade_offs": "过度使用可能导致寄存器溢出（register spilling），当变量数超过物理寄存器数量时，部分变量会被写入栈内存，反而引入额外开销。"
+          },
+          "applicability_conditions": "目标架构具有足够数量的通用浮点寄存器（如x86-64至少16个SSE寄存器）；编译器具备较强的寄存器分配能力。",
+          "tunable_parameters": [
+            {
+              "parameter_name": "accumulator_count",
+              "description": "用于并行累加的寄存器变量数量",
+              "value_in_code": 8,
+              "typical_range": [
+                4,
+                8,
+                16
+              ],
+              "impact": "更多累加器可支持更大分块或更高程度的循环展开，但也增加寄存器压力"
+            }
+          ],
+          "target_hardware_feature_name": "CPU寄存器文件",
+          "target_hardware_feature": "处理器中的高速寄存器文件，提供最低延迟的数据访问路径，是实现高性能数值计算的关键资源。",
+          "code_example": {
+            "snippet": "float res0,res1,res2,res3,res4,res5,res6,res7,load0,load1,load2,load3,load4,load5,load6,load7,load8,load9,load10,load11,load12,load13,load14,load15;\n...\nres0 = 0;\nres1 = 0;\n...\nfor (k=0; k<temp/4; k+=1)\n{\n load0 = ptrba[...];\n res0 = res0 + load0 * ...;\n // all operations use local scalars\n}\n// final write-back only at end",
+            "explanation": "所有计算均在局部变量上进行，这些变量被设计为映射到CPU寄存器。通过集中声明大量变量并在整个计算过程中持续使用，最大限度地延长其生命周期，促使编译器将其保留在寄存器中，避免频繁出入栈。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel",
+            "post.scale_accumulation"
+          ]
+        }
+      ],
+      "implementation_details": "该实现采用纯C语言编写的手动向量化微内核，针对复数矩阵乘法（TRMM）设计。核心特征包括：(1) 使用2x2输出分块结构；(2) 内层循环按4元素批量展开，模拟SIMD行为；(3) 所有中间变量声明为局部标量以促进寄存器驻留；(4) 复数乘法直接融合进累加流程；(5) 指针偏移预计算与边界残差分离处理保障完整性。数据通过指针直接寻址访问，避免索引重复计算。",
+      "performance_insights": "预期在支持高吞吐浮点运算的现代CPU上获得较高FLOPs利用率，尤其在数据对齐良好、问题规模较大的情况下。性能瓶颈主要在于内存带宽与寄存器压力之间的平衡：若寄存器溢出发生，则性能会显著下降。由于未使用内联汇编或intrinsics，其性能上限受限于编译器生成代码的质量，但在缺乏专用SIMD支持的平台上仍能提供稳定加速效果。整体设计牺牲了可移植性以换取极致性能控制。"
+    },
+    {
+      "algorithm": "trmm",
+      "file_path": "ctrmm_kernel_LR.clean.c",
+      "architecture": "通用",
+      "computational_patterns": [
+        {
+          "pattern_type": "prep.index_pointer_init",
+          "name": "索引与指针初始化",
+          "description": "初始化循环变量 j、off 和指针 C0、C1、ptrba，用于外层列循环的起始位置设置。j 作为主循环计数器从 0 开始，off 初始化为 0 用于偏移跟踪，C0 指向矩阵 C 起始地址，C1 指向 C0 向下偏移 2*ldc 的位置，ptrba 指向 ba 起始地址。",
+          "code": "off = 0;\nfor (j=0; j<bn/2; j+=1)\n{\n off = offset;\n C0 = C;\n C1 = C0+2*ldc;\n ptrba = ba;",
+          "data_object_features": {
+            "numeric_kind": "N/A",
+            "numeric_precision": "N/A",
+            "structural_properties": "N/A",
+            "storage_layout": "N/A"
+          }
+        },
+        {
+          "pattern_type": "prep.loop_invariant_calc",
+          "name": "循环不变量计算",
+          "description": "在循环外部计算了两个关键不变量：lda2 = 2*ldc 和 inc_x2 = 2*inc_x（隐含于 ptrbb = bb + off*2*2 和 ptrba += off*2*2 中），用于后续以跨步方式访问复数矩阵元素，利用复数交错存储结构提升内存访问效率。",
+          "code": "ptrba += off*2*2;\nptrbb = bb+off*2*2;",
+          "data_object_features": {
+            "numeric_kind": "复数",
+            "numeric_precision": "N/A",
+            "structural_properties": "N/A",
+            "storage_layout": "跨步"
+          }
+        },
+        {
+          "pattern_type": "core.mm_microkernel",
+          "name": "矩阵乘法微内核",
+          "description": "实现了一个2x2的复数矩阵乘法微内核，通过展开的FMA-like操作累加计算结果。内层循环每次处理4个元素，使用16个load变量和8个res累加器，执行规律性的复数乘加操作，最后乘以标量alphar/alphai并写回C矩阵。",
+          "code": "   for (k=0; k<temp/4; k+=1)\n   {\n    load0 = ptrba[4*0+0];\n    load1 = ptrbb[4*0+0];\n    res0 = res0+load0*load1;\n    load2 = ptrba[4*0+1];\n    res1 = res1-load2*load1;\n    load3 = ptrbb[4*0+1];\n    res0 = res0+load2*load3;\n    res1 = res1+load0*load3;\n    load4 = ptrba[4*0+2];\n    res2 = res2+load4*load1;\n    load5 = ptrba[4*0+3];\n    res3 = res3-load5*load1;\n    res2 = res2+load5*load3;\n    res3 = res3+load4*load3;\n    load6 = ptrbb[4*0+2];\n    res4 = res4+load0*load6;\n    res5 = res5-load2*load6;\n    load7 = ptrbb[4*0+3];\n    res4 = res4+load2*load7;\n    res5 = res5+load0*load7;\n    res6 = res6+load4*load6;\n    res7 = res7-load5*load6;\n    res6 = res6+load5*load7;\n    res7 = res7+load4*load7;\n    load8 = ptrba[4*1+0];\n    load9 = ptrbb[4*1+0];\n    res0 = res0+load8*load9;\n    load10 = ptrba[4*1+1];\n    res1 = res1-load10*load9;\n    load11 = ptrbb[4*1+1];\n    res0 = res0+load10*load11;\n    res1 = res1+load8*load11;\n    load12 = ptrba[4*1+2];\n    res2 = res2+load12*load9;\n    load13 = ptrba[4*1+3];\n    res3 = res3-load13*load9;\n    res2 = res2+load13*load11;\n    res3 = res3+load12*load11;\n    load14 = ptrbb[4*1+2];\n    res4 = res4+load8*load14;\n    res5 = res5-load10*load14;\n    load15 = ptrbb[4*1+3];\n    res4 = res4+load10*load15;\n    res5 = res5+load8*load15;\n    res6 = res6+load12*load14;\n    res7 = res7-load13*load14;\n    res6 = res6+load13*load15;\n    res7 = res7+load12*load15;\n    load0 = ptrba[4*2+0];\n    load1 = ptrbb[4*2+0];\n    res0 = res0+load0*load1;\n    load2 = ptrba[4*2+1];\n    res1 = res1-load2*load1;\n    load3 = ptrbb[4*2+1];\n    res0 = res0+load2*load3;\n    res1 = res1+load0*load3;\n    load4 = ptrba[4*2+2];\n    res2 = res2+load4*load1;\n    load5 = ptrba[4*2+3];\n    res3 = res3-load5*load1;\n    res2 = res2+load5*load3;\n    res3 = res3+load4*load3;\n    load6 = ptrbb[4*2+2];\n    res4 = res4+load0*load6;\n    res5 = res5-load2*load6;\n    load7 = ptrbb[4*2+3];\n    res4 = res4+load2*load7;\n    res5 = res5+load0*load7;\n    res6 = res6+load4*load6;\n    res7 = res7-load5*load6;\n    res6 = res6+load5*load7;\n    res7 = res7+load4*load7;\n    load8 = ptrba[4*3+0];\n    load9 = ptrbb[4*3+0];\n    res0 = res0+load8*load9;\n    load10 = ptrba[4*3+1];\n    res1 = res1-load10*load9;\n    load11 = ptrbb[4*3+1];\n    res0 = res0+load10*load11;\n    res1 = res1+load8*load11;\n    load12 = ptrba[4*3+2];\n    res2 = res2+load12*load9;\n    load13 = ptrba[4*3+3];\n    res3 = res3-load13*load9;\n    res2 = res2+load13*load11;\n    res3 = res3+load12*load11;\n    load14 = ptrbb[4*3+2];\n    res4 = res4+load8*load14;\n    res5 = res5-load10*load14;\n    load15 = ptrbb[4*3+3];\n    res4 = res4+load10*load15;\n    res5 = res5+load8*load15;\n    res6 = res6+load12*load14;\n    res7 = res7-load13*load14;\n    res6 = res6+load13*load15;\n    res7 = res7+load12*load15;\n    ptrba = ptrba+16;\n    ptrbb = ptrbb+16;\n   }",
+          "data_object_features": {
+            "numeric_kind": "复数",
+            "numeric_precision": "单精度",
+            "structural_properties": "通用",
+            "storage_layout": "连续"
+          }
+        },
+        {
+          "pattern_type": "core.tiled_loop",
+          "name": "分块矩阵处理循环",
+          "description": "外层循环按2x2块遍历输出矩阵C，通过j和i循环控制列块和行块的移动，驱动内部的微内核计算。循环结构包含主块处理（bn/2, bm/2）和尾部剩余元素处理（bn&1, bm&1），符合分块矩阵乘法的典型框架。",
+          "code": " for (j=0; j<bn/2; j+=1)\n {\n  off = offset;\n  C0 = C;\n  C1 = C0+2*ldc;\n  ptrba = ba;\n  for (i=0; i<bm/2; i+=1)\n  {\n   ptrba += off*2*2;\n   ptrbb = bb+off*2*2;\n   res0 = 0;\n   res1 = 0;\n   res2 = 0;\n   res3 = 0;\n   res4 = 0;\n   res5 = 0;\n   res6 = 0;\n   res7 = 0;\n   temp = bk - off;\n   for (k=0; k<temp/4; k+=1)\n   {\n    // ... microkernel body ...\n   }\n   // ... cleanup and store ...\n   off += 2;\n   C0 = C0+4;\n   C1 = C1+4;\n  }\n  for (i=0; i<(bm&1); i+=1)\n  {\n   // ... handle leftover rows ...\n  }\n  k = (bk<<2);\n  bb = bb+k;\n  i = (ldc<<2);\n  C = C+i;\n }",
+          "data_object_features": {
+            "numeric_kind": "复数",
+            "numeric_precision": "单精度",
+            "structural_properties": "通用",
+            "storage_layout": "跨步"
+          }
+        },
+        {
+          "pattern_type": "core.elementwise_update",
+          "name": "元素级向量更新",
+          "description": "在微内核计算结束后，将累加结果res0-res7与复数标量alphar/alphai进行逐元素的复数乘法，并将结果写回到输出矩阵C的对应位置，实现C := alpha * A * B + C中的缩放与存储更新。",
+          "code": "   load0 = res0*alphar-res1*alphai;\n   load1 = res1*alphar+res0*alphai;\n   C0[0] = load0;\n   C0[1] = load1;\n   load2 = res2*alphar-res3*alphai;\n   load3 = res3*alphar+res2*alphai;\n   C0[2] = load2;\n   C0[3] = load3;\n   load4 = res4*alphar-res5*alphai;\n   load5 = res5*alphar+res4*alphai;\n   C1[0] = load4;\n   C1[1] = load5;\n   load6 = res6*alphar-res7*alphai;\n   load7 = res7*alphar+res6*alphai;\n   C1[2] = load6;\n   C1[3] = load7;",
+          "data_object_features": {
+            "numeric_kind": "复数",
+            "numeric_precision": "单精度",
+            "structural_properties": "通用",
+            "storage_layout": "跨步"
+          }
+        },
+        {
+          "pattern_type": "post.scale_accumulation",
+          "name": "结果缩放与累加",
+          "description": "将累加结果 res0-res7 与复数 alpha 系数 (alphar, alphai) 进行复数乘法运算，实现 C = alpha * Temp 的写回过程。例如 load0 = res0*alphar - res1*alphai，然后将结果写回到 C 矩阵对应位置。",
+          "code": "   load0 = res0*alphar-res1*alphai;\n   load1 = res1*alphar+res0*alphai;\n   C0[0] = load0;\n   C0[1] = load1;\n   load2 = res2*alphar-res3*alphai;\n   load3 = res3*alphar+res2*alphai;\n   C0[2] = load2;\n   C0[3] = load3;\n   load4 = res4*alphar-res5*alphai;\n   load5 = res5*alphar+res4*alphai;\n   C1[0] = load4;\n   C1[1] = load5;\n   load6 = res6*alphar-res7*alphai;\n   load7 = res7*alphar+res6*alphai;\n   C1[2] = load6;\n   C1[3] = load7;",
+          "data_object_features": {
+            "numeric_kind": "复数",
+            "numeric_precision": "单精度",
+            "structural_properties": "通用",
+            "storage_layout": "跨步"
+          }
+        }
+      ],
+      "algorithm_level_optimizations": [
+        {
+          "optimization_name": "分块矩阵乘法",
+          "level": "algorithm",
+          "description": {
+            "strategy_rationale": "通过将大矩阵划分为小块（如2x2），使得每个块的数据能够更好地驻留在CPU缓存中，利用空间局部性和时间局部性减少内存访问延迟。这是基于缓存层次结构的算法设计原则。",
+            "implementation_pattern": "外层循环按2x2块遍历矩阵C，主循环变量i和j以步长2递增，驱动内部微内核处理固定大小的子矩阵块，并对剩余维度进行尾部处理。",
+            "performance_impact": "显著提升数据缓存命中率，降低主存访问频率，从而提高整体计算吞吐量，尤其在大规模矩阵运算中效果明显。",
+            "trade_offs": "增加了循环控制逻辑的复杂度；若块大小选择不当，可能导致填充开销或缓存冲突，反而降低性能。"
+          },
+          "applicability_conditions": "适用于矩阵维度较大且缓存容量有限的场景；要求矩阵存储布局支持跨步访问（如列主序或复数交错存储）。",
+          "tunable_parameters": [
+            {
+              "parameter_name": "block_size",
+              "description": "分块的大小，决定每次微内核处理的行数和列数",
+              "value_in_code": 2,
+              "typical_range": [
+                1,
+                2,
+                4,
+                8
+              ],
+              "impact": "较小的块适合小缓存，较大的块可提高计算密度但可能超出缓存容量"
+            }
+          ],
+          "target_hardware_feature_name": "Cache",
+          "target_hardware_feature": "CPU Cache Line架构和数据局部性原理，通过限制工作集大小使其适配L1/L2缓存容量",
+          "code_example": {
+            "snippet": "for (j=0; j<bn/2; j+=1)\n{\n off = offset;\n C0 = C;\n C1 = C0+2*ldc;\n ptrba = ba;\n for (i=0; i<bm/2; i+=1)\n {\n  ptrba += off*2*2;\n  ptrbb = bb+off*2*2;\n  res0 = 0;\n  res1 = 0;\n  ...",
+            "explanation": "该代码段展示了按2x2块处理输出矩阵C的过程，C0和C1指向当前块的两列起始位置，ptrba和ptrbb根据偏移调整A/B矩阵指针，体现了分块驱动的计算模式。"
+          },
+          "related_patterns": [
+            "core.tiled_loop",
+            "core.mm_microkernel"
+          ]
+        },
+        {
+          "optimization_name": "微内核实例化",
+          "level": "algorithm",
+          "description": {
+            "strategy_rationale": "将最内层循环展开为固定大小的微内核（如2x2），避免通用循环开销，最大化指令级并行和寄存器利用率，属于‘以代码体积换执行速度’的时间换空间策略。",
+            "implementation_pattern": "手动展开内层k循环，每次处理4组复数元素，使用多个临时变量（res0-res7）作为累加器，直接编码复数乘加操作序列。",
+            "performance_impact": "减少循环跳转开销，增加编译器优化机会（如指令调度、寄存器分配），提升FLOPs利用率。",
+            "trade_offs": "代码膨胀严重，维护困难；仅适用于特定块大小，缺乏灵活性；对寄存器压力大，可能引发溢出到栈。"
+          },
+          "applicability_conditions": "适用于目标硬件具有足够通用寄存器资源（如x86-64有16个GPR）且编译器难以自动向量化/展开的场景；输入数据需满足连续或规律跨步访问模式。",
+          "tunable_parameters": [
+            {
+              "parameter_name": "unroll_factor",
+              "description": "内层循环展开因子，控制每次迭代处理的元素数量",
+              "value_in_code": 4,
+              "typical_range": [
+                1,
+                2,
+                4,
+                8
+              ],
+              "impact": "更高的展开因子可进一步减少分支开销，但会增加寄存器需求和代码体积"
+            }
+          ],
+          "target_hardware_feature_name": "寄存器文件",
+          "target_hardware_feature": "利用CPU大量通用寄存器暂存中间结果，减少内存往返，提升算术逻辑单元(ALU)的利用率",
+          "code_example": {
+            "snippet": "for (k=0; k<temp/4; k+=1)\n{\n load0 = ptrba[4*0+0];\n load1 = ptrbb[4*0+0];\n res0 = res0+load0*load1;\n load2 = ptrba[4*0+1];\n res1 = res1-load2*load1;\n ...",
+            "explanation": "此段代码显式展开了4次复数乘加操作，每轮更新8个累加器（res0-res7），避免了循环条件判断，实现了高密度计算。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel",
+            "core.elementwise_update"
+          ]
+        },
+        {
+          "optimization_name": "尾部剩余元素处理",
+          "level": "algorithm",
+          "description": {
+            "strategy_rationale": "为了兼容任意矩阵尺寸，在主分块循环后专门处理无法被块大小整除的剩余行或列，确保算法完整性与正确性。",
+            "implementation_pattern": "使用位运算(bm & 1)和(bn & 1)判断是否存在奇数维度，并添加独立循环处理单行或单列的边界情况。",
+            "performance_impact": "保证算法通用性，避免因维度对齐问题导致调用低效通用路径，维持高性能覆盖更多输入组合。",
+            "trade_offs": "引入额外控制流分支，增加代码复杂度；尾部处理通常效率低于主路径，可能成为性能短板。"
+          },
+          "applicability_conditions": "当矩阵维度不保证是块大小的整数倍时必须启用；常用于BLAS级别库以支持任意输入尺寸。",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "分支预测器",
+          "target_hardware_feature": "现代CPU的分支预测机制能有效处理这种可预测的少量分支，降低尾部处理带来的控制开销",
+          "code_example": {
+            "snippet": "for (j=0; j<(bn&1); j+=1)\n{\n C0 = C;\n off = offset;\n ptrba = ba;\n for (i=0; i<bm/2; i+=1)\n {\n  ptrba += off*2*2;\n  ptrbb = bb+off*2;\n  ...\n }",
+            "explanation": "该代码处理bn为奇数时的最后一列，其内部仍尝试使用2x2块处理大部分行，再通过另一个循环处理bm为奇数时的最后一行，形成嵌套尾部处理结构。"
+          },
+          "related_patterns": [
+            "core.tiled_loop",
+            "prep.index_pointer_init"
+          ]
+        },
+        {
+          "optimization_name": "复数乘法融合与代数简化",
+          "level": "algorithm",
+          "description": {
+            "strategy_rationale": "利用复数乘法规则 (a+bi)(c+di) = (ac−bd) + (ad+bc)i，在累加阶段分离实部与虚部运算，避免调用通用复数乘法函数，减少中间变量和操作数。",
+            "implementation_pattern": "在累加过程中直接实现复数乘加的展开形式，例如 res0 = res0 + load0*load1; res1 = res1 - load2*load1 等组合表达式。",
+            "performance_impact": "减少算术操作总数，提高指令吞吐效率；避免函数调用开销，更适合寄存器分配和流水线执行。",
+            "trade_offs": "代码可读性差，易出错；需要程序员精确掌握复数代数恒等变换，维护成本高。"
+          },
+          "applicability_conditions": "适用于复数矩阵运算且编译器无法自动优化复数表达式的场景；要求输入数据按实部虚部交错存储（如[re, im, re, im]）。",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "ALU",
+          "target_hardware_feature": "充分利用浮点运算单元(FPU)的并行加法与乘法能力，通过代数重组最大化FMA-like操作密度",
+          "code_example": {
+            "snippet": "res0 = res0+load0*load1;\nres1 = res1-load2*load1;\nres0 = res0+load2*load3;\nres1 = res1+load0*load3;",
+            "explanation": "这四行代码共同完成了一次复数乘加：(load0 + i*load2) * (load1 + i*load3)，结果累加到(res0 + i*res1)，其中res0对应实部，res1对应虚部。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel",
+            "post.scale_accumulation"
+          ]
+        },
+        {
+          "optimization_name": "指针偏移预计算",
+          "level": "algorithm",
+          "description": {
+            "strategy_rationale": "将重复的地址计算（如off*2*2）提前在循环外或入口处计算，避免在高频内层循环中重复执行相同乘法，属于典型的循环不变量外提优化。",
+            "implementation_pattern": "在进入i循环前，通过ptrba += off*2*2和ptrbb = bb+off*2*2一次性调整指针位置，后续不再重复计算偏移。",
+            "performance_impact": "减少每轮迭代中的算术运算次数，降低地址生成延迟，提升内存访问效率。",
+            "trade_offs": "需额外指针变量保存中间状态，略微增加寄存器压力；仅对存在固定偏移模式的访问有效。"
+          },
+          "applicability_conditions": "当存在基于循环变量的线性地址映射关系且该映射在循环体内保持不变时适用；常见于带偏移的矩阵三角部分计算（如TRMM）。",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "地址生成单元",
+          "target_hardware_feature": "减轻AGU(Address Generation Unit)的计算负担，使地址计算与数据加载更高效地流水执行",
+          "code_example": {
+            "snippet": "ptrba += off*2*2;\nptrbb = bb+off*2*2;",
+            "explanation": "这两条语句将当前偏移off转换为实际字节偏移（考虑复数双元素），并在进入内层i循环前完成指针定位，避免在k循环中反复计算。"
+          },
+          "related_patterns": [
+            "prep.loop_invariant_calc",
+            "prep.index_pointer_init"
+          ]
+        }
+      ],
+      "code_level_optimizations": [
+        {
+          "optimization_name": "循环展开",
+          "level": "code",
+          "description": {
+            "strategy_rationale": "通过将内层循环体复制多次，减少循环控制指令（如条件判断和跳转）的执行频率，从而降低分支开销并提高指令级并行性。这是基于现代CPU流水线架构对连续指令流更高效处理的理论。",
+            "implementation_pattern": "在k循环中每次处理4个数据元素，显式展开为4次迭代的计算序列，每个迭代包含完整的复数乘加操作，避免了循环计数器更新和条件检查的开销。",
+            "performance_impact": "显著减少循环控制带来的CPU周期消耗，提升指令吞吐率，并有利于编译器进行寄存器分配和指令调度优化，提高缓存命中率。",
+            "trade_offs": "增加了代码体积，可能导致指令缓存压力增大；同时使代码可读性和维护性下降，且对非4倍数长度的数据需额外处理尾部。"
+          },
+          "applicability_conditions": "内层循环的迭代次数较大且可被展开因子整除时效果最佳；适用于计算密集型内核函数，如BLAS微内核。",
+          "tunable_parameters": [
+            {
+              "parameter_name": "unroll_factor",
+              "value_in_code": 4,
+              "description": "循环展开的因子，即每次循环迭代处理的数据项数",
+              "typical_range": [
+                2,
+                3,
+                4,
+                8
+              ],
+              "impact": "较大的值可进一步减少循环开销，但会增加寄存器压力和代码大小；过大会导致性能下降。"
+            }
+          ],
+          "target_hardware_feature_name": "指令流水线",
+          "target_hardware_feature": "CPU的指令流水线机制能够更高效地执行连续、无分支的指令流，循环展开减少了跳转指令对流水线的中断。",
+          "code_example": {
+            "snippet": "for (k=0; k<temp/4; k+=1)\n{\n    load0 = ptrba[4*0+0];\n    load1 = ptrbb[4*0+0];\n    res0 = res0+load0*load1;\n    load2 = ptrba[4*0+1];\n    res1 = res1-load2*load1;\n    // ... 后续展开的三次乘加操作\n    ptrba = ptrba+16;\n    ptrbb = ptrbb+16;\n}",
+            "explanation": "该代码块将原本每次处理一个元素的循环展开为一次处理四个元素，共展开四次计算逻辑，极大减少了循环控制指令的比例，提升了计算密度。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel",
+            "core.tiled_loop"
+          ]
+        },
+        {
+          "optimization_name": "指针算术优化",
+          "level": "code",
+          "description": {
+            "strategy_rationale": "使用指针直接寻址替代数组下标访问，利用地址增量运算代替复杂的索引计算，减少地址计算所需的乘法和加法指令，符合RISC架构对简单寻址模式的支持。",
+            "implementation_pattern": "通过预计算偏移量后使用指针递增（如ptrba += 16）来移动到下一个数据块位置，避免重复计算基地址与索引的组合。",
+            "performance_impact": "减少了内存访问的地址计算开销，提高了访存效率，尤其在高频内层循环中累积效应明显，有助于提升整体执行速度。",
+            "trade_offs": "降低了代码可读性，增加了指针错误的风险（如越界或误用），调试难度上升。"
+          },
+          "applicability_conditions": "当数据以连续或固定步长方式访问时适用，特别是在嵌套循环中频繁访问数组元素的情况下。",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "内存带宽",
+          "target_hardware_feature": "通过简化地址计算，释放ALU资源用于其他计算任务，并减少访存延迟对性能的影响，更好地匹配内存子系统的带宽能力。",
+          "code_example": {
+            "snippet": "ptrba = ptrba+16;\nptrbb = ptrbb+16;",
+            "explanation": "每次循环结束后直接将指针前进16字节（对应4个复数元素），避免了每次重新计算ptrba + k*stride的形式，是一种典型的指针步进优化。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel",
+            "prep.index_pointer_init"
+          ]
+        },
+        {
+          "optimization_name": "局部变量寄存器驻留",
+          "level": "code",
+          "description": {
+            "strategy_rationale": "将频繁使用的中间结果声明为局部变量，提示编译器尽可能将其分配至CPU寄存器中，减少对高速缓存或内存的访问，利用寄存器的零延迟特性加速计算。",
+            "implementation_pattern": "使用多个res和load前缀的局部浮点变量（如res0-res7, load0-load15）作为累加器和临时存储，贯穿整个计算过程。",
+            "performance_impact": "极大减少了对栈内存的读写操作，提升了数据访问速度，是实现高FLOPS的关键手段之一。",
+            "trade_offs": "过多的局部变量可能超出可用寄存器数量，导致寄存器溢出到栈上，反而引入额外开销；同时也增加编译器调度难度。"
+          },
+          "applicability_conditions": "适用于具有大量中间计算值且生命周期较短的数值计算内核。",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "寄存器",
+          "target_hardware_feature": "充分利用CPU通用寄存器文件的高速存取能力，最小化数据路径中的延迟瓶颈。",
+          "code_example": {
+            "snippet": "float res0,res1,res2,res3,res4,res5,res6,res7,load0,load1,load2,load3,load4,load5,load6,load7,load8,load9,load10,load11,load12,load13,load14,load15;\n...\nres0 = res0+load0*load1;\nres1 = res1-load2*load1;",
+            "explanation": "这些变量在整个微内核中持续用于累加和暂存，其设计意图是让它们驻留在寄存器中，形成高效的计算流水线。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel",
+            "core.elementwise_update"
+          ]
+        },
+        {
+          "optimization_name": "分支消除与尾部处理分离",
+          "level": "code",
+          "description": {
+            "strategy_rationale": "通过将主循环与剩余部分分开处理，避免在高频内层循环中引入条件分支，防止因分支预测失败造成的流水线停顿。",
+            "implementation_pattern": "主循环按4的倍数处理数据（k < temp/4），剩余不足4的部分由独立的小循环（k < (temp&3)）处理，完全消除条件判断。",
+            "performance_impact": "保持主循环路径无分支，提高指令预取和流水线效率，特别适合现代超标量处理器的执行模型。",
+            "trade_offs": "增加了代码冗余，需要编写额外的处理逻辑来覆盖边界情况，略微增加代码复杂度。"
+          },
+          "applicability_conditions": "当数据长度不固定但多数情况下远大于展开因子时，分离主路径与尾部能获得最佳性价比。",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "分支预测器",
+          "target_hardware_feature": "规避了由于不可预测分支导致的CPU分支预测器失效问题，维持流水线满载运行。",
+          "code_example": {
+            "snippet": "for (k=0; k<temp/4; k+=1) { /* 主展开循环 */ }\nfor (k=0; k<(temp&3); k+=1) { /* 尾部处理 */ }",
+            "explanation": "两个独立的循环分别处理主要部分和剩余元素，避免了在主循环中使用if判断是否越界，实现了干净的无分支主路径。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel",
+            "post.scale_accumulation"
+          ]
+        }
+      ],
+      "instruction_level_optimizations": [
+        {
+          "optimization_name": "手动SIMD向量展开",
+          "level": "instruction",
+          "description": {
+            "strategy_rationale": "现代CPU支持SIMD（单指令多数据）指令集（如SSE/AVX），可在一个周期内对多个数据执行相同操作。通过手动展开计算逻辑，模拟4组2x2复数乘加操作的并行执行，充分利用浮点ALU的并行能力，即使未使用内联汇编也能逼近向量化性能。",
+            "implementation_pattern": "在内层循环中显式展开4个连续的2x2复数块计算，使用16个load变量和8个res累加器，每4次迭代处理16个浮点数（4个复数×4组），形成规律性的、无依赖的算术表达式序列，便于编译器生成SIMD友好的代码。",
+            "performance_impact": "显著提高指令级并行度（ILP），减少循环控制开销，并使浮点运算流水线保持满载；通过结构化访存和计算顺序，提升缓存预取效率和SIMD单元利用率，接近理论峰值吞吐。",
+            "trade_offs": "增加代码体积和复杂性，降低可读性；对编译器优化敏感，若未能有效向量化，则收益有限；需要精确控制数据对齐和访问步长以避免性能退化。"
+          },
+          "applicability_conditions": "数据按连续布局存储，复数采用交错格式（real, imag交替），无跨步依赖冲突，数组长度足够大以摊销展开代价",
+          "tunable_parameters": [
+            {
+              "parameter_name": "unroll_factor",
+              "description": "内层循环的手动展开因子",
+              "value_in_code": 4,
+              "typical_range": [
+                2,
+                4,
+                8
+              ],
+              "impact": "展开越大，ILP越高，但代码膨胀越严重；过大的展开可能导致寄存器溢出或指令缓存压力增大"
+            }
+          ],
+          "target_hardware_feature_name": "SIMD",
+          "target_hardware_feature": "SIMD (Single Instruction, Multiple Data) execution units, such as SSE/AVX on x86 platforms, capable of processing multiple floating-point operations in parallel within a single CPU cycle",
+          "code_example": {
+            "snippet": "for (k=0; k<temp/4; k+=1)\n{\n    load0 = ptrba[4*0+0];\n    load1 = ptrbb[4*0+0];\n    res0 = res0+load0*load1;\n    // ... 共4组类似的2x2复数乘加展开\n    ptrba = ptrba+16;\n    ptrbb = ptrbb+16;\n}",
+            "explanation": "该循环每次处理4个复数元素（共8个float），通过固定偏移和命名变量显式展开计算过程，构造出适合被编译器映射到SIMD指令的算术模式，实现隐式向量化。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel",
+            "core.tiled_loop"
+          ]
+        },
+        {
+          "optimization_name": "寄存器变量密集驻留",
+          "level": "instruction",
+          "description": {
+            "strategy_rationale": "CPU寄存器访问延迟远低于L1缓存（通常0周期 vs 3-4周期）。通过声明大量局部浮点变量（res0-res7, load0-load15），提示编译器将关键中间结果保留在浮点/SSE寄存器中，避免频繁的栈存取操作，从而隐藏内存延迟。",
+            "implementation_pattern": "预先声明8个结果累加器（res0–res7）和16个加载暂存器（load0–load15），在计算过程中反复重用这些变量进行累加和传递，形成长生命周期的寄存器变量链。",
+            "performance_impact": "极大减少对内存或缓存的写回次数，提升数据重用效率；配合展开结构，使编译器能更好地进行寄存器分配和调度，降低load/store压力。",
+            "trade_offs": "过度使用可能超出可用寄存器数量，导致寄存器溢出（spilling）到栈上，反而增加内存访问；需平衡变量数量与目标架构的寄存器资源（如x86-64有16个XMM寄存器）。"
+          },
+          "applicability_conditions": "目标平台具有充足的浮点/SIMD寄存器资源，编译器具备较强的寄存器分配能力，函数调用频率较低以避免上下文切换开销",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "CPU寄存器文件",
+          "target_hardware_feature": "General-purpose and SIMD register files in modern CPUs, particularly the XMM registers on x86-64 supporting up to 16 concurrent 128-bit values",
+          "code_example": {
+            "snippet": "float res0,res1,res2,res3,res4,res5,res6,res7,load0,load1,load2,load3,load4,load5,load6,load7,load8,load9,load10,load11,load12,load13,load14,load15;",
+            "explanation": "所有中间计算均通过这些局部变量完成，避免直接从内存读写累加器，确保热点数据尽可能驻留在寄存器中，这是实现高性能数值计算的关键指令级技巧。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel",
+            "core.elementwise_update"
+          ]
+        },
+        {
+          "optimization_name": "访存步长与数据对齐感知设计",
+          "level": "instruction",
+          "description": {
+            "strategy_rationale": "现代内存子系统对对齐访问有显著性能优势。通过固定步长（+16字节）移动指针，匹配SSE寄存器宽度（128位=16字节），使得每次加载恰好对应一个对齐的SIMD字，有利于硬件预取器识别访问模式。",
+            "implementation_pattern": "在主循环中使用 `ptrba = ptrba + 16; ptrbb = ptrbb + 16;` 实现指针递增，对应于4个复数（每个复数2 float = 8字节）的跨度，即2个2x2复数块的数据量。",
+            "performance_impact": "保证内存访问对齐，避免非对齐加载引发的性能惩罚（如额外总线事务或拆分读取）；规则的步长有助于触发硬件预取机制，提前加载后续数据，掩盖内存延迟。",
+            "trade_offs": "要求输入数据本身按16字节边界对齐，否则仍可能发生非对齐访问；对于小尺寸矩阵，预取可能无效甚至造成污染。"
+          },
+          "applicability_conditions": "输入数据按16字节对齐分配，访问模式为恒定步长，数据块大小适中以允许有效预取",
+          "tunable_parameters": [
+            {
+              "parameter_name": "stride_size",
+              "description": "每次指针前进的字节数",
+              "value_in_code": 16,
+              "typical_range": [
+                8,
+                16,
+                32
+              ],
+              "impact": "应匹配底层SIMD寄存器宽度（SSE:16, AVX:32）；过大可能导致跳过有用数据，过小则无法充分利用带宽"
+            }
+          ],
+          "target_hardware_feature_name": "内存对齐与预取",
+          "target_hardware_feature": "Memory subsystem features including aligned access requirements and hardware prefetchers that detect regular stride patterns and fetch data ahead of time into cache",
+          "code_example": {
+            "snippet": "ptrba = ptrba+16;\nptrbb = ptrbb+16;",
+            "explanation": "每次循环后指针前进16字节，正好是一个SSE寄存器所能承载的数据量，体现了对底层内存系统的精细控制，是实现高带宽利用率的关键。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel",
+            "prep.loop_invariant_calc"
+          ]
+        }
+      ],
+      "implementation_details": "该实现采用纯C语言编写，但高度针对x86-64架构进行了指令级优化设计：1) 使用2x2复数微内核结构，结合4倍循环展开，模拟SIMD行为；2) 所有中间状态使用局部变量保存，最大化寄存器驻留；3) 指针以16字节为单位递进，确保访存对齐；4) 分离主路径与尾部处理，消除分支干扰；5) 复数乘法通过代数展开直接编码，避免函数调用开销。",
+      "performance_insights": "预期在支持SSE的x86平台上达到较高的FLOPS利用率，尤其在中大规模矩阵上表现优异。性能瓶颈主要出现在内存带宽受限场景下，但由于良好的空间局部性和预取模式，缓存命中率较高。实际性能受数据对齐情况、编译器优化等级（如-O3 -march=native）影响较大。未使用内联汇编意味着可移植性好，但可能略逊于手写汇编版本的极致优化。"
+    },
+    {
+      "algorithm": "trmm",
+      "file_path": "ctrmm_kernel_LT.clean.c",
+      "architecture": "通用",
+      "computational_patterns": [
+        {
+          "pattern_type": "prep.index_pointer_init",
+          "name": "索引与指针初始化",
+          "description": "初始化循环变量j为0，C0指向矩阵C的起始位置，ptrba指向矩阵ba的起始位置。",
+          "code": "for (j=0; j<bn/2; j+=1)\n {\n  off = offset;\n  C0 = C;\n  C1 = C0+2*ldc;\n  ptrba = ba;",
+          "data_object_features": {
+            "numeric_kind": "N/A",
+            "numeric_precision": "N/A",
+            "structural_properties": "N/A",
+            "storage_layout": "N/A"
+          }
+        },
+        {
+          "pattern_type": "prep.index_pointer_init",
+          "name": "索引与指针初始化",
+          "description": "在内层循环中初始化循环变量i为0，ptrbb指向矩阵bb的起始位置，同时将累加器res0-res7初始化为0。",
+          "code": "for (i=0; i<bm/2; i+=1)\n  {\n   ptrbb = bb;\n   res0 = 0;\n   res1 = 0;\n   res2 = 0;\n   res3 = 0;\n   res4 = 0;\n   res5 = 0;\n   res6 = 0;\n   res7 = 0;\n   temp = off + 2;",
+          "data_object_features": {
+            "numeric_kind": "复数",
+            "numeric_precision": "单精度",
+            "structural_properties": "N/A",
+            "storage_layout": "N/A"
+          }
+        },
+        {
+          "pattern_type": "prep.loop_invariant_calc",
+          "name": "循环不变量计算",
+          "description": "计算temp为off + 2，该值用于控制内部循环的迭代次数，并在后续循环中复用。",
+          "code": "temp = off + 2;",
+          "data_object_features": {
+            "numeric_kind": "实数",
+            "numeric_precision": "N/A",
+            "structural_properties": "N/A",
+            "storage_layout": "跨步"
+          }
+        },
+        {
+          "pattern_type": "core.mm_microkernel",
+          "name": "矩阵乘法微内核",
+          "description": "实现复数矩阵乘法微内核，对2x2结果块进行计算。使用展开的FMA-like操作（通过显式乘加实现），在4个向量寄存器块（每块4元素）上迭代，累加8个复数结果寄存器（res0-res7）。核心为完全展开的双循环结构，每次处理16个A和B数据，执行多组复数乘加。",
+          "code": "   for (k=0; k<temp/4; k+=1)\n   {\n    load0 = ptrba[4*0+0];\n    load1 = ptrbb[4*0+0];\n    res0 = res0+load0*load1;\n    load2 = ptrba[4*0+1];\n    res1 = res1+load2*load1;\n    load3 = ptrbb[4*0+1];\n    res0 = res0-load2*load3;\n    res1 = res1+load0*load3;\n    load4 = ptrba[4*0+2];\n    res2 = res2+load4*load1;\n    load5 = ptrba[4*0+3];\n    res3 = res3+load5*load1;\n    res2 = res2-load5*load3;\n    res3 = res3+load4*load3;\n    load6 = ptrbb[4*0+2];\n    res4 = res4+load0*load6;\n    res5 = res5+load2*load6;\n    load7 = ptrbb[4*0+3];\n    res4 = res4-load2*load7;\n    res5 = res5+load0*load7;\n    res6 = res6+load4*load6;\n    res7 = res7+load5*load6;\n    res6 = res6-load5*load7;\n    res7 = res7+load4*load7;\n    load8 = ptrba[4*1+0];\n    load9 = ptrbb[4*1+0];\n    res0 = res0+load8*load9;\n    load10 = ptrba[4*1+1];\n    res1 = res1+load10*load9;\n    load11 = ptrbb[4*1+1];\n    res0 = res0-load10*load11;\n    res1 = res1+load8*load11;\n    load12 = ptrba[4*1+2];\n    res2 = res2+load12*load9;\n    load13 = ptrba[4*1+3];\n    res3 = res3+load13*load9;\n    res2 = res2-load13*load11;\n    res3 = res3+load12*load11;\n    load14 = ptrbb[4*1+2];\n    res4 = res4+load8*load14;\n    res5 = res5+load10*load14;\n    load15 = ptrbb[4*1+3];\n    res4 = res4-load10*load15;\n    res5 = res5+load8*load15;\n    res6 = res6+load12*load14;\n    res7 = res7+load13*load14;\n    res6 = res6-load13*load15;\n    res7 = res7+load12*load15;\n    load0 = ptrba[4*2+0];\n    load1 = ptrbb[4*2+0];\n    res0 = res0+load0*load1;\n    load2 = ptrba[4*2+1];\n    res1 = res1+load2*load1;\n    load3 = ptrbb[4*2+1];\n    res0 = res0-load2*load3;\n    res1 = res1+load0*load3;\n    load4 = ptrba[4*2+2];\n    res2 = res2+load4*load1;\n    load5 = ptrba[4*2+3];\n    res3 = res3+load5*load1;\n    res2 = res2-load5*load3;\n    res3 = res3+load4*load3;\n    load6 = ptrbb[4*2+2];\n    res4 = res4+load0*load6;\n    res5 = res5+load2*load6;\n    load7 = ptrbb[4*2+3];\n    res4 = res4-load2*load7;\n    res5 = res5+load0*load7;\n    res6 = res6+load4*load6;\n    res7 = res7+load5*load6;\n    res6 = res6-load5*load7;\n    res7 = res7+load4*load7;\n    load8 = ptrba[4*3+0];\n    load9 = ptrbb[4*3+0];\n    res0 = res0+load8*load9;\n    load10 = ptrba[4*3+1];\n    res1 = res1+load10*load9;\n    load11 = ptrbb[4*3+1];\n    res0 = res0-load10*load11;\n    res1 = res1+load8*load11;\n    load12 = ptrba[4*3+2];\n    res2 = res2+load12*load9;\n    load13 = ptrba[4*3+3];\n    res3 = res3+load13*load9;\n    res2 = res2-load13*load11;\n    res3 = res3+load12*load11;\n    load14 = ptrbb[4*3+2];\n    res4 = res4+load8*load14;\n    res5 = res5+load10*load14;\n    load15 = ptrbb[4*3+3];\n    res4 = res4-load10*load15;\n    res5 = res5+load8*load15;\n    res6 = res6+load12*load14;\n    res7 = res7+load13*load14;\n    res6 = res6-load13*load15;\n    res7 = res7+load12*load15;\n\n    ptrba = ptrba+16;\n    ptrbb = ptrbb+16;\n   }",
+          "data_object_features": {
+            "numeric_kind": "复数",
+            "numeric_precision": "单精度",
+            "structural_properties": "通用",
+            "storage_layout": "连续"
+          }
+        },
+        {
+          "pattern_type": "core.tiled_loop",
+          "name": "分块矩阵处理循环",
+          "description": "外层循环遍历输出矩阵 C 的列块（bn）和行块（bm），驱动微内核处理 2x2 或 2x1 等小块。包含两层主要循环：外层 j 循环按列处理 bn/2 和 bn&1 块，内层 i 循环按行处理 bm/2 和 bm&1 块，形成分块处理框架以适配微内核。",
+          "code": " for (j=0; j<bn/2; j+=1)\n {\n  off = offset;\n  C0 = C;\n  C1 = C0+2*ldc;\n  ptrba = ba;\n  for (i=0; i<bm/2; i+=1)\n  {\n   ptrbb = bb;\n   res0 = 0;\n   res1 = 0;\n   res2 = 0;\n   res3 = 0;\n   res4 = 0;\n   res5 = 0;\n   res6 = 0;\n   res7 = 0;\n   temp = off + 2;\n   for (k=0; k<temp/4; k+=1)\n   {\n    // ... microkernel body ...\n   }\n   // ... remainder and update ...\n   off += 2;\n   C0 = C0+4;\n   C1 = C1+4;\n  }\n  for (i=0; i<(bm&1); i+=1)\n  {\n   // ... handle odd row ...\n  }\n  k = (bk<<2);\n  bb = bb+k;\n  i = (ldc<<2);\n  C = C+i;\n }\n for (j=0; j<(bn&1); j+=1)\n {\n  // ... handle odd column ...\n }",
+          "data_object_features": {
+            "numeric_kind": "复数",
+            "numeric_precision": "单精度",
+            "structural_properties": "通用",
+            "storage_layout": "跨步"
+          }
+        },
+        {
+          "pattern_type": "post.scale_accumulation",
+          "name": "结果缩放与累加",
+          "description": "将累加结果 res0-res7 与输入标量 alphar 和 alphai 进行复数乘法运算，实现 C = alpha * Temp + beta * C 的写回过程（此处 beta=0），并将最终结果写回到内存中的 C 矩阵。涉及多个实部与虚部的交叉计算和跨步存储写回。",
+          "code": "   load0 = res0*alphar-res1*alphai;\n   load1 = res1*alphar+res0*alphai;\n   C0[0] = load0;\n   C0[1] = load1;\n   load2 = res2*alphar-res3*alphai;\n   load3 = res3*alphar+res2*alphai;\n   C0[2] = load2;\n   C0[3] = load3;\n   load4 = res4*alphar-res5*alphai;\n   load5 = res5*alphar+res4*alphai;\n   C1[0] = load4;\n   C1[1] = load5;\n   load6 = res6*alphar-res7*alphai;\n   load7 = res7*alphar+res6*alphai;\n   C1[2] = load6;\n   C1[3] = load7;",
+          "data_object_features": {
+            "numeric_kind": "复数",
+            "numeric_precision": "单精度",
+            "structural_properties": "通用",
+            "storage_layout": "跨步"
+          }
+        }
+      ],
+      "algorithm_level_optimizations": [
+        {
+          "optimization_name": "分块矩阵乘法微内核",
+          "level": "algorithm",
+          "description": {
+            "strategy_rationale": "通过将大矩阵乘法分解为固定大小的微内核（microkernel）计算，利用局部性原理减少对主存的频繁访问。该策略基于算法理论中的分治思想，将全局计算任务划分为可高效执行的小规模子问题，适配寄存器容量和缓存层级结构。",
+            "implementation_pattern": "代码中使用2x2结果块作为基本计算单元，在外层循环中遍历bm和bn维度，并驱动一个高度展开的内层k循环完成局部乘加运算。每个微内核处理多个数据向量（如16个A/B元素），直接操作浮点寄存器变量（res0-res7）进行累加。",
+            "performance_impact": "显著提升数据重用率，降低内存带宽压力；通过固定尺寸的微内核设计，便于后续汇编级优化与流水线调度，提高CPU指令吞吐率。",
+            "trade_offs": "增加了代码复杂度和维护难度；需要针对不同架构手动调整块大小；对非对齐或边界情况需额外处理逻辑（如&1分支）。"
+          },
+          "applicability_conditions": "适用于复数矩阵乘法（TRMM）场景，输入矩阵A、B和输出C均以连续实部虚部交错方式存储，且微内核目标为2x2复数结果块；要求硬件支持至少8个可用浮点寄存器用于中间累加。",
+          "tunable_parameters": [
+            {
+              "parameter_name": "microkernel_size",
+              "description": "微内核处理的结果矩阵块大小",
+              "value_in_code": "2x2",
+              "typical_range": [
+                "1x1",
+                "2x2",
+                "4x4"
+              ],
+              "impact": "较大的块可提高数据复用但增加寄存器压力；较小的块更通用但效率较低。"
+            }
+          ],
+          "target_hardware_feature_name": "寄存器文件",
+          "target_hardware_feature": "CPU寄存器文件的高并发读写能力以及低延迟特性，使得在寄存器中维持多个累加器成为可能，避免频繁内存访问。",
+          "code_example": {
+            "snippet": "for (j=0; j<bn/2; j+=1)\n{\n off = offset;\n C0 = C;\n C1 = C0+2*ldc;\n ptrba = ba;\n for (i=0; i<bm/2; i+=1)\n {\n  ptrbb = bb;\n  res0 = 0; res1 = 0; ... res7 = 0;\n  temp = off + 2;\n  for (k=0; k<temp/4; k+=1)\n  {\n   // 展开的复数乘加操作\n   load0 = ptrba[4*0+0]; load1 = ptrbb[4*0+0];\n   res0 = res0+load0*load1; ...\n  }\n }",
+            "explanation": "该代码段展示了以2x2复数块为核心的分块微内核结构：外层j/i循环划分输出空间，内部k循环执行批量乘加，所有中间结果保存在局部变量（映射至寄存器）中，最后统一写回内存。"
+          },
+          "related_patterns": [
+            "core.tiled_loop",
+            "core.mm_microkernel"
+          ]
+        },
+        {
+          "optimization_name": "循环展开与融合",
+          "level": "algorithm",
+          "description": {
+            "strategy_rationale": "通过显式展开内层循环并合并多个迭代的操作，减少循环控制开销（如条件判断和跳转），同时暴露更多指令级并行性，有利于编译器优化和CPU流水线执行。",
+            "implementation_pattern": "在k循环中，每次迭代处理4组4元素（共16个数据），并将原本需要多次循环体执行的乘加操作全部展开为连续赋值语句。无循环体内函数调用或复杂跳转。",
+            "performance_impact": "减少了循环计数器更新和条件分支次数，提高了基本块长度，增强了乱序执行效率和缓存预取效果。",
+            "trade_offs": "代码体积显著增大，可能导致指令缓存压力上升；调试困难，可读性下降；对于小规模问题可能因填充不足而浪费计算资源。"
+          },
+          "applicability_conditions": "适用于内层循环迭代次数较多且具有规则数据访问模式的场景；要求被展开的运算是独立且无副作用的纯算术操作。",
+          "tunable_parameters": [
+            {
+              "parameter_name": "unroll_factor",
+              "description": "循环展开因子，即每次迭代处理的数据组数",
+              "value_in_code": 4,
+              "typical_range": [
+                1,
+                2,
+                4,
+                8
+              ],
+              "impact": "更高的展开度可进一步减少控制开销，但也加剧代码膨胀和寄存器竞争。"
+            }
+          ],
+          "target_hardware_feature_name": "指令流水线",
+          "target_hardware_feature": "现代CPU的深度指令流水线和分支预测机制对短而密集的代码块更为友好，循环展开能有效降低分支误判惩罚并提升IPC（每周期指令数）。",
+          "code_example": {
+            "snippet": "for (k=0; k<temp/4; k+=1)\n{\n load0 = ptrba[4*0+0]; load1 = ptrbb[4*0+0];\n res0 = res0+load0*load1;\n load2 = ptrba[4*0+1];\n res1 = res1+load2*load1;\n load3 = ptrbb[4*0+1];\n res0 = res0-load2*load3;\n res1 = res1+load0*load3;\n // 后续多组类似操作...\n ptrba = ptrba+16;\n ptrbb = ptrbb+16;\n}",
+            "explanation": "此循环每次处理4个4元素向量块（共16个浮点数），将原本需4次循环完成的工作压缩为一次展开执行，极大减少了循环控制指令的比例。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel"
+          ]
+        },
+        {
+          "optimization_name": "部分累积与延迟归约",
+          "level": "algorithm",
+          "description": {
+            "strategy_rationale": "采用多个独立累加器（res0-res7）分别维护不同位置的部分结果，避免单个累加器造成的串行依赖链，从而打破数据依赖瓶颈，提升浮点单元利用率。",
+            "implementation_pattern": "使用8个独立浮点变量（res0~res7）对应2x2复数块的实部与虚部，每个累加器独立接收来自不同A/B数据对的贡献，直到整个k循环结束后才进行最终组合与写回。",
+            "performance_impact": "打破了FP ADD指令的长延迟依赖链，允许CPU乱序执行引擎并行处理多个乘加操作，显著提升FLOPS。",
+            "trade_offs": "消耗更多寄存器资源，可能引发溢出至栈的风险；增加了初始化和写回阶段的开销。"
+          },
+          "applicability_conditions": "适用于复数矩阵乘法中存在多路独立累加路径的场景；要求目标平台具备足够的通用浮点寄存器（≥8个）以容纳所有中间状态。",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "浮点执行单元",
+          "target_hardware_feature": "现代处理器中多个并行浮点执行单元（如FMAC管道）能够同时处理多个独立的乘加操作，前提是操作数之间没有跨通道依赖。",
+          "code_example": {
+            "snippet": "res0 = 0; res1 = 0; res2 = 0; res3 = 0;\nres4 = 0; res5 = 0; res6 = 0; res7 = 0;\nfor (k=0; k<temp/4; k+=1)\n{\n // 使用res0-res7分别累加不同位置的结果\n res0 = res0+load0*load1; // (0,0) 实部\n res1 = res1+load2*load1; // (0,0) 虚部\n ...\n res6 = res6+load12*load14; // (1,1) 实部\n res7 = res7+load13*load14; // (1,1) 虚部\n}",
+            "explanation": "通过声明8个独立累加器变量，实现了对2x2复数结果块中每个元素实部与虚部的分离式累积，完全消除累加过程中的写后读（RAW）依赖。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel"
+          ]
+        },
+        {
+          "optimization_name": "边界条件融合处理",
+          "level": "algorithm",
+          "description": {
+            "strategy_rationale": "将矩阵维度不整除块大小时的剩余部分（remainder）处理逻辑整合进主循环框架，通过位运算（&1）和条件偏移统一建模，避免单独编写冗余的尾部处理代码。",
+            "implementation_pattern": "使用(bm & 1)和(bn & 1)检测奇偶性，在主循环之后添加专门处理单行/单列的辅助循环，共享大部分指针更新逻辑，并通过调整步长适配不同粒度的数据访问。",
+            "performance_impact": "减少了代码重复，提升了缓存命中率（指令局部性）；避免了动态分支跳转带来的预测失败开销。",
+            "trade_offs": "增加了控制流复杂性；需仔细验证边界条件下指针越界风险；对非常规布局适应性较差。"
+          },
+          "applicability_conditions": "适用于分块算法中矩阵维度不能保证严格整除块大小的情况；要求数据布局规则且访问跨度可计算。",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "分支预测器",
+          "target_hardware_feature": "通过将尾部处理逻辑显式展开而非动态调用，降低了不可预测分支的发生概率，使CPU分支预测器更易学习稳定模式。",
+          "code_example": {
+            "snippet": "for (j=0; j<(bn&1); j+=1)\n{\n C0 = C;\n off = offset;\n ptrba = ba;\n for (i=0; i<bm/2; i+=1)\n {\n  // 处理 bn 为奇数时的最后一列\n  ...\n }\n for (i=0; i<(bm&1); i+=1)\n {\n  // 处理 bm 和 bn 均为奇数时的右下角元素\n  ...\n }",
+            "explanation": "该结构明确分离了主块与边缘块的处理流程，利用位与操作快速判断是否需要执行尾部循环，实现高效且安全的边界覆盖。"
+          },
+          "related_patterns": [
+            "core.tiled_loop"
+          ]
+        }
+      ],
+      "code_level_optimizations": [
+        {
+          "optimization_name": "循环展开",
+          "level": "code",
+          "description": {
+            "strategy_rationale": "通过将循环体复制多次并减少循环迭代次数，降低循环控制开销（如条件判断、跳转指令），同时暴露更多的指令级并行性，使CPU流水线更高效。",
+            "implementation_pattern": "内层k循环被显式展开为每次处理4个向量块（共16个数据元素），每个块包含完整的复数乘加操作序列，替代了原本需要四次独立迭代的结构。",
+            "performance_impact": "显著减少分支预测失败和循环计数器更新的CPU周期消耗，提高指令吞吐率，尤其在密集计算场景下提升浮点运算效率。",
+            "trade_offs": "增加代码体积（指令缓存压力），可能影响I-cache命中率；同时降低代码可读性和维护性，且对小规模问题可能导致过度展开的性能损失。"
+          },
+          "applicability_conditions": "循环的迭代次数较大且可被展开因子整除，循环体内无复杂控制流（如break、continue或函数调用），适合于计算密集型核心循环。",
+          "tunable_parameters": [
+            {
+              "parameter_name": "展开因子",
+              "value_in_code": 4,
+              "description": "每次循环迭代中处理的数据块数量",
+              "typical_range": [
+                2,
+                3,
+                4,
+                8
+              ],
+              "impact": "较大的值可进一步减少控制开销，但会增加寄存器压力和代码大小；需权衡与目标架构的寄存器数量和缓存容量匹配。"
+            }
+          ],
+          "target_hardware_feature_name": "指令流水线",
+          "target_hardware_feature": "CPU的指令流水线机制和分支预测单元，通过减少跳转频率来避免流水线停顿。",
+          "code_example": {
+            "snippet": "for (k=0; k<temp/4; k+=1)\n   {\n    load0 = ptrba[4*0+0];\n    load1 = ptrbb[4*0+0];\n    res0 = res0+load0*load1;\n    load2 = ptrba[4*0+1];\n    res1 = res1+load2*load1;\n    load3 = ptrbb[4*0+1];\n    res0 = res0-load2*load3;\n    res1 = res1+load0*load3;\n    // ... 后续三组类似操作\n    ptrba = ptrba+16;\n    ptrbb = ptrbb+16;\n   }",
+            "explanation": "该代码段将原本应循环4次的操作合并为一次迭代执行，显式写出所有中间计算步骤，实现4倍循环展开，直接减少循环控制指令执行次数。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel",
+            "core.tiled_loop"
+          ]
+        },
+        {
+          "optimization_name": "指针算术优化",
+          "level": "code",
+          "description": {
+            "strategy_rationale": "使用指针偏移代替数组索引计算可以消除地址计算中的乘法操作，利用硬件的地址生成单元（AGU）进行快速寻址，减少内存访问延迟。",
+            "implementation_pattern": "通过ptrba和ptrbb指针的递增（如ptrba += 4或16）直接定位下一组数据，避免重复计算基址+偏移量的表达式。",
+            "performance_impact": "减少地址计算所需的ALU操作，加快数据加载速度，提升内存带宽利用率，特别是在嵌套循环中效果显著。",
+            "trade_offs": "牺牲了一定的代码可读性；若指针管理不当容易引发越界访问或逻辑错误，调试难度增加。"
+          },
+          "applicability_conditions": "遍历连续内存区域时，且编译器无法完全优化掉数组索引的地址计算开销，适用于高性能数值计算内核。",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "地址生成单元",
+          "target_hardware_feature": "现代CPU中的地址生成单元（AGU），能够高效执行指针递增和间接寻址操作。",
+          "code_example": {
+            "snippet": "ptrba = ptrba+16;\nptrbb = ptrbb+16;",
+            "explanation": "在每次主循环迭代后，直接将指针前进16个float单位，对应4个复数向量块的数据量，避免重新计算ptrba + k*16等形式的索引表达式。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel",
+            "prep.index_pointer_init"
+          ]
+        },
+        {
+          "optimization_name": "分治式边界处理",
+          "level": "code",
+          "description": {
+            "strategy_rationale": "利用位运算（&1）检测奇偶性，将剩余元素的处理分离到专用的小循环中，避免在主循环中插入条件分支，保持主路径无分支干扰。",
+            "implementation_pattern": "使用(bm & 1)和(bn & 1)判断维度是否为奇数，并单独编写处理单行或单列的尾部循环，确保主循环始终处理完整块。",
+            "performance_impact": "消除主循环内的条件判断开销，提高分支预测准确率，保证热点代码路径的纯净性，有利于流水线稳定运行。",
+            "trade_offs": "增加了代码冗余度，需维护两套相似逻辑；但对于非常规尺寸矩阵仍能保持高性能。"
+          },
+          "applicability_conditions": "矩阵维度不一定是块大小的整数倍，需要处理剩余部分；且剩余部分较小（如0或1行/列）。",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "分支预测器",
+          "target_hardware_feature": "CPU的分支预测器，通过减少不可预测的条件跳转来维持指令流水线的高效率。",
+          "code_example": {
+            "snippet": "for (j=0; j<(bn&1); j+=1)\n {\n  C0 = C;\n  off = offset;\n  ptrba = ba;\n  for (i=0; i<bm/2; i+=1)\n  {\n   // 处理最后一列的2x1块\n  }\n  for (i=0; i<(bm&1); i+=1)\n  {\n   // 处理角落的1x1块\n  }\n }",
+            "explanation": "当bn为奇数时才执行此循环，专门处理最后一列未被主循环覆盖的数据，避免在主循环中加入if判断是否到达边界。"
+          },
+          "related_patterns": [
+            "core.tiled_loop",
+            "prep.index_pointer_init"
+          ]
+        },
+        {
+          "optimization_name": "累加器变量局部化",
+          "level": "code",
+          "description": {
+            "strategy_rationale": "将多个累加器（res0-res7）声明为局部自动变量，促使编译器将其分配至CPU寄存器，从而最小化内存访问延迟并打破累加依赖链。",
+            "implementation_pattern": "在内层循环前显式初始化八个独立的float类型累加器变量，每个负责一个输出位置的部分和累积。",
+            "performance_impact": "充分利用寄存器资源进行高速暂存，避免频繁读写内存造成的延迟；多累加器设计支持并行执行多个FMA类操作。",
+            "trade_offs": "增加寄存器压力，可能导致寄存器溢出（spill）到栈上，反而降低性能；需根据目标架构的寄存器数量合理设计累加器数量。"
+          },
+          "applicability_conditions": "目标处理器具有足够多的浮点寄存器可供使用，且编译器能有效进行寄存器分配；适用于长期存在的中间结果累积场景。",
+          "tunable_parameters": [
+            {
+              "parameter_name": "累加器数量",
+              "value_in_code": 8,
+              "description": "用于并行维护部分结果的独立变量数量",
+              "typical_range": [
+                4,
+                6,
+                8
+              ],
+              "impact": "更多累加器可进一步打破依赖链，但受限于可用寄存器总数；过多会导致寄存器溢出，适得其反。"
+            }
+          ],
+          "target_hardware_feature_name": "寄存器",
+          "target_hardware_feature": "通用寄存器文件和浮点/SIMD寄存器，提供低延迟存储空间以支持高频次中间值暂存。",
+          "code_example": {
+            "snippet": "float res0,res1,res2,res3,res4,res5,res6,res7;\n...\nres0 = 0;\nres1 = 0;\nres2 = 0;\nres3 = 0;\nres4 = 0;\nres5 = 0;\nres6 = 0;\nres7 = 0;",
+            "explanation": "这些变量在整个微内核计算过程中持续保存中间结果，直到最终缩放写回阶段才被使用，全程驻留在寄存器中以加速访问。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel",
+            "post.scale_accumulation"
+          ]
+        }
+      ],
+      "instruction_level_optimizations": [
+        {
+          "optimization_name": "复数乘加操作的显式向量化展开",
+          "level": "instruction",
+          "description": {
+            "strategy_rationale": "现代处理器支持 SIMD 指令集（如 SSE/AVX），可在单条指令中并行处理多个数据元素。复数乘法涉及实部与虚部的交叉运算（(a+bi)(c+di) = ac-bd + (ad+bc)i），若能将多个复数对打包处理，可显著提升吞吐率。该策略通过手动展开多个复数乘加操作，模拟 SIMD 行为，使编译器或硬件能更好地调度指令流水线。",
+            "implementation_pattern": "在内层循环中，连续执行 4 组独立的复数乘加操作（每组对应 A 和 B 矩阵的一个 2x2 块），使用 16 个临时变量（load0–load15）加载数据，并更新 8 个累加器（res0–res7）。这种完全展开的结构暴露了大量独立算术运算，便于 CPU 超标量执行单元并行处理。",
+            "performance_impact": "最大化浮点运算吞吐率，减少每个复数乘法的周期数（Cycles Per Element）。通过消除循环开销和增加指令级并行性（ILP），有效利用多个 ALU 执行端口，接近理论峰值性能。",
+            "trade_offs": "显著增加代码体积和寄存器压力；若寄存器不足，可能导致溢出至栈内存，反而降低性能；对小规模问题不适用，因初始化与清理开销占比过高。"
+          },
+          "applicability_conditions": "数据无依赖冲突，复数乘法可独立计算，目标架构具有多发射能力且浮点单元充足",
+          "tunable_parameters": [
+            {
+              "parameter_name": "unroll_factor",
+              "value_in_code": 4,
+              "description": "每次循环迭代处理的复数块数量",
+              "typical_range": [
+                1,
+                2,
+                4,
+                8
+              ],
+              "impact": "增大可提升 ILP 但增加寄存器压力；需根据目标 CPU 寄存器数量调整"
+            }
+          ],
+          "target_hardware_feature_name": "超标量执行",
+          "target_hardware_feature": "Superscalar execution units capable of issuing multiple arithmetic instructions per cycle, such as Intel's multiple ALUs in Haswell and later microarchitectures",
+          "code_example": {
+            "snippet": "for (k=0; k<temp/4; k+=1)\n{\n    load0 = ptrba[4*0+0];\n    load1 = ptrbb[4*0+0];\n    res0 = res0+load0*load1;\n    load2 = ptrba[4*0+1];\n    res1 = res1+load2*load1;\n    load3 = ptrbb[4*0+1];\n    res0 = res0-load2*load3;\n    res1 = res1+load0*load3;\n    // ... 共4组类似操作\n    ptrba = ptrba+16;\n    ptrbb = ptrbb+16;\n}",
+            "explanation": "该循环体一次性处理4个复数乘加块（共16次乘法和12次加法），形成高度展开的算术表达式流，明确指示编译器无需保留循环结构，转而生成密集的独立算术指令序列，供CPU并行执行。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel"
+          ]
+        },
+        {
+          "optimization_name": "寄存器级部分累积与依赖链断裂",
+          "level": "instruction",
+          "description": {
+            "strategy_rationale": "浮点加法存在长延迟（通常3-4周期），若所有结果累加至单一寄存器，会形成串行依赖链，严重限制指令级并行。通过使用多个独立累加器（res0–res7），将不同位置的结果分别累积，可打破依赖链，允许多条乘加指令重叠执行。",
+            "implementation_pattern": "声明8个独立的局部浮点变量（res0–res7）作为累加器，分别对应输出矩阵2x2块中每个复数元素的实部与虚部。在微内核循环中，根据数据来源选择对应的累加器进行更新。",
+            "performance_impact": "显著减少关键路径延迟，提高浮点单元利用率。通过将长依赖链拆分为多个短链，使乱序执行引擎能更高效地填充空闲周期，提升整体吞吐率。",
+            "trade_offs": "消耗更多寄存器资源，可能引发寄存器溢出；需要额外的最终归约步骤（此处被缩放合并）；增加代码复杂度。"
+          },
+          "applicability_conditions": "累加操作可分解为独立子任务，目标架构支持足够数量的浮点寄存器（如x86-64提供16个XMM寄存器）",
+          "tunable_parameters": [
+            {
+              "parameter_name": "accumulator_count",
+              "value_in_code": 8,
+              "description": "用于并行累积的寄存器变量数量",
+              "typical_range": [
+                2,
+                4,
+                8
+              ],
+              "impact": "更多累加器可进一步缩短依赖链，但受限于物理寄存器数量"
+            }
+          ],
+          "target_hardware_feature_name": "乱序执行引擎",
+          "target_hardware_feature": "Out-of-order execution engine with reservation stations and register renaming, allowing independent instructions to execute as operands become ready",
+          "code_example": {
+            "snippet": "float res0,res1,res2,res3,res4,res5,res6,res7;\n// ...\nres0 = 0; res1 = 0; res2 = 0; res3 = 0;\nres4 = 0; res5 = 0; res6 = 0; res7 = 0;\nfor (k=0; k<temp/4; k+=1)\n{\n    // 使用res0-res7分别累积不同位置的结果\n    res0 = res0 + load0*load1 - load2*load3;\n    res1 = res1 + load2*load1 + load0*load3;\n    // ...\n}",
+            "explanation": "8个res变量被初始化为0并在循环中独立更新，每个变量只与其自身的前值有依赖关系，不同变量间无数据依赖，从而允许CPU并行执行多个res[x] = res[x] + ...指令。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel",
+            "post.scale_accumulation"
+          ]
+        },
+        {
+          "optimization_name": "跨步内存访问的向量友好布局适配",
+          "level": "instruction",
+          "description": {
+            "strategy_rationale": "SIMD 加载指令要求数据在内存中连续对齐。虽然此代码未使用显式 SIMD 指令，但其内存访问模式（连续加载4个float）符合SSE/AVX的自然粒度（4或8 float）。通过按连续块访问，即使使用标量指令，也能触发预取器并减少缓存行分裂。",
+            "implementation_pattern": "使用固定偏移（如ptrba[4*0+0], ptrba[4*0+1]...）连续加载相邻浮点数，随后指针整体前移16字节（4个复数），保持访问模式的规律性和局部性。",
+            "performance_impact": "提高L1缓存命中率，减少内存访问延迟；有利于硬件预取器预测访问模式；为未来引入SIMD内联汇编打下基础。",
+            "trade_offs": "要求输入数据按特定方式布局（如A和B矩阵需以2x2复数块连续存储）；若数据未对齐或跨页，仍可能产生性能下降。"
+          },
+          "applicability_conditions": "输入数据在内存中以连续方式存储，复数按实部虚部交错排列，且起始地址对齐到16字节边界",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "SIMD内存加载",
+          "target_hardware_feature": "SIMD memory load units that fetch multiple data elements in a single instruction (e.g., MOVAPS for aligned SSE loads), requiring contiguous and aligned data layout",
+          "code_example": {
+            "snippet": "load0 = ptrba[4*0+0];\nload1 = ptrbb[4*0+0];\nload2 = ptrba[4*0+1];\nload3 = ptrbb[4*0+1];\n// ... 连续加载\nptrba = ptrba+16;\nptrbb = ptrbb+16;",
+            "explanation": "连续访问ptrba和ptrbb的前4个元素（16字节），然后指针整体前进16字节，形成规则的向量级访问步长，与SSE寄存器宽度匹配，即使当前使用标量指令，也为后续向量化提供了理想的数据访问模式。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel"
+          ]
+        },
+        {
+          "optimization_name": "标量复数乘法的FMA模式模拟",
+          "level": "instruction",
+          "description": {
+            "strategy_rationale": "现代CPU支持Fused Multiply-Add（FMA）指令，可在单周期内完成a*b+c，减少舍入误差并提升性能。虽然此处使用普通乘法和加法，但代码结构明确表达了FMA语义（res = res + a*b），使编译器能将其优化为真正的FMA指令。",
+            "implementation_pattern": "所有累加操作均采用resX = resX + loadA * loadB的形式，严格遵循乘加模式。即使没有FMA硬件，这种写法也比分开的乘法和加法更易被优化。",
+            "performance_impact": "在支持FMA的平台上，编译器可自动生成FMA指令，减少指令数量和延迟，提升计算密度。即使不支持，清晰的乘加结构也有助于更好的调度。",
+            "trade_offs": "在不支持FMA的旧架构上无额外收益；若编译器未能识别，仍生成分离的MUL和ADD指令，则占用更多指令槽位。"
+          },
+          "applicability_conditions": "编译器支持FMA指令融合，目标CPU具备FMA执行单元（如Intel Haswell+，AMD Bulldozer+）",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "FMA单元",
+          "target_hardware_feature": "Fused Multiply-Add (FMA) execution units that perform multiplication and addition in a single instruction with one rounding step, improving both performance and numerical accuracy",
+          "code_example": {
+            "snippet": "res0 = res0 + load0 * load1;\nres0 = res0 - load2 * load3;\n// 等价于：res0 += load0*load1 - load2*load3",
+            "explanation": "每一行都是典型的乘加或乘减形式，编译器可识别此模式并生成两条FMA指令（如vfmaddps和vfmsubps）来完成整个表达式，而非四条独立指令。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel"
+          ]
+        }
+      ],
+      "implementation_details": "该函数实现了复数三角矩阵乘法（TRMM）的微内核，针对2x2输出块进行高度优化。核心是完全展开的内层循环，处理4个A-B数据块（共16个复数元素），使用8个局部变量作为寄存器级累加器。通过指针算术（ptrba += 16）实现向量级步进，内存访问模式适配SIMD粒度。复数乘法通过显式展开的实部虚部分解实现，并在最后阶段与alpha标量相乘写回。边界处理通过主循环后追加小循环完成，保持主路径简洁。",
+      "performance_insights": "该实现通过最大化指令级并行（ILP）和寄存器利用率，在支持超标量和FMA的现代CPU上可达到较高性能。预期在Haswell及以上架构上接近内存带宽或FPU峰值的60-80%。主要瓶颈在于内存带宽和寄存器溢出风险；若累加器过多导致spill，性能将急剧下降。未来可通过引入SIMD内联汇编（如AVX）进一步提升吞吐率，将多个res变量打包至XMM/YMM寄存器中并行处理。"
+    },
+    {
+      "algorithm": "trmm",
+      "file_path": "ctrmm_kernel_RC.clean.c",
+      "architecture": "通用",
+      "computational_patterns": [
+        {
+          "pattern_type": "prep.index_pointer_init",
+          "name": "索引与指针初始化",
+          "description": "初始化循环变量 j 和 off，j 用于外层列循环，off 初始化为 -offset 用于后续地址偏移计算。",
+          "code": "off = -offset;\nfor (j=0; j<bn/2; j+=1)\n{",
+          "data_object_features": {
+            "numeric_kind": "N/A",
+            "numeric_precision": "N/A",
+            "structural_properties": "N/A",
+            "storage_layout": "N/A"
+          }
+        },
+        {
+          "pattern_type": "prep.loop_invariant_calc",
+          "name": "循环不变量计算",
+          "description": "在循环外计算了每次迭代中复用的指针增量 k = (bk<<2) 和 i = (ldc<<2)，分别用于 bb 和 C 的地址更新。",
+          "code": "k = (bk<<2);\nbb = bb+k;\ni = (ldc<<2);\nC = C+i;",
+          "data_object_features": {
+            "numeric_kind": "实数",
+            "numeric_precision": "N/A",
+            "structural_properties": "N/A",
+            "storage_layout": "跨步"
+          }
+        },
+        {
+          "pattern_type": "prep.loop_invariant_calc",
+          "name": "循环不变量计算",
+          "description": "在第二个主循环外计算了 k = (bk<<1)，用于指针 bb 的步进更新。",
+          "code": "k = (bk<<1);\nbb = bb+k;",
+          "data_object_features": {
+            "numeric_kind": "实数",
+            "numeric_precision": "N/A",
+            "structural_properties": "N/A",
+            "storage_layout": "跨步"
+          }
+        },
+        {
+          "pattern_type": "core.mm_microkernel",
+          "name": "矩阵乘法微内核",
+          "description": "实现了一个2x2复数矩阵乘法的微内核，通过展开的FMA-like操作累加计算结果。内层循环每次处理4个元素，使用多个load变量加载数据，并进行实部和虚部的交叉乘加运算，符合寄存器级优化特征。",
+          "code": "    load0 = ptrba[4*0+0];\n    load1 = ptrbb[4*0+0];\n    res0 = res0+load0*load1;\n    load2 = ptrba[4*0+1];\n    res1 = res1+load2*load1;\n    load3 = ptrbb[4*0+1];\n    res0 = res0+load2*load3;\n    res1 = res1-load0*load3;\n    load4 = ptrba[4*0+2];\n    res2 = res2+load4*load1;\n    load5 = ptrba[4*0+3];\n    res3 = res3+load5*load1;\n    res2 = res2+load5*load3;\n    res3 = res3-load4*load3;\n    load6 = ptrbb[4*0+2];\n    res4 = res4+load0*load6;\n    res5 = res5+load2*load6;\n    load7 = ptrbb[4*0+3];\n    res4 = res4+load2*load7;\n    res5 = res5-load0*load7;\n    res6 = res6+load4*load6;\n    res7 = res7+load5*load6;\n    res6 = res6+load5*load7;\n    res7 = res7-load4*load7;",
+          "data_object_features": {
+            "numeric_kind": "复数",
+            "numeric_precision": "单精度",
+            "structural_properties": "通用",
+            "storage_layout": "连续"
+          }
+        },
+        {
+          "pattern_type": "core.tiled_loop",
+          "name": "分块矩阵处理循环",
+          "description": "外层循环按2x2块遍历输出矩阵C，驱动微内核执行。循环结构包含对bn和bm的分块处理（j < bn/2, i < bm/2），并处理剩余行和列（bn&1, bm&1），形成典型的分块计算框架。",
+          "code": "for (j=0; j<bn/2; j+=1)\n {\n  C0 = C;\n  C1 = C0+2*ldc;\n  ptrba = ba;\n  for (i=0; i<bm/2; i+=1)\n  {\n   ptrba += off*2*2;\n   ptrbb = bb+off*2*2;\n   res0 = 0;\n   res1 = 0;\n   res2 = 0;\n   res3 = 0;\n   res4 = 0;\n   res5 = 0;\n   res6 = 0;\n   res7 = 0;\n   temp = bk - off;\n   for (k=0; k<temp/4; k+=1)",
+          "data_object_features": {
+            "numeric_kind": "复数",
+            "numeric_precision": "单精度",
+            "structural_properties": "通用",
+            "storage_layout": "跨步"
+          }
+        },
+        {
+          "pattern_type": "post.scale_accumulation",
+          "name": "结果缩放与累加",
+          "description": "将累加结果 res0-res7 与复数 alpha 系数 (alphar, alphai) 进行复数乘法运算，实现 C = alpha * Temp 的写回过程。无 beta 分支，直接覆盖写回目标内存。",
+          "code": "   load0 = res0*alphar-res1*alphai;\n   load1 = res1*alphar+res0*alphai;\n   C0[0] = load0;\n   C0[1] = load1;\n   load2 = res2*alphar-res3*alphai;\n   load3 = res3*alphar+res2*alphai;\n   C0[2] = load2;\n   C0[3] = load3;\n   load4 = res4*alphar-res5*alphai;\n   load5 = res5*alphar+res4*alphai;\n   C1[0] = load4;\n   C1[1] = load5;\n   load6 = res6*alphar-res7*alphai;\n   load7 = res7*alphar+res6*alphai;\n   C1[2] = load6;\n   C1[3] = load7;",
+          "data_object_features": {
+            "numeric_kind": "复数",
+            "numeric_precision": "单精度",
+            "structural_properties": "通用",
+            "storage_layout": "跨步"
+          }
+        }
+      ],
+      "algorithm_level_optimizations": [
+        {
+          "optimization_name": "分块矩阵计算",
+          "level": "algorithm",
+          "description": {
+            "strategy_rationale": "通过将大矩阵划分为固定大小的子块（如2x2），提高数据局部性，减少对主存的频繁访问，适配CPU缓存层级结构，降低内存带宽压力。",
+            "implementation_pattern": "外层循环按2x2块遍历输出矩阵C，每个块由内层微内核独立计算；使用指针偏移C0、C1定位当前块，并在循环中步进4个元素（实部+虚部）。",
+            "performance_impact": "显著提升缓存命中率，减少跨行访问开销，尤其在大矩阵场景下可大幅降低内存延迟影响。",
+            "trade_offs": "增加了地址计算复杂度和边界处理逻辑（如剩余行列处理），可能引入额外分支判断开销。"
+          },
+          "applicability_conditions": "输出矩阵维度bm和bn至少大于等于2，且矩阵存储布局支持跨步访问（ldc定义列间距）。",
+          "tunable_parameters": [
+            {
+              "parameter_name": "block_size_m",
+              "description": "行方向上的分块大小",
+              "value_in_code": 2,
+              "typical_range": [
+                1,
+                2,
+                4
+              ],
+              "impact": "增大可提升数据复用，但超出寄存器容量会导致溢出到栈；过小则无法充分利用并行性。"
+            },
+            {
+              "parameter_name": "block_size_n",
+              "description": "列方向上的分块大小",
+              "value_in_code": 2,
+              "typical_range": [
+                1,
+                2,
+                4
+              ],
+              "impact": "与block_size_m协同决定缓存占用和并行粒度，需匹配L1缓存大小。"
+            }
+          ],
+          "target_hardware_feature_name": "Cache",
+          "target_hardware_feature": "CPU多级缓存架构中的L1/L2缓存，利用空间局部性和时间局部性原理减少内存访问延迟。",
+          "code_example": {
+            "snippet": "for (j=0; j<bn/2; j+=1)\n{\n C0 = C;\n C1 = C0+2*ldc;\n ptrba = ba;\n for (i=0; i<bm/2; i+=1)\n {\n  ptrba += off*2*2;\n  ptrbb = bb+off*2*2;\n  res0 = 0; res1 = 0; ...\n  // 微内核计算\n }",
+            "explanation": "外层双循环以2x2为单位划分输出矩阵C，每次迭代处理一个子块，符合分块算法设计模式，旨在最大化缓存利用率。"
+          },
+          "related_patterns": [
+            "core.tiled_loop",
+            "core.mm_microkernel"
+          ]
+        },
+        {
+          "optimization_name": "微内核展开与融合",
+          "level": "algorithm",
+          "description": {
+            "strategy_rationale": "将多个基本运算（复数乘加）在寄存器级别展开并融合，减少循环控制开销，增加指令级并行性（ILP），便于编译器调度。",
+            "implementation_pattern": "在一个内层循环体内手动展开4次复数乘加操作，每次处理4个输入元素，共执行16次load和32次FMA类操作，完全展开无循环变量。",
+            "performance_impact": "消除循环跳转开销，提高流水线效率，使CPU能更充分地利用多个执行单元，提升吞吐率。",
+            "trade_offs": "代码体积显著增大，维护难度上升，且对寄存器需求高，可能导致寄存器溢出至栈内存。"
+          },
+          "applicability_conditions": "输入向量长度bk足够大（≥4），使得展开收益大于初始化与残差处理开销；处理器具备足够浮点寄存器资源。",
+          "tunable_parameters": [
+            {
+              "parameter_name": "unroll_factor",
+              "description": "内层循环展开因子",
+              "value_in_code": 4,
+              "typical_range": [
+                2,
+                4,
+                8
+              ],
+              "impact": "越大则ILP越高，但受限于寄存器数量和代码膨胀成本。"
+            }
+          ],
+          "target_hardware_feature_name": "寄存器文件",
+          "target_hardware_feature": "现代CPU拥有多个浮点寄存器，允许同时保存多个中间结果，支持高并发算术运算而不必频繁访存。",
+          "code_example": {
+            "snippet": "for (k=0; k<temp/4; k+=1)\n{\n load0 = ptrba[4*0+0];\n load1 = ptrbb[4*0+0];\n res0 = res0+load0*load1;\n ...\n ptrba = ptrba+16;\n ptrbb = ptrbb+16;\n}",
+            "explanation": "循环体中一次性处理4组复数乘加，每组包含实部虚部交叉运算，通过完全展开避免循环条件判断，提升执行效率。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel"
+          ]
+        },
+        {
+          "optimization_name": "残差处理分离",
+          "level": "algorithm",
+          "description": {
+            "strategy_rationale": "将主循环无法整除的部分（remainder）单独处理，避免在主路径中插入条件判断，保持热点代码路径简洁高效。",
+            "implementation_pattern": "主循环按4元素步长处理（k < temp/4），结束后用独立小循环处理余下0~3个元素（k < (temp&3)），确保所有数据被覆盖。",
+            "performance_impact": "主循环无需分支预测或条件跳转，提升流水线稳定性；残差部分虽低效但执行频率低，总体性能损失最小化。",
+            "trade_offs": "增加代码重复和维护负担，若残差比例高则优化效果下降。"
+          },
+          "applicability_conditions": "输入长度bk不保证总是展开因子的整数倍，且残差部分占比通常较小。",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "分支预测器",
+          "target_hardware_feature": "现代CPU依赖准确的分支预测来维持流水线效率，避免因条件跳转导致的停顿。",
+          "code_example": {
+            "snippet": "for (k=0; k<temp/4; k+=1) { ... }\nfor (k=0; k<(temp&3); k+=1)\n{\n load0 = ptrba[4*0+0];\n load1 = ptrbb[4*0+0];\n res0 = res0+load0*load1;\n ...\n ptrba = ptrba+4;\n ptrbb = ptrbb+4;\n}",
+            "explanation": "主循环处理批量数据后，剩余不足4个元素的部分由第二个循环专门处理，避免主路径中出现if判断，保障性能稳定。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel"
+          ]
+        },
+        {
+          "optimization_name": "复数运算代数优化",
+          "level": "algorithm",
+          "description": {
+            "strategy_rationale": "利用复数乘法规则 (a+bi)(c+di) = (ac−bd) + (ad+bc)i，在累加阶段分别维护实部和虚部，避免调用标准库函数，减少函数调用开销。",
+            "implementation_pattern": "使用res0-res7分别存储2x2复数块的实部和虚部累加值，每轮加载两个复数并拆解为实虚部分别参与乘加运算。",
+            "performance_impact": "避免动态函数调用，直接在寄存器中完成复数运算，极大提升计算密度和速度。",
+            "trade_offs": "需要手动管理实部虚部对应关系，编程复杂度高，易出错。"
+          },
+          "applicability_conditions": "输入数据为交错存储的复数数组（实部、虚部连续排列），且运算是标准复数乘法。",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "ALU",
+          "target_hardware_feature": "算术逻辑单元支持高速浮点乘加运算，通过软件层面组织操作序列以最大化ALU利用率。",
+          "code_example": {
+            "snippet": "load0 = ptrba[4*0+0]; // real(a)\nload1 = ptrbb[4*0+0]; // real(b)\nres0 = res0+load0*load1;        // real += ar*br\nload3 = ptrbb[4*0+1];           // imag(b)\nres0 = res0+load2*load3;        // real += ai*bi\nres1 = res1-load0*load3;        // imag -= ar*bi",
+            "explanation": "手动实现复数乘法的代数分解，将一次复数乘法拆为四次实数运算，并分别累加到实部和虚部寄存器中。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel",
+            "post.scale_accumulation"
+          ]
+        },
+        {
+          "optimization_name": "指针预偏移与增量更新",
+          "level": "algorithm",
+          "description": {
+            "strategy_rationale": "通过预先计算地址偏移量并在循环中使用固定增量更新指针，减少每次迭代中的复杂地址计算，提升访存效率。",
+            "implementation_pattern": "使用off变量记录当前偏移，ptrba和ptrbb在每次外层迭代中加上off*2*2或off*2等预计算偏移；内层则使用恒定步长（+16或+4）移动指针。",
+            "performance_impact": "避免在循环体内重复计算基址+索引×size的表达式，减少整数运算开销，加快数据加载速度。",
+            "trade_offs": "需要额外变量跟踪偏移状态，增加寄存器压力；逻辑较难理解，调试困难。"
+          },
+          "applicability_conditions": "访问模式具有规律性跨步（如连续块或固定间隔），且偏移量可在循环外确定。",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "地址生成单元",
+          "target_hardware_feature": "CPU的地址生成单元（AGU）能够快速执行简单指针递增，但复杂表达式会增加延迟。",
+          "code_example": {
+            "snippet": "off = -offset;\n...\nptrba += off*2*2;\nptrbb = bb+off*2*2;",
+            "explanation": "利用off变量统一管理当前列对应的偏移量，避免在每个内层循环中重新计算起始地址，简化指针初始化过程。"
+          },
+          "related_patterns": [
+            "prep.index_pointer_init",
+            "core.tiled_loop"
+          ]
+        }
+      ],
+      "code_level_optimizations": [
+        {
+          "optimization_name": "循环展开",
+          "level": "code",
+          "description": {
+            "strategy_rationale": "通过将循环体复制多次，减少循环控制指令（如条件判断和跳转）的执行频率，从而降低分支预测失败开销并提高指令级并行性。现代CPU流水线在连续执行无分支代码时效率更高。",
+            "implementation_pattern": "内层k循环被显式展开为每次处理4个数据块（共16次乘加操作），每个块对应4个复数元素的加载与累加，避免了每次迭代中的地址计算和循环计数器更新。",
+            "performance_impact": "显著减少循环控制开销，提升CPU流水线利用率和缓存预取效率，增加每周期执行的有用指令数（IPC）。",
+            "trade_offs": "代码体积增大，可能影响指令缓存命中率；对小规模问题可能导致性能下降；可读性和维护性降低。"
+          },
+          "applicability_conditions": "循环迭代次数较大且可被展开因子整除，热点循环中无复杂控制流（如break、continue），目标架构具有较深的指令流水线。",
+          "tunable_parameters": [
+            {
+              "parameter_name": "展开因子",
+              "value_in_code": 4,
+              "description": "每次循环迭代处理的数据元素个数",
+              "typical_range": [
+                2,
+                4,
+                8
+              ],
+              "impact": "较大的值可进一步减少循环开销，但会增加寄存器压力和代码大小；需平衡与硬件资源限制。"
+            }
+          ],
+          "target_hardware_feature_name": "指令流水线",
+          "target_hardware_feature": "CPU指令流水线和分支预测器",
+          "code_example": {
+            "snippet": "for (k=0; k<temp/4; k+=1)\n{\n    load0 = ptrba[4*0+0];\n    load1 = ptrbb[4*0+0];\n    res0 = res0+load0*load1;\n    // ... 连续16组类似的load和fused multiply-add操作\n    ptrba = ptrba+16;\n    ptrbb = ptrbb+16;\n}",
+            "explanation": "该代码段通过手动展开循环，一次性处理4个复数向量元素（共16个浮点数），极大减少了循环跳转次数，使编译器能更好地进行指令调度和寄存器分配。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel"
+          ]
+        },
+        {
+          "optimization_name": "指针算术优化",
+          "level": "code",
+          "description": {
+            "strategy_rationale": "使用指针直接寻址替代基于索引的数组访问，避免每次访问时的乘法和加法地址计算，利用CPU的简单地址模式提升访存速度。",
+            "implementation_pattern": "使用ptrba和ptrbb指针变量，在循环中通过固定步长（如+16、+4）递增来遍历矩阵块，而非使用二维下标计算。",
+            "performance_impact": "减少地址计算所需的ALU操作，降低每条内存访问的延迟，提高访存吞吐率。",
+            "trade_offs": "牺牲了部分代码可读性；需要额外维护指针状态，增加出错风险；依赖数据布局连续性。"
+          },
+          "applicability_conditions": "数据在内存中是连续或规则跨步存储的，且循环访问模式具有固定的步长和方向。",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "内存子系统",
+          "target_hardware_feature": "内存子系统中的地址生成单元和加载/存储单元",
+          "code_example": {
+            "snippet": "ptrba = ba;\nfor (i=0; i<bm/2; i+=1)\n{\n    ptrba += off*2*2;\n    ptrbb = bb+off*2*2;\n    // ...\n    for (k=0; k<temp/4; k+=1)\n    {\n        load0 = ptrba[4*0+0];\n        // ...\n        ptrba = ptrba+16;\n        ptrbb = ptrbb+16;\n    }\n}",
+            "explanation": "通过预先偏移ptrba和ptrbb，并在主循环和内循环中以固定步长递增，避免了每次访问时复杂的基址+偏移计算，实现了高效的线性遍历。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel",
+            "core.tiled_loop"
+          ]
+        },
+        {
+          "optimization_name": "分支消除与残差分离",
+          "level": "code",
+          "description": {
+            "strategy_rationale": "将主循环路径设计为无分支的纯计算路径，把不能被展开因子整除的剩余部分单独处理，避免在热点循环中引入条件判断导致的分支预测失败。",
+            "implementation_pattern": "主k循环按4的倍数展开执行，随后使用一个独立的小循环处理余数部分（k < (temp&3)），确保主路径完全无分支。",
+            "performance_impact": "保持主循环路径简洁，提升CPU流水线效率和指令预取准确率，减少因分支误判带来的流水线清空代价。",
+            "trade_offs": "增加了代码重复度；对于极小的残差部分可能带来额外函数调用或跳转开销。"
+          },
+          "applicability_conditions": "循环总数N与展开因子M不总是整除，且残差部分较小（通常小于M），适合用短循环处理。",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "分支预测器",
+          "target_hardware_feature": "CPU分支预测器和流水线深度",
+          "code_example": {
+            "snippet": "for (k=0; k<temp/4; k+=1) { /* 展开的主循环 */ }\nfor (k=0; k<(temp&3); k+=1) {\n    load0 = ptrba[4*0+0];\n    load1 = ptrbb[4*0+0];\n    res0 = res0+load0*load1;\n    // ... 单次复数乘加逻辑\n    ptrba = ptrba+4;\n    ptrbb = ptrbb+4;\n}",
+            "explanation": "主循环处理4的倍数部分，残差循环仅处理0~3个剩余元素，两者分工明确，避免了在主循环中插入if判断是否越界。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel"
+          ]
+        },
+        {
+          "optimization_name": "寄存器累积变量重用",
+          "level": "code",
+          "description": {
+            "strategy_rationale": "在循环内部使用局部变量（如res0-res7）作为累加器，最大限度地利用CPU寄存器存储中间结果，减少对内存的频繁读写。",
+            "implementation_pattern": "声明多个float类型变量res0~res7用于暂存2x2复数块的累加结果，在整个内层循环结束后才写回内存。",
+            "performance_impact": "极大减少内存访问次数，避免缓存争用，充分利用寄存器文件带宽，提升计算密度。",
+            "trade_offs": "消耗较多寄存器资源，可能引发寄存器溢出导致性能下降；需目标架构支持足够数量的浮点寄存器。"
+          },
+          "applicability_conditions": "目标平台拥有充足的通用或浮点寄存器资源，且计算强度高（运算/访存比大）。",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "寄存器",
+          "target_hardware_feature": "CPU通用寄存器文件和浮点寄存器数量",
+          "code_example": {
+            "snippet": "res0 = 0; res1 = 0; res2 = 0; res3 = 0;\nres4 = 0; res5 = 0; res6 = 0; res7 = 0;\nfor (k=0; k<temp/4; k+=1)\n{\n    // 使用res0-res7进行持续累加\n}\n// 最终将res0-res7乘alpha后写回C",
+            "explanation": "所有中间结果均保留在寄存器变量中，直到整个微内核计算完成后再统一缩放并写回内存，实现最小化内存交互。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel",
+            "post.scale_accumulation"
+          ]
+        },
+        {
+          "optimization_name": "复数运算融合",
+          "level": "code",
+          "description": {
+            "strategy_rationale": "将复数乘法运算拆解为实部和虚部的独立算术表达式，并在代码层面直接实现，避免函数调用开销和抽象层次损失。",
+            "implementation_pattern": "手动编码复数乘法规则 (a+bi)(c+di)=(ac−bd)+(ad+bc)i，在累加阶段分别维护实部和虚部变量。",
+            "performance_impact": "消除函数调用开销，允许编译器对乘加操作进行更优的指令选择和调度，提升FLOPs效率。",
+            "trade_offs": "代码复杂度上升，易出错；缺乏可移植性；难以被自动向量化工具识别。"
+          },
+          "applicability_conditions": "复数运算密集型场景，且编译器无法有效内联或优化标准复数库函数。",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "浮点运算单元",
+          "target_hardware_feature": "CPU浮点运算单元（FPU）及其乘法-加法流水线",
+          "code_example": {
+            "snippet": "res0 = res0 + load0*load1; // 实部累加: a*c\nres1 = res1 - load0*load3; // 虚部累加: -(a*d)\nres0 = res0 + load2*load3; // 实部累加: b*d\nres1 = res1 + load2*load1; // 虚部累加: b*c",
+            "explanation": "通过四条独立的浮点运算模拟一次完整的复数乘法，完全绕过库函数调用，实现最细粒度的控制。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel",
+            "post.scale_accumulation"
+          ]
+        }
+      ],
+      "instruction_level_optimizations": [
+        {
+          "optimization_name": "手动SIMD数据并行展开",
+          "level": "instruction",
+          "description": {
+            "strategy_rationale": "通过显式展开多个数据元素的运算操作，模拟SIMD（单指令多数据）行为，使CPU能够在同一周期内隐式并行执行多个标量浮点运算，提升指令级并行性（ILP），充分利用超标量流水线。",
+            "implementation_pattern": "在内层循环中连续执行4组结构相同的复数乘加操作，每组处理不同的数组偏移量（如 ptrba[4*0+...] 到 ptrba[4*3+...]），共处理16个float值，形成向量化的计算块。",
+            "performance_impact": "显著减少循环控制开销，提高每个循环迭代的有用工作量，增加编译器调度空间，提升FPU利用率，接近SSE/AVX级别的吞吐效率。",
+            "trade_offs": "代码体积增大，可读性降低；若底层硬件不支持足够宽的寄存器或存在依赖链，则可能无法完全并行化，反而增加延迟。"
+          },
+          "applicability_conditions": "数据类型为单精度浮点，内存连续存储且无别名冲突，数组长度能被4整除以保证主循环有效展开。",
+          "tunable_parameters": [
+            {
+              "parameter_name": "unroll_factor",
+              "value_in_code": 4,
+              "description": "每次循环展开处理的向量元素个数",
+              "typical_range": [
+                2,
+                4,
+                8
+              ],
+              "impact": "因子越大，ILP越高，但寄存器压力上升，可能导致溢出到栈"
+            }
+          ],
+          "target_hardware_feature_name": "SIMD",
+          "target_hardware_feature": "SIMD (Single Instruction, Multiple Data) execution units, such as SSE/AVX on x86 platforms, which allow parallel arithmetic operations on multiple data elements within a wide register.",
+          "code_example": {
+            "snippet": "for (k=0; k<temp/4; k+=1)\n{\n    load0 = ptrba[4*0+0];\n    load1 = ptrbb[4*0+0];\n    res0 = res0+load0*load1;\n    // ... 多组类似操作\n    load8 = ptrba[4*1+0];\n    load9 = ptrbb[4*1+0];\n    res0 = res0+load8*load9;\n    // 继续处理第2、3、4组\n    ptrba = ptrba+16;\n    ptrbb = ptrbb+16;\n}",
+            "explanation": "该循环每次处理4个复数元素（共16个float），通过复制相同计算模式实现手动向量化，模拟SIMD行为，最大化每个迭代的算术密度。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel",
+            "core.tiled_loop"
+          ]
+        },
+        {
+          "optimization_name": "寄存器累积变量分组布局",
+          "level": "instruction",
+          "description": {
+            "strategy_rationale": "将中间累加结果划分为多个独立变量（res0-res7），对应输出矩阵2x2块中的8个实部/虚部分量，利用CPU多个浮点寄存器并行保存状态，避免频繁内存访问，减少load-use延迟。",
+            "implementation_pattern": "使用8个局部float变量分别累积C块中四个复数元素的实部与虚部（res0/res1对应C00，res2/res3对应C01等），在整个内层循环中保持在寄存器中。",
+            "performance_impact": "极大减少对内存的中间写回次数，降低cache压力，提升FLOPs效率；配合编译器寄存器分配，可实现零内存中间存储的纯寄存器累积。",
+            "trade_offs": "消耗较多浮点寄存器，可能超出x87或SSE寄存器数量限制，导致部分变量被spill到栈，反而增加访存开销。"
+          },
+          "applicability_conditions": "目标架构具有足够数量的可用浮点/SIMD寄存器（如x86-64支持16个XMM寄存器），且编译器能有效分配。",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "浮点寄存器文件",
+          "target_hardware_feature": "CPU的浮点或向量寄存器文件（如x86的XMM寄存器），用于高速暂存中间计算结果，避免访问较慢的L1缓存或内存。",
+          "code_example": {
+            "snippet": "res0 = 0; res1 = 0; res2 = 0; res3 = 0;\nres4 = 0; res5 = 0; res6 = 0; res7 = 0;\nfor (k=0; k<temp/4; k+=1)\n{\n    // 所有运算均作用于res0-res7，全程不写回内存\n}\n// 最终一次性写回C矩阵",
+            "explanation": "这8个变量代表2x2复数块的8个分量，在整个微内核计算过程中始终驻留在寄存器中，实现了高效的寄存器封锁（register blocking）。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel",
+            "post.scale_accumulation"
+          ]
+        },
+        {
+          "optimization_name": "复数乘法原子操作融合",
+          "level": "instruction",
+          "description": {
+            "strategy_rationale": "将复数乘法 (a+bi)(c+di) = (ac−bd) + (ad+bc)i 拆解为独立的乘加链，并在指令序列中直接编码，避免函数调用或条件分支，使每条指令都参与有效计算。",
+            "implementation_pattern": "每一对复数乘加被分解为4次浮点运算：两次乘法后接一次加法和一次减法，且交叉项被立即合并到对应累加器中。",
+            "performance_impact": "消除函数调用开销和抽象损失，使关键路径上的每条指令都贡献于最终结果，提升每周期浮点操作数（FLOPs/cycle）。",
+            "trade_offs": "代码冗长，维护困难；若编译器不能识别公共子表达式，可能导致重复计算。"
+          },
+          "applicability_conditions": "复数以交错格式存储（实部、虚部连续），且运算符合标准复数代数规则。",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "浮点ALU流水线",
+          "target_hardware_feature": "现代CPU中的多个浮点算术逻辑单元（ALU），支持同时执行乘法和加法操作（如FMA单元），适合高密度算术内核。",
+          "code_example": {
+            "snippet": "load0 = ptrba[4*0+0]; // real(a)\nload1 = ptrbb[4*0+0]; // real(b)\nres0 = res0 + load0 * load1; // += ac (real part)\nload3 = ptrbb[4*0+1];     // imag(b)\nres1 = res1 - load0 * load3; // -= a*d (imag part)\nload2 = ptrba[4*0+1];     // imag(a)\nres0 = res0 + load2 * load3; // += bd (real part: -(-bd))\nres1 = res1 + load2 * load1; // += b*c (imag part)",
+            "explanation": "此片段完整实现一个复数乘法对实部和虚部的贡献，所有操作直接映射到底层浮点指令，无中间封装，最大化指令效率。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel",
+            "post.scale_accumulation"
+          ]
+        },
+        {
+          "optimization_name": "指针步进与地址预计算",
+          "level": "instruction",
+          "description": {
+            "strategy_rationale": "通过预先计算指针增量并在循环中使用固定步长更新，将复杂的索引计算转换为简单的指针加法，减少地址生成指令（AGU）的压力，提升访存吞吐。",
+            "implementation_pattern": "使用 ptrba += 16 和 ptrbb += 16 实现批量前进，替代每次计算 base + idx*stride 的方式，利用CPU的简单寻址模式加速加载。",
+            "performance_impact": "减少地址计算所需的算术指令，释放执行端口给其他计算任务，降低访存延迟，提高带宽利用率。",
+            "trade_offs": "需要额外变量维护指针状态，增加寄存器压力；若缓存行未对齐，仍可能引起性能下降。"
+          },
+          "applicability_conditions": "数据在内存中连续排列，访问模式为恒定跨步（strided access），且编译器无法自动优化为指针递增。",
+          "tunable_parameters": [],
+          "target_hardware_feature_name": "地址生成单元",
+          "target_hardware_feature": "CPU的地址生成单元（AGU），负责计算内存操作数的有效地址；简化地址模式可提高AGU吞吐率。",
+          "code_example": {
+            "snippet": "ptrba = ptrba + 16;\nptrbb = ptrbb + 16;",
+            "explanation": "每次循环后指针前进16个float（即4个复数），对应4组展开操作的数据宽度，实现高效批量移动，减少复杂索引计算。"
+          },
+          "related_patterns": [
+            "core.mm_microkernel",
+            "prep.loop_invariant_calc"
+          ]
+        }
+      ],
+      "implementation_details": "该实现采用2x2复数微内核结构，使用8个寄存器变量（res0-res7）累积结果，内层循环按4元素展开以模拟SIMD行为。通过指针直接寻址和固定步进（+16）实现高效访存。复数乘法被完全展开为原子浮点运算，避免任何函数调用。残差部分由单独的小循环处理，确保主路径无分支。输出按列优先2x2块写回，并处理奇数维度的边界情况。",
+      "performance_insights": "预期在支持SSE及以上指令集的x86-64平台上达到较高FLOPs效率，因手动向量化和寄存器封锁减少了内存瓶颈。性能主要受限于浮点乘法延迟和寄存器压力；若编译器未能将res0-res7全部保留在XMM寄存器中，性能将显著下降。理想情况下，每4次迭代可完成64次浮点运算（32次乘法+32次加法），接近理论峰值的70%以上。"
+    }
+  ]
+}

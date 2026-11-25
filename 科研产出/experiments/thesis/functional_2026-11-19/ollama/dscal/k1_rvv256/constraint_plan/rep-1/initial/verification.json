@@ -1,0 +1,50 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "x86_64",
+  "results": [
+    {
+      "task": "dscal",
+      "target": "rvv",
+      "variant": "candidate",
+      "compiler_version": "riscv64-buildroot-linux-gnu-gcc.br_real (Buildroot 2021.11-18033-g83947c7bb6) 14.3.0",
+      "source": "../experiments/thesis/functional_2026-11-19/ollama/dscal/k1_rvv256/constraint_plan/rep-1/initial/candidate.c",
+      "source_sha256": "34fcf68a5a42dfb41a658fb7557d47357170f1cd3cfe8b413570ac2d9ddaddb1",
+      "status": "check_failed",
+      "compile": {
+        "argv": [
+          "/mnt/c/Users/MSI/Desktop/cx_operator_tool/operator_extract/toolchain/riscv-gcc-14.3/bin/riscv64-buildroot-linux-gnu-gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-march=rv64gcv",
+          "-mabi=lp64d",
+          "-static",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DSCAL",
+          "driver/check.c",
+          "../experiments/thesis/functional_2026-11-19/ollama/dscal/k1_rvv256/constraint_plan/rep-1/initial/candidate.c",
+          "-o",
+          "../experiments/thesis/functional_2026-11-19/ollama/dscal/k1_rvv256/constraint_plan/rep-1/initial/bin/dscal-rvv-candidate",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "ba4ccb38e78bd48c45bcb9d5360a48992618e3fa328127ac2ae91a65307e038a",
+      "check": {
+        "argv": [
+          "qemu-riscv64",
+          "-cpu",
+          "rv64,v=true,vlen=256,elen=64,vext_spec=v1.0",
+          "/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/thesis/functional_2026-11-19/ollama/dscal/k1_rvv256/constraint_plan/rep-1/initial/bin/dscal-rvv-candidate"
+        ],
+        "exit_code": -11,
+        "stdout": "",
+        "stderr": ""
+      },
+      "environment": "external_runner"
+    }
+  ]
+}

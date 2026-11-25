@@ -1,0 +1,13 @@
+{
+  "status": "compile_failed",
+  "compile_ok": false,
+  "correct": null,
+  "failure_reason": "missing_header",
+  "usage": {
+    "prompt_tokens": 2626,
+    "completion_tokens": 464,
+    "total_tokens": 3090
+  },
+  "diagnostic": "../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/text_rag/rep-1/initial/candidate.c:4:10: fatal error: immintrin.h: No such file or directory\n    4 | #include <immintrin.h>\n      |          ^~~~~~~~~~~~~\ncompilation terminated.\n",
+  "candidate_sha256": "40fb93ba79723c317b6164cd34078948b2013ef736c340a335b32856c9604ed5"
+}

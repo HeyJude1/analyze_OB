@@ -1,0 +1,2 @@
+op=ddot mode=b3 seed=1 n=16384
+status=wrong_answer compile_ok=True correct=False maxdiff=7932.0 reldiff=0.9688

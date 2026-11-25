@@ -1,0 +1,13 @@
+{
+  "status": "compile_failed",
+  "compile_ok": false,
+  "correct": null,
+  "failure_reason": "intrinsic_or_target_error",
+  "usage": {
+    "prompt_tokens": 1118,
+    "completion_tokens": 295,
+    "total_tokens": 1413
+  },
+  "diagnostic": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dasum\\x86_avx2\\no_knowledge\\rep-1\\initial\\candidate.c: In function 'op_dasum':\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dasum\\x86_avx2\\no_knowledge\\rep-1\\initial\\candidate.c:18:16: error: implicit declaration of function '_mm256_reduce_add_pd'; did you mean '_mm256_reduce_add_ph'? [-Wimplicit-function-declaration]\n   18 |         sum += _mm256_reduce_add_pd(abs_vec_x1) + _mm256_reduce_add_pd(abs_vec_x2);\n      |                ^~~~~~~~~~~~~~~~~~~~\n      |                _mm256_reduce_add_ph\n",
+  "candidate_sha256": "061acc4bf980d8907a9ea32b9ab05ea216732e1d3396b3b612aa6b9d14ad227d"
+}

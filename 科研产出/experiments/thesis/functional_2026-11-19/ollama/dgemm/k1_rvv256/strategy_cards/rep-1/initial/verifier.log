@@ -1,0 +1,7 @@
+dgemm rvv candidate: compile_error 
+
+wsl: �hKm0R localhost �NtM�n�FO*g\��P0R WSL0NAT !j_N�v WSL N/ec localhost �Nt0
+../experiments/thesis/functional_2026-11-19/ollama/dgemm/k1_rvv256/strategy_cards/rep-1/initial/candidate.c: In function ‘op_dgemm’:
+../experiments/thesis/functional_2026-11-19/ollama/dgemm/k1_rvv256/strategy_cards/rep-1/initial/candidate.c:26:34: error: variable-sized object may not be initialized except with an empty initializer
+   26 |             double acc[bm][bn] = {0.0};
+      |                                  ^

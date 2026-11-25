@@ -1,0 +1,6 @@
+dgemm x86 candidate: compile_error 
+
+..\experiments\thesis\functional_2026-11-19\ollama\dgemm\x86_avx2\constraint_plan\rep-1\repair\candidate.c: In function 'op_dgemm':
+..\experiments\thesis\functional_2026-11-19\ollama\dgemm\x86_avx2\constraint_plan\rep-1\repair\candidate.c:25:35: error: variable-sized object may not be initialized except with an empty initializer
+   25 |         double acc[reg_block_n] = {0.0};
+      |                                   ^

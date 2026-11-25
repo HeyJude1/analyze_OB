@@ -1,0 +1,164 @@
+{
+  "analysis_k": 3,
+  "count": 3,
+  "items": [
+    {
+      "strategy_id": "stg:dot:specialize_d",
+      "strategy_name": "LMUL/SEW 向量寄存器分组调优",
+      "applies": true,
+      "confidence": 0.745,
+      "evidence": [
+        "策略条件中 dtype 包含 'd'，与目标算子的 dtype 匹配",
+        "loop_depth >= 1 的条件满足目标算子的 loop_depth == 1",
+        "reduction == true 的条件满足目标算子的 reduction == true",
+        "size_regime 包含 'large'，与目标算子的 size_regime 匹配",
+        "evidence 中的 speedup 和 pass_rate 表明在 QEMU 模拟环境下策略通过测试并有一定加速效果",
+        "arch_parameters 中的 rvv 配置与 k1_rvv256 硬件特性一致"
+      ],
+      "risks": [
+        "尾部处理风险：tail_divisible == false，向量化可能需要额外处理非整除部分",
+        "寄存器压力风险：LMUL=8 可能导致向量寄存器资源不足，影响指令调度",
+        "数值一致性风险：向量化可能导致浮点运算顺序变化，影响结果一致性",
+        "任意步长支持风险：通用 strided 路径未被特别优化，可能影响非单位步长性能",
+        "编译器/ISA 支持风险：RISC-V Vector Extension 的实现可能依赖特定编译器支持"
+      ],
+      "parameters": {
+        "SEW": "64（由 dtype 为 double 固定）",
+        "LMUL": "8（策略指定值，需根据硬件实际支持情况调整）"
+      },
+      "conflicts": [],
+      "raw": {
+        "applies": true,
+        "confidence": 0.745,
+        "evidence": [
+          "策略条件中 dtype 包含 'd'，与目标算子的 dtype 匹配",
+          "loop_depth >= 1 的条件满足目标算子的 loop_depth == 1",
+          "reduction == true 的条件满足目标算子的 reduction == true",
+          "size_regime 包含 'large'，与目标算子的 size_regime 匹配",
+          "evidence 中的 speedup 和 pass_rate 表明在 QEMU 模拟环境下策略通过测试并有一定加速效果",
+          "arch_parameters 中的 rvv 配置与 k1_rvv256 硬件特性一致"
+        ],
+        "risks": [
+          "尾部处理风险：tail_divisible == false，向量化可能需要额外处理非整除部分",
+          "寄存器压力风险：LMUL=8 可能导致向量寄存器资源不足，影响指令调度",
+          "数值一致性风险：向量化可能导致浮点运算顺序变化，影响结果一致性",
+          "任意步长支持风险：通用 strided 路径未被特别优化，可能影响非单位步长性能",
+          "编译器/ISA 支持风险：RISC-V Vector Extension 的实现可能依赖特定编译器支持"
+        ],
+        "parameters": {
+          "SEW": "64（由 dtype 为 double 固定）",
+          "LMUL": "8（策略指定值，需根据硬件实际支持情况调整）"
+        },
+        "conflicts": []
+      }
+    },
+    {
+      "strategy_id": "stg:dot:split_d",
+      "strategy_name": "向量归约累加链",
+      "applies": true,
+      "confidence": 0.745,
+      "evidence": [
+        "满足 dtype 条件：目标算子使用 double 类型（\"d\"）",
+        "满足 loop_depth >= 1 的循环深度要求",
+        "reduction 条件匹配：ddot 是归约操作",
+        "size_regime 匹配 large，适用于向量化的大规模数据",
+        "evidence ev:dot:geomean 提供了 1.1584 的 speedup 支持证据",
+        "evidence ev:dot:pass_rate 显示策略通过率 100%"
+      ],
+      "risks": [
+        "尾部未对齐（tail_divisible == false）可能需要额外处理，当前策略未明确处理尾部",
+        "归约链顺序可能影响浮点结果一致性",
+        "寄存器压力：LMUL=8 已占用大量寄存器，可能影响编译器调度",
+        "k1_rvv256 对 RVV 指令支持程度未知，可能存在 ISA 兼容性问题",
+        "最终归约操作可能引入额外延迟"
+      ],
+      "parameters": {
+        "lmul": 8,
+        "sew": 64,
+        "split_factor": 1
+      },
+      "conflicts": [],
+      "raw": {
+        "applies": true,
+        "confidence": 0.745,
+        "evidence": [
+          "满足 dtype 条件：目标算子使用 double 类型（\"d\"）",
+          "满足 loop_depth >= 1 的循环深度要求",
+          "reduction 条件匹配：ddot 是归约操作",
+          "size_regime 匹配 large，适用于向量化的大规模数据",
+          "evidence ev:dot:geomean 提供了 1.1584 的 speedup 支持证据",
+          "evidence ev:dot:pass_rate 显示策略通过率 100%"
+        ],
+        "risks": [
+          "尾部未对齐（tail_divisible == false）可能需要额外处理，当前策略未明确处理尾部",
+          "归约链顺序可能影响浮点结果一致性",
+          "寄存器压力：LMUL=8 已占用大量寄存器，可能影响编译器调度",
+          "k1_rvv256 对 RVV 指令支持程度未知，可能存在 ISA 兼容性问题",
+          "最终归约操作可能引入额外延迟"
+        ],
+        "parameters": {
+          "lmul": 8,
+          "sew": 64,
+          "split_factor": 1
+        },
+        "conflicts": []
+      }
+    },
+    {
+      "strategy_id": "stg:dot:tail_handle_d",
+      "strategy_name": "动态 vl / 掩码尾部处理",
+      "applies": true,
+      "confidence": 0.8,
+      "evidence": [
+        "策略 conditions 中 dtype 为 [\"d\"] 与目标算子匹配",
+        "loop_depth >= 1 的条件满足目标代码特征",
+        "reduction == true 的条件满足目标算子的累加语义",
+        "size_regime 为 large，符合策略适用范围",
+        "tail_divisible == false 的条件被策略支持（非硬性要求）",
+        "arch_parameters 中 rvv 的 sew 为 64，与 double 类型一致",
+        "arch_parameters 中 rvv 的 lmul 为 8，适配 k1_rvv256 硬件",
+        "evidence ev:dot:geomean 表明策略在 QEMU RISC-V 平台上带来一定加速",
+        "why_selected 中的 patterns 匹配 dot 的尾部处理场景"
+      ],
+      "risks": [
+        "尾部处理依赖动态 vl，需确保 n 不整除 VLMAX 时仍保持正确性",
+        "LMUL=8 可能导致较高的寄存器压力，影响并发或调度",
+        "RISC-V Vector 扩展版本或 k1_rvv256 实现对动态 vl 的支持可能存在差异",
+        "未对 stride_x 或 stride_y > 1 的情况做适配处理，当前策略仅适用于 unit stride",
+        "编译器对 RVV 内建函数的支持程度可能影响性能和代码质量"
+      ],
+      "parameters": {
+        "sew": 64,
+        "lmul": 8
+      },
+      "conflicts": [],
+      "raw": {
+        "applies": true,
+        "confidence": 0.8,
+        "evidence": [
+          "策略 conditions 中 dtype 为 [\"d\"] 与目标算子匹配",
+          "loop_depth >= 1 的条件满足目标代码特征",
+          "reduction == true 的条件满足目标算子的累加语义",
+          "size_regime 为 large，符合策略适用范围",
+          "tail_divisible == false 的条件被策略支持（非硬性要求）",
+          "arch_parameters 中 rvv 的 sew 为 64，与 double 类型一致",
+          "arch_parameters 中 rvv 的 lmul 为 8，适配 k1_rvv256 硬件",
+          "evidence ev:dot:geomean 表明策略在 QEMU RISC-V 平台上带来一定加速",
+          "why_selected 中的 patterns 匹配 dot 的尾部处理场景"
+        ],
+        "risks": [
+          "尾部处理依赖动态 vl，需确保 n 不整除 VLMAX 时仍保持正确性",
+          "LMUL=8 可能导致较高的寄存器压力，影响并发或调度",
+          "RISC-V Vector 扩展版本或 k1_rvv256 实现对动态 vl 的支持可能存在差异",
+          "未对 stride_x 或 stride_y > 1 的情况做适配处理，当前策略仅适用于 unit stride",
+          "编译器对 RVV 内建函数的支持程度可能影响性能和代码质量"
+        ],
+        "parameters": {
+          "sew": 64,
+          "lmul": 8
+        },
+        "conflicts": []
+      }
+    }
+  ]
+}

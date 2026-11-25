@@ -1,0 +1,36 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "amd64",
+  "results": [
+    {
+      "task": "conv1d",
+      "target": "x86",
+      "variant": "candidate",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\conv1d\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c",
+      "source_sha256": "3cd5bbe06e9707ef9a707e9ee9646a920c8d90e87e9440f840c30df55d91cbc4",
+      "status": "compile_error",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Iinclude",
+          "-DOPBENCH_TASK_CONV1D",
+          "driver/check.c",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\conv1d\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c",
+          "-o",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\conv1d\\x86_avx2\\text_rag\\rep-1\\repair\\bin\\conv1d-x86-candidate.exe",
+          "-lm"
+        ],
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "C:/msys64/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: C:\\Users\\MSI\\AppData\\Local\\Temp\\cc7pM1eN.o:candidate.c:(.text+0xdf): undefined reference to `op_dscal'\nC:/msys64/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: C:\\Users\\MSI\\AppData\\Local\\Temp\\cc7pM1eN.o:candidate.c:(.text+0x64a): undefined reference to `op_dscal'\nC:/msys64/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: C:\\Users\\MSI\\AppData\\Local\\Temp\\cc7pM1eN.o:candidate.c:(.text+0x7f4): undefined reference to `op_dscal'\ncollect2.exe: error: ld returned 1 exit status\n"
+      }
+    }
+  ]
+}

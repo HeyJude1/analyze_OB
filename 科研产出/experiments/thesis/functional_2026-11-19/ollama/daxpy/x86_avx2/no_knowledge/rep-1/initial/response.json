@@ -1,0 +1,9 @@
+{
+  "raw": "```c\n#include \"opbench.h\"\n\nvoid op_daxpy(size_t n, double alpha, const double *x, ptrdiff_t incx,\n              double *y, ptrdiff_t incy) {\n    if (alpha == 0.0) return;\n\n    size_t i;\n    for (i = 0; i < n; ++i) {\n        y[(ptrdiff_t)i * incy] += alpha * x[(ptrdiff_t)i * incx];\n    }\n}\n```",
+  "usage": {
+    "prompt_tokens": 1140,
+    "completion_tokens": 104,
+    "total_tokens": 1244
+  },
+  "stop_reason": "stop"
+}

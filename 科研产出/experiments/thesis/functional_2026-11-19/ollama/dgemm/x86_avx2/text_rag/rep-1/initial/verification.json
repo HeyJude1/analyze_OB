@@ -1,0 +1,46 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "amd64",
+  "results": [
+    {
+      "task": "dgemm",
+      "target": "x86",
+      "variant": "candidate",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c",
+      "source_sha256": "a9adceccb13461fc3c4f7bbe6a5dc4e0be033eb143795f2d7c97b698b4fff6cc",
+      "status": "check_failed",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DGEMM",
+          "driver/check.c",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c",
+          "-o",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\text_rag\\rep-1\\initial\\bin\\dgemm-x86-candidate.exe",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c: In function 'op_dgemm':\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c:28:16: warning: unused variable 'j' [-Wunused-variable]\n   28 |         size_t j = n - n % 4;\n      |                ^\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c:4:29: warning: unused parameter 'b' [-Wunused-parameter]\n    4 |               const double *b, size_t ldb, double beta, double *c, size_t ldc) {\n      |               ~~~~~~~~~~~~~~^\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c:4:39: warning: unused parameter 'ldb' [-Wunused-parameter]\n    4 |               const double *b, size_t ldb, double beta, double *c, size_t ldc) {\n      |                                ~~~~~~~^~~\n"
+      },
+      "binary_sha256": "c49bd9eb99a0f305ee0210fed40421237fea5d515ee745d0dd6a4b75afe6389a",
+      "check": {
+        "argv": [
+          "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\text_rag\\rep-1\\initial\\bin\\dgemm-x86-candidate.exe"
+        ],
+        "exit_code": 1,
+        "stdout": "32 cases, 1588 failures\n",
+        "stderr": "dgemm case 9 cell 1: got nan expected 0\ndgemm case 9 cell 2: got nan expected 0\ndgemm case 9 cell 3: got nan expected 0\ndgemm case 9 cell 4: got nan expected 0\ndgemm case 9 cell 5: got nan expected 0\ndgemm case 9 cell 6: got nan expected 0\ndgemm case 9 cell 7: got nan expected 0\ndgemm case 9 cell 8: got nan expected 0\ndgemm case 9 cell 9: got nan expected 0\ndgemm case 9 cell 13: got nan expected 0\n"
+      },
+      "environment": "native"
+    }
+  ]
+}

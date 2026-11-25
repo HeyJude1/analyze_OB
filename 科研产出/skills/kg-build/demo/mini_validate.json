@@ -1,0 +1,30 @@
+{
+  "ok": true,
+  "strict": true,
+  "stats": {
+    "entities": 7,
+    "relations": 7,
+    "entity_types": {
+      "SourcePattern": 1,
+      "OptimizationStrategy": 1,
+      "CodeCharacteristic": 1,
+      "TunableParameter": 1,
+      "CodeExample": 1,
+      "ArchitectureCapability": 1,
+      "OptimizationPrinciple": 1
+    },
+    "relation_types": {
+      "OPTIMIZES_PATTERN": 1,
+      "APPLIES_WHEN": 1,
+      "HAS_PARAMETER": 1,
+      "IS_ILLUSTRATED_BY": 1,
+      "REQUIRES": 1,
+      "TARGETS": 1,
+      "GENERALIZES": 1
+    },
+    "errors": 0,
+    "warnings": 0
+  },
+  "errors": [],
+  "warnings": []
+}

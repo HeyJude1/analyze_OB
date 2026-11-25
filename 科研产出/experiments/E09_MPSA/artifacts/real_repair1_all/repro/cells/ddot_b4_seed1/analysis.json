@@ -1,0 +1,160 @@
+{
+  "analysis_k": 3,
+  "count": 3,
+  "items": [
+    {
+      "strategy_id": "stg:dot:specialize_d",
+      "strategy_name": "LMUL/SEW 向量寄存器分组调优",
+      "applies": true,
+      "confidence": 0.8,
+      "evidence": [
+        "策略条件中 dtype 匹配为 'd'，与目标算子一致",
+        "loop_depth >= 1 的条件满足目标代码特征",
+        "reduction == true 在目标代码中成立",
+        "size_regime 为 large，符合策略适用范围",
+        "arch_parameters 中指定的 lmulf=8 与 sew=64 支持 double 类型计算",
+        "evidence 中 speedup 和 pass_rate 提供了 operator 级性能与正确性参考"
+      ],
+      "risks": [
+        "尾部处理未对齐（tail_divisible == false）可能导致数值不一致或性能下降",
+        "多路径分支可能导致编译器优化不充分或指令缓存压力",
+        "LMUL=8 导致的寄存器压力可能影响实际性能",
+        "RVV 扩展支持在目标硬件（k1_rvv256）上的实现完整性未知",
+        "未处理任意步长情况下可能存在的内存别名问题"
+      ],
+      "parameters": {
+        "SEW": 64,
+        "LMUL": 8
+      },
+      "conflicts": [],
+      "raw": {
+        "applies": true,
+        "confidence": 0.8,
+        "evidence": [
+          "策略条件中 dtype 匹配为 'd'，与目标算子一致",
+          "loop_depth >= 1 的条件满足目标代码特征",
+          "reduction == true 在目标代码中成立",
+          "size_regime 为 large，符合策略适用范围",
+          "arch_parameters 中指定的 lmulf=8 与 sew=64 支持 double 类型计算",
+          "evidence 中 speedup 和 pass_rate 提供了 operator 级性能与正确性参考"
+        ],
+        "risks": [
+          "尾部处理未对齐（tail_divisible == false）可能导致数值不一致或性能下降",
+          "多路径分支可能导致编译器优化不充分或指令缓存压力",
+          "LMUL=8 导致的寄存器压力可能影响实际性能",
+          "RVV 扩展支持在目标硬件（k1_rvv256）上的实现完整性未知",
+          "未处理任意步长情况下可能存在的内存别名问题"
+        ],
+        "parameters": {
+          "SEW": 64,
+          "LMUL": 8
+        },
+        "conflicts": []
+      }
+    },
+    {
+      "strategy_id": "stg:dot:split_d",
+      "strategy_name": "向量归约累加链",
+      "applies": true,
+      "confidence": 0.745,
+      "evidence": [
+        "满足 hard 条件：dtype == 'd'",
+        "满足 hard 条件：loop_depth >= 1",
+        "满足 hard 条件：reduction == true",
+        "满足 hard 条件：size_regime in ['medium', 'large']",
+        "arch_scope 匹配：arch == 'rvv'，且目标硬件为 k1_rvv256",
+        "evidence 支持：ev:dot:geomean 提供 speedup 证据（尽管基于 QEMU）",
+        "template 中的 SPLIT_FACTOR 可配置，适应当前硬件特性",
+        "why_selected 中的 patterns 匹配 dot.reduction 模式"
+      ],
+      "risks": [
+        "尾部处理未明确处理 tail_divisible == false 的情况，可能影响正确性",
+        "归约顺序可能影响浮点结果一致性，尤其在多链拆分时",
+        "LMUL=8 在 k1_rvv256 上可能超出可用向量寄存器数量，导致寄存器压力过高",
+        "stride_x/y == 1 假设可能与向量化加载不兼容，若内存未对齐或非连续布局",
+        "split_factor=1 可能未充分发挥归约指令的吞吐潜力，但增加该值会引入额外归约开销"
+      ],
+      "parameters": {
+        "lmul": "当前值为 8，依据为 'num_vector_regs / 同时活跃向量数'，但需根据 k1_rvv256 的寄存器文件大小评估是否降低",
+        "sew": "固定为 64，由 double 类型决定",
+        "split_factor": "当前值为 1，建议尝试 2 或 4 以缓解归约延迟瓶颈"
+      },
+      "conflicts": [],
+      "raw": {
+        "applies": true,
+        "confidence": 0.745,
+        "evidence": [
+          "满足 hard 条件：dtype == 'd'",
+          "满足 hard 条件：loop_depth >= 1",
+          "满足 hard 条件：reduction == true",
+          "满足 hard 条件：size_regime in ['medium', 'large']",
+          "arch_scope 匹配：arch == 'rvv'，且目标硬件为 k1_rvv256",
+          "evidence 支持：ev:dot:geomean 提供 speedup 证据（尽管基于 QEMU）",
+          "template 中的 SPLIT_FACTOR 可配置，适应当前硬件特性",
+          "why_selected 中的 patterns 匹配 dot.reduction 模式"
+        ],
+        "risks": [
+          "尾部处理未明确处理 tail_divisible == false 的情况，可能影响正确性",
+          "归约顺序可能影响浮点结果一致性，尤其在多链拆分时",
+          "LMUL=8 在 k1_rvv256 上可能超出可用向量寄存器数量，导致寄存器压力过高",
+          "stride_x/y == 1 假设可能与向量化加载不兼容，若内存未对齐或非连续布局",
+          "split_factor=1 可能未充分发挥归约指令的吞吐潜力，但增加该值会引入额外归约开销"
+        ],
+        "parameters": {
+          "lmul": "当前值为 8，依据为 'num_vector_regs / 同时活跃向量数'，但需根据 k1_rvv256 的寄存器文件大小评估是否降低",
+          "sew": "固定为 64，由 double 类型决定",
+          "split_factor": "当前值为 1，建议尝试 2 或 4 以缓解归约延迟瓶颈"
+        },
+        "conflicts": []
+      }
+    },
+    {
+      "strategy_id": "stg:dot:tail_handle_d",
+      "strategy_name": "动态 vl / 掩码尾部处理",
+      "applies": true,
+      "confidence": 0.745,
+      "evidence": [
+        "策略 conditions 中 dtype 为 [\"d\"] 与目标算子匹配",
+        "loop_depth >= 1 的条件满足当前算子的 loop_depth == 1",
+        "reduction == true 的硬性条件满足",
+        "size_regime 为 large，符合策略适用范围",
+        "tail_divisible == false，为非硬性条件且策略支持",
+        "evidence 中 speedup 与 pass_rate 表明策略在 operator 级有效"
+      ],
+      "risks": [
+        "动态 vl 处理尾部可能引入数值一致性问题，需确保向量计算与标量等价",
+        "k1_rvv256 上 LMUL=8 是否足够支持大尺寸寄存器分配，可能造成寄存器压力过高",
+        "编译器对 RVV 扩展的支持程度不确定，可能影响代码生成质量",
+        "未处理任意步长（inc_x / inc_y != 1）情况，当前策略假设 stride_x == 1 且 stride_y == 1"
+      ],
+      "parameters": {
+        "LMUL": 8,
+        "SEW": 64
+      },
+      "conflicts": [],
+      "raw": {
+        "applies": true,
+        "confidence": 0.745,
+        "evidence": [
+          "策略 conditions 中 dtype 为 [\"d\"] 与目标算子匹配",
+          "loop_depth >= 1 的条件满足当前算子的 loop_depth == 1",
+          "reduction == true 的硬性条件满足",
+          "size_regime 为 large，符合策略适用范围",
+          "tail_divisible == false，为非硬性条件且策略支持",
+          "evidence 中 speedup 与 pass_rate 表明策略在 operator 级有效"
+        ],
+        "risks": [
+          "动态 vl 处理尾部可能引入数值一致性问题，需确保向量计算与标量等价",
+          "k1_rvv256 上 LMUL=8 是否足够支持大尺寸寄存器分配，可能造成寄存器压力过高",
+          "编译器对 RVV 扩展的支持程度不确定，可能影响代码生成质量",
+          "未处理任意步长（inc_x / inc_y != 1）情况，当前策略假设 stride_x == 1 且 stride_y == 1"
+        ],
+        "parameters": {
+          "LMUL": 8,
+          "SEW": 64
+        },
+        "conflicts": []
+      }
+    }
+  ]
+}

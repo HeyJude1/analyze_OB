@@ -1,0 +1,27 @@
+dscal x86 candidate: compile_error 
+
+..\experiments\thesis\functional_2026-11-19\ollama\dscal\x86_avx2\strategy_cards\rep-1\repair\candidate.c: In function 'op_dscal':
+..\experiments\thesis\functional_2026-11-19\ollama\dscal\x86_avx2\strategy_cards\rep-1\repair\candidate.c:8:13: error: unknown type name '__m256d'
+    8 |             __m256d v_x = _mm256_loadu_pd(&x[4 * i]);
+      |             ^~~~~~~
+..\experiments\thesis\functional_2026-11-19\ollama\dscal\x86_avx2\strategy_cards\rep-1\repair\candidate.c:8:27: error: implicit declaration of function '_mm256_loadu_pd' [-Wimplicit-function-declaration]
+    8 |             __m256d v_x = _mm256_loadu_pd(&x[4 * i]);
+      |                           ^~~~~~~~~~~~~~~
+..\experiments\thesis\functional_2026-11-19\ollama\dscal\x86_avx2\strategy_cards\rep-1\repair\candidate.c:9:13: error: unknown type name '__m256d'
+    9 |             __m256d v_alpha = _mm256_set1_pd(alpha);
+      |             ^~~~~~~
+..\experiments\thesis\functional_2026-11-19\ollama\dscal\x86_avx2\strategy_cards\rep-1\repair\candidate.c:9:31: error: implicit declaration of function '_mm256_set1_pd' [-Wimplicit-function-declaration]
+    9 |             __m256d v_alpha = _mm256_set1_pd(alpha);
+      |                               ^~~~~~~~~~~~~~
+..\experiments\thesis\functional_2026-11-19\ollama\dscal\x86_avx2\strategy_cards\rep-1\repair\candidate.c:10:19: error: implicit declaration of function '_mm256_mul_pd' [-Wimplicit-function-declaration]
+   10 |             v_x = _mm256_mul_pd(v_x, v_alpha);
+      |                   ^~~~~~~~~~~~~
+..\experiments\thesis\functional_2026-11-19\ollama\dscal\x86_avx2\strategy_cards\rep-1\repair\candidate.c:11:13: error: implicit declaration of function '_mm256_storeu_pd' [-Wimplicit-function-declaration]
+   11 |             _mm256_storeu_pd(&x[4 * i], v_x);
+      |             ^~~~~~~~~~~~~~~~
+..\experiments\thesis\functional_2026-11-19\ollama\dscal\x86_avx2\strategy_cards\rep-1\repair\candidate.c:20:13: error: unknown type name '__m256d'
+   20 |             __m256d v_x = _mm256_loadu_pd(&x[(ptrdiff_t)i * incx]);
+      |             ^~~~~~~
+..\experiments\thesis\functional_2026-11-19\ollama\dscal\x86_avx2\strategy_cards\rep-1\repair\candidate.c:21:13: error: unknown type name '__m256d'
+   21 |             __m256d v_alpha = _mm256_set1_pd(alpha);
+      |             ^~~~~~~

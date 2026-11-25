@@ -1,0 +1,49 @@
+{
+  "analogy_source": null,
+  "card_ids": [
+    "stg:abstract:pointer_precompute",
+    "stg:gemm:reorder_s",
+    "stg:abstract:register_blocking",
+    "stg:gemm:tile_s"
+  ],
+  "contract_sha256": "629b882715b5cf4421375f8c70f613557d3e51ea148b4bb78f87418dea864178",
+  "knowledge_bytes": 6117,
+  "method": "text_rag",
+  "operator": "dgemm",
+  "profile": "x86_avx2",
+  "prompt": "dgemm/x86_avx2/text_rag.json",
+  "prompt_sha256": "399b0fc116f6f75d80182ef193168df1773035aada24d16c794feb53f46e3d0a",
+  "repetition": 1,
+  "source_sha256": "9a515f9c8ddfdb9047942b6b7d87300ec2857497b9d4c6caafd9871729781720",
+  "split": "build",
+  "status": "prepared",
+  "engine": "ollama",
+  "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+  "repair_attempted": true,
+  "initial": {
+    "status": "wrong_answer",
+    "compile_ok": true,
+    "correct": false,
+    "failure_reason": "numerical_or_memory_contract",
+    "usage": {
+      "prompt_tokens": 3451,
+      "completion_tokens": 285,
+      "total_tokens": 3736
+    },
+    "diagnostic": "Numerical or memory-contract check failed on 1588 cases. Preserve the full public contract.",
+    "candidate_sha256": "a9adceccb13461fc3c4f7bbe6a5dc4e0be033eb143795f2d7c97b698b4fff6cc"
+  },
+  "final": {
+    "status": "compile_failed",
+    "compile_ok": false,
+    "correct": null,
+    "failure_reason": "intrinsic_or_target_error",
+    "usage": {
+      "prompt_tokens": 1766,
+      "completion_tokens": 743,
+      "total_tokens": 2509
+    },
+    "diagnostic": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c: In function 'op_dgemm':\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c:20:9: error: unknown type name '__m256d'\n   20 |         __m256d valpha = _mm256_set1_pd(alpha);\n      |         ^~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c:20:26: error: implicit declaration of function '_mm256_set1_pd' [-Wimplicit-function-declaration]\n   20 |         __m256d valpha = _mm256_set1_pd(alpha);\n      |                          ^~~~~~~~~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c:21:9: error: unknown type name '__m256d'\n   21 |         __m256d vbeta = _mm256_set1_pd(beta);\n      |         ^~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c:25:17: error: unknown type name '__m256d'\n   25 |                 __m256d vsum = _mm256_setzero_pd();\n      |                 ^~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c:25:32: error: implicit declaration of function '_mm256_setzero_pd' [-Wimplicit-function-declaration]\n   25 |                 __m256d vsum = _mm256_setzero_pd();\n      |                                ^~~~~~~~~~~~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c:27:21: error: unknown type name '__m256d'\n   27 |                     __m256d va = _mm256_loadu_pd(&a[i * lda + p]);\n      |                     ^~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c:27:34: error: implicit declaration of function '_mm256_loadu_pd' [-Wimplicit-function-declaration]\n   27 |                     __m256d va = _mm256_loadu_pd(&a[i * lda + p]);\n      |                                  ^~~~~~~~~~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c:28:21: error: unknown type name '__m256d'\n   28 |                     __m256d vb = _mm256_loadu_pd(&b[p * ldb + j]);\n      |                     ^~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c:29:28: error: implicit declaration of function '_mm256_add_pd' [-Wimplicit-function-declaration]\n   29 |                     vsum = _mm256_add_pd(vsum, _mm256_mul_pd(va, vb));\n      |                            ^~~~~~~~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c:29:48: error: implicit declaration of function '_mm256_mul_pd' [-Wimplicit-function-declaration]\n   29 |                     vsum = _mm256_add_pd(vsum, _mm256_mul_pd(va, vb));\n      |                                                ^~~~~~~~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c:31:17: error: unknown type name '__m256d'\n   31 |                 __m256d vproduct = _mm256_mul_pd(valpha, vsum);\n      |                 ^~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c:32:17: error: unknown type name '__m256d'\n   32 |                 __m256d vout = _mm256_loadu_pd(&c[i * ldc + j]);\n      |                 ^~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c:35:17: error: implicit declaration of function '_mm256_storeu_pd' [-Wimplicit-function-declaration]\n   35 |                 _mm256_storeu_pd(&c[i * ldc + j], vout);\n      |                 ^~~~~~~~~~~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c:17:13: warning: unused variable 'pc' [-Wunused-variable]\n   17 |     double *pc = c;\n      |             ^~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c:16:19: warning: unused variable 'pa' [-Wunused-variable]\n   16 |     const double *pa = a;\n      |                   ^~\n",
+    "candidate_sha256": "c76787692f6ebf52f8cbc65503989317ad6db313cc103b1dba6ec3c133505f87"
+  }
+}

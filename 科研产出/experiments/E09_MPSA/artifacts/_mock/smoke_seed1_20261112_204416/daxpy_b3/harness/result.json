@@ -1,0 +1,68 @@
+{
+  "ok": true,
+  "compile_ok": true,
+  "correct": true,
+  "maxdiff": 0.0,
+  "reldiff": 0.0,
+  "qemu_exit": 0,
+  "stdout": "daxpy n=16384 maxdiff=0.000e+00 reldiff=0.000e+00 best=0.095215 ms (4.13 GB/s)\n",
+  "stderr": "vector version is not specified, use the default value v1.0\n",
+  "timeout": false,
+  "best_ms": 0.095215,
+  "qemu_only": true,
+  "n": 16384,
+  "reps": 10,
+  "tolerance": 1e-10,
+  "op": "daxpy",
+  "task_dir": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\tasks\\daxpy",
+  "driver": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\tasks\\daxpy\\driver\\test_daxpy.c",
+  "generated_c": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\smoke_seed1_20261112_204416\\daxpy_b3\\harness\\generated.c",
+  "out_dir": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\smoke_seed1_20261112_204416\\daxpy_b3\\harness",
+  "scripts": {
+    "build": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\smoke_seed1_20261112_204416\\daxpy_b3\\harness\\build.sh",
+    "run": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\smoke_seed1_20261112_204416\\daxpy_b3\\harness\\run.sh"
+  },
+  "logs": {
+    "build_stdout": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\smoke_seed1_20261112_204416\\daxpy_b3\\harness\\build.stdout.log",
+    "build_stderr": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\smoke_seed1_20261112_204416\\daxpy_b3\\harness\\build.stderr.log",
+    "qemu_stdout": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\smoke_seed1_20261112_204416\\daxpy_b3\\harness\\qemu.stdout.log",
+    "qemu_stderr": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\smoke_seed1_20261112_204416\\daxpy_b3\\harness\\qemu.stderr.log"
+  },
+  "commands": {
+    "build": [
+      "wsl.exe",
+      "-d",
+      "Ubuntu",
+      "-e",
+      "bash",
+      "/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/smoke_seed1_20261112_204416/daxpy_b3/harness/build.sh"
+    ],
+    "run": [
+      "wsl.exe",
+      "-d",
+      "Ubuntu",
+      "-e",
+      "bash",
+      "/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/smoke_seed1_20261112_204416/daxpy_b3/harness/run.sh"
+    ]
+  },
+  "compile_timeout": false,
+  "elapsed_build_s": 0.45,
+  "elapsed_run_s": 0.07,
+  "elapsed_s": 0.522,
+  "error": null,
+  "env": {
+    "wsl_distro": "Ubuntu",
+    "cc": "riscv64-linux-gnu-gcc",
+    "cflags": [
+      "-O3",
+      "-march=rv64gcv_zvl256b_zba_zbb_zbc_zbs",
+      "-mabi=lp64d",
+      "-static"
+    ],
+    "qemu": "qemu-riscv64",
+    "qemu_cpu": "rv64,v=true,vlen=256,zba=true,zbb=true,zbc=true,zbs=true",
+    "flags_source": "experiments/harness/qemu.py"
+  },
+  "line": "daxpy n=16384 maxdiff=0.000e+00 reldiff=0.000e+00 best=0.095215 ms (4.13 GB/s)"
+}

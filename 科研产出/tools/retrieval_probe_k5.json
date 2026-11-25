@@ -1,0 +1,199 @@
+[
+  {
+    "operator": "daxpy",
+    "profile": "x86_avx2",
+    "query": "daxpy：在 x86 AVX2 上把通用 C 实现优化成高性能 kernel",
+    "graph": {
+      "k": 3,
+      "applicable@k": 1.0,
+      "decidable@k": 1.0,
+      "op_match@k": 1.0,
+      "arch_bound@k": 1.0,
+      "ids": [
+        "stg:axpy:tile_x86_avx2",
+        "stg:axpy:vectorize_x86_avx2",
+        "stg:axpy:specialize_s"
+      ],
+      "ctx_chars": 6244
+    },
+    "flat_bm25": {
+      "k": 5,
+      "applicable@k": 0.0,
+      "decidable@k": 1.0,
+      "op_match@k": 0.6,
+      "arch_bound@k": 0.4,
+      "ids": [
+        "stg:axpy:tail_handle_d",
+        "stg:axpy:specialize_d",
+        "stg:axpy:vectorize_d",
+        "stg:rot:unroll_x",
+        "stg:rot:tile_x"
+      ],
+      "ctx_chars": 1933
+    },
+    "random": {
+      "k": 5,
+      "applicable@k": 0.0,
+      "decidable@k": 1.0,
+      "op_match@k": 0.0,
+      "arch_bound@k": 0.4,
+      "ids": [
+        "stg:gemv:vectorize_x",
+        "stg:hemv:vectorize_d",
+        "stg:gemm:tile_arm_sve",
+        "stg:gemm:vectorize_x86_avx512",
+        "stg:gemm:fuse_s"
+      ],
+      "ctx_chars": 1274
+    }
+  },
+  {
+    "operator": "daxpy",
+    "profile": "k1_rvv256",
+    "query": "daxpy：在 RISC-V K1（RVV，VLEN=256）上写向量化 kernel",
+    "graph": {
+      "k": 4,
+      "applicable@k": 1.0,
+      "decidable@k": 1.0,
+      "op_match@k": 1.0,
+      "arch_bound@k": 1.0,
+      "ids": [
+        "stg:axpy:specialize_d",
+        "stg:axpy:tail_handle_d",
+        "stg:axpy:vectorize_d",
+        "stg:axpy:specialize_s"
+      ],
+      "ctx_chars": 10706
+    },
+    "flat_bm25": {
+      "k": 5,
+      "applicable@k": 0.6,
+      "decidable@k": 1.0,
+      "op_match@k": 0.6,
+      "arch_bound@k": 1.0,
+      "ids": [
+        "stg:axpy:vectorize_d",
+        "stg:axpy:tail_handle_d",
+        "stg:axpy:specialize_d",
+        "stg:copy:vectorize_d",
+        "stg:copy:tail_handle_d"
+      ],
+      "ctx_chars": 2557
+    },
+    "random": {
+      "k": 5,
+      "applicable@k": 0.0,
+      "decidable@k": 1.0,
+      "op_match@k": 0.2,
+      "arch_bound@k": 0.4,
+      "ids": [
+        "stg:gemm:vectorize_instruction_a",
+        "stg:gemm:tile_arm_sve",
+        "stg:dot:unroll_arm_neon",
+        "stg:axpy:unroll_instruction_a",
+        "stg:gemm:unroll_x86_avx512"
+      ],
+      "ctx_chars": 1160
+    }
+  },
+  {
+    "operator": "dgemm",
+    "profile": "x86_avx2",
+    "query": "dgemm：x86 AVX2 上做矩阵分块和打包",
+    "graph": {
+      "k": 5,
+      "applicable@k": 1.0,
+      "decidable@k": 1.0,
+      "op_match@k": 1.0,
+      "arch_bound@k": 1.0,
+      "ids": [
+        "stg:gemm:prefetch_x86_avx2",
+        "stg:gemm:tile_x86_avx2",
+        "stg:gemm:unroll_x86_avx2",
+        "stg:gemm:vectorize_x86_avx2",
+        "stg:gemm:fuse_s"
+      ],
+      "ctx_chars": 10133
+    },
+    "flat_bm25": {
+      "k": 5,
+      "applicable@k": 0.2,
+      "decidable@k": 1.0,
+      "op_match@k": 0.2,
+      "arch_bound@k": 1.0,
+      "ids": [
+        "stg:symm:tile_x86_avx2",
+        "stg:axpy:tile_x86_avx2",
+        "stg:gemv:tile_x86_avx2",
+        "stg:rot:tile_x86_avx2",
+        "stg:gemm:tile_x86_avx2"
+      ],
+      "ctx_chars": 975
+    },
+    "random": {
+      "k": 5,
+      "applicable@k": 0.0,
+      "decidable@k": 1.0,
+      "op_match@k": 0.0,
+      "arch_bound@k": 0.8,
+      "ids": [
+        "stg:nrm2:prefetch_x86_avx2",
+        "stg:axpy:fuse_instruction_a",
+        "stg:symv:vectorize_x86_avx2",
+        "stg:dot:tile_x",
+        "stg:asum:tile_arm_neon"
+      ],
+      "ctx_chars": 1063
+    }
+  },
+  {
+    "operator": "dot",
+    "profile": "k1_rvv256",
+    "query": "ddot：RISC-V 向量化 + 尾部处理 + 归约",
+    "graph": {
+      "k": 5,
+      "applicable@k": 1.0,
+      "decidable@k": 1.0,
+      "op_match@k": 1.0,
+      "arch_bound@k": 1.0,
+      "ids": [
+        "stg:dot:specialize_d",
+        "stg:dot:split_d",
+        "stg:dot:tail_handle_d",
+        "stg:dot:tile_d",
+        "stg:dot:vectorize_d"
+      ],
+      "ctx_chars": 15503
+    },
+    "flat_bm25": {
+      "k": 5,
+      "applicable@k": 1.0,
+      "decidable@k": 1.0,
+      "op_match@k": 1.0,
+      "arch_bound@k": 1.0,
+      "ids": [
+        "stg:dot:tail_handle_d",
+        "stg:dot:split_d",
+        "stg:dot:vectorize_d",
+        "stg:dot:tile_d",
+        "stg:dot:specialize_d"
+      ],
+      "ctx_chars": 2434
+    },
+    "random": {
+      "k": 5,
+      "applicable@k": 0.0,
+      "decidable@k": 1.0,
+      "op_match@k": 0.0,
+      "arch_bound@k": 0.8,
+      "ids": [
+        "stg:hemv:specialize_instruction_a_2",
+        "stg:gemm:fuse_s",
+        "stg:copy:prefetch_x86_avx2",
+        "stg:hemv:pack_algorithm_a",
+        "stg:trmm:reorder_code_a"
+      ],
+      "ctx_chars": 1134
+    }
+  }
+]

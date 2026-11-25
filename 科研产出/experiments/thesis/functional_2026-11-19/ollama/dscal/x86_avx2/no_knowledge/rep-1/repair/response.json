@@ -1,0 +1,9 @@
+{
+  "raw": "```c\n#include \"opbench.h\"\n\nvoid op_dscal(size_t n, double alpha, double *x, ptrdiff_t incx) {\n    if (incx == 1) {\n        for (size_t i = 0; i < n; ++i) x[i] *= alpha;\n    } else if (incx > 0) {\n        for (size_t i = 0; i < n; ++i) x[(ptrdiff_t)i * incx] *= alpha;\n    } else {\n        for (size_t i = 0; i < n; ++i) x[(-i - 1) * incx] *= alpha;\n    }\n}\n```",
+  "usage": {
+    "prompt_tokens": 1382,
+    "completion_tokens": 146,
+    "total_tokens": 1528
+  },
+  "stop_reason": "stop"
+}

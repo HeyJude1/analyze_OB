@@ -1,0 +1,46 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "amd64",
+  "results": [
+    {
+      "task": "dsymv",
+      "target": "x86",
+      "variant": "candidate",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymv\\x86_avx2\\no_knowledge\\rep-1\\initial\\candidate.c",
+      "source_sha256": "2653d6c659dc1657366e0c972c4fc9287b9a44b5355839a90d389671bf9e282b",
+      "status": "passed",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DSYMV",
+          "driver/check.c",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymv\\x86_avx2\\no_knowledge\\rep-1\\initial\\candidate.c",
+          "-o",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymv\\x86_avx2\\no_knowledge\\rep-1\\initial\\bin\\dsymv-x86-candidate.exe",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymv\\x86_avx2\\no_knowledge\\rep-1\\initial\\candidate.c: In function 'op_dsymv':\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymv\\x86_avx2\\no_knowledge\\rep-1\\initial\\candidate.c:7: warning: ignoring '#pragma omp parallel' [-Wunknown-pragmas]\n    7 |     #pragma omp parallel for reduction(+:y[:n])\n"
+      },
+      "binary_sha256": "6df393fef9e9d3d403bf47fbbd3a433cda0e3fd0ed92cdf4b2aa45dec11833fe",
+      "check": {
+        "argv": [
+          "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymv\\x86_avx2\\no_knowledge\\rep-1\\initial\\bin\\dsymv-x86-candidate.exe"
+        ],
+        "exit_code": 0,
+        "stdout": "720 cases, 0 failures\n",
+        "stderr": ""
+      },
+      "environment": "native"
+    }
+  ]
+}

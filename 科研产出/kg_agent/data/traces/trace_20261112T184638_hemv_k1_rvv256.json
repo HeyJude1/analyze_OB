@@ -1,0 +1,1457 @@
+{
+  "trace_id": "trace:20261112T184638:hemv:k1_rvv256",
+  "query": {
+    "operator": "hemv",
+    "raw_operator": "chemv",
+    "hardware_profile_id": "k1_rvv256",
+    "hardware_profile_node": "hw:k1_rvv256",
+    "code_features": {
+      "dtype": "c",
+      "precision": "single",
+      "stride_x": 1,
+      "stride_y": 1,
+      "loop_depth": 3,
+      "size_regime": "large",
+      "aligned": true,
+      "tail_divisible": false,
+      "structural": "hermitian",
+      "reduction": false
+    },
+    "top_k": 6
+  },
+  "steps": [
+    {
+      "step": 1,
+      "name": "pattern_match",
+      "description": "算子计算流程匹配",
+      "input": {
+        "operator": "op:hemv",
+        "operator_name": "hemv"
+      },
+      "candidates": [
+        "pat:hemv:core.elementwise_update",
+        "pat:hemv:core.gemv_like",
+        "pat:hemv:core.mm_microkernel",
+        "pat:hemv:core.rank1_update",
+        "pat:hemv:core.vector_reduction",
+        "pat:hemv:post.scale_accumulation",
+        "pat:hemv:post.tail_case",
+        "pat:hemv:prep.index_pointer_init",
+        "pat:hemv:prep.loop_invariant_calc",
+        "pat:hemv:prep.parameter_validation",
+        "pat:hemv:transform.packing",
+        "pat:hemv:transform.unpacking_special"
+      ],
+      "selected": [
+        "pat:hemv:core.elementwise_update",
+        "pat:hemv:core.gemv_like",
+        "pat:hemv:core.mm_microkernel",
+        "pat:hemv:core.rank1_update",
+        "pat:hemv:core.vector_reduction",
+        "pat:hemv:post.scale_accumulation",
+        "pat:hemv:post.tail_case",
+        "pat:hemv:prep.index_pointer_init",
+        "pat:hemv:prep.loop_invariant_calc",
+        "pat:hemv:prep.parameter_validation",
+        "pat:hemv:transform.packing",
+        "pat:hemv:transform.unpacking_special"
+      ],
+      "dropped": [],
+      "reason": "算子注册表命中：hemv 注册了 12 个计算流程"
+    },
+    {
+      "step": 2,
+      "name": "strategy_recall",
+      "description": "沿 PATTERN_OPTIMIZED_BY 召回策略 + GENERALIZES 抽象扩展",
+      "input": {
+        "patterns": [
+          "pat:hemv:core.elementwise_update",
+          "pat:hemv:core.gemv_like",
+          "pat:hemv:core.mm_microkernel",
+          "pat:hemv:core.rank1_update",
+          "pat:hemv:core.vector_reduction",
+          "pat:hemv:post.scale_accumulation",
+          "pat:hemv:post.tail_case",
+          "pat:hemv:prep.index_pointer_init",
+          "pat:hemv:prep.loop_invariant_calc",
+          "pat:hemv:prep.parameter_validation",
+          "pat:hemv:transform.packing",
+          "pat:hemv:transform.unpacking_special"
+        ],
+        "channels": [
+          "pattern",
+          "generalizes"
+        ]
+      },
+      "candidates": [
+        "stg:abstract:k_unroll",
+        "stg:abstract:pointer_precompute",
+        "stg:abstract:register_blocking",
+        "stg:abstract:tail_handling",
+        "stg:abstract:vector_fma",
+        "stg:hemv:pack_algorithm_a",
+        "stg:hemv:pack_instruction_a",
+        "stg:hemv:reorder_code_a",
+        "stg:hemv:reorder_code_a_2",
+        "stg:hemv:specialize_algorithm_a",
+        "stg:hemv:specialize_d",
+        "stg:hemv:specialize_instruction_a",
+        "stg:hemv:specialize_instruction_a_2",
+        "stg:hemv:split_code_a",
+        "stg:hemv:tail_handle_code_a",
+        "stg:hemv:tail_handle_s",
+        "stg:hemv:tile_algorithm_a",
+        "stg:hemv:tile_code_a",
+        "stg:hemv:unroll_algorithm_a",
+        "stg:hemv:vectorize_d",
+        "stg:hemv:vectorize_instruction_a"
+      ],
+      "selected": [
+        "stg:abstract:k_unroll",
+        "stg:abstract:pointer_precompute",
+        "stg:abstract:register_blocking",
+        "stg:abstract:tail_handling",
+        "stg:abstract:vector_fma",
+        "stg:hemv:pack_algorithm_a",
+        "stg:hemv:pack_instruction_a",
+        "stg:hemv:reorder_code_a",
+        "stg:hemv:reorder_code_a_2",
+        "stg:hemv:specialize_algorithm_a",
+        "stg:hemv:specialize_d",
+        "stg:hemv:specialize_instruction_a",
+        "stg:hemv:specialize_instruction_a_2",
+        "stg:hemv:split_code_a",
+        "stg:hemv:tail_handle_code_a",
+        "stg:hemv:tail_handle_s",
+        "stg:hemv:tile_algorithm_a",
+        "stg:hemv:tile_code_a",
+        "stg:hemv:unroll_algorithm_a",
+        "stg:hemv:vectorize_d",
+        "stg:hemv:vectorize_instruction_a"
+      ],
+      "dropped": [],
+      "reason": "沿 12 个计算流程召回 16 条策略，GENERALIZES 扩展 5 条抽象策略"
+    },
+    {
+      "step": 3,
+      "name": "condition_filter",
+      "description": "硬条件过滤：策略 conditions 对查询 code_features 求值",
+      "input": {
+        "code_features": {
+          "dtype": "c",
+          "precision": "single",
+          "stride_x": 1,
+          "stride_y": 1,
+          "loop_depth": 3,
+          "size_regime": "large",
+          "aligned": true,
+          "tail_divisible": false,
+          "structural": "hermitian",
+          "reduction": false
+        }
+      },
+      "candidates": [
+        "stg:abstract:k_unroll",
+        "stg:abstract:pointer_precompute",
+        "stg:abstract:register_blocking",
+        "stg:abstract:tail_handling",
+        "stg:abstract:vector_fma",
+        "stg:hemv:pack_algorithm_a",
+        "stg:hemv:pack_instruction_a",
+        "stg:hemv:reorder_code_a",
+        "stg:hemv:reorder_code_a_2",
+        "stg:hemv:specialize_algorithm_a",
+        "stg:hemv:specialize_d",
+        "stg:hemv:specialize_instruction_a",
+        "stg:hemv:specialize_instruction_a_2",
+        "stg:hemv:split_code_a",
+        "stg:hemv:tail_handle_code_a",
+        "stg:hemv:tail_handle_s",
+        "stg:hemv:tile_algorithm_a",
+        "stg:hemv:tile_code_a",
+        "stg:hemv:unroll_algorithm_a",
+        "stg:hemv:vectorize_d",
+        "stg:hemv:vectorize_instruction_a"
+      ],
+      "selected": [
+        "stg:abstract:k_unroll",
+        "stg:abstract:pointer_precompute",
+        "stg:abstract:register_blocking",
+        "stg:abstract:tail_handling",
+        "stg:abstract:vector_fma",
+        "stg:hemv:pack_algorithm_a",
+        "stg:hemv:pack_instruction_a",
+        "stg:hemv:reorder_code_a",
+        "stg:hemv:reorder_code_a_2",
+        "stg:hemv:specialize_algorithm_a",
+        "stg:hemv:specialize_d",
+        "stg:hemv:specialize_instruction_a",
+        "stg:hemv:specialize_instruction_a_2",
+        "stg:hemv:split_code_a",
+        "stg:hemv:tail_handle_code_a",
+        "stg:hemv:tail_handle_s",
+        "stg:hemv:tile_algorithm_a",
+        "stg:hemv:tile_code_a",
+        "stg:hemv:unroll_algorithm_a",
+        "stg:hemv:vectorize_d",
+        "stg:hemv:vectorize_instruction_a"
+      ],
+      "dropped": [],
+      "reason": "谓词求值：21 条通过、0 条硬条件淘汰"
+    },
+    {
+      "step": 4,
+      "name": "hardware_filter",
+      "description": "ISA/硬件 profile 能力过滤（profile 绑定 + hard ISA 要求）",
+      "input": {
+        "profile": "hw:k1_rvv256",
+        "profile_isa": [
+          "RVV 1.0",
+          "Zba",
+          "Zbb",
+          "Zbc",
+          "Zbs"
+        ],
+        "vector_regs": null
+      },
+      "candidates": [
+        "stg:abstract:k_unroll",
+        "stg:abstract:pointer_precompute",
+        "stg:abstract:register_blocking",
+        "stg:abstract:tail_handling",
+        "stg:abstract:vector_fma",
+        "stg:hemv:pack_algorithm_a",
+        "stg:hemv:pack_instruction_a",
+        "stg:hemv:reorder_code_a",
+        "stg:hemv:reorder_code_a_2",
+        "stg:hemv:specialize_algorithm_a",
+        "stg:hemv:specialize_d",
+        "stg:hemv:specialize_instruction_a",
+        "stg:hemv:specialize_instruction_a_2",
+        "stg:hemv:split_code_a",
+        "stg:hemv:tail_handle_code_a",
+        "stg:hemv:tail_handle_s",
+        "stg:hemv:tile_algorithm_a",
+        "stg:hemv:tile_code_a",
+        "stg:hemv:unroll_algorithm_a",
+        "stg:hemv:vectorize_d",
+        "stg:hemv:vectorize_instruction_a"
+      ],
+      "selected": [
+        "stg:abstract:k_unroll",
+        "stg:abstract:pointer_precompute",
+        "stg:abstract:register_blocking",
+        "stg:abstract:tail_handling",
+        "stg:abstract:vector_fma",
+        "stg:hemv:pack_algorithm_a",
+        "stg:hemv:pack_instruction_a",
+        "stg:hemv:reorder_code_a",
+        "stg:hemv:reorder_code_a_2",
+        "stg:hemv:specialize_algorithm_a",
+        "stg:hemv:specialize_d",
+        "stg:hemv:specialize_instruction_a",
+        "stg:hemv:specialize_instruction_a_2",
+        "stg:hemv:split_code_a",
+        "stg:hemv:tail_handle_code_a",
+        "stg:hemv:tail_handle_s",
+        "stg:hemv:tile_algorithm_a",
+        "stg:hemv:tile_code_a",
+        "stg:hemv:unroll_algorithm_a",
+        "stg:hemv:vectorize_d",
+        "stg:hemv:vectorize_instruction_a"
+      ],
+      "dropped": [],
+      "reason": "21 条满足 k1_rvv256 的硬件约束，0 条被淘汰"
+    },
+    {
+      "step": 5,
+      "name": "conflict_resolve",
+      "description": "同族去重 + 冲突边消解 + 寄存器预算（参数由硬件推导）",
+      "input": {
+        "register_budget_cap": 25.6,
+        "vector_regs": 32.0,
+        "uarch": "uarch:k1_rvv256"
+      },
+      "candidates": [
+        "stg:abstract:k_unroll",
+        "stg:abstract:pointer_precompute",
+        "stg:abstract:register_blocking",
+        "stg:abstract:tail_handling",
+        "stg:abstract:vector_fma",
+        "stg:hemv:pack_algorithm_a",
+        "stg:hemv:pack_instruction_a",
+        "stg:hemv:reorder_code_a",
+        "stg:hemv:reorder_code_a_2",
+        "stg:hemv:specialize_algorithm_a",
+        "stg:hemv:specialize_d",
+        "stg:hemv:specialize_instruction_a",
+        "stg:hemv:specialize_instruction_a_2",
+        "stg:hemv:split_code_a",
+        "stg:hemv:tail_handle_code_a",
+        "stg:hemv:tail_handle_s",
+        "stg:hemv:tile_algorithm_a",
+        "stg:hemv:tile_code_a",
+        "stg:hemv:unroll_algorithm_a",
+        "stg:hemv:vectorize_d",
+        "stg:hemv:vectorize_instruction_a"
+      ],
+      "selected": [
+        "stg:hemv:specialize_d",
+        "stg:hemv:vectorize_d",
+        "stg:abstract:k_unroll",
+        "stg:abstract:register_blocking",
+        "stg:abstract:pointer_precompute",
+        "stg:abstract:tail_handling",
+        "stg:hemv:pack_algorithm_a",
+        "stg:hemv:reorder_code_a_2",
+        "stg:hemv:specialize_algorithm_a",
+        "stg:hemv:split_code_a"
+      ],
+      "dropped": [
+        {
+          "id": "stg:abstract:vector_fma",
+          "reason": "与已选 stg:hemv:vectorize_d 同族同动作（SIMD向量指令/vectorize），避免重复注入（架构特性优先保留 arch_specific）"
+        },
+        {
+          "id": "stg:hemv:reorder_code_a",
+          "reason": "与已选 stg:abstract:pointer_precompute 同族同动作（指针/索引优化/reorder），避免重复注入（架构特性优先保留 arch_agnostic）"
+        },
+        {
+          "id": "stg:hemv:vectorize_instruction_a",
+          "reason": "与已选 stg:hemv:vectorize_d 同族同动作（SIMD向量指令/vectorize），避免重复注入（架构特性优先保留 arch_specific）"
+        },
+        {
+          "id": "stg:hemv:tile_algorithm_a",
+          "reason": "与已选 stg:abstract:register_blocking 同族同动作（分块Tiling/tile），避免重复注入（架构特性优先保留 arch_agnostic）"
+        },
+        {
+          "id": "stg:hemv:unroll_algorithm_a",
+          "reason": "与已选 stg:abstract:k_unroll 同族同动作（循环展开/unroll），避免重复注入（架构特性优先保留 arch_agnostic）"
+        },
+        {
+          "id": "stg:hemv:specialize_instruction_a",
+          "reason": "与已选 stg:hemv:specialize_d 同族同动作（SIMD向量指令/specialize），避免重复注入（架构特性优先保留 arch_specific）"
+        },
+        {
+          "id": "stg:hemv:pack_instruction_a",
+          "reason": "与已选 stg:hemv:pack_algorithm_a 同族同动作（数据重排/pack），避免重复注入（架构特性优先保留 arch_agnostic）"
+        },
+        {
+          "id": "stg:hemv:specialize_instruction_a_2",
+          "reason": "与已选 stg:hemv:specialize_algorithm_a 同族同动作（精度/数值变换/specialize），避免重复注入（架构特性优先保留 arch_agnostic）"
+        },
+        {
+          "id": "stg:hemv:tail_handle_code_a",
+          "reason": "与已选 stg:abstract:tail_handling 同族同动作（尾部处理/tail_handle），避免重复注入（架构特性优先保留 arch_agnostic）"
+        },
+        {
+          "id": "stg:hemv:tail_handle_s",
+          "reason": "与已选 stg:abstract:tail_handling 同族同动作（尾部处理/tail_handle），避免重复注入（架构特性优先保留 arch_agnostic）"
+        },
+        {
+          "id": "stg:hemv:tile_code_a",
+          "reason": "与已选 stg:abstract:register_blocking 同族同动作（分块Tiling/tile），避免重复注入（架构特性优先保留 arch_agnostic）"
+        }
+      ],
+      "reason": "10 条通过冲突消解（占用寄存器预算 0 / 26）",
+      "register_budget_used": 0.0
+    },
+    {
+      "step": 6,
+      "name": "score_and_select",
+      "description": "六项加权打分（match_p/fit_c/hw/ev/sup - transfer penalty）并取 top_k",
+      "input": {
+        "top_k": 6,
+        "weights": {
+          "match_p": 0.35,
+          "fit_c": 0.2,
+          "hw": 0.15,
+          "ev": 0.2,
+          "sup": 0.1,
+          "tr_penalty": 0.15
+        }
+      },
+      "candidates": [
+        "stg:hemv:specialize_d",
+        "stg:hemv:vectorize_d",
+        "stg:abstract:k_unroll",
+        "stg:abstract:register_blocking",
+        "stg:abstract:pointer_precompute",
+        "stg:abstract:tail_handling",
+        "stg:hemv:pack_algorithm_a",
+        "stg:hemv:reorder_code_a_2",
+        "stg:hemv:specialize_algorithm_a",
+        "stg:hemv:split_code_a"
+      ],
+      "selected": [
+        "stg:hemv:specialize_d",
+        "stg:hemv:vectorize_d",
+        "stg:hemv:pack_algorithm_a",
+        "stg:hemv:reorder_code_a_2",
+        "stg:hemv:specialize_algorithm_a",
+        "stg:hemv:split_code_a"
+      ],
+      "dropped": [
+        {
+          "id": "stg:abstract:k_unroll",
+          "reason": "score 0.615 低于 top_k=6 截断"
+        },
+        {
+          "id": "stg:abstract:pointer_precompute",
+          "reason": "score 0.615 低于 top_k=6 截断"
+        },
+        {
+          "id": "stg:abstract:register_blocking",
+          "reason": "score 0.615 低于 top_k=6 截断"
+        },
+        {
+          "id": "stg:abstract:tail_handling",
+          "reason": "score 0.615 低于 top_k=6 截断"
+        }
+      ],
+      "reason": "按总分降序取 top 6",
+      "scores": {
+        "stg:hemv:specialize_d": 0.739,
+        "stg:hemv:vectorize_d": 0.739,
+        "stg:abstract:k_unroll": 0.615,
+        "stg:abstract:register_blocking": 0.615,
+        "stg:abstract:pointer_precompute": 0.615,
+        "stg:abstract:tail_handling": 0.615,
+        "stg:hemv:pack_algorithm_a": 0.734,
+        "stg:hemv:reorder_code_a_2": 0.694,
+        "stg:hemv:specialize_algorithm_a": 0.694,
+        "stg:hemv:split_code_a": 0.694
+      },
+      "score_breakdown": {
+        "stg:hemv:specialize_d": {
+          "match_p": 1.0,
+          "fit_c": 1.0,
+          "hw": 1.0,
+          "ev": 0.3201,
+          "sup": 0.2,
+          "tr_penalty": 0.3,
+          "total": 0.739
+        },
+        "stg:hemv:vectorize_d": {
+          "match_p": 1.0,
+          "fit_c": 1.0,
+          "hw": 1.0,
+          "ev": 0.3201,
+          "sup": 0.2,
+          "tr_penalty": 0.3,
+          "total": 0.739
+        },
+        "stg:abstract:k_unroll": {
+          "match_p": 0.6,
+          "fit_c": 1.0,
+          "hw": 0.7,
+          "ev": 0.0,
+          "sup": 1.0,
+          "tr_penalty": 0.0,
+          "total": 0.615
+        },
+        "stg:abstract:register_blocking": {
+          "match_p": 0.6,
+          "fit_c": 1.0,
+          "hw": 0.7,
+          "ev": 0.0,
+          "sup": 1.0,
+          "tr_penalty": 0.0,
+          "total": 0.615
+        },
+        "stg:abstract:pointer_precompute": {
+          "match_p": 0.6,
+          "fit_c": 1.0,
+          "hw": 0.7,
+          "ev": 0.0,
+          "sup": 1.0,
+          "tr_penalty": 0.0,
+          "total": 0.615
+        },
+        "stg:abstract:tail_handling": {
+          "match_p": 0.6,
+          "fit_c": 1.0,
+          "hw": 0.7,
+          "ev": 0.0,
+          "sup": 1.0,
+          "tr_penalty": 0.0,
+          "total": 0.615
+        },
+        "stg:hemv:pack_algorithm_a": {
+          "match_p": 1.0,
+          "fit_c": 1.0,
+          "hw": 0.7,
+          "ev": 0.3201,
+          "sup": 0.6,
+          "tr_penalty": 0.3,
+          "total": 0.734
+        },
+        "stg:hemv:reorder_code_a_2": {
+          "match_p": 1.0,
+          "fit_c": 1.0,
+          "hw": 0.7,
+          "ev": 0.3201,
+          "sup": 0.2,
+          "tr_penalty": 0.3,
+          "total": 0.694
+        },
+        "stg:hemv:specialize_algorithm_a": {
+          "match_p": 1.0,
+          "fit_c": 1.0,
+          "hw": 0.7,
+          "ev": 0.3201,
+          "sup": 0.2,
+          "tr_penalty": 0.3,
+          "total": 0.694
+        },
+        "stg:hemv:split_code_a": {
+          "match_p": 1.0,
+          "fit_c": 1.0,
+          "hw": 0.7,
+          "ev": 0.3201,
+          "sup": 0.2,
+          "tr_penalty": 0.3,
+          "total": 0.694
+        }
+      }
+    },
+    {
+      "step": 7,
+      "name": "pack",
+      "description": "生成 StrategyPack（策略 + 模板 + 参数 + 证据 + 溯源），供生成端注入 prompt",
+      "input": {
+        "selected": [
+          "stg:hemv:specialize_d",
+          "stg:hemv:vectorize_d",
+          "stg:hemv:pack_algorithm_a",
+          "stg:hemv:reorder_code_a_2",
+          "stg:hemv:specialize_algorithm_a",
+          "stg:hemv:split_code_a"
+        ]
+      },
+      "candidates": [
+        "stg:hemv:specialize_d",
+        "stg:hemv:vectorize_d",
+        "stg:hemv:pack_algorithm_a",
+        "stg:hemv:reorder_code_a_2",
+        "stg:hemv:specialize_algorithm_a",
+        "stg:hemv:split_code_a"
+      ],
+      "selected": [
+        "stg:hemv:specialize_d",
+        "stg:hemv:vectorize_d",
+        "stg:hemv:pack_algorithm_a",
+        "stg:hemv:reorder_code_a_2",
+        "stg:hemv:specialize_algorithm_a",
+        "stg:hemv:split_code_a"
+      ],
+      "dropped": [],
+      "reason": "打包 6 条策略 / 6 个模板",
+      "result": {
+        "strategies": [
+          "stg:hemv:specialize_d",
+          "stg:hemv:vectorize_d",
+          "stg:hemv:pack_algorithm_a",
+          "stg:hemv:reorder_code_a_2",
+          "stg:hemv:specialize_algorithm_a",
+          "stg:hemv:split_code_a"
+        ],
+        "templates": [
+          "tpl:hemv:specialize_d",
+          "tpl:hemv:vectorize_d",
+          "tpl:hemv:pack_algorithm_a",
+          "tpl:hemv:reorder_code_a_2",
+          "tpl:hemv:specialize_algorithm_a",
+          "tpl:hemv:split_code_a"
+        ]
+      }
+    }
+  ],
+  "result": {
+    "strategies": [
+      "stg:hemv:specialize_d",
+      "stg:hemv:vectorize_d",
+      "stg:hemv:pack_algorithm_a",
+      "stg:hemv:reorder_code_a_2",
+      "stg:hemv:specialize_algorithm_a",
+      "stg:hemv:split_code_a"
+    ],
+    "pack": {
+      "schema_version": "pack-v1",
+      "query": {
+        "operator": "hemv",
+        "dtype": "c",
+        "hardware": "hw:k1_rvv256",
+        "patterns": [
+          "pat:hemv:core.elementwise_update",
+          "pat:hemv:core.gemv_like",
+          "pat:hemv:core.mm_microkernel",
+          "pat:hemv:core.rank1_update",
+          "pat:hemv:core.vector_reduction",
+          "pat:hemv:post.scale_accumulation",
+          "pat:hemv:post.tail_case",
+          "pat:hemv:prep.index_pointer_init",
+          "pat:hemv:prep.loop_invariant_calc",
+          "pat:hemv:prep.parameter_validation",
+          "pat:hemv:transform.packing",
+          "pat:hemv:transform.unpacking_special"
+        ],
+        "code_features": {
+          "dtype": "c",
+          "precision": "single",
+          "stride_x": 1,
+          "stride_y": 1,
+          "loop_depth": 3,
+          "size_regime": "large",
+          "aligned": true,
+          "tail_divisible": false,
+          "structural": "hermitian",
+          "reduction": false
+        },
+        "top_k": 6
+      },
+      "strategies": [
+        {
+          "id": "stg:hemv:specialize_d",
+          "name": "LMUL/SEW 向量寄存器分组调优",
+          "family": "SIMD向量指令",
+          "action": "specialize",
+          "level": "instruction",
+          "stage": "core",
+          "arch_scope": "arch_specific",
+          "arch": "rvv",
+          "arches": [
+            "rvv"
+          ],
+          "arch_parameters": {
+            "rvv": {
+              "lmul": 4,
+              "sew": 32
+            }
+          },
+          "score": 0.739,
+          "score_breakdown": {
+            "match_p": 1.0,
+            "fit_c": 1.0,
+            "hw": 1.0,
+            "ev": 0.3201,
+            "sup": 0.2,
+            "tr_penalty": 0.3,
+            "total": 0.739
+          },
+          "why_selected": {
+            "patterns": [
+              "pat:hemv:core.gemv_like"
+            ],
+            "conditions_satisfied": [
+              "dtype",
+              "loop_depth",
+              "size_regime",
+              "structural"
+            ],
+            "hardware": "k1_rvv256",
+            "source": "../cx_operator_tool/operator_extract/openblas_newtest1/03_chemv_op/chemv_k_rvv.c"
+          },
+          "conditions": [
+            {
+              "hard": true,
+              "op": "in",
+              "pred": "dtype",
+              "value": [
+                "c"
+              ]
+            },
+            {
+              "hard": true,
+              "op": "ge",
+              "pred": "loop_depth",
+              "value": 2
+            },
+            {
+              "hard": true,
+              "op": "in",
+              "pred": "size_regime",
+              "value": [
+                "medium",
+                "large"
+              ]
+            },
+            {
+              "hard": true,
+              "op": "eq",
+              "pred": "structural",
+              "value": "hermitian"
+            }
+          ],
+          "template": {
+            "id": "tpl:hemv:specialize_d",
+            "language": "c",
+            "skeleton": "if (inc_x == 1 && inc_y == 1) {\n    /* 单位步长快速路径：vle{{SEW}}/vse{{SEW}} */\n} else if (inc_y == 1) {\n    /* 跨步 x：vlse{{SEW}} + 连续 y */\n} else {\n    /* 通用 strided 路径 */\n}",
+            "slots": [
+              {
+                "default": 64,
+                "name": "SEW",
+                "source": "par:sew",
+                "type": "int"
+              },
+              {
+                "default": 8,
+                "name": "LMUL",
+                "source": "par:lmul",
+                "type": "int"
+              }
+            ],
+            "check_hints": [
+              "把最常用路径（stride=1）放在分支最前",
+              "多版本代码用宏展开，避免源码重复"
+            ]
+          },
+          "parameters": [
+            {
+              "id": "par:lmul",
+              "derived_from": "num_vector_regs / 同时活跃向量数",
+              "effect_direction": "LMUL 越大单指令吞吐越高、可用寄存器组越少",
+              "kind": "lmul",
+              "name": "lmul",
+              "range": [
+                1,
+                2,
+                4,
+                8
+              ],
+              "unit": "regs",
+              "used_by_strategies": 38,
+              "value_in_source": 8,
+              "value_in_instance": 4
+            },
+            {
+              "id": "par:sew",
+              "derived_from": "dtype",
+              "effect_direction": "由数据类型决定（double 固定 64）",
+              "kind": "sew",
+              "name": "sew",
+              "range": [
+                32,
+                64
+              ],
+              "unit": "bits",
+              "used_by_strategies": 38,
+              "value_in_source": 64,
+              "value_in_instance": 32
+            }
+          ],
+          "evidence": [
+            {
+              "id": "ev:hemv:geomean",
+              "metric": "speedup",
+              "value": 1.0206,
+              "platform_id": "hw:qemu-riscv64-vlen256",
+              "role": "supports",
+              "scope": "operator",
+              "caveat": "QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据"
+            },
+            {
+              "id": "ev:hemv:pass_rate",
+              "metric": "pass_rate",
+              "value": 1.0,
+              "platform_id": "hw:qemu-riscv64-vlen256",
+              "role": "supports",
+              "scope": "operator",
+              "caveat": "QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据"
+            }
+          ],
+          "provenance": {
+            "commit": "OpenBLAS 0.3.27.dev",
+            "extractor_version": "kgagent-v1.5",
+            "line_confidence": "exact",
+            "line_end": 142,
+            "line_start": 10,
+            "origin_file": "../cx_operator_tool/operator_extract/openblas_newtest1/03_chemv_op/chemv_k_rvv.c",
+            "source_file": "../cx_operator_tool/operator_extract/openblas_newtest1/03_chemv_op/chemv_k_rvv.c"
+          }
+        },
+        {
+          "id": "stg:hemv:vectorize_d",
+          "name": "RVV 向量化内核（vsetvl + vle/vfmacc/vse）",
+          "family": "SIMD向量指令",
+          "action": "vectorize",
+          "level": "instruction",
+          "stage": "core",
+          "arch_scope": "arch_specific",
+          "arch": "rvv",
+          "arches": [
+            "rvv"
+          ],
+          "arch_parameters": {
+            "rvv": {
+              "lmul": 4,
+              "sew": 32,
+              "vector_len": 32
+            }
+          },
+          "score": 0.739,
+          "score_breakdown": {
+            "match_p": 1.0,
+            "fit_c": 1.0,
+            "hw": 1.0,
+            "ev": 0.3201,
+            "sup": 0.2,
+            "tr_penalty": 0.3,
+            "total": 0.739
+          },
+          "why_selected": {
+            "patterns": [
+              "pat:hemv:core.gemv_like"
+            ],
+            "conditions_satisfied": [
+              "dtype",
+              "loop_depth",
+              "size_regime",
+              "stride_x",
+              "structural",
+              "aligned"
+            ],
+            "hardware": "k1_rvv256",
+            "source": "../cx_operator_tool/operator_extract/openblas_newtest1/03_chemv_op/chemv_k_rvv.c"
+          },
+          "conditions": [
+            {
+              "hard": true,
+              "op": "in",
+              "pred": "dtype",
+              "value": [
+                "c"
+              ]
+            },
+            {
+              "hard": true,
+              "op": "ge",
+              "pred": "loop_depth",
+              "value": 2
+            },
+            {
+              "hard": true,
+              "op": "in",
+              "pred": "size_regime",
+              "value": [
+                "medium",
+                "large"
+              ]
+            },
+            {
+              "hard": true,
+              "op": "eq",
+              "pred": "stride_x",
+              "value": 1
+            },
+            {
+              "hard": true,
+              "op": "eq",
+              "pred": "structural",
+              "value": "hermitian"
+            },
+            {
+              "hard": false,
+              "op": "eq",
+              "pred": "aligned",
+              "value": true
+            }
+          ],
+          "template": {
+            "id": "tpl:hemv:vectorize_d",
+            "language": "c",
+            "skeleton": "for (BLASLONG i = 0; i < n; i += vl) {\n    size_t vl = __riscv_vsetvl_e{{SEW}}m{{LMUL}}(n - i);\n    vfloat{{SEW}}m{{LMUL}}_t vx = __riscv_vle{{SEW}}_v_f{{SEW}}m{{LMUL}}(x + i, vl);\n    vfloat{{SEW}}m{{LMUL}}_t vy = __riscv_vle{{SEW}}_v_f{{SEW}}m{{LMUL}}(y + i, vl);\n    vy = __riscv_vfmacc_vv_f{{SEW}}m{{LMUL}}(vy, vx, {{ALPHA}}, vl);\n    __riscv_vse{{SEW}}_v_f{{SEW}}m{{LMUL}}(y + i, vy, vl);\n}",
+            "slots": [
+              {
+                "default": 64,
+                "name": "SEW",
+                "source": "par:sew",
+                "type": "int"
+              },
+              {
+                "default": 8,
+                "name": "LMUL",
+                "source": "par:lmul",
+                "type": "int"
+              },
+              {
+                "default": "alpha",
+                "name": "ALPHA",
+                "source": "operator.alpha",
+                "type": "expr"
+              }
+            ],
+            "check_hints": [
+              "vsetvl 必须在循环内按剩余长度重新计算",
+              "vl 与 pack 布局一致",
+              "指针别名会阻止向量化"
+            ]
+          },
+          "parameters": [
+            {
+              "id": "par:lmul",
+              "derived_from": "num_vector_regs / 同时活跃向量数",
+              "effect_direction": "LMUL 越大单指令吞吐越高、可用寄存器组越少",
+              "kind": "lmul",
+              "name": "lmul",
+              "range": [
+                1,
+                2,
+                4,
+                8
+              ],
+              "unit": "regs",
+              "used_by_strategies": 38,
+              "value_in_source": 8,
+              "value_in_instance": 4
+            },
+            {
+              "id": "par:sew",
+              "derived_from": "dtype",
+              "effect_direction": "由数据类型决定（double 固定 64）",
+              "kind": "sew",
+              "name": "sew",
+              "range": [
+                32,
+                64
+              ],
+              "unit": "bits",
+              "used_by_strategies": 38,
+              "value_in_source": 64,
+              "value_in_instance": 32
+            },
+            {
+              "id": "par:vector_len",
+              "derived_from": "VLEN*LMUL/SEW = 256*8/64 = 32",
+              "effect_direction": "等于 VLMAX 时无尾部开销；VLEN 越大单指令处理元素越多",
+              "kind": "vector_len",
+              "name": "vector_len",
+              "range": [
+                4,
+                8,
+                16,
+                32
+              ],
+              "unit": "elements",
+              "used_by_strategies": 16,
+              "value_in_source": 32,
+              "value_in_instance": 32
+            }
+          ],
+          "evidence": [
+            {
+              "id": "ev:hemv:geomean",
+              "metric": "speedup",
+              "value": 1.0206,
+              "platform_id": "hw:qemu-riscv64-vlen256",
+              "role": "supports",
+              "scope": "operator",
+              "caveat": "QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据"
+            },
+            {
+              "id": "ev:hemv:pass_rate",
+              "metric": "pass_rate",
+              "value": 1.0,
+              "platform_id": "hw:qemu-riscv64-vlen256",
+              "role": "supports",
+              "scope": "operator",
+              "caveat": "QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据"
+            }
+          ],
+          "provenance": {
+            "commit": "OpenBLAS 0.3.27.dev",
+            "extractor_version": "kgagent-v1.5",
+            "line_confidence": "exact",
+            "line_end": 142,
+            "line_start": 10,
+            "origin_file": "../cx_operator_tool/operator_extract/openblas_newtest1/03_chemv_op/chemv_k_rvv.c",
+            "source_file": "../cx_operator_tool/operator_extract/openblas_newtest1/03_chemv_op/chemv_k_rvv.c"
+          }
+        },
+        {
+          "id": "stg:hemv:pack_algorithm_a",
+          "name": "数据重排以提升访存效率",
+          "family": "数据重排",
+          "action": "pack",
+          "level": "algorithm",
+          "stage": "transform",
+          "arch_scope": "arch_agnostic",
+          "arch": null,
+          "arches": [],
+          "arch_parameters": {},
+          "score": 0.734,
+          "score_breakdown": {
+            "match_p": 1.0,
+            "fit_c": 1.0,
+            "hw": 0.7,
+            "ev": 0.3201,
+            "sup": 0.6,
+            "tr_penalty": 0.3,
+            "total": 0.734
+          },
+          "why_selected": {
+            "patterns": [
+              "pat:hemv:transform.packing"
+            ],
+            "conditions_satisfied": [
+              "dtype",
+              "loop_depth",
+              "precision",
+              "size_regime",
+              "structural"
+            ],
+            "hardware": "k1_rvv256",
+            "source": "开题/analyze_OB/20251114_153700/analysis_results/hemv_analysis.json"
+          },
+          "conditions": [
+            {
+              "hard": true,
+              "op": "in",
+              "pred": "dtype",
+              "value": [
+                "c"
+              ]
+            },
+            {
+              "hard": true,
+              "op": "ge",
+              "pred": "loop_depth",
+              "value": 3
+            },
+            {
+              "hard": true,
+              "op": "eq",
+              "pred": "precision",
+              "value": "single"
+            },
+            {
+              "hard": true,
+              "op": "in",
+              "pred": "size_regime",
+              "value": [
+                "medium",
+                "large"
+              ]
+            },
+            {
+              "hard": true,
+              "op": "eq",
+              "pred": "structural",
+              "value": "hermitian"
+            }
+          ],
+          "template": {
+            "id": "tpl:hemv:pack_algorithm_a",
+            "language": "c",
+            "skeleton": "for (BLASLONG j = 0; j < n; j += {{PACK_BLOCK}}) {\n    for (BLASLONG i = 0; i < m; i++) {\n        double *dst = buf + i * {{PACK_BLOCK}};\n        for (BLASLONG t = 0; t < {{PACK_BLOCK}}; t++) dst[t] = a[i * lda + j + t];\n    }\n}",
+            "slots": [
+              {
+                "default": 8,
+                "name": "PACK_BLOCK",
+                "source": "derived:isa_defaults",
+                "type": "int"
+              }
+            ],
+            "check_hints": [
+              "打包缓冲大小 = m*PACK_BLOCK*sizeof(T)",
+              "打包成本要被内层循环复用次数摊薄"
+            ]
+          },
+          "parameters": [],
+          "evidence": [
+            {
+              "id": "ev:hemv:geomean",
+              "metric": "speedup",
+              "value": 1.0206,
+              "platform_id": "hw:qemu-riscv64-vlen256",
+              "role": "supports",
+              "scope": "operator",
+              "caveat": "QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据"
+            },
+            {
+              "id": "ev:hemv:pass_rate",
+              "metric": "pass_rate",
+              "value": 1.0,
+              "platform_id": "hw:qemu-riscv64-vlen256",
+              "role": "supports",
+              "scope": "operator",
+              "caveat": "QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据"
+            }
+          ],
+          "provenance": {
+            "commit": "OpenBLAS 0.3.27.dev",
+            "extractor_version": "kgagent-v1.5",
+            "line_confidence": "exact",
+            "line_end": 1283,
+            "line_start": 1262,
+            "origin_file": "chemv_V.clean.c",
+            "source_file": "开题/analyze_OB/20251114_153700/analysis_results/hemv_analysis.json"
+          }
+        },
+        {
+          "id": "stg:hemv:reorder_code_a_2",
+          "name": "循环不变量外提",
+          "family": "循环重排",
+          "action": "reorder",
+          "level": "code",
+          "stage": "prep",
+          "arch_scope": "arch_agnostic",
+          "arch": null,
+          "arches": [],
+          "arch_parameters": {},
+          "score": 0.694,
+          "score_breakdown": {
+            "match_p": 1.0,
+            "fit_c": 1.0,
+            "hw": 0.7,
+            "ev": 0.3201,
+            "sup": 0.2,
+            "tr_penalty": 0.3,
+            "total": 0.694
+          },
+          "why_selected": {
+            "patterns": [
+              "pat:hemv:prep.parameter_validation"
+            ],
+            "conditions_satisfied": [
+              "dtype",
+              "loop_depth",
+              "precision",
+              "structural",
+              "size_regime"
+            ],
+            "hardware": "k1_rvv256",
+            "source": "开题/analyze_OB/20251114_153700/analysis_results/hemv_analysis.json"
+          },
+          "conditions": [
+            {
+              "hard": true,
+              "op": "in",
+              "pred": "dtype",
+              "value": [
+                "c"
+              ]
+            },
+            {
+              "hard": true,
+              "op": "ge",
+              "pred": "loop_depth",
+              "value": 3
+            },
+            {
+              "hard": true,
+              "op": "eq",
+              "pred": "precision",
+              "value": "single"
+            },
+            {
+              "hard": true,
+              "op": "eq",
+              "pred": "structural",
+              "value": "hermitian"
+            },
+            {
+              "hard": false,
+              "op": "in",
+              "pred": "size_regime",
+              "value": [
+                "medium",
+                "large"
+              ],
+              "weight": 1.0
+            }
+          ],
+          "template": {
+            "id": "tpl:hemv:reorder_code_a_2",
+            "language": "c",
+            "skeleton": "const double *pa = a;\ndouble *pc = c;\nfor (BLASLONG j = 0; j < n; j += {{BLOCK_SIZE}}) {\n    for (BLASLONG i = 0; i < m; i++) {\n        pc[i] += pa[i * lda];   /* 指针递增替代 i*lda 索引乘法 */\n    }\n    pa += {{BLOCK_SIZE}} * lda; pc += {{BLOCK_SIZE}};\n}",
+            "slots": [
+              {
+                "default": 1,
+                "name": "BLOCK_SIZE",
+                "source": "derived:isa_defaults",
+                "type": "int"
+              }
+            ],
+            "check_hints": [
+              "不要创建别名指针导致编译器无法优化",
+              "指针算术需与 ldc/lda 布局一致"
+            ]
+          },
+          "parameters": [],
+          "evidence": [
+            {
+              "id": "ev:hemv:geomean",
+              "metric": "speedup",
+              "value": 1.0206,
+              "platform_id": "hw:qemu-riscv64-vlen256",
+              "role": "supports",
+              "scope": "operator",
+              "caveat": "QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据"
+            },
+            {
+              "id": "ev:hemv:pass_rate",
+              "metric": "pass_rate",
+              "value": 1.0,
+              "platform_id": "hw:qemu-riscv64-vlen256",
+              "role": "supports",
+              "scope": "operator",
+              "caveat": "QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据"
+            }
+          ],
+          "provenance": {
+            "commit": "OpenBLAS 0.3.27.dev",
+            "extractor_version": "kgagent-v1.5",
+            "line_confidence": "exact",
+            "line_end": 616,
+            "line_start": 596,
+            "origin_file": "chemv_M.clean.c",
+            "source_file": "开题/analyze_OB/20251114_153700/analysis_results/hemv_analysis.json"
+          }
+        },
+        {
+          "id": "stg:hemv:specialize_algorithm_a",
+          "name": "计算分解与流水调度",
+          "family": "精度/数值变换",
+          "action": "specialize",
+          "level": "algorithm",
+          "stage": "transform",
+          "arch_scope": "arch_agnostic",
+          "arch": null,
+          "arches": [],
+          "arch_parameters": {},
+          "score": 0.694,
+          "score_breakdown": {
+            "match_p": 1.0,
+            "fit_c": 1.0,
+            "hw": 0.7,
+            "ev": 0.3201,
+            "sup": 0.2,
+            "tr_penalty": 0.3,
+            "total": 0.694
+          },
+          "why_selected": {
+            "patterns": [
+              "pat:hemv:transform.packing"
+            ],
+            "conditions_satisfied": [
+              "dtype",
+              "loop_depth",
+              "precision",
+              "size_regime",
+              "structural"
+            ],
+            "hardware": "k1_rvv256",
+            "source": "开题/analyze_OB/20251114_153700/analysis_results/hemv_analysis.json"
+          },
+          "conditions": [
+            {
+              "hard": true,
+              "op": "in",
+              "pred": "dtype",
+              "value": [
+                "c"
+              ]
+            },
+            {
+              "hard": true,
+              "op": "ge",
+              "pred": "loop_depth",
+              "value": 3
+            },
+            {
+              "hard": true,
+              "op": "eq",
+              "pred": "precision",
+              "value": "single"
+            },
+            {
+              "hard": true,
+              "op": "in",
+              "pred": "size_regime",
+              "value": [
+                "medium",
+                "large"
+              ]
+            },
+            {
+              "hard": true,
+              "op": "eq",
+              "pred": "structural",
+              "value": "hermitian"
+            }
+          ],
+          "template": {
+            "id": "tpl:hemv:specialize_algorithm_a",
+            "language": "c",
+            "skeleton": "if (inc_x == 1) {\n    for (BLASLONG i = 0; i + {{BLOCK_SIZE}} <= n; i += {{BLOCK_SIZE}}) { /* 连续快速路径 */ }\n} else {\n    for (BLASLONG i = 0; i < n; i++) { /* 跨步路径：inc_x 逐次累加，消除索引乘法 */ }\n}",
+            "slots": [
+              {
+                "default": 4,
+                "name": "BLOCK_SIZE",
+                "source": "derived:isa_defaults",
+                "type": "int"
+              }
+            ],
+            "check_hints": [
+              "分支预测友好的顺序",
+              "消除跨步访问的索引乘法"
+            ]
+          },
+          "parameters": [],
+          "evidence": [
+            {
+              "id": "ev:hemv:geomean",
+              "metric": "speedup",
+              "value": 1.0206,
+              "platform_id": "hw:qemu-riscv64-vlen256",
+              "role": "supports",
+              "scope": "operator",
+              "caveat": "QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据"
+            },
+            {
+              "id": "ev:hemv:pass_rate",
+              "metric": "pass_rate",
+              "value": 1.0,
+              "platform_id": "hw:qemu-riscv64-vlen256",
+              "role": "supports",
+              "scope": "operator",
+              "caveat": "QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据"
+            }
+          ],
+          "provenance": {
+            "commit": "OpenBLAS 0.3.27.dev",
+            "extractor_version": "kgagent-v1.5",
+            "line_confidence": "exact",
+            "line_end": 712,
+            "line_start": 493,
+            "origin_file": "chemv_M.clean.c",
+            "source_file": "开题/analyze_OB/20251114_153700/analysis_results/hemv_analysis.json"
+          }
+        },
+        {
+          "id": "stg:hemv:split_code_a",
+          "name": "条件分支消除与归约路径合并",
+          "family": "循环拆分",
+          "action": "split",
+          "level": "code",
+          "stage": "transform",
+          "arch_scope": "arch_agnostic",
+          "arch": null,
+          "arches": [],
+          "arch_parameters": {},
+          "score": 0.694,
+          "score_breakdown": {
+            "match_p": 1.0,
+            "fit_c": 1.0,
+            "hw": 0.7,
+            "ev": 0.3201,
+            "sup": 0.2,
+            "tr_penalty": 0.3,
+            "total": 0.694
+          },
+          "why_selected": {
+            "patterns": [
+              "pat:hemv:transform.packing"
+            ],
+            "conditions_satisfied": [
+              "dtype",
+              "loop_depth",
+              "precision",
+              "structural",
+              "size_regime"
+            ],
+            "hardware": "k1_rvv256",
+            "source": "开题/analyze_OB/20251114_153700/analysis_results/hemv_analysis.json"
+          },
+          "conditions": [
+            {
+              "hard": true,
+              "op": "in",
+              "pred": "dtype",
+              "value": [
+                "c"
+              ]
+            },
+            {
+              "hard": true,
+              "op": "ge",
+              "pred": "loop_depth",
+              "value": 3
+            },
+            {
+              "hard": true,
+              "op": "eq",
+              "pred": "precision",
+              "value": "single"
+            },
+            {
+              "hard": true,
+              "op": "eq",
+              "pred": "structural",
+              "value": "hermitian"
+            },
+            {
+              "hard": false,
+              "op": "in",
+              "pred": "size_regime",
+              "value": [
+                "medium",
+                "large"
+              ],
+              "weight": 1.0
+            }
+          ],
+          "template": {
+            "id": "tpl:hemv:split_code_a",
+            "language": "c",
+            "skeleton": "double acc[{{SPLIT_FACTOR}}] = {0};\nfor (i = 0; i < n; i += {{SPLIT_FACTOR}}) {\n    /* {{SPLIT_FACTOR}} 条标量累加链并行 */\n}\ndouble s = 0; for (int t = 0; t < {{SPLIT_FACTOR}}; t++) s += acc[t];",
+            "slots": [
+              {
+                "default": 2,
+                "name": "SPLIT_FACTOR",
+                "source": "derived:isa_defaults",
+                "type": "int"
+              }
+            ],
+            "check_hints": [
+              "归约语义（求和顺序）变化会影响浮点结果，需在文档中说明"
+            ]
+          },
+          "parameters": [],
+          "evidence": [
+            {
+              "id": "ev:hemv:geomean",
+              "metric": "speedup",
+              "value": 1.0206,
+              "platform_id": "hw:qemu-riscv64-vlen256",
+              "role": "supports",
+              "scope": "operator",
+              "caveat": "QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据"
+            },
+            {
+              "id": "ev:hemv:pass_rate",
+              "metric": "pass_rate",
+              "value": 1.0,
+              "platform_id": "hw:qemu-riscv64-vlen256",
+              "role": "supports",
+              "scope": "operator",
+              "caveat": "QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据"
+            }
+          ],
+          "provenance": {
+            "commit": "OpenBLAS 0.3.27.dev",
+            "extractor_version": "kgagent-v1.5",
+            "line_confidence": "exact",
+            "line_end": 1350,
+            "line_start": 1329,
+            "origin_file": "chemv_V.clean.c",
+            "source_file": "开题/analyze_OB/20251114_153700/analysis_results/hemv_analysis.json"
+          }
+        }
+      ]
+    },
+    "prompt_preview": "你是 OpenBLAS kernel 优化专家。目标算子：hemv（dtype=c，loop_depth=3，stride_x=1，size_regime=large）。\n目标硬件 profile：k1_rvv256。请只使用下列知识块中的策略与模板槽位，不要引入未给出的性能数字。\n1) LMUL/SEW 向量寄存器分组调优（SIMD向量指令/specialize，score=0.739）：条件 dtype in ['c']、loop_depth ge 2、size_regime in ['medium', 'large']、structural eq 'hermitian'；参数 lmul=4、sew=32。\n2) RVV 向量化内核（vsetvl + vle/vfmacc/vse）（SIMD向量指令/vectorize，score=0.739）：条件 dtype in ['c']、loop_depth ge 2、size_regime in ['medium', 'large']、stride_x eq 1、structural eq 'hermitian'、aligned eq "
+  },
+  "created_at": "2026-11-12T18:46:38+08:00"
+}

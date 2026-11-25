@@ -1,0 +1,13 @@
+# OpOptBench task（v0.1，自动生成，需人工补 signature/semantics/flops）
+op: ddot
+level: L1
+role: S1_seen
+source: 15_ddot_op\ddot_k.c
+sizes: [1024, 16384, 1048576]
+input: input/generic.c
+rvv_expert: 15_ddot_op\ddot_k_rvv.c
+interface: "待补：从 <op>.c 抽取函数签名"
+semantics: "待补：BLAS 语义"
+invariants: ["待补"]
+flops: "待补"
+tolerance: "待补：参考 vs 参考自校准"

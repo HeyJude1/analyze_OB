@@ -1,0 +1,9 @@
+{
+  "raw": "```c\n#include \"opbench.h\"\n\nvoid op_dgemm(size_t m, size_t n, size_t k, double alpha, const double *a, size_t lda,\n              const double *b, size_t ldb, double beta, double *c, size_t ldc) {\n    if (alpha == 0.0 || k == 0) {\n        if (beta != 0.0) {\n            for (size_t i = 0; i < m; ++i) {\n                for (size_t j = 0; j < n; ++j) {\n                    c[i * ldc + j] *= beta;\n                }\n            }\n        }\n        return;\n    }\n\n    const size_t block_size = 4;\n    const double init_value = 0.0;\n\n    for (size_t i = 0; i < m; i += block_size) {\n        for (size_t j = 0; j < n; j += block_size) {\n            for (size_t p = 0; p < k; ++p) {\n                const double a_val = alpha * a[i * lda + p];\n                for (size_t ii = 0; ii < block_size && i + ii < m; ++ii) {\n                    for (size_t jj = 0; jj < block_size && j + jj < n; ++jj) {\n                        c[(i + ii) * ldc + j + jj] += a_val * b[p * ldb + j + jj];\n                    }\n                }\n            }\n        }\n    }\n\n    if (m % block_size != 0 || n % block_size != 0) {\n        for (size_t i = m - (m % block_size); i < m; ++i) {\n            for (size_t j = n - (n % block_size); j < n; ++j) {\n                double sum = 0.0;\n                if (alpha != 0.0) {\n                    for (size_t p = 0; p < k; ++p) sum += a[i * lda + p] * b[p * ldb + j];\n                }\n                const size_t out = i * ldc + j;\n                const double product = k == 0 ? 0.0 : alpha * sum;\n                c[out] = product + (beta == 0.0 ? 0.0 : beta * c[out]);\n            }\n        }\n    }\n}\n```",
+  "usage": {
+    "prompt_tokens": 3542,
+    "completion_tokens": 513,
+    "total_tokens": 4055
+  },
+  "stop_reason": "stop"
+}

@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "task": "dsymv",
+  "symbol": "op_dsymv",
+  "split": "holdout",
+  "features": {
+    "dtype": "d",
+    "precision": "double",
+    "loop_depth": 2,
+    "structural": "symmetric",
+    "reduction": true,
+    "layout": "row_major_symmetric_selected_triangle"
+  },
+  "pattern": "symmetric_matrix_vector_product",
+  "dimensions": [
+    "n"
+  ],
+  "semantics": "For row-major symmetric A, compute y[i*incy] = alpha*sum(A(i,j)*x[j*incx]) + beta*y[i*incy]. uplo is 'U' or 'L'. Read only the selected triangle including its diagonal; reconstruct the other triangle by mirroring indices, and do not read row padding. n==0 touches no memory. alpha==0 must not read A/x and they may be NULL. beta==0 must overwrite without reading y. y remains byte-for-byte unchanged when alpha==0 and beta==1.",
+  "parameters": [
+    "uplo",
+    "n",
+    "alpha",
+    "a",
+    "lda",
+    "x",
+    "incx",
+    "beta",
+    "y",
+    "incy"
+  ],
+  "memory_contract": "Vector increments are signed and nonzero. For negative increments, the caller passes the address of logical element zero. Inputs and outputs occupy disjoint storage except for DSCAL's in-place operand. Leading dimensions are in elements and at least the stored row width.",
+  "numeric_contract": "Binary64 finite data unless a coefficient disables access and the harness provides inaccessible inputs or poison. Reassociation and FMA are allowed within |observed-reference| <= 2e-12 + 3e-12*|reference|. Only logical output elements may be written; input bytes, output padding and guards must remain unchanged."
+}

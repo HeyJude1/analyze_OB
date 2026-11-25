@@ -1,0 +1,1095 @@
+{
+  "created_at": "2026-11-19T21:18:39+08:00",
+  "query": {
+    "code_features": {
+      "dtype": "d",
+      "loop_depth": 3,
+      "precision": "double",
+      "reduction": true,
+      "structural": "none"
+    },
+    "feature_mode": "explicit",
+    "hardware_profile_id": "k1_rvv256",
+    "hardware_profile_node": "hw:k1_rvv256",
+    "operator": "gemm",
+    "raw_operator": "dgemm",
+    "source_operator": null,
+    "top_k": 5
+  },
+  "result": {
+    "pack": {
+      "plan": {
+        "ordered_strategy_ids": [
+          "stg:gemm:reorder_s",
+          "stg:gemm:tile_s",
+          "stg:gemm:unroll_s",
+          "stg:gemm:fuse_s",
+          "stg:gemm:tail_handle_s"
+        ],
+        "relations": [],
+        "status": "candidate_only"
+      },
+      "query": {
+        "baseline": null,
+        "code_features": {
+          "dtype": "d",
+          "loop_depth": 3,
+          "precision": "double",
+          "reduction": true,
+          "structural": "none"
+        },
+        "dtype": "d",
+        "feature_mode": "explicit",
+        "hardware": "hw:k1_rvv256",
+        "operator": "gemm",
+        "patterns": [
+          "pat:gemm:core.mm_microkernel",
+          "pat:gemm:post.tail_case",
+          "pat:gemm:prep.index_pointer_init",
+          "pat:gemm:prep.loop_invariant_calc",
+          "pat:gemm:prep.parameter_validation",
+          "pat:gemm:transform.packing"
+        ],
+        "source_operator": null,
+        "top_k": 5,
+        "workload": null
+      },
+      "schema_version": "pack-v1",
+      "strategies": [
+        {
+          "action": "fuse",
+          "arch": null,
+          "arch_parameters": {},
+          "arch_scope": "arch_agnostic",
+          "arches": [],
+          "conditions": [
+            {
+              "hard": true,
+              "op": "in",
+              "pred": "dtype",
+              "value": [
+                "d"
+              ]
+            },
+            {
+              "hard": true,
+              "op": "ge",
+              "pred": "loop_depth",
+              "value": 2
+            },
+            {
+              "hard": false,
+              "op": "in",
+              "pred": "size_regime",
+              "value": [
+                "medium",
+                "large"
+              ],
+              "weight": 1.0
+            }
+          ],
+          "evidence": [],
+          "family": "循环融合",
+          "id": "stg:gemm:fuse_s",
+          "level": "code",
+          "name": "alpha 缩放融合到写回",
+          "parameters": [],
+          "provenance": {
+            "commit": "OpenBLAS 0.3.27.dev",
+            "extractor_version": "kgagent-v1.5",
+            "line_confidence": "exact",
+            "line_end": 164,
+            "line_start": 7,
+            "origin_file": "kernel/generic/gemmkernel_2x2.c",
+            "source_file": "../cx_operator_tool/operator_extract/openblas_newtest1/16_dgemm_op5/dgemm_k.c"
+          },
+          "score": 0.675,
+          "score_breakdown": {
+            "ev": 0.0,
+            "fit_c": 1.0,
+            "hw": 0.7,
+            "match_p": 1.0,
+            "sup": 0.2,
+            "total": 0.675,
+            "tr_penalty": 0.0
+          },
+          "stage": "post",
+          "target_parameters": {},
+          "template": {
+            "check_hints": [
+              "融合后临时变量复用",
+              "注意广播语义"
+            ],
+            "id": "tpl:gemm:fuse_s",
+            "kind": "illustrative_skeleton",
+            "language": "c",
+            "preconditions": [
+              "同一数据被多次遍历"
+            ],
+            "skeleton": "for (BLASLONG i = 0; i < n; i += {{BLOCK_SIZE}}) {\n    c[i] = {{ALPHA}} * a[i] + b[i];   /* 把缩放融合进写回，避免额外遍历 */\n}",
+            "slots": [
+              {
+                "default": 4,
+                "name": "BLOCK_SIZE",
+                "source": "derived:isa_defaults",
+                "type": "int"
+              },
+              {
+                "default": "alpha",
+                "name": "ALPHA",
+                "source": "operator.alpha",
+                "type": "expr"
+              }
+            ]
+          },
+          "why_selected": {
+            "abstracted_from": [],
+            "conditions_satisfied": [
+              "dtype",
+              "loop_depth"
+            ],
+            "hardware": "k1_rvv256",
+            "patterns": [
+              "pat:gemm:post.tail_case"
+            ],
+            "source": "../cx_operator_tool/operator_extract/openblas_newtest1/16_dgemm_op5/dgemm_k.c"
+          }
+        },
+        {
+          "action": "reorder",
+          "arch": null,
+          "arch_parameters": {},
+          "arch_scope": "arch_agnostic",
+          "arches": [],
+          "conditions": [
+            {
+              "hard": true,
+              "op": "in",
+              "pred": "dtype",
+              "value": [
+                "d"
+              ]
+            },
+            {
+              "hard": true,
+              "op": "ge",
+              "pred": "loop_depth",
+              "value": 2
+            },
+            {
+              "hard": false,
+              "op": "in",
+              "pred": "size_regime",
+              "value": [
+                "medium",
+                "large"
+              ],
+              "weight": 1.0
+            }
+          ],
+          "evidence": [],
+          "family": "指针/索引优化",
+          "id": "stg:gemm:reorder_s",
+          "level": "code",
+          "name": "指针预计算消除索引乘法",
+          "parameters": [
+            {
+              "derived_from": "cacheline_b / sizeof(T)",
+              "effect_direction": "块越大地址计算越少，但寄存器/别名分析压力越大",
+              "id": "par:block_size",
+              "kind": "blocking",
+              "name": "block_size",
+              "range": [
+                1,
+                2,
+                4,
+                8
+              ],
+              "unit": "elements",
+              "used_by_strategies": 2,
+              "value_in_instance": 1,
+              "value_in_source": 1
+            }
+          ],
+          "provenance": {
+            "commit": "OpenBLAS 0.3.27.dev",
+            "extractor_version": "kgagent-v1.5",
+            "line_confidence": "exact",
+            "line_end": 164,
+            "line_start": 7,
+            "origin_file": "kernel/generic/gemmkernel_2x2.c",
+            "source_file": "../cx_operator_tool/operator_extract/openblas_newtest1/16_dgemm_op5/dgemm_k.c"
+          },
+          "score": 0.675,
+          "score_breakdown": {
+            "ev": 0.0,
+            "fit_c": 1.0,
+            "hw": 0.7,
+            "match_p": 1.0,
+            "sup": 0.2,
+            "total": 0.675,
+            "tr_penalty": 0.0
+          },
+          "stage": "prep",
+          "target_parameters": {},
+          "template": {
+            "check_hints": [
+              "不要创建别名指针导致编译器无法优化",
+              "指针算术需与 ldc/lda 布局一致"
+            ],
+            "id": "tpl:gemm:reorder_s",
+            "kind": "illustrative_skeleton",
+            "language": "c",
+            "preconditions": [
+              "循环索引用于地址计算"
+            ],
+            "skeleton": "const double *pa = a;\ndouble *pc = c;\nfor (BLASLONG j = 0; j < n; j += {{BLOCK_SIZE}}) {\n    for (BLASLONG i = 0; i < m; i++) {\n        pc[i] += pa[i * lda];   /* 指针递增替代 i*lda 索引乘法 */\n    }\n    pa += {{BLOCK_SIZE}} * lda; pc += {{BLOCK_SIZE}};\n}",
+            "slots": [
+              {
+                "default": 1,
+                "name": "BLOCK_SIZE",
+                "source": "par:block_size",
+                "type": "int"
+              }
+            ]
+          },
+          "why_selected": {
+            "abstracted_from": [],
+            "conditions_satisfied": [
+              "dtype",
+              "loop_depth"
+            ],
+            "hardware": "k1_rvv256",
+            "patterns": [
+              "pat:gemm:prep.parameter_validation"
+            ],
+            "source": "../cx_operator_tool/operator_extract/openblas_newtest1/16_dgemm_op5/dgemm_k.c"
+          }
+        },
+        {
+          "action": "tail_handle",
+          "arch": null,
+          "arch_parameters": {},
+          "arch_scope": "arch_agnostic",
+          "arches": [],
+          "conditions": [
+            {
+              "hard": true,
+              "op": "in",
+              "pred": "dtype",
+              "value": [
+                "d"
+              ]
+            },
+            {
+              "hard": true,
+              "op": "ge",
+              "pred": "loop_depth",
+              "value": 2
+            },
+            {
+              "hard": false,
+              "op": "in",
+              "pred": "size_regime",
+              "value": [
+                "medium",
+                "large"
+              ],
+              "weight": 1.0
+            },
+            {
+              "hard": false,
+              "op": "eq",
+              "pred": "tail_divisible",
+              "value": false
+            }
+          ],
+          "evidence": [],
+          "family": "尾部处理",
+          "id": "stg:gemm:tail_handle_s",
+          "level": "code",
+          "name": "尾部余数分支单独处理",
+          "parameters": [
+            {
+              "derived_from": "cacheline_b / sizeof(T)",
+              "effect_direction": "块越大地址计算越少，但寄存器/别名分析压力越大",
+              "id": "par:block_size",
+              "kind": "blocking",
+              "name": "block_size",
+              "range": [
+                1,
+                2,
+                4,
+                8
+              ],
+              "unit": "elements",
+              "used_by_strategies": 2,
+              "value_in_instance": null,
+              "value_in_source": 1
+            }
+          ],
+          "provenance": {
+            "commit": "OpenBLAS 0.3.27.dev",
+            "extractor_version": "kgagent-v1.5",
+            "line_confidence": "exact",
+            "line_end": 164,
+            "line_start": 7,
+            "origin_file": "kernel/generic/gemmkernel_2x2.c",
+            "source_file": "../cx_operator_tool/operator_extract/openblas_newtest1/16_dgemm_op5/dgemm_k.c"
+          },
+          "score": 0.675,
+          "score_breakdown": {
+            "ev": 0.0,
+            "fit_c": 1.0,
+            "hw": 0.7,
+            "match_p": 1.0,
+            "sup": 0.2,
+            "total": 0.675,
+            "tr_penalty": 0.0
+          },
+          "stage": "post",
+          "target_parameters": {
+            "element_bits": 64,
+            "elements_per_register": 4,
+            "reserved_vector_registers": 4,
+            "rvv": {
+              "lmul_candidates": [
+                1,
+                2,
+                4,
+                8
+              ],
+              "max_accumulators_by_lmul": {
+                "1": 26,
+                "2": 12,
+                "4": 5,
+                "8": 1
+              },
+              "tail": "use_vsetvl_return_value",
+              "vlmax_by_lmul": {
+                "1": 4,
+                "2": 8,
+                "4": 16,
+                "8": 32
+              }
+            },
+            "source": "declared_target_profile",
+            "status": "candidate_only",
+            "vector_register_budget": 28
+          },
+          "template": {
+            "check_hints": [
+              "尾部循环必须覆盖所有余数",
+              "避免尾部写越界"
+            ],
+            "id": "tpl:gemm:tail_handle_s",
+            "kind": "illustrative_skeleton",
+            "language": "c",
+            "preconditions": [
+              "n 可能不整除块大小"
+            ],
+            "skeleton": "for (i = 0; i + {{BLOCK_SIZE}} <= n; i += {{BLOCK_SIZE}}) { /* 主块 */ }\nfor (; i < n; ++i) { /* 尾部余数逐元素处理，避免越界 */ }",
+            "slots": [
+              {
+                "default": 4,
+                "name": "BLOCK_SIZE",
+                "source": "par:block_size",
+                "type": "int"
+              }
+            ]
+          },
+          "why_selected": {
+            "abstracted_from": [],
+            "conditions_satisfied": [
+              "dtype",
+              "loop_depth"
+            ],
+            "hardware": "k1_rvv256",
+            "patterns": [
+              "pat:gemm:post.tail_case"
+            ],
+            "source": "../cx_operator_tool/operator_extract/openblas_newtest1/16_dgemm_op5/dgemm_k.c"
+          }
+        },
+        {
+          "action": "tile",
+          "arch": null,
+          "arch_parameters": {},
+          "arch_scope": "arch_agnostic",
+          "arches": [],
+          "conditions": [
+            {
+              "hard": true,
+              "op": "in",
+              "pred": "dtype",
+              "value": [
+                "d"
+              ]
+            },
+            {
+              "hard": true,
+              "op": "ge",
+              "pred": "loop_depth",
+              "value": 2
+            },
+            {
+              "hard": false,
+              "op": "in",
+              "pred": "size_regime",
+              "value": [
+                "medium",
+                "large"
+              ],
+              "weight": 1.0
+            }
+          ],
+          "evidence": [],
+          "family": "分块Tiling",
+          "id": "stg:gemm:tile_s",
+          "level": "code",
+          "name": "固定 4 累加器微内核分块",
+          "parameters": [
+            {
+              "derived_from": "由标量/向量寄存器数量与 C 列块宽决定",
+              "effect_direction": "累加器越多，装入值复用次数越高；超过寄存器数会溢出到栈",
+              "id": "par:reg_block_n",
+              "kind": "blocking",
+              "name": "reg_block_n",
+              "range": [
+                1,
+                2,
+                4,
+                8,
+                16,
+                32
+              ],
+              "unit": "accumulators",
+              "used_by_strategies": 7,
+              "value_in_instance": 4,
+              "value_in_source": 4
+            }
+          ],
+          "provenance": {
+            "commit": "OpenBLAS 0.3.27.dev",
+            "extractor_version": "kgagent-v1.5",
+            "line_confidence": "exact",
+            "line_end": 164,
+            "line_start": 7,
+            "origin_file": "kernel/generic/gemmkernel_2x2.c",
+            "source_file": "../cx_operator_tool/operator_extract/openblas_newtest1/16_dgemm_op5/dgemm_k.c"
+          },
+          "score": 0.675,
+          "score_breakdown": {
+            "ev": 0.0,
+            "fit_c": 1.0,
+            "hw": 0.7,
+            "match_p": 1.0,
+            "sup": 0.2,
+            "total": 0.675,
+            "tr_penalty": 0.0
+          },
+          "stage": "core",
+          "target_parameters": {},
+          "template": {
+            "check_hints": [
+              "累加器数量受标量寄存器限制",
+              "注意 ldc 步长与 C 的列主序布局"
+            ],
+            "id": "tpl:gemm:tile_s",
+            "kind": "illustrative_skeleton",
+            "language": "c",
+            "preconditions": [
+              "C 按列主序存储"
+            ],
+            "skeleton": "for (j = 0; j < bn; j += {{REG_BLOCK_N}}) {\n    for (i = 0; i < bm; i += {{REG_BLOCK_M}}) {\n        double acc[{{REG_BLOCK_M}}][{{REG_BLOCK_N}}] = {{INIT}};\n        for (k = 0; k < bk; k++) { /* acc 中复用装入的 A/B */ }\n    }\n}",
+            "slots": [
+              {
+                "default": 2,
+                "name": "REG_BLOCK_M",
+                "source": "derived:isa_defaults",
+                "type": "int"
+              },
+              {
+                "default": 2,
+                "name": "REG_BLOCK_N",
+                "source": "par:reg_block_n",
+                "type": "int"
+              },
+              {
+                "default": "0.0",
+                "name": "INIT",
+                "source": "operator.init",
+                "type": "code"
+              }
+            ]
+          },
+          "why_selected": {
+            "abstracted_from": [],
+            "conditions_satisfied": [
+              "dtype",
+              "loop_depth"
+            ],
+            "hardware": "k1_rvv256",
+            "patterns": [
+              "pat:gemm:core.mm_microkernel"
+            ],
+            "source": "../cx_operator_tool/operator_extract/openblas_newtest1/16_dgemm_op5/dgemm_k.c"
+          }
+        },
+        {
+          "action": "unroll",
+          "arch": null,
+          "arch_parameters": {},
+          "arch_scope": "arch_agnostic",
+          "arches": [],
+          "conditions": [
+            {
+              "hard": true,
+              "op": "in",
+              "pred": "dtype",
+              "value": [
+                "d"
+              ]
+            },
+            {
+              "hard": true,
+              "op": "ge",
+              "pred": "loop_depth",
+              "value": 2
+            },
+            {
+              "hard": false,
+              "op": "in",
+              "pred": "size_regime",
+              "value": [
+                "medium",
+                "large"
+              ],
+              "weight": 1.0
+            }
+          ],
+          "evidence": [],
+          "family": "循环展开",
+          "id": "stg:gemm:unroll_s",
+          "level": "code",
+          "name": "k 循环按 4 手动展开",
+          "parameters": [
+            {
+              "derived_from": "min(bk 可整除因子, 寄存器预算)",
+              "effect_direction": "展开越大循环开销越低、寄存器压力越大、尾部处理越复杂",
+              "id": "par:k_unroll",
+              "kind": "unroll",
+              "name": "k_unroll",
+              "range": [
+                2,
+                4,
+                8,
+                16
+              ],
+              "unit": "iterations",
+              "used_by_strategies": 3,
+              "value_in_instance": 4,
+              "value_in_source": 4
+            }
+          ],
+          "provenance": {
+            "commit": "OpenBLAS 0.3.27.dev",
+            "extractor_version": "kgagent-v1.5",
+            "line_confidence": "exact",
+            "line_end": 164,
+            "line_start": 7,
+            "origin_file": "kernel/generic/gemmkernel_2x2.c",
+            "source_file": "../cx_operator_tool/operator_extract/openblas_newtest1/16_dgemm_op5/dgemm_k.c"
+          },
+          "score": 0.675,
+          "score_breakdown": {
+            "ev": 0.0,
+            "fit_c": 1.0,
+            "hw": 0.7,
+            "match_p": 1.0,
+            "sup": 0.2,
+            "total": 0.675,
+            "tr_penalty": 0.0
+          },
+          "stage": "core",
+          "target_parameters": {},
+          "template": {
+            "check_hints": [
+              "展开因子过大会造成寄存器溢出",
+              "代码体积增大可能影响 I-cache"
+            ],
+            "id": "tpl:gemm:unroll_s",
+            "kind": "illustrative_skeleton",
+            "language": "c",
+            "preconditions": [
+              "循环体无跨迭代依赖"
+            ],
+            "skeleton": "for (k = 0; k + {{K_UNROLL}} <= bk; k += {{K_UNROLL}}) {\n    /* {{K_UNROLL}} 个独立加载/累加，减少循环计数器与分支 */\n}\nfor (; k < bk; ++k) { /* 尾部 */ }",
+            "slots": [
+              {
+                "default": 4,
+                "name": "K_UNROLL",
+                "source": "par:k_unroll",
+                "type": "int"
+              }
+            ]
+          },
+          "why_selected": {
+            "abstracted_from": [],
+            "conditions_satisfied": [
+              "dtype",
+              "loop_depth"
+            ],
+            "hardware": "k1_rvv256",
+            "patterns": [
+              "pat:gemm:core.mm_microkernel"
+            ],
+            "source": "../cx_operator_tool/operator_extract/openblas_newtest1/16_dgemm_op5/dgemm_k.c"
+          }
+        }
+      ]
+    },
+    "prompt_preview": "目标算子：gemm（dtype=d，loop_depth=3，stride_x=None，size_regime=None）。\n目标硬件 profile：k1_rvv256。请只使用下列知识块中的策略与模板槽位，不要引入未给出的性能数字。\n1) alpha 缩放融合到写回（循环融合/fuse，score=0.675）：条件 dtype in ['d']、loop_depth ge 2、size_regime in ['medium', 'large']；参数 。\n2) 指针预计算消除索引乘法（指针/索引优化/reorder，score=0.675）：条件 dtype in ['d']、loop_depth ge 2、size_regime in ['medium', 'large']；参数 block_size=1。\n3) 尾部余数分支单独处理（尾部处理/tail_handle，score=0.675）：条件 dtype in ['d']、loop_depth ge 2、size_regime in ['medium', 'large']、tail_divisible eq False",
+    "strategies": [
+      "stg:gemm:fuse_s",
+      "stg:gemm:reorder_s",
+      "stg:gemm:tail_handle_s",
+      "stg:gemm:tile_s",
+      "stg:gemm:unroll_s"
+    ]
+  },
+  "steps": [
+    {
+      "candidates": [
+        "pat:gemm:core.mm_microkernel",
+        "pat:gemm:post.tail_case",
+        "pat:gemm:prep.index_pointer_init",
+        "pat:gemm:prep.loop_invariant_calc",
+        "pat:gemm:prep.parameter_validation",
+        "pat:gemm:transform.packing"
+      ],
+      "description": "算子计算流程匹配",
+      "dropped": [],
+      "input": {
+        "analogy_source": null,
+        "operator": "op:gemm",
+        "operator_name": "gemm"
+      },
+      "name": "pattern_match",
+      "reason": "计算流程来源：gemm 注册了 6 个计算流程",
+      "selected": [
+        "pat:gemm:core.mm_microkernel",
+        "pat:gemm:post.tail_case",
+        "pat:gemm:prep.index_pointer_init",
+        "pat:gemm:prep.loop_invariant_calc",
+        "pat:gemm:prep.parameter_validation",
+        "pat:gemm:transform.packing"
+      ],
+      "step": 1
+    },
+    {
+      "candidates": [
+        "stg:abstract:k_unroll",
+        "stg:abstract:pointer_precompute",
+        "stg:abstract:register_blocking",
+        "stg:abstract:tail_handling",
+        "stg:abstract:vector_fma",
+        "stg:gemm:fuse_s",
+        "stg:gemm:prefetch_x86_avx2",
+        "stg:gemm:reorder_s",
+        "stg:gemm:specialize_d",
+        "stg:gemm:tail_handle_s",
+        "stg:gemm:tile_d",
+        "stg:gemm:tile_s",
+        "stg:gemm:tile_x",
+        "stg:gemm:tile_x86_avx2",
+        "stg:gemm:unroll_d",
+        "stg:gemm:unroll_s",
+        "stg:gemm:unroll_x",
+        "stg:gemm:unroll_x86_avx2",
+        "stg:gemm:vectorize_d",
+        "stg:gemm:vectorize_x",
+        "stg:gemm:vectorize_x86_avx2"
+      ],
+      "description": "沿 PATTERN_OPTIMIZED_BY 召回策略 + GENERALIZES 抽象扩展",
+      "dropped": [],
+      "input": {
+        "channels": [
+          "pattern",
+          "generalizes"
+        ],
+        "patterns": [
+          "pat:gemm:core.mm_microkernel",
+          "pat:gemm:post.tail_case",
+          "pat:gemm:prep.index_pointer_init",
+          "pat:gemm:prep.loop_invariant_calc",
+          "pat:gemm:prep.parameter_validation",
+          "pat:gemm:transform.packing"
+        ]
+      },
+      "name": "strategy_recall",
+      "reason": "沿 6 个计算流程召回 16 条策略，GENERALIZES 扩展 8 条抽象策略",
+      "selected": [
+        "stg:abstract:k_unroll",
+        "stg:abstract:pointer_precompute",
+        "stg:abstract:register_blocking",
+        "stg:abstract:tail_handling",
+        "stg:abstract:vector_fma",
+        "stg:gemm:fuse_s",
+        "stg:gemm:prefetch_x86_avx2",
+        "stg:gemm:reorder_s",
+        "stg:gemm:specialize_d",
+        "stg:gemm:tail_handle_s",
+        "stg:gemm:tile_d",
+        "stg:gemm:tile_s",
+        "stg:gemm:tile_x",
+        "stg:gemm:tile_x86_avx2",
+        "stg:gemm:unroll_d",
+        "stg:gemm:unroll_s",
+        "stg:gemm:unroll_x",
+        "stg:gemm:unroll_x86_avx2",
+        "stg:gemm:vectorize_d",
+        "stg:gemm:vectorize_x",
+        "stg:gemm:vectorize_x86_avx2"
+      ],
+      "step": 2
+    },
+    {
+      "candidates": [
+        "stg:abstract:k_unroll",
+        "stg:abstract:pointer_precompute",
+        "stg:abstract:register_blocking",
+        "stg:abstract:tail_handling",
+        "stg:abstract:vector_fma",
+        "stg:gemm:fuse_s",
+        "stg:gemm:prefetch_x86_avx2",
+        "stg:gemm:reorder_s",
+        "stg:gemm:specialize_d",
+        "stg:gemm:tail_handle_s",
+        "stg:gemm:tile_d",
+        "stg:gemm:tile_s",
+        "stg:gemm:tile_x",
+        "stg:gemm:tile_x86_avx2",
+        "stg:gemm:unroll_d",
+        "stg:gemm:unroll_s",
+        "stg:gemm:unroll_x",
+        "stg:gemm:unroll_x86_avx2",
+        "stg:gemm:vectorize_d",
+        "stg:gemm:vectorize_x",
+        "stg:gemm:vectorize_x86_avx2"
+      ],
+      "description": "硬条件过滤：策略 conditions 对查询 code_features 求值",
+      "dropped": [
+        {
+          "id": "stg:gemm:prefetch_x86_avx2",
+          "reason": "size_regime 特征缺失（未知），无法满足硬条件 size_regime in ['medium', 'large']"
+        },
+        {
+          "id": "stg:gemm:specialize_d",
+          "reason": "size_regime 特征缺失（未知），无法满足硬条件 size_regime in ['medium', 'large']"
+        },
+        {
+          "id": "stg:gemm:tile_d",
+          "reason": "size_regime 特征缺失（未知），无法满足硬条件 size_regime in ['medium', 'large']"
+        },
+        {
+          "id": "stg:gemm:tile_x",
+          "reason": "size_regime 特征缺失（未知），无法满足硬条件 size_regime in ['medium', 'large']"
+        },
+        {
+          "id": "stg:gemm:tile_x86_avx2",
+          "reason": "size_regime 特征缺失（未知），无法满足硬条件 size_regime in ['medium', 'large']"
+        },
+        {
+          "id": "stg:gemm:unroll_d",
+          "reason": "size_regime 特征缺失（未知），无法满足硬条件 size_regime in ['medium', 'large']"
+        },
+        {
+          "id": "stg:gemm:unroll_x",
+          "reason": "size_regime 特征缺失（未知），无法满足硬条件 size_regime in ['medium', 'large']"
+        },
+        {
+          "id": "stg:gemm:unroll_x86_avx2",
+          "reason": "size_regime 特征缺失（未知），无法满足硬条件 size_regime in ['medium', 'large']"
+        },
+        {
+          "id": "stg:gemm:vectorize_d",
+          "reason": "size_regime 特征缺失（未知），无法满足硬条件 size_regime in ['medium', 'large']；stride_x 特征缺失（未知），无法满足硬条件 stride_x eq 1"
+        },
+        {
+          "id": "stg:gemm:vectorize_x",
+          "reason": "size_regime 特征缺失（未知），无法满足硬条件 size_regime in ['medium', 'large']"
+        },
+        {
+          "id": "stg:gemm:vectorize_x86_avx2",
+          "reason": "size_regime 特征缺失（未知），无法满足硬条件 size_regime in ['medium', 'large']"
+        }
+      ],
+      "input": {
+        "code_features": {
+          "dtype": "d",
+          "loop_depth": 3,
+          "precision": "double",
+          "reduction": true,
+          "structural": "none"
+        }
+      },
+      "name": "condition_filter",
+      "reason": "谓词求值：10 条通过、11 条硬条件淘汰",
+      "selected": [
+        "stg:abstract:k_unroll",
+        "stg:abstract:pointer_precompute",
+        "stg:abstract:register_blocking",
+        "stg:abstract:tail_handling",
+        "stg:abstract:vector_fma",
+        "stg:gemm:fuse_s",
+        "stg:gemm:reorder_s",
+        "stg:gemm:tail_handle_s",
+        "stg:gemm:tile_s",
+        "stg:gemm:unroll_s"
+      ],
+      "step": 3
+    },
+    {
+      "candidates": [
+        "stg:abstract:k_unroll",
+        "stg:abstract:pointer_precompute",
+        "stg:abstract:register_blocking",
+        "stg:abstract:tail_handling",
+        "stg:abstract:vector_fma",
+        "stg:gemm:fuse_s",
+        "stg:gemm:reorder_s",
+        "stg:gemm:tail_handle_s",
+        "stg:gemm:tile_s",
+        "stg:gemm:unroll_s"
+      ],
+      "description": "ISA/硬件 profile 能力过滤（profile 绑定 + hard ISA 要求）",
+      "dropped": [],
+      "input": {
+        "profile": "hw:k1_rvv256",
+        "profile_isa": [
+          "RVV 1.0",
+          "Zba",
+          "Zbb",
+          "Zbc",
+          "Zbs"
+        ],
+        "vector_regs": null
+      },
+      "name": "hardware_filter",
+      "reason": "10 条满足 k1_rvv256 的硬件约束，0 条被淘汰",
+      "selected": [
+        "stg:abstract:k_unroll",
+        "stg:abstract:pointer_precompute",
+        "stg:abstract:register_blocking",
+        "stg:abstract:tail_handling",
+        "stg:abstract:vector_fma",
+        "stg:gemm:fuse_s",
+        "stg:gemm:reorder_s",
+        "stg:gemm:tail_handle_s",
+        "stg:gemm:tile_s",
+        "stg:gemm:unroll_s"
+      ],
+      "step": 4
+    },
+    {
+      "candidates": [
+        "stg:abstract:k_unroll",
+        "stg:abstract:pointer_precompute",
+        "stg:abstract:register_blocking",
+        "stg:abstract:tail_handling",
+        "stg:abstract:vector_fma",
+        "stg:gemm:fuse_s",
+        "stg:gemm:reorder_s",
+        "stg:gemm:tail_handle_s",
+        "stg:gemm:tile_s",
+        "stg:gemm:unroll_s"
+      ],
+      "description": "同族去重 + 冲突边消解",
+      "dropped": [
+        {
+          "id": "stg:abstract:k_unroll",
+          "reason": "与已选 stg:gemm:unroll_s 同族同动作（循环展开/unroll），避免重复注入（架构特性优先保留 arch_agnostic）"
+        },
+        {
+          "id": "stg:abstract:register_blocking",
+          "reason": "与已选 stg:gemm:tile_s 同族同动作（分块Tiling/tile），避免重复注入（架构特性优先保留 arch_agnostic）"
+        },
+        {
+          "id": "stg:abstract:tail_handling",
+          "reason": "与已选 stg:gemm:tail_handle_s 同族同动作（尾部处理/tail_handle），避免重复注入（架构特性优先保留 arch_agnostic）"
+        },
+        {
+          "id": "stg:abstract:pointer_precompute",
+          "reason": "与已选 stg:gemm:reorder_s 同族同动作（指针/索引优化/reorder），避免重复注入（架构特性优先保留 arch_agnostic）"
+        }
+      ],
+      "input": {
+        "register_budget_cap": 25.6,
+        "uarch": "uarch:k1_rvv256",
+        "vector_regs": 32.0
+      },
+      "name": "conflict_resolve",
+      "reason": "6 条通过冲突消解（占用寄存器预算 0 / 26）",
+      "register_budget_used": 0.0,
+      "selected": [
+        "stg:gemm:fuse_s",
+        "stg:gemm:reorder_s",
+        "stg:gemm:tail_handle_s",
+        "stg:gemm:tile_s",
+        "stg:gemm:unroll_s",
+        "stg:abstract:vector_fma"
+      ],
+      "step": 5
+    },
+    {
+      "candidates": [
+        "stg:gemm:fuse_s",
+        "stg:gemm:reorder_s",
+        "stg:gemm:tail_handle_s",
+        "stg:gemm:tile_s",
+        "stg:gemm:unroll_s",
+        "stg:abstract:vector_fma"
+      ],
+      "description": "六项加权打分（match_p/fit_c/hw/ev/sup - transfer penalty）并取 top_k",
+      "dropped": [
+        {
+          "id": "stg:abstract:vector_fma",
+          "reason": "score 0.615 低于 top_k=5 截断"
+        }
+      ],
+      "input": {
+        "top_k": 5,
+        "weights": {
+          "ev": 0.2,
+          "fit_c": 0.2,
+          "hw": 0.15,
+          "match_p": 0.35,
+          "sup": 0.1,
+          "tr_penalty": 0.15
+        }
+      },
+      "name": "score_and_select",
+      "reason": "按总分降序取 top 5",
+      "score_breakdown": {
+        "stg:abstract:vector_fma": {
+          "ev": 0.0,
+          "fit_c": 1.0,
+          "hw": 0.7,
+          "match_p": 0.6,
+          "sup": 1.0,
+          "total": 0.615,
+          "tr_penalty": 0.0
+        },
+        "stg:gemm:fuse_s": {
+          "ev": 0.0,
+          "fit_c": 1.0,
+          "hw": 0.7,
+          "match_p": 1.0,
+          "sup": 0.2,
+          "total": 0.675,
+          "tr_penalty": 0.0
+        },
+        "stg:gemm:reorder_s": {
+          "ev": 0.0,
+          "fit_c": 1.0,
+          "hw": 0.7,
+          "match_p": 1.0,
+          "sup": 0.2,
+          "total": 0.675,
+          "tr_penalty": 0.0
+        },
+        "stg:gemm:tail_handle_s": {
+          "ev": 0.0,
+          "fit_c": 1.0,
+          "hw": 0.7,
+          "match_p": 1.0,
+          "sup": 0.2,
+          "total": 0.675,
+          "tr_penalty": 0.0
+        },
+        "stg:gemm:tile_s": {
+          "ev": 0.0,
+          "fit_c": 1.0,
+          "hw": 0.7,
+          "match_p": 1.0,
+          "sup": 0.2,
+          "total": 0.675,
+          "tr_penalty": 0.0
+        },
+        "stg:gemm:unroll_s": {
+          "ev": 0.0,
+          "fit_c": 1.0,
+          "hw": 0.7,
+          "match_p": 1.0,
+          "sup": 0.2,
+          "total": 0.675,
+          "tr_penalty": 0.0
+        }
+      },
+      "scores": {
+        "stg:abstract:vector_fma": 0.615,
+        "stg:gemm:fuse_s": 0.675,
+        "stg:gemm:reorder_s": 0.675,
+        "stg:gemm:tail_handle_s": 0.675,
+        "stg:gemm:tile_s": 0.675,
+        "stg:gemm:unroll_s": 0.675
+      },
+      "selected": [
+        "stg:gemm:fuse_s",
+        "stg:gemm:reorder_s",
+        "stg:gemm:tail_handle_s",
+        "stg:gemm:tile_s",
+        "stg:gemm:unroll_s"
+      ],
+      "step": 6
+    },
+    {
+      "candidates": [
+        "stg:gemm:fuse_s",
+        "stg:gemm:reorder_s",
+        "stg:gemm:tail_handle_s",
+        "stg:gemm:tile_s",
+        "stg:gemm:unroll_s"
+      ],
+      "description": "生成 StrategyPack（策略 + 模板 + 参数 + 证据 + 溯源），供生成端注入 prompt",
+      "dropped": [],
+      "input": {
+        "selected": [
+          "stg:gemm:fuse_s",
+          "stg:gemm:reorder_s",
+          "stg:gemm:tail_handle_s",
+          "stg:gemm:tile_s",
+          "stg:gemm:unroll_s"
+        ]
+      },
+      "name": "pack",
+      "reason": "打包 5 条策略 / 5 个模板",
+      "result": {
+        "strategies": [
+          "stg:gemm:fuse_s",
+          "stg:gemm:reorder_s",
+          "stg:gemm:tail_handle_s",
+          "stg:gemm:tile_s",
+          "stg:gemm:unroll_s"
+        ],
+        "templates": [
+          "tpl:gemm:fuse_s",
+          "tpl:gemm:reorder_s",
+          "tpl:gemm:tail_handle_s",
+          "tpl:gemm:tile_s",
+          "tpl:gemm:unroll_s"
+        ]
+      },
+      "selected": [
+        "stg:gemm:fuse_s",
+        "stg:gemm:reorder_s",
+        "stg:gemm:tail_handle_s",
+        "stg:gemm:tile_s",
+        "stg:gemm:unroll_s"
+      ],
+      "step": 7
+    }
+  ],
+  "trace_id": "trace:20261119T211839:gemm:k1_rvv256:bbdb7202"
+}

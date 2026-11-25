@@ -1,0 +1,49 @@
+{
+  "analogy_source": "gemv",
+  "card_ids": [
+    "stg:abstract:k_unroll",
+    "stg:abstract:register_blocking",
+    "stg:abstract:vector_fma",
+    "stg:abstract:tail_handling"
+  ],
+  "contract_sha256": "3ec32f9475c48aa5f192dc136516548d7b094f6fa631cd084582a3f3a806e7b2",
+  "knowledge_bytes": 5826,
+  "method": "constraint_plan",
+  "operator": "dsymv",
+  "profile": "k1_rvv256",
+  "prompt": "dsymv/k1_rvv256/constraint_plan.json",
+  "prompt_sha256": "b8246c22efcfece114d9cf7eb819b19af793978bdfd9c03192dece06884c2566",
+  "repetition": 1,
+  "source_sha256": "8494a5751a22999b7d05267cd907678c866e376873badef34a708eebf2d2588a",
+  "split": "holdout",
+  "status": "prepared",
+  "engine": "ollama",
+  "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+  "repair_attempted": true,
+  "initial": {
+    "status": "compile_failed",
+    "compile_ok": false,
+    "correct": null,
+    "failure_reason": "other_compiler_error",
+    "usage": {
+      "prompt_tokens": 3231,
+      "completion_tokens": 475,
+      "total_tokens": 3706
+    },
+    "diagnostic": "../experiments/thesis/functional_2026-11-19/ollama/dsymv/k1_rvv256/constraint_plan/rep-1/initial/candidate.c: In function ‘op_dsymv’:\n../experiments/thesis/functional_2026-11-19/ollama/dsymv/k1_rvv256/constraint_plan/rep-1/initial/candidate.c:31:39: error: implicit declaration of function ‘__builtin_reduce_add’; did you mean ‘__builtin_huge_val’? [-Wimplicit-function-declaration]\n   31 |                             sum[m] += __builtin_reduce_add(va * vx);\n      |                                       ^~~~~~~~~~~~~~~~~~~~\n      |                                       __builtin_huge_val\n../experiments/thesis/functional_2026-11-19/ollama/dsymv/k1_rvv256/constraint_plan/rep-1/initial/candidate.c:14:21: warning: variable ‘vy’ set but not used [-Wunused-but-set-variable]\n   14 |     vdouble va, vx, vy;\n      |                     ^~\n",
+    "candidate_sha256": "e8c34a852ee1386fcd3d4eed4d6d69b7f13ed6219a16b886f9f7ab751586642c"
+  },
+  "final": {
+    "status": "compile_failed",
+    "compile_ok": false,
+    "correct": null,
+    "failure_reason": "other_compiler_error",
+    "usage": {
+      "prompt_tokens": 2194,
+      "completion_tokens": 456,
+      "total_tokens": 2650
+    },
+    "diagnostic": "../experiments/thesis/functional_2026-11-19/ollama/dsymv/k1_rvv256/constraint_plan/rep-1/repair/candidate.c: In function ‘op_dsymv’:\n../experiments/thesis/functional_2026-11-19/ollama/dsymv/k1_rvv256/constraint_plan/rep-1/repair/candidate.c:30:39: error: implicit declaration of function ‘__builtin_reduce_add’; did you mean ‘__builtin_huge_val’? [-Wimplicit-function-declaration]\n   30 |                             sum[m] += __builtin_reduce_add(va * vx);\n      |                                       ^~~~~~~~~~~~~~~~~~~~\n      |                                       __builtin_huge_val\n",
+    "candidate_sha256": "57c2f7c3e332a9f10243e8cdd02801a6d4acd1d44006afd4f3c249847f4d5c7d"
+  }
+}

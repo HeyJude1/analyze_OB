@@ -1,0 +1,375 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "amd64",
+  "results": [
+    {
+      "task": "daxpy",
+      "target": "x86",
+      "variant": "generic",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "tasks\\daxpy\\generic.c",
+      "source_sha256": "8f5e498023abd606f24e4bad0a2642fa5d658a4b56181cc56da12c1b0dcf383b",
+      "status": "passed",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Werror",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DAXPY",
+          "driver/check.c",
+          "tasks\\daxpy\\generic.c",
+          "-o",
+          ".build\\holdouts-generic\\daxpy-x86-generic.exe",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "e384c4289f8cf40d3e000ca25a82e04f51dfbfec668848f09744b3f656341b9e",
+      "check": {
+        "argv": [
+          "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\算子输入\\.build\\holdouts-generic\\daxpy-x86-generic.exe"
+        ],
+        "exit_code": 0,
+        "stdout": "60 cases, 0 failures\n",
+        "stderr": ""
+      },
+      "environment": "native"
+    },
+    {
+      "task": "ddot",
+      "target": "x86",
+      "variant": "generic",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "tasks\\ddot\\generic.c",
+      "source_sha256": "2ccf407f991c84249d1daa56d61be416adffdca8f0c846a8d9d60fba58033129",
+      "status": "passed",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Werror",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DDOT",
+          "driver/check.c",
+          "tasks\\ddot\\generic.c",
+          "-o",
+          ".build\\holdouts-generic\\ddot-x86-generic.exe",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "1c9edc45357b40cb9019bf68d7925a1c3e88f883003ed02068454577f013d981",
+      "check": {
+        "argv": [
+          "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\算子输入\\.build\\holdouts-generic\\ddot-x86-generic.exe"
+        ],
+        "exit_code": 0,
+        "stdout": "60 cases, 0 failures\n",
+        "stderr": ""
+      },
+      "environment": "native"
+    },
+    {
+      "task": "dgemv",
+      "target": "x86",
+      "variant": "generic",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "tasks\\dgemv\\generic.c",
+      "source_sha256": "49fc8d60ab4796b4e2b1b2314d12013386d9e5cae521be5dcd4cfc130a9dc72f",
+      "status": "passed",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Werror",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DGEMV",
+          "driver/check.c",
+          "tasks\\dgemv\\generic.c",
+          "-o",
+          ".build\\holdouts-generic\\dgemv-x86-generic.exe",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "d0cb043abdfed7ef259fc1e00eb9ea9ef3f257d8a80ae84c4cfa5c8c87bff3c4",
+      "check": {
+        "argv": [
+          "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\算子输入\\.build\\holdouts-generic\\dgemv-x86-generic.exe"
+        ],
+        "exit_code": 0,
+        "stdout": "84 cases, 0 failures\n",
+        "stderr": ""
+      },
+      "environment": "native"
+    },
+    {
+      "task": "dgemm",
+      "target": "x86",
+      "variant": "generic",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "tasks\\dgemm\\generic.c",
+      "source_sha256": "9a515f9c8ddfdb9047942b6b7d87300ec2857497b9d4c6caafd9871729781720",
+      "status": "passed",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Werror",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DGEMM",
+          "driver/check.c",
+          "tasks\\dgemm\\generic.c",
+          "-o",
+          ".build\\holdouts-generic\\dgemm-x86-generic.exe",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "31bf3db6ee082ad15025195661ff99f04fef591e315a5cb8a5300990eea4eb6b",
+      "check": {
+        "argv": [
+          "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\算子输入\\.build\\holdouts-generic\\dgemm-x86-generic.exe"
+        ],
+        "exit_code": 0,
+        "stdout": "32 cases, 0 failures\n",
+        "stderr": ""
+      },
+      "environment": "native"
+    },
+    {
+      "task": "dscal",
+      "target": "x86",
+      "variant": "generic",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "tasks\\dscal\\generic.c",
+      "source_sha256": "fe07cac3a572e7b9ad0706633dde40f5fb508145ea138cb551c7f0f057b56e59",
+      "status": "passed",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Werror",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DSCAL",
+          "driver/check.c",
+          "tasks\\dscal\\generic.c",
+          "-o",
+          ".build\\holdouts-generic\\dscal-x86-generic.exe",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "db52ed945238a4bf638206d792ef1f4c51d75b0ac1526d11b9ce50df71a40d63",
+      "check": {
+        "argv": [
+          "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\算子输入\\.build\\holdouts-generic\\dscal-x86-generic.exe"
+        ],
+        "exit_code": 0,
+        "stdout": "384 cases, 0 failures\n",
+        "stderr": ""
+      },
+      "environment": "native"
+    },
+    {
+      "task": "dasum",
+      "target": "x86",
+      "variant": "generic",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "tasks\\dasum\\generic.c",
+      "source_sha256": "cc032d0101696873b29211d52155bf01b71bffac2dfd71b1a327b40780dff6cc",
+      "status": "passed",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Werror",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DASUM",
+          "driver/check.c",
+          "tasks\\dasum\\generic.c",
+          "-o",
+          ".build\\holdouts-generic\\dasum-x86-generic.exe",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "3d2760a6e70d9b1fcbe01098d009b4e947a31ed28e08a64f165f4be5842d1733",
+      "check": {
+        "argv": [
+          "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\算子输入\\.build\\holdouts-generic\\dasum-x86-generic.exe"
+        ],
+        "exit_code": 0,
+        "stdout": "288 cases, 0 failures\n",
+        "stderr": ""
+      },
+      "environment": "native"
+    },
+    {
+      "task": "dsymv",
+      "target": "x86",
+      "variant": "generic",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "tasks\\dsymv\\generic.c",
+      "source_sha256": "8494a5751a22999b7d05267cd907678c866e376873badef34a708eebf2d2588a",
+      "status": "passed",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Werror",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DSYMV",
+          "driver/check.c",
+          "tasks\\dsymv\\generic.c",
+          "-o",
+          ".build\\holdouts-generic\\dsymv-x86-generic.exe",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "6c6ded8dadd4f8567391a0c5850ca2b90d2d91d7e039920e63d99688be23134a",
+      "check": {
+        "argv": [
+          "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\算子输入\\.build\\holdouts-generic\\dsymv-x86-generic.exe"
+        ],
+        "exit_code": 0,
+        "stdout": "720 cases, 0 failures\n",
+        "stderr": ""
+      },
+      "environment": "native"
+    },
+    {
+      "task": "dsymm",
+      "target": "x86",
+      "variant": "generic",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "tasks\\dsymm\\generic.c",
+      "source_sha256": "2b054ea1fb3ef0c2781e028c6d754a08de7d41cf530fe1cbceb1efa19b540ffd",
+      "status": "passed",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Werror",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DSYMM",
+          "driver/check.c",
+          "tasks\\dsymm\\generic.c",
+          "-o",
+          ".build\\holdouts-generic\\dsymm-x86-generic.exe",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "023db7f37f2556f7d10922a754fb620c7d2f807e81dc61afd77dec10c3cb3b27",
+      "check": {
+        "argv": [
+          "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\算子输入\\.build\\holdouts-generic\\dsymm-x86-generic.exe"
+        ],
+        "exit_code": 0,
+        "stdout": "288 cases, 0 failures\n",
+        "stderr": ""
+      },
+      "environment": "native"
+    },
+    {
+      "task": "conv1d",
+      "target": "x86",
+      "variant": "generic",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "tasks\\conv1d\\generic.c",
+      "source_sha256": "b4dfcd553e1a84044d9fad60edacba88b7ba1b4abdddee5d5c71b992152cc043",
+      "status": "passed",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Werror",
+          "-Iinclude",
+          "-DOPBENCH_TASK_CONV1D",
+          "driver/check.c",
+          "tasks\\conv1d\\generic.c",
+          "-o",
+          ".build\\holdouts-generic\\conv1d-x86-generic.exe",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "7f8d2083ee811cfe4ea174639723ddea3b5eefdeb2d7098f35d11717dc0c2eab",
+      "check": {
+        "argv": [
+          "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\算子输入\\.build\\holdouts-generic\\conv1d-x86-generic.exe"
+        ],
+        "exit_code": 0,
+        "stdout": "8 cases, 0 failures\n",
+        "stderr": ""
+      },
+      "environment": "native"
+    }
+  ]
+}

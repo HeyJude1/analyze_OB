@@ -1,0 +1,37 @@
+{
+  "criteria": {
+    "supportive": {
+      "score": 0.85,
+      "reason": "策略 stg:dot:specialize_d、stg:dot:split_d 和 stg:dot:tail_handle_d 的适用条件基本一致，都要求 dtype=d、reduction=true、loop_depth>=1，且都面向 RVV 架构，参数设置（如 SEW=64、LMUL=8）基本统一，可共存。但尾部处理和归约顺序需注意策略间的协同"
+    },
+    "complementarity": {
+      "score": 0.9,
+      "reason": "三个策略分别作用于向量寄存器配置（specialize）、归约链拆分（split）、尾部处理（tail_handle），覆盖不同实现阶段，组合后可增强主循环吞吐与尾部鲁棒性"
+    },
+    "accuracy": {
+      "score": 0.7,
+      "reason": "策略组合可能改变归约顺序（split_d）或尾部处理方式（tail_handle_d），存在浮点计算顺序差异带来的数值一致性风险。当前假设 stride_x/y=1 成立，未处理任意步长别名问题，可能影响正确性边界"
+    },
+    "completeness": {
+      "score": 0.75,
+      "reason": "组合策略覆盖主循环向量化、归约拆分和尾部处理，但未明确处理任意步长（inc_x/y !=1）和 n<=0 的边界情况，完整性略显不足"
+    }
+  },
+  "criteria_scores": {
+    "supportive": 0.85,
+    "complementarity": 0.9,
+    "accuracy": 0.7,
+    "completeness": 0.75
+  },
+  "overall": "三个策略可组合，覆盖主循环向量化与尾部处理，但需注意归约顺序、尾部对齐和别名问题，策略参数需根据硬件调整",
+  "recommended": [
+    "stg:dot:specialize_d",
+    "stg:dot:split_d",
+    "stg:dot:tail_handle_d"
+  ],
+  "guidance": "['主循环采用 LMUL=8、SEW=64 向量寄存器配置，以支持 double 类型向量化计算', '使用 split_factor=2 或 4 进行归约链拆分，缓解归约延迟瓶颈，注意最终归约阶段的顺序一致性', '尾部处理采用动态 vl 或掩码方式，确保 tail_divisible=false 时的兼容性与正确性', '设置循环分块大小为向量长度的整数倍，避免跨向量寄存器依赖，提升流水线效率', '参数建议：split_factor 可尝试 2 或 4，LMUL 保持 8，但需验证 k1_rvv256 的寄存器资源是否足够']",
+  "conflicts": [
+    "避免同时使用 LMUL 不同的向量配置策略，可能造成寄存器分配冲突",
+    "避免在未处理归约顺序一致性的前提下，随意更改 split_factor 值"
+  ]
+}

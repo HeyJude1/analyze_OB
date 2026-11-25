@@ -1,0 +1,9 @@
+{
+  "raw": "```c\n#include \"opbench.h\"\n\nvoid op_dgemm(size_t m, size_t n, size_t k, double alpha, const double *a, size_t lda,\n              const double *b, size_t ldb, double beta, double *c, size_t ldc) {\n    if (alpha == 0.0 || k == 0) {\n        if (beta != 0.0) {\n            for (size_t i = 0; i < m; ++i) {\n                for (size_t j = 0; j < n; ++j) {\n                    c[i * ldc + j] *= beta;\n                }\n            }\n        }\n        return;\n    }\n\n    if (beta == 0.0) {\n        for (size_t i = 0; i < m; ++i) {\n            for (size_t j = 0; j < n; ++j) {\n                double sum = 0.0;\n                for (size_t p = 0; p < k; ++p) {\n                    sum += a[i * lda + p] * b[p * ldb + j];\n                }\n                c[i * ldc + j] = alpha * sum;\n            }\n        }\n    } else {\n        for (size_t i = 0; i < m; ++i) {\n            for (size_t j = 0; j < n; ++j) {\n                double sum = 0.0;\n                for (size_t p = 0; p < k; ++p) {\n                    sum += a[i * lda + p] * b[p * ldb + j];\n                }\n                c[i * ldc + j] = alpha * sum + beta * c[i * ldc + j];\n            }\n        }\n    }\n}\n```",
+  "usage": {
+    "prompt_tokens": 1356,
+    "completion_tokens": 374,
+    "total_tokens": 1730
+  },
+  "stop_reason": "stop"
+}

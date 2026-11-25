@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<title>论文架构与流程图 · 总览</title>
+<style>
+  :root{--ink:#1a202c;--muted:#4a5568;--line:#e2e8f0;--bg:#f5f7fb;--blue:#2b6cb0;--green:#2f855a;--orange:#c05621;--purple:#6b46c1;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Microsoft YaHei","Noto Sans CJK SC","Segoe UI",sans-serif;line-height:1.7}
+  header{background:#102a43;color:#fff;padding:28px 5vw 22px}
+  header h1{margin:0 0 6px;font-size:26px;letter-spacing:.5px}
+  header p{margin:0;color:#cbd5e0;font-size:14px}
+  nav{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--line);padding:10px 5vw;display:flex;gap:14px;flex-wrap:wrap;font-size:13px}
+  nav a{color:var(--blue);text-decoration:none;font-weight:600}
+  nav a:hover{text-decoration:underline}
+  main{padding:26px 5vw 70px;max-width:1800px;margin:0 auto}
+  section{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px 22px 24px;margin:0 0 26px;box-shadow:0 1px 2px rgba(16,42,67,.04)}
+  h2{font-size:20px;margin:0 0 6px}
+  h2 .badge{display:inline-block;font-size:12px;color:#fff;border-radius:999px;padding:2px 9px;margin-right:8px;vertical-align:2px}
+  .sub{color:var(--muted);font-size:13.5px;margin:0 0 14px}
+  img{width:100%;height:auto;display:block;border:1px solid var(--line);border-radius:10px;background:#fff}
+  .tip{background:#ebf4ff;border-left:4px solid var(--blue);padding:10px 14px;border-radius:8px;color:#234e75;font-size:13.5px;margin:12px 0 0}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
+  .card{border:1px solid var(--line);border-radius:10px;padding:14px 16px;background:#fbfdff}
+  .card b{display:block;margin-bottom:4px}
+  footer{color:var(--muted);font-size:12.5px;text-align:center;padding:0 5vw 40px}
+  @media print{
+    body{background:#fff}
+    nav{display:none}
+    section{box-shadow:none;break-inside:avoid;page-break-inside:avoid;border-color:#ccc}
+    header{background:#fff;color:#000;border-bottom:2px solid #000}
+    header p{color:#333}
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>论文架构与流程图 · 总览</h1>
+  <p>输入（哪些算子/架构）→ 处理（KG 怎么建）→ 方法（怎么检索/生成）→ 实验（怎么做/怎么读）→ 论文六章</p>
+</header>
+<nav>
+  <a href="#fig1">图1 总架构</a>
+  <a href="#fig2">图2 输入地图</a>
+  <a href="#fig3">图3 KG 流水线</a>
+  <a href="#fig4">图4 检索与生成</a>
+  <a href="#fig5">图5 实验怎么做</a>
+  <a href="#fig6">图6 理论机制</a>
+  <a href="README.md">文字版说明</a>
+</nav>
+<main>
+  <section id="fig1">
+    <h2><span class="badge" style="background:var(--blue)">图 1</span>论文总架构（先看这张）</h2>
+    <p class="sub">四层从左到右：输入层 → 知识层 → 方法层 → 实验层；底部一行是论文六章与四层的对应。</p>
+    <img src="fig1_论文总架构.png" alt="论文总架构"/>
+    <div class="tip">读图顺序：左边输入是什么 → 中间怎么变成 KG → 中右怎么检索和生成 → 右边怎么证明有效 → 底部对应论文哪一章。</div>
+  </section>
+
+  <section id="fig2">
+    <h2><span class="badge" style="background:#2f855a">图 2</span>输入到底有什么：算子清单 × 架构覆盖 × 文件结构</h2>
+    <p class="sub">14 个 BLAS 算子 × 5 类架构实现；S1 进 KG、S2 留出；一个算子目录的文件结构。</p>
+    <img src="fig2_输入地图.png" alt="输入地图"/>
+  </section>
+
+  <section id="fig3">
+    <h2><span class="badge" style="background:var(--green)">图 3</span>知识图谱怎么建：S0–S6 七段流水线</h2>
+    <p class="sub">每段的输入 / 方法 / 输出；Schema v1.5 的 12 类实体；最终 862 节点 / 3656 边。</p>
+    <img src="fig3_KG构建流水线.png" alt="KG 构建流水线"/>
+    <div class="tip">原则：结构事实全部由规则/日志产生；LLM 只负责命名与解释，禁止写性能数字。</div>
+  </section>
+
+  <section id="fig4">
+    <h2><span class="badge" style="background:var(--orange)">图 4</span>输入进去以后怎么处理：7 步检索 → Prompt → 生成闭环</h2>
+    <p class="sub">用 dgemm @ x86_avx2 的真实例子走一遍；条件过滤淘汰 15 条、硬件过滤淘汰 4 条、冲突消解淘汰 4 条。</p>
+    <img src="fig4_检索与生成闭环.png" alt="检索与生成闭环"/>
+  </section>
+
+  <section id="fig5">
+    <h2><span class="badge" style="background:var(--purple)">图 5</span>实验怎么做：7 个实验 × 6 个条件 × 2 个平台</h2>
+    <p class="sub">每个实验回答一个问题、产出一张表/图；单次实验七步；指标与三道门。</p>
+    <img src="fig5_实验怎么做.png" alt="实验怎么做"/>
+  </section>
+
+  <section id="fig6">
+    <h2><span class="badge" style="background:#2c7a7b">图 6</span>理论机制：KG 为什么可能提升性能（5 条机制 + 5 个可证伪假设）</h2>
+    <p class="sub">覆盖 → 过滤 → 参数实例化 → 组合冲突 → 跨架构迁移；每条机制对应一个可测假设与实验消融。</p>
+    <img src="fig6_理论机制.png" alt="理论机制"/>
+    <div class="tip">配套文字：<b>../15_理论论证与工作量说明.md</b>（形式化、假设判定标准、创新点、工作量清单、答辩话术）。</div>
+  </section>
+
+  <section>
+    <h2>一句话版本</h2>
+    <div class="grid">
+      <div class="card"><b>输入</b>14 个 BLAS 算子 × 5 类架构实现（x86 AVX2/AVX512、ARM NEON/SVE、RISC-V RVV）+ 通用 C + 日志。</div>
+      <div class="card"><b>处理</b>S0–S6 把“同一算子两版代码的差异”变成带条件、参数、模板、证据、来源的策略知识图谱（862 节点 / 3656 边）。</div>
+      <div class="card"><b>方法</b>7 步检索（可回放）→ StrategyPack → B0–B3 四条件 Prompt → LLM 生成 → 编译/正确性/计时闭环。</div>
+      <div class="card"><b>实验</b>12 算子 × 6 条件 × 2 平台；主指标 FCR、S_C1、B3/B2；三道门 G1–G3，不达标转 Plan B。</div>
+    </div>
+    <div class="tip">文字详解（含术语表、指标公式、每步为什么）见 <b>README.md</b>；图的可编辑 SVG 与生成脚本同目录。</div>
+  </section>
+</main>
+<footer>论文架构与流程图 · 2026-11-12 · 图由 gen_figs.py 生成，可编辑 SVG 与 PNG 同目录</footer>
+</body>
+</html>

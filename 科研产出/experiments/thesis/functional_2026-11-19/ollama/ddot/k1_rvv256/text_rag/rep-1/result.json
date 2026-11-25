@@ -1,0 +1,49 @@
+{
+  "analogy_source": null,
+  "card_ids": [
+    "stg:abstract:vector_fma",
+    "stg:dot:reduce_register_pressure_s",
+    "stg:dot:specialize_s",
+    "stg:abstract:register_blocking"
+  ],
+  "contract_sha256": "b37b2a09a49f0212c735ac0ca1b7751bbab78ee24991a4480202abbf020403f3",
+  "knowledge_bytes": 5750,
+  "method": "text_rag",
+  "operator": "ddot",
+  "profile": "k1_rvv256",
+  "prompt": "ddot/k1_rvv256/text_rag.json",
+  "prompt_sha256": "5197b05dde99b09389598ee64ad4597a8b4599902cf78d19c6c957ee6d254700",
+  "repetition": 1,
+  "source_sha256": "2ccf407f991c84249d1daa56d61be416adffdca8f0c846a8d9d60fba58033129",
+  "split": "build",
+  "status": "prepared",
+  "engine": "ollama",
+  "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+  "repair_attempted": true,
+  "initial": {
+    "status": "compile_failed",
+    "compile_ok": false,
+    "correct": null,
+    "failure_reason": "other_compiler_error",
+    "usage": {
+      "prompt_tokens": 3118,
+      "completion_tokens": 595,
+      "total_tokens": 3713
+    },
+    "diagnostic": "../experiments/thesis/functional_2026-11-19/ollama/ddot/k1_rvv256/text_rag/rep-1/initial/candidate.c: In function ‘op_ddot’:\n../experiments/thesis/functional_2026-11-19/ollama/ddot/k1_rvv256/text_rag/rep-1/initial/candidate.c:18:16: error: ‘i’ undeclared (first use in this function)\n   18 |         for (; i < n; ++i) {\n      |                ^\n../experiments/thesis/functional_2026-11-19/ollama/ddot/k1_rvv256/text_rag/rep-1/initial/candidate.c:18:16: note: each undeclared identifier is reported only once for each function it appears in\n",
+    "candidate_sha256": "019e3a5358d01daf00338206b9698a77e83453247a0d444eecc247adfc738680"
+  },
+  "final": {
+    "status": "compile_failed",
+    "compile_ok": false,
+    "correct": null,
+    "failure_reason": "other_compiler_error",
+    "usage": {
+      "prompt_tokens": 1992,
+      "completion_tokens": 595,
+      "total_tokens": 2587
+    },
+    "diagnostic": "../experiments/thesis/functional_2026-11-19/ollama/ddot/k1_rvv256/text_rag/rep-1/repair/candidate.c: In function ‘op_ddot’:\n../experiments/thesis/functional_2026-11-19/ollama/ddot/k1_rvv256/text_rag/rep-1/repair/candidate.c:18:16: error: ‘i’ undeclared (first use in this function)\n   18 |         for (; i < n; ++i) {\n      |                ^\n../experiments/thesis/functional_2026-11-19/ollama/ddot/k1_rvv256/text_rag/rep-1/repair/candidate.c:18:16: note: each undeclared identifier is reported only once for each function it appears in\n",
+    "candidate_sha256": "019e3a5358d01daf00338206b9698a77e83453247a0d444eecc247adfc738680"
+  }
+}

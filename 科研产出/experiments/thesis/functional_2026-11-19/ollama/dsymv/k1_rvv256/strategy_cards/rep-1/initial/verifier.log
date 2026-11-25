@@ -1,0 +1,7 @@
+dsymv rvv candidate: compile_error 
+
+wsl: �hKm0R localhost �NtM�n�FO*g\��P0R WSL0NAT !j_N�v WSL N/ec localhost �Nt0
+../experiments/thesis/functional_2026-11-19/ollama/dsymv/k1_rvv256/strategy_cards/rep-1/initial/candidate.c: In function ‘op_dsymv’:
+../experiments/thesis/functional_2026-11-19/ollama/dsymv/k1_rvv256/strategy_cards/rep-1/initial/candidate.c:12:32: error: variable-sized object may not be initialized except with an empty initializer
+   12 |         double sum[K_UNROLL] = {0.0};
+      |                                ^

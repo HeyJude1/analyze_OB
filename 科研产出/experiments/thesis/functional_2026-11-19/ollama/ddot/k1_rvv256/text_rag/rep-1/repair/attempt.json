@@ -1,0 +1,13 @@
+{
+  "status": "compile_failed",
+  "compile_ok": false,
+  "correct": null,
+  "failure_reason": "other_compiler_error",
+  "usage": {
+    "prompt_tokens": 1992,
+    "completion_tokens": 595,
+    "total_tokens": 2587
+  },
+  "diagnostic": "../experiments/thesis/functional_2026-11-19/ollama/ddot/k1_rvv256/text_rag/rep-1/repair/candidate.c: In function ‘op_ddot’:\n../experiments/thesis/functional_2026-11-19/ollama/ddot/k1_rvv256/text_rag/rep-1/repair/candidate.c:18:16: error: ‘i’ undeclared (first use in this function)\n   18 |         for (; i < n; ++i) {\n      |                ^\n../experiments/thesis/functional_2026-11-19/ollama/ddot/k1_rvv256/text_rag/rep-1/repair/candidate.c:18:16: note: each undeclared identifier is reported only once for each function it appears in\n",
+  "candidate_sha256": "019e3a5358d01daf00338206b9698a77e83453247a0d444eecc247adfc738680"
+}

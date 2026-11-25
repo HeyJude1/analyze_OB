@@ -1,0 +1,49 @@
+{
+  "analogy_source": "gemm",
+  "card_ids": [
+    "stg:abstract:vector_fma",
+    "stg:abstract:pointer_precompute",
+    "stg:abstract:register_blocking",
+    "stg:abstract:tail_handling"
+  ],
+  "contract_sha256": "1998f1147530fbd0cb7b46f9e7ca4f7e60d20e9bb8cc625dfde2edb0d39aed1d",
+  "knowledge_bytes": 4470,
+  "method": "text_rag",
+  "operator": "dsymm",
+  "profile": "k1_rvv256",
+  "prompt": "dsymm/k1_rvv256/text_rag.json",
+  "prompt_sha256": "333ddd4e95b85762ee5d7ea114c67af3379ad6806591b391d28f5b7153a6116d",
+  "repetition": 1,
+  "source_sha256": "2b054ea1fb3ef0c2781e028c6d754a08de7d41cf530fe1cbceb1efa19b540ffd",
+  "split": "near_transfer",
+  "status": "prepared",
+  "engine": "ollama",
+  "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+  "repair_attempted": true,
+  "initial": {
+    "status": "compile_failed",
+    "compile_ok": false,
+    "correct": null,
+    "failure_reason": "other_compiler_error",
+    "usage": {
+      "prompt_tokens": 3064,
+      "completion_tokens": 484,
+      "total_tokens": 3548
+    },
+    "diagnostic": "../experiments/thesis/functional_2026-11-19/ollama/dsymm/k1_rvv256/text_rag/rep-1/initial/candidate.c: In function ‘op_dsymm’:\n../experiments/thesis/functional_2026-11-19/ollama/dsymm/k1_rvv256/text_rag/rep-1/initial/candidate.c:24:53: error: variable-sized object may not be initialized except with an empty initializer\n   24 |             double sum[reg_block_m * reg_block_n] = {0.0};\n      |                                                     ^\n../experiments/thesis/functional_2026-11-19/ollama/dsymm/k1_rvv256/text_rag/rep-1/initial/candidate.c:8:20: warning: unused parameter ‘side’ [-Wunused-parameter]\n    8 | void op_dsymm(char side, char uplo, size_t m, size_t n, double alpha,\n      |               ~~~~~^~~~\n",
+    "candidate_sha256": "7e2d2847c86a7e8be517c81556b364f7b475082c4440aa5e2f1df8c60e3162b9"
+  },
+  "final": {
+    "status": "runtime_failed",
+    "compile_ok": true,
+    "correct": false,
+    "failure_reason": "execution_aborted",
+    "usage": {
+      "prompt_tokens": 2353,
+      "completion_tokens": 478,
+      "total_tokens": 2831
+    },
+    "diagnostic": "Execution aborted or did not return the expected check status.",
+    "candidate_sha256": "f008d68337475b1134c1bc29c3163d53d256303c1071aacad0b2e22c0da0bf1d"
+  }
+}

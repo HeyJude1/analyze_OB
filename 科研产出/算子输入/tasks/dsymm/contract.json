@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "task": "dsymm",
+  "symbol": "op_dsymm",
+  "split": "near_transfer",
+  "features": {
+    "dtype": "d",
+    "precision": "double",
+    "loop_depth": 3,
+    "structural": "symmetric",
+    "reduction": true,
+    "layout": "row_major_symmetric_selected_triangle"
+  },
+  "pattern": "symmetric_dense_matrix_product",
+  "dimensions": [
+    "m",
+    "n"
+  ],
+  "semantics": "Compute C=alpha*A*B+beta*C for side='L', or C=alpha*B*A+beta*C for side='R'. B and C are row-major m-by-n. A is a row-major symmetric matrix of order m for side='L' and n for side='R'. For uplo='U' or 'L', read only the selected triangle including the diagonal and mirror indices for the other half. m==0 or n==0 touches no memory. alpha==0 does not read A/B, which may be NULL. beta==0 overwrites C without reading it. C remains unchanged when alpha==0 and beta==1. Do not read or write padding. Inputs are unpacked; any packing belongs to the operator.",
+  "parameters": [
+    "side",
+    "uplo",
+    "m",
+    "n",
+    "alpha",
+    "a",
+    "lda",
+    "b",
+    "ldb",
+    "beta",
+    "c",
+    "ldc"
+  ],
+  "memory_contract": "Vector increments are signed and nonzero. For negative increments, the caller passes the address of logical element zero. Inputs and outputs occupy disjoint storage except for DSCAL's in-place operand. Leading dimensions are in elements and at least the stored row width.",
+  "numeric_contract": "Binary64 finite data unless a coefficient disables access and the harness provides inaccessible inputs or poison. Reassociation and FMA are allowed within |observed-reference| <= 2e-12 + 3e-12*|reference|. Only logical output elements may be written; input bytes, output padding and guards must remain unchanged."
+}

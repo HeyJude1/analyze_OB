@@ -1,0 +1,13 @@
+{
+  "status": "compile_failed",
+  "compile_ok": false,
+  "correct": null,
+  "failure_reason": "other_compiler_error",
+  "usage": {
+    "prompt_tokens": 1617,
+    "completion_tokens": 221,
+    "total_tokens": 1838
+  },
+  "diagnostic": "../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/no_knowledge/rep-1/repair/candidate.c: In function ‘op_dasum’:\n../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/no_knowledge/rep-1/repair/candidate.c:15:9: error: implicit declaration of function ‘memcpy’ [-Wimplicit-function-declaration]\n   15 |         memcpy(vec_x1, &x[i], sizeof(double) * 4);\n      |         ^~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/no_knowledge/rep-1/repair/candidate.c:4:1: note: include ‘<string.h>’ or provide a declaration of ‘memcpy’\n    3 | #include <math.h>\n  +++ |+#include <string.h>\n    4 | \n../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/no_knowledge/rep-1/repair/candidate.c:15:9: warning: incompatible implicit declaration of built-in function ‘memcpy’ [-Wbuiltin-declaration-mismatch]\n   15 |         memcpy(vec_x1, &x[i], sizeof(double) * 4);\n      |         ^~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/no_knowledge/rep-1/repair/candidate.c:15:9: note: include ‘<string.h>’ or provide a declaration of ‘memcpy’\n",
+  "candidate_sha256": "68df1b0d17aa1170bead4213e5c4b3fd382fb75bf261f175c3519d7c107b68b8"
+}

@@ -1,0 +1,34 @@
+# E09 task: ddot（来源：OpOptBench tasks/ddot，v0.1；原任务无 driver，E09 新增 driver 并补全字段）
+# 用途：MPSA B3 vs B4 冒烟与后续正式实验的 L1 归约算子任务卡（reduction 型，考察归约策略）。
+op: ddot
+level: L1
+role: S1_seen
+source: 15_ddot_op/ddot_k.c
+sizes: [1024, 16384, 1048576]
+input: input/generic.c
+driver: driver/test_ddot.c
+rvv_expert: 15_ddot_op/ddot_k_rvv.c
+
+interface: >-
+  double ddot_k(BLASLONG n, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y);
+  （BLASLONG = long long；返回点积值；与 OpenBLAS ddot_k 的"返回 double"约定一致）
+
+semantics: >-
+  BLAS ddot：dot := Σ_{i=0}^{n-1} x[i*inc_x] * y[i*inc_y]。
+  n < 0 时返回 0.0；不修改 x/y；求和顺序可变（归约）、结果按 double 返回。
+
+invariants:
+  - "只读 x[i*inc_x] 与 y[i*inc_y]，不写任何内存"
+  - "n < 0 时返回 0.0，不访问内存"
+  - "返回 double 点积；允许不同累加顺序（仅要求数值等价）"
+  - "不得分配 O(n) 额外内存"
+
+flops: "2*N（每元素 1 mul + 1 add）"
+bytes: "(读 x + 读 y) * sizeof(double) = 2*N*8 理想最低"
+
+# 容差：归约结果随累加顺序变化，参考值用 long double；driver 判 reldiff < 1e-9
+# 自校准协议见 04_实验设计与评估协议.md §6.1（参考 vs 参考 η0，取 10×）
+tolerance:
+  abs_maxdiff: 1.0e-5
+  rel_maxdiff: 1.0e-9
+  source: "driver 参考值为 long double 累加；reldiff 判 exit code，abs_maxdiff 供 harness 复核"

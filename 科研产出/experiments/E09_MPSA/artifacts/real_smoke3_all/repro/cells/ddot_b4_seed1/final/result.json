@@ -1,0 +1,59 @@
+{
+  "ok": false,
+  "compile_ok": false,
+  "correct": false,
+  "maxdiff": null,
+  "reldiff": null,
+  "qemu_exit": null,
+  "stdout": "[build] cc=riscv64-linux-gnu-gcc\n[build] driver=/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/tasks/ddot/driver/test_ddot.c\n[build] generated=/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_smoke3_all/ddot_b4/harness/generated.c\n[build] gcc_exit=1\n[build] FAIL（见 build.stderr.log）\n",
+  "stderr": "/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_smoke3_all/ddot_b4/harness/generated.c: In function ‘ddot_k’:\n/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_smoke3_all/ddot_b4/harness/generated.c:23:29: warning: implicit declaration of function ‘__riscv_vfredusum_vs_f64m8_f64’; did you mean ‘__riscv_vfredusum_vs_f64m8_f64m1’? [-Wimplicit-function-declaration]\n   23 |         vfloat64m1_t vred = __riscv_vfredusum_vs_f64m8_f64(vsum, __riscv_vfmv_v_f_f64m1(0.0, 1), vlmax);\n      |                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n      |                             __riscv_vfredusum_vs_f64m8_f64m1\n/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_smoke3_all/ddot_b4/harness/generated.c:23:29: error: incompatible types when initializing type ‘vfloat64m1_t’ using type ‘int’\n",
+  "timeout": false,
+  "best_ms": null,
+  "qemu_only": true,
+  "n": 16384,
+  "reps": 10,
+  "tolerance": 1e-05,
+  "op": "ddot",
+  "task_dir": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\tasks\\ddot",
+  "driver": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\tasks\\ddot\\driver\\test_ddot.c",
+  "generated_c": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\real_smoke3_all\\ddot_b4\\harness\\generated.c",
+  "out_dir": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\real_smoke3_all\\ddot_b4\\harness",
+  "scripts": {
+    "build": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\real_smoke3_all\\ddot_b4\\harness\\build.sh",
+    "run": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\real_smoke3_all\\ddot_b4\\harness\\run.sh"
+  },
+  "logs": {
+    "build_stdout": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\real_smoke3_all\\ddot_b4\\harness\\build.stdout.log",
+    "build_stderr": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\real_smoke3_all\\ddot_b4\\harness\\build.stderr.log",
+    "qemu_stdout": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\real_smoke3_all\\ddot_b4\\harness\\qemu.stdout.log",
+    "qemu_stderr": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\real_smoke3_all\\ddot_b4\\harness\\qemu.stderr.log"
+  },
+  "commands": {
+    "build": [
+      "wsl.exe",
+      "-d",
+      "Ubuntu",
+      "-e",
+      "bash",
+      "/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_smoke3_all/ddot_b4/harness/build.sh"
+    ]
+  },
+  "compile_timeout": false,
+  "elapsed_build_s": 0.806,
+  "elapsed_run_s": null,
+  "elapsed_s": 0.808,
+  "error": "compile_failed：/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_smoke3_all/ddot_b4/harness/generated.c: In function ‘ddot_k’: | /mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_smoke3_all/ddot_b4/harness/generated.c:23:29: warning: implicit declaration of function ‘__riscv_vfredusum_vs_f64m8_f64’; did you mean ‘__riscv_vfredusum_vs_f64m8_f64m1’? [-Wimplicit-function-declaration] |    23 |         vfloat64m1_t vred = __riscv_vfredusum_vs_f64m8_f64(vsum, __riscv_vfmv_v_f_f64m1(0.0, 1), vlmax); |       |                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ |       |                             __riscv_vfredusum_vs_f64m8_f64m1 | /mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_smoke3_all/ddot_b4/harness/generated.c:23:29: error: incompatible types when initializing type ‘vfloat64m1_t’ using type ‘int’（见 C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\real_smoke3_all\\ddot_b4\\harness\\build.stderr.log）",
+  "env": {
+    "wsl_distro": "Ubuntu",
+    "cc": "riscv64-linux-gnu-gcc",
+    "cflags": [
+      "-O3",
+      "-march=rv64gcv_zvl256b_zba_zbb_zbc_zbs",
+      "-mabi=lp64d",
+      "-static"
+    ],
+    "qemu": "qemu-riscv64",
+    "qemu_cpu": "rv64,v=true,vlen=256,zba=true,zbb=true,zbc=true,zbs=true",
+    "flags_source": "experiments/harness/qemu.py"
+  }
+}

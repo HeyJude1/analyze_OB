@@ -1,0 +1,18 @@
+{
+  "engine": "ollama",
+  "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+  "model_digest": "dae161e27b0e90dd1856c8bb3209201fd6736d8eb66298e75ed87571486f4364",
+  "prepared_manifest_sha256": "0f7d3f804fd482de3164e1c2a1ed86a31ec1b583d8d49ec57c30d46178147853",
+  "settings": {
+    "context": 8192,
+    "completion_cap": 1536,
+    "temperature": 0.2,
+    "seed": 20261119,
+    "max_repairs": 1,
+    "check_timeout_seconds": 20,
+    "candidate_scope": "C operator only",
+    "ollama_version": "0.9.0",
+    "riscv_compiler": "/mnt/c/Users/MSI/Desktop/cx_operator_tool/operator_extract/toolchain/riscv-gcc-14.3/bin/riscv64-buildroot-linux-gnu-gcc",
+    "riscv_cpu": "rv64,v=true,vlen=256,elen=64,vext_spec=v1.0"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "criteria": {
+    "supportive": {
+      "score": 0.85,
+      "reason": "三个策略都要求 dtype == 'd'、loop_depth >= 1、reduction == true、size_regime 为 large，且参数上都使用 sew=64 和 lmul=8，条件基本一致，可以同时采用。但尾部处理策略（tail_handle_d）和向量归约策略（split_d）在尾部处理方式上需要协调，不能完全独立实施。"
+    },
+    "complementarity": {
+      "score": 0.9,
+      "reason": "specialize_d 负责主循环向量化和寄存器分组，split_d 优化归约路径，tail_handle_d 处理尾部边界问题，三者分别作用于向量化、归约链和尾部处理阶段，组合后能覆盖更多实现环节。"
+    },
+    "accuracy": {
+      "score": 0.7,
+      "reason": "向量化和归约顺序变化可能引入浮点精度误差，策略中未明确提供数值一致性保证机制。此外，尾部处理依赖动态 vl 和掩码，若实现不当可能导致精度问题。别名处理也未被策略覆盖，存在一定风险。"
+    },
+    "completeness": {
+      "score": 0.85,
+      "reason": "specialize_d 和 split_d 主要覆盖主循环阶段，tail_handle_d 覆盖尾部处理，组合后基本覆盖主循环和尾部。但对 n<=0 和任意步长的支持未被完整覆盖，需要额外分支处理。"
+    }
+  },
+  "criteria_scores": {
+    "supportive": 0.85,
+    "complementarity": 0.9,
+    "accuracy": 0.7,
+    "completeness": 0.85
+  },
+  "overall": "三策略组合可形成主循环向量化+归约优化+尾部掩码处理的完整实现，但需注意数值一致性和边界处理细节。",
+  "recommended": [
+    "stg:dot:specialize_d",
+    "stg:dot:split_d",
+    "stg:dot:tail_handle_d"
+  ],
+  "guidance": "['主循环采用 LMUL=8 和 SEW=64 进行向量寄存器分组，充分利用 k1_rvv256 的向量能力。', '使用 split_d 提供的向量归约结构优化累加链，提升归约性能。', '尾部采用动态 vl 和掩码机制处理非整除部分，确保边界安全。', '主循环参数建议采用 8 路展开，配合向量寄存器宽度，提高指令级并行度。', '对 n <= 0 情况单独处理，返回 0.0，确保边界正确。', '避免对 inc_x != 1 或 inc_y != 1 的情况做向量化，使用标量路径处理。']",
+  "conflicts": [
+    "stg:dot:split_d 和 stg:dot:tail_handle_d 在尾部归约顺序和掩码处理方式上可能存在冲突，需统一尾部归约逻辑。",
+    "高 LMUL=8 可能在某些硬件上导致寄存器资源不足，影响性能，建议根据硬件实际能力评估是否降低 LMUL。"
+  ]
+}

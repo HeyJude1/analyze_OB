@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="778" viewBox="0 0 1500 778" role="img" aria-labelledby="title desc">
+  <title id="title">论文项目进展任务图</title>
+  <desc id="desc">从研究设计、算子和隔离图谱，经四组功能对照、消融和真机实验，形成论文与答辩的证据。</desc>
+  <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0 7 4 0 8Z" fill="#607686"/></marker></defs>
+  <rect width="1500" height="778" fill="#F6F8FB"/>
+  <g font-family="Microsoft YaHei UI, Microsoft YaHei, Noto Sans CJK SC, sans-serif">
+    <text x="51" y="61" font-size="39" font-weight="700" fill="#153247">论文项目进展任务图</text>
+    <text x="51" y="104" font-size="18" fill="#526679">更新于 2026-11-19 · 留出算子与四组单次功能对照已完成。</text>
+    <g transform="translate(770 81)"><rect width="116" height="26" rx="13" fill="#E8F4EC" stroke="#6E9C7B"/><text x="58" y="18" font-size="14" text-anchor="middle" font-weight="700" fill="#215438">已完成</text></g>
+    <g transform="translate(906 81)"><rect width="116" height="26" rx="13" fill="#FFF3D9" stroke="#B99758"/><text x="58" y="18" font-size="14" text-anchor="middle" font-weight="700" fill="#75511E">进行中</text></g>
+    <g transform="translate(1042 81)"><rect width="116" height="26" rx="13" fill="#EDF2F7" stroke="#A2B2C5"/><text x="58" y="18" font-size="14" text-anchor="middle" font-weight="700" fill="#3E5570">待完成</text></g>
+    <g transform="translate(1178 81)"><rect width="116" height="26" rx="13" fill="#F3EEF9" stroke="#AA99BD"/><text x="58" y="18" font-size="14" text-anchor="middle" font-weight="700" fill="#674780">暂缓</text></g>
+    <g transform="translate(1314 81)"><rect width="116" height="26" rx="13" fill="#FBEAE8" stroke="#C78B83"/><text x="58" y="18" font-size="14" text-anchor="middle" font-weight="700" fill="#8F443C">阻塞</text></g>
+    <path d="M51 133H1447" stroke="#CDD8E2"/>
+    <rect x="51" y="158" width="307" height="46" rx="8" fill="#E8EFF6"/>
+    <text x="68" y="187" font-size="21" font-weight="700" fill="#1C425D">研究基础</text>
+    <rect x="414" y="158" width="307" height="46" rx="8" fill="#E8EFF6"/>
+    <text x="431" y="187" font-size="21" font-weight="700" fill="#1C425D">功能对照</text>
+    <rect x="777" y="158" width="307" height="46" rx="8" fill="#E8EFF6"/>
+    <text x="794" y="187" font-size="21" font-weight="700" fill="#1C425D">论文证据</text>
+    <rect x="1140" y="158" width="307" height="46" rx="8" fill="#E8EFF6"/>
+    <text x="1157" y="187" font-size="21" font-weight="700" fill="#1C425D">写作与答辩</text>
+    <g fill="none" stroke="#607686" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)">
+      <path d="M204 314 V353"/>
+      <path d="M51 270 H37 V525 H51"/>
+      <path d="M358 412 H414"/>
+      <path d="M358 378 H372 V632 H358"/>
+      <path d="M204 568 V607"/>
+      <path d="M358 509 H388 V324 H741 V397 H777"/>
+      <path d="M358 660 H400 V537 H414"/>
+      <path d="M567 441 V480"/>
+      <path d="M567 568 V607"/>
+      <path d="M721 634 H750 V531 H777"/>
+      <path d="M721 672 H777"/>
+      <path d="M1084 397 H1101 V503 H1140"/>
+      <path d="M1084 524 H1140"/>
+      <path d="M1084 654 H1121 V545 H1140"/>
+      <path d="M567 695 V723 H1294 V568"/>
+    </g>
+    <g transform="translate(51 226)">
+      <rect width="307" height="88" rx="10" fill="#E8F4EC" stroke="#6E9C7B" stroke-width="1.25"/>
+      <text x="16" y="23" font-size="14" font-weight="700" fill="#215438">已完成</text>
+      <text x="16" y="50" font-size="22" font-weight="700" fill="#153247">研究设计与实验口径</text>
+      <text x="16" y="73" font-size="15" fill="#455F73">两项方法贡献、数据拆分和主指标</text>
+    </g>
+    <g transform="translate(51 353)">
+      <rect width="307" height="88" rx="10" fill="#E8F4EC" stroke="#6E9C7B" stroke-width="1.25"/>
+      <text x="16" y="23" font-size="14" font-weight="700" fill="#215438">已完成</text>
+      <text x="16" y="50" font-size="22" font-weight="700" fill="#153247">首批五算子</text>
+      <text x="16" y="73" font-size="15" fill="#455F73">通用 C、架构变体与验证用例</text>
+    </g>
+    <g transform="translate(51 480)">
+      <rect width="307" height="88" rx="10" fill="#E8F4EC" stroke="#6E9C7B" stroke-width="1.25"/>
+      <text x="16" y="23" font-size="14" font-weight="700" fill="#215438">已完成</text>
+      <text x="16" y="50" font-size="22" font-weight="700" fill="#153247">隔离图谱与约束规划</text>
+      <text x="16" y="73" font-size="15" fill="#455F73">冻结快照、条件查询和策略计划</text>
+    </g>
+    <g transform="translate(51 607)">
+      <rect width="307" height="88" rx="10" fill="#E8F4EC" stroke="#6E9C7B" stroke-width="1.25"/>
+      <text x="16" y="23" font-size="14" font-weight="700" fill="#215438">已完成</text>
+      <text x="16" y="50" font-size="22" font-weight="700" fill="#153247">四组比较准备</text>
+      <text x="16" y="73" font-size="15" fill="#455F73">配对提示、预算预检和离线回放</text>
+    </g>
+    <g transform="translate(414 353)">
+      <rect width="307" height="88" rx="10" fill="#E8F4EC" stroke="#6E9C7B" stroke-width="1.25"/>
+      <text x="16" y="23" font-size="14" font-weight="700" fill="#215438">已完成</text>
+      <text x="16" y="50" font-size="22" font-weight="700" fill="#153247">四个 BLAS 留出</text>
+      <text x="16" y="73" font-size="15" fill="#455F73">五组配置各通过 1,924 个用例</text>
+    </g>
+    <g transform="translate(414 480)">
+      <rect width="307" height="88" rx="10" fill="#E8F4EC" stroke="#6E9C7B" stroke-width="1.25"/>
+      <text x="16" y="23" font-size="14" font-weight="700" fill="#215438">已完成</text>
+      <text x="16" y="50" font-size="22" font-weight="700" fill="#153247">四组功能实验</text>
+      <text x="16" y="73" font-size="15" fill="#455F73">单次完整矩阵 · 72/72 个单元</text>
+    </g>
+    <g transform="translate(414 607)">
+      <rect width="307" height="88" rx="10" fill="#E8F4EC" stroke="#6E9C7B" stroke-width="1.25"/>
+      <text x="16" y="23" font-size="14" font-weight="700" fill="#215438">已完成</text>
+      <text x="16" y="50" font-size="22" font-weight="700" fill="#153247">结果与失败分析</text>
+      <text x="16" y="73" font-size="15" fill="#455F73">编译通过 35→44 · 正确 18→19</text>
+    </g>
+    <g transform="translate(777 353)">
+      <rect width="307" height="88" rx="10" fill="#EDF2F7" stroke="#A2B2C5" stroke-width="1.25"/>
+      <text x="16" y="23" font-size="14" font-weight="700" fill="#3E5570">待完成</text>
+      <text x="16" y="50" font-size="22" font-weight="700" fill="#153247">知识质量人工评审</text>
+      <text x="16" y="73" font-size="15" fill="#455F73">源码、策略、适用条件与归并</text>
+    </g>
+    <g transform="translate(777 480)">
+      <rect width="307" height="88" rx="10" fill="#EDF2F7" stroke="#A2B2C5" stroke-width="1.25"/>
+      <text x="16" y="23" font-size="14" font-weight="700" fill="#3E5570">待完成</text>
+      <text x="16" y="50" font-size="22" font-weight="700" fill="#153247">独立验证、消融与迁移</text>
+      <text x="16" y="73" font-size="15" fill="#455F73">隐藏测试、三次重复和消融</text>
+    </g>
+    <g transform="translate(777 607)">
+      <rect width="307" height="88" rx="10" fill="#F3EEF9" stroke="#AA99BD" stroke-width="1.25"/>
+      <text x="16" y="23" font-size="14" font-weight="700" fill="#674780">暂缓</text>
+      <text x="16" y="50" font-size="22" font-weight="700" fill="#153247">双平台真机性能</text>
+      <text x="16" y="73" font-size="15" fill="#455F73">板卡核验、配对计时及专家参照</text>
+    </g>
+    <g transform="translate(1140 480)">
+      <rect width="307" height="88" rx="10" fill="#FFF3D9" stroke="#B99758" stroke-width="1.25"/>
+      <text x="16" y="23" font-size="14" font-weight="700" fill="#75511E">进行中</text>
+      <text x="16" y="50" font-size="22" font-weight="700" fill="#153247">论文正文与答辩</text>
+      <text x="16" y="73" font-size="15" fill="#455F73">完成方法、结果图表和结论</text>
+    </g>
+    <text x="51" y="751" font-size="15" fill="#526679">箭头标明产物或证据依赖。写作和答辩材料可随实验进度同步更新。</text>
+  </g>
+</svg>

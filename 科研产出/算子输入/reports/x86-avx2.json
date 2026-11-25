@@ -1,0 +1,206 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "amd64",
+  "results": [
+    {
+      "task": "daxpy",
+      "target": "x86",
+      "variant": "arch",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "tasks\\daxpy\\x86_avx2.c",
+      "source_sha256": "1375cd78481dc1dc04c968d6277bd5de2e4a165885d7d9f101076d67fef9d8fb",
+      "status": "passed",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DAXPY",
+          "driver/check.c",
+          "tasks\\daxpy\\x86_avx2.c",
+          "-o",
+          ".build\\daxpy-x86-arch.exe",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "e64a9c42c569afbd7291580e850f56a411c078806d9d7e28382ec676dc26d2c8",
+      "check": {
+        "argv": [
+          "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\算子输入\\.build\\daxpy-x86-arch.exe"
+        ],
+        "exit_code": 0,
+        "stdout": "60 cases, 0 failures\n",
+        "stderr": ""
+      },
+      "environment": "native"
+    },
+    {
+      "task": "ddot",
+      "target": "x86",
+      "variant": "arch",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "tasks\\ddot\\x86_avx2.c",
+      "source_sha256": "4d28b359ac965d86ea306bd8a4c7fc2b3880e40e7b022403be219d7b2dab7e6a",
+      "status": "passed",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DDOT",
+          "driver/check.c",
+          "tasks\\ddot\\x86_avx2.c",
+          "-o",
+          ".build\\ddot-x86-arch.exe",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "71287a5f6e0c870e217c4eced42b2e6315360193add48fd80af6d58b79e22c50",
+      "check": {
+        "argv": [
+          "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\算子输入\\.build\\ddot-x86-arch.exe"
+        ],
+        "exit_code": 0,
+        "stdout": "60 cases, 0 failures\n",
+        "stderr": ""
+      },
+      "environment": "native"
+    },
+    {
+      "task": "dgemv",
+      "target": "x86",
+      "variant": "arch",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "tasks\\dgemv\\x86_avx2.c",
+      "source_sha256": "9174c518dd495bcf93934bbaf3f2968f3a437fc7c297afa76a9032d29c07e256",
+      "status": "passed",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DGEMV",
+          "driver/check.c",
+          "tasks\\dgemv\\x86_avx2.c",
+          "-o",
+          ".build\\dgemv-x86-arch.exe",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "533a3ed7fc6571d0abd1893e441e89e095be78c98b226074cb3a70e02c76d956",
+      "check": {
+        "argv": [
+          "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\算子输入\\.build\\dgemv-x86-arch.exe"
+        ],
+        "exit_code": 0,
+        "stdout": "84 cases, 0 failures\n",
+        "stderr": ""
+      },
+      "environment": "native"
+    },
+    {
+      "task": "dgemm",
+      "target": "x86",
+      "variant": "arch",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "tasks\\dgemm\\x86_avx2.c",
+      "source_sha256": "a9ae739d0ed68770c78e224278a0f1c40b3d43cd8e19140fce59ab02d9a7eeb4",
+      "status": "passed",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DGEMM",
+          "driver/check.c",
+          "tasks\\dgemm\\x86_avx2.c",
+          "-o",
+          ".build\\dgemm-x86-arch.exe",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "cc58145d25ada54399e02da8fceb27ddf87b71c5affd8c5175c8894dbc9e23bb",
+      "check": {
+        "argv": [
+          "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\算子输入\\.build\\dgemm-x86-arch.exe"
+        ],
+        "exit_code": 0,
+        "stdout": "32 cases, 0 failures\n",
+        "stderr": ""
+      },
+      "environment": "native"
+    },
+    {
+      "task": "conv1d",
+      "target": "x86",
+      "variant": "arch",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "tasks\\conv1d\\x86_avx2.c",
+      "source_sha256": "f86fd9a34bde053a92328f8c16ea05d548e5d155e67b298bb5572519a147c742",
+      "status": "passed",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Iinclude",
+          "-DOPBENCH_TASK_CONV1D",
+          "driver/check.c",
+          "tasks\\conv1d\\x86_avx2.c",
+          "-o",
+          ".build\\conv1d-x86-arch.exe",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "d4e86ca2aa750c3277206ae459d906baa52f5376c0277c1998a554550804267c",
+      "check": {
+        "argv": [
+          "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\算子输入\\.build\\conv1d-x86-arch.exe"
+        ],
+        "exit_code": 0,
+        "stdout": "8 cases, 0 failures\n",
+        "stderr": ""
+      },
+      "environment": "native"
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "x86_64",
+  "results": [
+    {
+      "task": "dasum",
+      "target": "rvv",
+      "variant": "candidate",
+      "compiler_version": "riscv64-buildroot-linux-gnu-gcc.br_real (Buildroot 2021.11-18033-g83947c7bb6) 14.3.0",
+      "source": "../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/constraint_plan/rep-1/repair/candidate.c",
+      "source_sha256": "8ea25a2f9195af63e732b5b5c75c1817d5771f3024ee53f6a672b77bfe492ea4",
+      "status": "compile_error",
+      "compile": {
+        "argv": [
+          "/mnt/c/Users/MSI/Desktop/cx_operator_tool/operator_extract/toolchain/riscv-gcc-14.3/bin/riscv64-buildroot-linux-gnu-gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-march=rv64gcv",
+          "-mabi=lp64d",
+          "-static",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DASUM",
+          "driver/check.c",
+          "../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/constraint_plan/rep-1/repair/candidate.c",
+          "-o",
+          "../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/constraint_plan/rep-1/repair/bin/dasum-rvv-candidate",
+          "-lm"
+        ],
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/constraint_plan/rep-1/repair/candidate.c: In function ‘op_dasum’:\n../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/constraint_plan/rep-1/repair/candidate.c:12:9: error: unknown type name ‘__m256d’\n   12 |         __m256d vsum = _mm256_setzero_pd();\n      |         ^~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/constraint_plan/rep-1/repair/candidate.c:12:24: error: implicit declaration of function ‘_mm256_setzero_pd’ [-Wimplicit-function-declaration]\n   12 |         __m256d vsum = _mm256_setzero_pd();\n      |                        ^~~~~~~~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/constraint_plan/rep-1/repair/candidate.c:14:20: error: implicit declaration of function ‘_mm256_add_pd’ [-Wimplicit-function-declaration]\n   14 |             vsum = _mm256_add_pd(vsum, _mm256_and_pd(_mm256_loadu_pd(&x[i + j * incx]), _mm256_set1_pd(0.0)));\n      |                    ^~~~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/constraint_plan/rep-1/repair/candidate.c:14:40: error: implicit declaration of function ‘_mm256_and_pd’ [-Wimplicit-function-declaration]\n   14 |             vsum = _mm256_add_pd(vsum, _mm256_and_pd(_mm256_loadu_pd(&x[i + j * incx]), _mm256_set1_pd(0.0)));\n      |                                        ^~~~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/constraint_plan/rep-1/repair/candidate.c:14:54: error: implicit declaration of function ‘_mm256_loadu_pd’ [-Wimplicit-function-declaration]\n   14 |             vsum = _mm256_add_pd(vsum, _mm256_and_pd(_mm256_loadu_pd(&x[i + j * incx]), _mm256_set1_pd(0.0)));\n      |                                                      ^~~~~~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/constraint_plan/rep-1/repair/candidate.c:14:89: error: implicit declaration of function ‘_mm256_set1_pd’ [-Wimplicit-function-declaration]\n   14 |             vsum = _mm256_add_pd(vsum, _mm256_and_pd(_mm256_loadu_pd(&x[i + j * incx]), _mm256_set1_pd(0.0)));\n      |                                                                                         ^~~~~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/constraint_plan/rep-1/repair/candidate.c:16:16: error: implicit declaration of function ‘_mm256_reduce_add_pd’ [-Wimplicit-function-declaration]\n   16 |         sum += _mm256_reduce_add_pd(vsum);\n      |                ^~~~~~~~~~~~~~~~~~~~\n"
+      }
+    }
+  ]
+}

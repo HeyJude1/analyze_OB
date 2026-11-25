@@ -1,0 +1,14 @@
+dgemm x86 candidate: compile_error 
+
+..\experiments\thesis\functional_2026-11-19\ollama\dgemm\x86_avx2\constraint_plan\rep-1\initial\candidate.c: In function 'op_dgemm':
+..\experiments\thesis\functional_2026-11-19\ollama\dgemm\x86_avx2\constraint_plan\rep-1\initial\candidate.c:25:20: error: 'reg_block_m' undeclared (first use in this function); did you mean 'reg_block_n'?
+   25 |         double acc[reg_block_m][reg_block_n] = {0.0};
+      |                    ^~~~~~~~~~~
+      |                    reg_block_n
+..\experiments\thesis\functional_2026-11-19\ollama\dgemm\x86_avx2\constraint_plan\rep-1\initial\candidate.c:25:20: note: each undeclared identifier is reported only once for each function it appears in
+..\experiments\thesis\functional_2026-11-19\ollama\dgemm\x86_avx2\constraint_plan\rep-1\initial\candidate.c:25:48: error: variable-sized object may not be initialized except with an empty initializer
+   25 |         double acc[reg_block_m][reg_block_n] = {0.0};
+      |                                                ^
+..\experiments\thesis\functional_2026-11-19\ollama\dgemm\x86_avx2\constraint_plan\rep-1\initial\candidate.c:25:16: warning: unused variable 'acc' [-Wunused-variable]
+   25 |         double acc[reg_block_m][reg_block_n] = {0.0};
+      |                ^~~

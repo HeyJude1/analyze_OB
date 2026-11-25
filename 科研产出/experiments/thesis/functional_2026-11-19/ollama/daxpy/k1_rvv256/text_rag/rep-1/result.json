@@ -1,0 +1,49 @@
+{
+  "analogy_source": null,
+  "card_ids": [
+    "stg:abstract:vector_fma",
+    "stg:abstract:register_blocking",
+    "stg:axpy:specialize_s",
+    "stg:abstract:stride_dispatch"
+  ],
+  "contract_sha256": "371402f379cceaebd4ee2cd5d53b323433b08980d45a6ad1b974b37783189d24",
+  "knowledge_bytes": 5403,
+  "method": "text_rag",
+  "operator": "daxpy",
+  "profile": "k1_rvv256",
+  "prompt": "daxpy/k1_rvv256/text_rag.json",
+  "prompt_sha256": "68d1e47f664ef5b634496fd34096f4e49fc2873aa6ce70e3df3ddd21d34daf0b",
+  "repetition": 1,
+  "source_sha256": "8f5e498023abd606f24e4bad0a2642fa5d658a4b56181cc56da12c1b0dcf383b",
+  "split": "build",
+  "status": "prepared",
+  "engine": "ollama",
+  "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+  "repair_attempted": false,
+  "initial": {
+    "status": "passed",
+    "compile_ok": true,
+    "correct": true,
+    "failure_reason": null,
+    "usage": {
+      "prompt_tokens": 3047,
+      "completion_tokens": 471,
+      "total_tokens": 3518
+    },
+    "diagnostic": "",
+    "candidate_sha256": "c6fc7228495267acb81777972482eee291aa50a1dd80ddf9f22ec6912c936952"
+  },
+  "final": {
+    "status": "passed",
+    "compile_ok": true,
+    "correct": true,
+    "failure_reason": null,
+    "usage": {
+      "prompt_tokens": 3047,
+      "completion_tokens": 471,
+      "total_tokens": 3518
+    },
+    "diagnostic": "",
+    "candidate_sha256": "c6fc7228495267acb81777972482eee291aa50a1dd80ddf9f22ec6912c936952"
+  }
+}

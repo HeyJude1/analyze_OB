@@ -1,0 +1,37 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "x86_64",
+  "results": [
+    {
+      "task": "dsymv",
+      "target": "rvv",
+      "variant": "candidate",
+      "compiler_version": "riscv64-buildroot-linux-gnu-gcc.br_real (Buildroot 2021.11-18033-g83947c7bb6) 14.3.0",
+      "source": "../experiments/thesis/functional_2026-11-19/ollama/dsymv/k1_rvv256/no_knowledge/rep-1/initial/candidate.c",
+      "source_sha256": "db7c016ffe2e9b6a1b11c21a4a47fd5816446972fea4507247335af9cd5e5a03",
+      "status": "compile_error",
+      "compile": {
+        "argv": [
+          "/mnt/c/Users/MSI/Desktop/cx_operator_tool/operator_extract/toolchain/riscv-gcc-14.3/bin/riscv64-buildroot-linux-gnu-gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-march=rv64gcv",
+          "-mabi=lp64d",
+          "-static",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DSYMV",
+          "driver/check.c",
+          "../experiments/thesis/functional_2026-11-19/ollama/dsymv/k1_rvv256/no_knowledge/rep-1/initial/candidate.c",
+          "-o",
+          "../experiments/thesis/functional_2026-11-19/ollama/dsymv/k1_rvv256/no_knowledge/rep-1/initial/bin/dsymv-rvv-candidate",
+          "-lm"
+        ],
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "../experiments/thesis/functional_2026-11-19/ollama/dsymv/k1_rvv256/no_knowledge/rep-1/initial/candidate.c: In function ‘op_dsymv’:\n../experiments/thesis/functional_2026-11-19/ollama/dsymv/k1_rvv256/no_knowledge/rep-1/initial/candidate.c:8:5: error: unknown type name ‘__m256d’\n    8 |     __m256d v_alpha = _mm256_set1_pd(alpha);\n      |     ^~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dsymv/k1_rvv256/no_knowledge/rep-1/initial/candidate.c:8:23: error: implicit declaration of function ‘_mm256_set1_pd’ [-Wimplicit-function-declaration]\n    8 |     __m256d v_alpha = _mm256_set1_pd(alpha);\n      |                       ^~~~~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dsymv/k1_rvv256/no_knowledge/rep-1/initial/candidate.c:9:5: error: unknown type name ‘__m256d’\n    9 |     __m256d v_beta = _mm256_set1_pd(beta);\n      |     ^~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dsymv/k1_rvv256/no_knowledge/rep-1/initial/candidate.c:13:9: error: unknown type name ‘__m256d’\n   13 |         __m256d v_sum = _mm256_setzero_pd();\n      |         ^~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dsymv/k1_rvv256/no_knowledge/rep-1/initial/candidate.c:13:25: error: implicit declaration of function ‘_mm256_setzero_pd’ [-Wimplicit-function-declaration]\n   13 |         __m256d v_sum = _mm256_setzero_pd();\n      |                         ^~~~~~~~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dsymv/k1_rvv256/no_knowledge/rep-1/initial/candidate.c:18:13: error: unknown type name ‘__m256d’\n   18 |             __m256d v_aij = _mm256_set1_pd(aij);\n      |             ^~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dsymv/k1_rvv256/no_knowledge/rep-1/initial/candidate.c:19:13: error: unknown type name ‘__m256d’\n   19 |             __m256d v_x_j = _mm256_loadu_pd(&x[(ptrdiff_t)j * incx]);\n      |             ^~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dsymv/k1_rvv256/no_knowledge/rep-1/initial/candidate.c:19:29: error: implicit declaration of function ‘_mm256_loadu_pd’ [-Wimplicit-function-declaration]\n   19 |             __m256d v_x_j = _mm256_loadu_pd(&x[(ptrdiff_t)j * incx]);\n      |                             ^~~~~~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dsymv/k1_rvv256/no_knowledge/rep-1/initial/candidate.c:20:21: error: implicit declaration of function ‘_mm256_add_pd’ [-Wimplicit-function-declaration]\n   20 |             v_sum = _mm256_add_pd(v_sum, _mm256_mul_pd(v_aij, v_x_j));\n      |                     ^~~~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dsymv/k1_rvv256/no_knowledge/rep-1/initial/candidate.c:20:42: error: implicit declaration of function ‘_mm256_mul_pd’ [-Wimplicit-function-declaration]\n   20 |             v_sum = _mm256_add_pd(v_sum, _mm256_mul_pd(v_aij, v_x_j));\n      |                                          ^~~~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dsymv/k1_rvv256/no_knowledge/rep-1/initial/candidate.c:24:28: error: request for member ‘m256d_f32’ in something not a structure or union\n   24 |             sum[k] += v_sum.m256d_f32[2 * k] + v_sum.m256d_f32[2 * k + 1];\n      |                            ^\n../experiments/thesis/functional_2026-11-19/ollama/dsymv/k1_rvv256/no_knowledge/rep-1/initial/candidate.c:24:53: error: request for member ‘m256d_f32’ in something not a structure or union\n   24 |             sum[k] += v_sum.m256d_f32[2 * k] + v_sum.m256d_f32[2 * k + 1];\n      |                                                     ^\n../experiments/thesis/functional_2026-11-19/ollama/dsymv/k1_rvv256/no_knowledge/rep-1/initial/candidate.c:27:9: error: unknown type name ‘__m256d’\n   27 |         __m256d v_y_i = _mm256_loadu_pd(&y[(ptrdiff_t)i * incy]);\n      |         ^~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dsymv/k1_rvv256/no_knowledge/rep-1/initial/candidate.c:29:9: error: implicit declaration of function ‘_mm256_storeu_pd’ [-Wimplicit-function-declaration]\n   29 |         _mm256_storeu_pd(&y[(ptrdiff_t)i * incy], v_y_i);\n      |         ^~~~~~~~~~~~~~~~\n"
+      }
+    }
+  ]
+}

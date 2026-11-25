@@ -1,0 +1,80 @@
+{
+  "status": "ok",
+  "op": "ddot",
+  "op_canonical": "dot",
+  "profile": "k1_rvv256",
+  "mode": "b4",
+  "provider": "mock",
+  "model": "mock",
+  "out_dir": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\smoke_seed1_20261112_204416\\ddot_b4",
+  "result_path": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\smoke_seed1_20261112_204416\\ddot_b4\\mpsa_result.json",
+  "generated_c_path": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\smoke_seed1_20261112_204416\\ddot_b4\\generated.c",
+  "retrieved": {
+    "count": 6,
+    "top_k": 6,
+    "strategy_ids": [
+      "stg:dot:specialize_d",
+      "stg:dot:split_d",
+      "stg:dot:tail_handle_d",
+      "stg:dot:tile_d",
+      "stg:dot:vectorize_d",
+      "stg:dot:reduce_register_pressure_s"
+    ],
+    "trace_id": "trace:20261112T204418:dot:k1_rvv256"
+  },
+  "analysis": {
+    "analysis_k": 3,
+    "count": 3,
+    "strategy_ids": [
+      "stg:dot:specialize_d",
+      "stg:dot:split_d",
+      "stg:dot:tail_handle_d"
+    ]
+  },
+  "synthesis": {
+    "criteria_scores": {
+      "supportive": 0.82,
+      "complementarity": 0.76,
+      "accuracy": 0.9,
+      "completeness": 0.72
+    },
+    "overall": "mock: 建议按检索顺序组合向量化内核 + 动态 vl 尾部处理 + LMUL/展开参数调优。"
+  },
+  "usage": {
+    "calls": 5,
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0,
+    "by_stage": {
+      "analysis": {
+        "calls": 3,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "synthesis": {
+        "calls": 1,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "generate": {
+        "calls": 1,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      }
+    }
+  },
+  "elapsed_s": 0.037,
+  "code_meta": {
+    "signature": "double ddot_k(BLASLONG n, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y)",
+    "function_name": "ddot_k",
+    "wrapped_body": false,
+    "fences_removed": false,
+    "prologue_added": true,
+    "repairs": [],
+    "char_count": 318
+  },
+  "code_preview": "typedef long long BLASLONG;\n\ndouble ddot_k(BLASLONG n, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y)\n{\n    BLASLONG i;\n    BLASLONG ix = 0;\n    BLASLONG iy = 0;\n    double acc = 0.0;\n\n    for "
+}

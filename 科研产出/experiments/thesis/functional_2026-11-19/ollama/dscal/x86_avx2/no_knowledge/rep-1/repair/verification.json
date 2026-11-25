@@ -1,0 +1,46 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "amd64",
+  "results": [
+    {
+      "task": "dscal",
+      "target": "x86",
+      "variant": "candidate",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\no_knowledge\\rep-1\\repair\\candidate.c",
+      "source_sha256": "65fb30873ab712ad8548122e73a39c920bb1af5cd327dd2989209b5087aa830c",
+      "status": "check_failed",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DSCAL",
+          "driver/check.c",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\no_knowledge\\rep-1\\repair\\candidate.c",
+          "-o",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\no_knowledge\\rep-1\\repair\\bin\\dscal-x86-candidate.exe",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "b765cd24936d8d98b109db815e970d5226fd535f5583ba41a50660cc790cb071",
+      "check": {
+        "argv": [
+          "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\no_knowledge\\rep-1\\repair\\bin\\dscal-x86-candidate.exe"
+        ],
+        "exit_code": 1,
+        "stdout": "384 cases, 6182 failures\n",
+        "stderr": "dscal case 37 cell 1: got 0.78514588859416445 expected 0\ndscal case 37 modified guard 2\ndscal case 39 cell 1: got -2.5437665782493371 expected 2.5437665782493371\ndscal case 39 modified guard 2\ndscal case 40 cell 1: got 0.90981432360742709 expected 0.27385411140583554\ndscal case 40 modified guard 2\ndscal case 41 cell 1: got -0.48010610079575594 expected -0\ndscal case 41 modified guard 3\ndscal case 43 cell 1: got -0.95755968169761274 expected 0.95755968169761274\ndscal case 43 modified guard 3\n"
+      },
+      "environment": "native"
+    }
+  ]
+}

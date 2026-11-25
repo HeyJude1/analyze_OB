@@ -1,0 +1,9 @@
+{
+  "raw": "```c\n#include \"opbench.h\"\n\nvoid op_daxpy(size_t n, double alpha, const double *x, ptrdiff_t incx,\n              double *y, ptrdiff_t incy) {\n    if (alpha == 0.0) return;\n\n    // Specialize for incx != 1 to eliminate index multiplication\n    if (incx == 1) {\n        size_t i = 0;\n        __m256d v_alpha = _mm256_set1_pd(alpha);\n        while (i + 4 <= n) {\n            __m256d vx = _mm256_loadu_pd(&x[i]);\n            __m256d vy = _mm256_loadu_pd(&y[i]);\n            vy = _mm256_add_pd(vy, _mm256_mul_pd(v_alpha, vx));\n            _mm256_storeu_pd(&y[i], vy);\n            i += 4;\n        }\n    } else {\n        for (size_t i = 0; i < n; ++i) {\n            y[(ptrdiff_t)i * incy] += alpha * x[(ptrdiff_t)i * incx];\n        }\n    }\n\n    // Handle the tail\n    size_t remainder = n % 4;\n    for (size_t i = n - remainder; i < n; ++i) {\n        y[(ptrdiff_t)i * incy] += alpha * x[(ptrdiff_t)i * incx];\n    }\n}\n```",
+  "usage": {
+    "prompt_tokens": 1560,
+    "completion_tokens": 320,
+    "total_tokens": 1880
+  },
+  "stop_reason": "stop"
+}

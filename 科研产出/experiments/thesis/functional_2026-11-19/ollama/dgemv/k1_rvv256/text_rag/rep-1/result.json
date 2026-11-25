@@ -1,0 +1,49 @@
+{
+  "analogy_source": null,
+  "card_ids": [
+    "stg:abstract:vector_fma",
+    "stg:abstract:register_blocking",
+    "stg:gemv:fuse_s",
+    "stg:gemv:specialize_s"
+  ],
+  "contract_sha256": "a4cb7aea401aa9189eede64a0587f45673d95f4b8e0ad9486c612b630f90ed4c",
+  "knowledge_bytes": 5288,
+  "method": "text_rag",
+  "operator": "dgemv",
+  "profile": "k1_rvv256",
+  "prompt": "dgemv/k1_rvv256/text_rag.json",
+  "prompt_sha256": "64793396e6b34beec84d4e6fe091b8704031d3b443ecec27b941b2c2f7b1c184",
+  "repetition": 1,
+  "source_sha256": "49fc8d60ab4796b4e2b1b2314d12013386d9e5cae521be5dcd4cfc130a9dc72f",
+  "split": "build",
+  "status": "prepared",
+  "engine": "ollama",
+  "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+  "repair_attempted": true,
+  "initial": {
+    "status": "wrong_answer",
+    "compile_ok": true,
+    "correct": false,
+    "failure_reason": "numerical_or_memory_contract",
+    "usage": {
+      "prompt_tokens": 3159,
+      "completion_tokens": 339,
+      "total_tokens": 3498
+    },
+    "diagnostic": "Numerical or memory-contract check failed on 204 cases. Preserve the full public contract.",
+    "candidate_sha256": "021d827506aca71e39babe80cd0f460cb468fd52299de26386d6dddc2dd529c0"
+  },
+  "final": {
+    "status": "wrong_answer",
+    "compile_ok": true,
+    "correct": false,
+    "failure_reason": "numerical_or_memory_contract",
+    "usage": {
+      "prompt_tokens": 1822,
+      "completion_tokens": 339,
+      "total_tokens": 2161
+    },
+    "diagnostic": "Numerical or memory-contract check failed on 204 cases. Preserve the full public contract.",
+    "candidate_sha256": "021d827506aca71e39babe80cd0f460cb468fd52299de26386d6dddc2dd529c0"
+  }
+}

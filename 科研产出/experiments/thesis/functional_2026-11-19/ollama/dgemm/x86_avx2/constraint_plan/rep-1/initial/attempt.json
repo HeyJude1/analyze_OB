@@ -1,0 +1,13 @@
+{
+  "status": "compile_failed",
+  "compile_ok": false,
+  "correct": null,
+  "failure_reason": "other_compiler_error",
+  "usage": {
+    "prompt_tokens": 3456,
+    "completion_tokens": 510,
+    "total_tokens": 3966
+  },
+  "diagnostic": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c: In function 'op_dgemm':\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c:25:20: error: 'reg_block_m' undeclared (first use in this function); did you mean 'reg_block_n'?\n   25 |         double acc[reg_block_m][reg_block_n] = {0.0};\n      |                    ^~~~~~~~~~~\n      |                    reg_block_n\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c:25:20: note: each undeclared identifier is reported only once for each function it appears in\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c:25:48: error: variable-sized object may not be initialized except with an empty initializer\n   25 |         double acc[reg_block_m][reg_block_n] = {0.0};\n      |                                                ^\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c:25:16: warning: unused variable 'acc' [-Wunused-variable]\n   25 |         double acc[reg_block_m][reg_block_n] = {0.0};\n      |                ^~~\n",
+  "candidate_sha256": "d20f1b7cb264ae67d5cd6fff13dd7e0eee4c3b3580c337f695248c8b37b47161"
+}

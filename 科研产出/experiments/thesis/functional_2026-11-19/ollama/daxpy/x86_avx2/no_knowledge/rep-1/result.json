@@ -1,0 +1,44 @@
+{
+  "analogy_source": null,
+  "card_ids": [],
+  "contract_sha256": "371402f379cceaebd4ee2cd5d53b323433b08980d45a6ad1b974b37783189d24",
+  "knowledge_bytes": 0,
+  "method": "no_knowledge",
+  "operator": "daxpy",
+  "profile": "x86_avx2",
+  "prompt": "daxpy/x86_avx2/no_knowledge.json",
+  "prompt_sha256": "d4ae893dc6a20bbe0706b60790de9788543cac7effac36a140ff2d485b6729ac",
+  "repetition": 1,
+  "source_sha256": "8f5e498023abd606f24e4bad0a2642fa5d658a4b56181cc56da12c1b0dcf383b",
+  "split": "build",
+  "status": "prepared",
+  "engine": "ollama",
+  "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+  "repair_attempted": false,
+  "initial": {
+    "status": "passed",
+    "compile_ok": true,
+    "correct": true,
+    "failure_reason": null,
+    "usage": {
+      "prompt_tokens": 1140,
+      "completion_tokens": 104,
+      "total_tokens": 1244
+    },
+    "diagnostic": "",
+    "candidate_sha256": "72e420bed0d9ddc25c3370ebe1e5d4f56863eff50933bd50b26cd87758dd6f84"
+  },
+  "final": {
+    "status": "passed",
+    "compile_ok": true,
+    "correct": true,
+    "failure_reason": null,
+    "usage": {
+      "prompt_tokens": 1140,
+      "completion_tokens": 104,
+      "total_tokens": 1244
+    },
+    "diagnostic": "",
+    "candidate_sha256": "72e420bed0d9ddc25c3370ebe1e5d4f56863eff50933bd50b26cd87758dd6f84"
+  }
+}

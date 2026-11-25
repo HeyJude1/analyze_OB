@@ -1,0 +1,29 @@
+{
+  "op": "daxpy",
+  "mode": "b3",
+  "profile": "k1_rvv256",
+  "seed": 1,
+  "n": 1024,
+  "reps": 10,
+  "top_k": 6,
+  "analysis_k": null,
+  "query": {
+    "operator": "axpy",
+    "raw_operator": "daxpy",
+    "hardware_profile_id": "k1_rvv256",
+    "hardware_profile_node": "hw:k1_rvv256",
+    "code_features": {
+      "dtype": "d",
+      "precision": "double",
+      "stride_x": 1,
+      "stride_y": 1,
+      "loop_depth": 1,
+      "size_regime": "large",
+      "aligned": true,
+      "tail_divisible": false,
+      "structural": "none",
+      "reduction": false
+    },
+    "top_k": 6
+  }
+}

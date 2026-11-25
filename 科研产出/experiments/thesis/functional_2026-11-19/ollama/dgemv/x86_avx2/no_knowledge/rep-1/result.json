@@ -1,0 +1,44 @@
+{
+  "analogy_source": null,
+  "card_ids": [],
+  "contract_sha256": "a4cb7aea401aa9189eede64a0587f45673d95f4b8e0ad9486c612b630f90ed4c",
+  "knowledge_bytes": 0,
+  "method": "no_knowledge",
+  "operator": "dgemv",
+  "profile": "x86_avx2",
+  "prompt": "dgemv/x86_avx2/no_knowledge.json",
+  "prompt_sha256": "4d8e6be81648916130e4e1a6e0ae4d1327b381909e35b3bde245f415cbdd7866",
+  "repetition": 1,
+  "source_sha256": "49fc8d60ab4796b4e2b1b2314d12013386d9e5cae521be5dcd4cfc130a9dc72f",
+  "split": "build",
+  "status": "prepared",
+  "engine": "ollama",
+  "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+  "repair_attempted": true,
+  "initial": {
+    "status": "wrong_answer",
+    "compile_ok": true,
+    "correct": false,
+    "failure_reason": "numerical_or_memory_contract",
+    "usage": {
+      "prompt_tokens": 1291,
+      "completion_tokens": 218,
+      "total_tokens": 1509
+    },
+    "diagnostic": "Numerical or memory-contract check failed on 30 cases. Preserve the full public contract.",
+    "candidate_sha256": "563729efa5ad2de3f5ff7ca0b12a998c4cebe2adcebcd14eeb921c3f74d2659a"
+  },
+  "final": {
+    "status": "wrong_answer",
+    "compile_ok": true,
+    "correct": false,
+    "failure_reason": "numerical_or_memory_contract",
+    "usage": {
+      "prompt_tokens": 1649,
+      "completion_tokens": 218,
+      "total_tokens": 1867
+    },
+    "diagnostic": "Numerical or memory-contract check failed on 30 cases. Preserve the full public contract.",
+    "candidate_sha256": "563729efa5ad2de3f5ff7ca0b12a998c4cebe2adcebcd14eeb921c3f74d2659a"
+  }
+}

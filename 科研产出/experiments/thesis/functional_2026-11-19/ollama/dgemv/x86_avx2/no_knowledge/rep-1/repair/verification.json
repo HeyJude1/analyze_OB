@@ -1,0 +1,46 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "amd64",
+  "results": [
+    {
+      "task": "dgemv",
+      "target": "x86",
+      "variant": "candidate",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemv\\x86_avx2\\no_knowledge\\rep-1\\repair\\candidate.c",
+      "source_sha256": "563729efa5ad2de3f5ff7ca0b12a998c4cebe2adcebcd14eeb921c3f74d2659a",
+      "status": "check_failed",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DGEMV",
+          "driver/check.c",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemv\\x86_avx2\\no_knowledge\\rep-1\\repair\\candidate.c",
+          "-o",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemv\\x86_avx2\\no_knowledge\\rep-1\\repair\\bin\\dgemv-x86-candidate.exe",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "12a9bcabc57ee168e64f85ddcc75c0b6944ce3479ae3638db4741e51e286c9e6",
+      "check": {
+        "argv": [
+          "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemv\\x86_avx2\\no_knowledge\\rep-1\\repair\\bin\\dgemv-x86-candidate.exe"
+        ],
+        "exit_code": 1,
+        "stdout": "84 cases, 30 failures\n",
+        "stderr": "dgemv case 15 cell 1: got -2.557029177718833 expected 1.5342175066312997\ndgemv case 15 cell 2: got -2.3687002652519893 expected 1.4212201591511935\ndgemv case 15 cell 3: got -0.35013262599469497 expected 0.21007957559681698\ndgemv case 15 cell 4: got -0.1830238726790451 expected 0.10981432360742706\ndgemv case 15 cell 5: got -2.249336870026525 expected 1.3496021220159149\ndgemv case 16 cell 1: got nan expected 0\ndgemv case 16 cell 2: got nan expected 0\ndgemv case 16 cell 3: got nan expected 0\ndgemv case 16 cell 4: got nan expected 0\ndgemv case 16 cell 5: got nan expected 0\n"
+      },
+      "environment": "native"
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "criteria": {
+    "supportive": {
+      "score": 0.85,
+      "reason": "三条策略均采用相同的 LMUL=8 和 SEW=64 参数配置，条件一致，且无明显冲突。向量化策略为主循环提供加速，尾部处理策略解决未对齐部分，寄存器分组策略优化向量资源利用，三者参数协调、可组合使用。"
+    },
+    "complementarity": {
+      "score": 0.9,
+      "reason": "策略作用于不同阶段：stg:axpy:vectorize_d 负责主循环向量化，stg:axpy:tail_handle_d 处理尾部动态 vl 和掩码操作，stg:axpy:specialize_d 优化寄存器分组和 LMUL/SEW 配置。三者组合覆盖向量化、尾部处理与寄存器资源管理，形成完整优化链。"
+    },
+    "accuracy": {
+      "score": 0.75,
+      "reason": "组合策略在主循环中使用向量化和尾部掩码处理，可能引入数值一致性风险（如别名、动态 vl 控制误差），但通过统一 LMUL/SEW 配置和对齐前提，风险在可控范围内。n<=0 分支仍需单独处理以确保数值一致性。"
+    },
+    "completeness": {
+      "score": 0.8,
+      "reason": "组合策略基本覆盖主循环向量化（vectorize_d）、尾部未对齐处理（tail_handle_d）以及寄存器资源优化（specialize_d），但未显式提及 inc_x/inc_y 非 1 的处理和 n<=0 的边界逻辑，需在代码中额外补充。"
+    }
+  },
+  "criteria_scores": {
+    "supportive": 0.85,
+    "complementarity": 0.9,
+    "accuracy": 0.75,
+    "completeness": 0.8
+  },
+  "overall": "三条策略在参数一致、阶段互补的前提下可组合使用，形成针对 large size_regime、double 精度、RISC-V Vector Extension 的完整 daxpy 实现，但需注意尾部处理与边界分支的显式实现。",
+  "recommended": [
+    "stg:axpy:vectorize_d",
+    "stg:axpy:tail_handle_d",
+    "stg:axpy:specialize_d"
+  ],
+  "guidance": "['主循环使用 RVV 向量化内核（vsetvl + vle/vfmacc/vse）实现，采用 LMUL=8、SEW=64 配置以适配 double 类型与 k1_rvv256 硬件', '尾部处理采用动态 vl 计算与掩码机制，适配 tail_divisible=false 的场景', '寄存器分组调优使用 LMUL=8 提升向量寄存器利用率，同时注意控制寄存器压力', '循环分块应适配 vector_len=32，循环内动态计算 vl 以适配剩余长度', 'n <= 0 的边界条件需在函数入口单独判断并提前返回', 'inc_x 和 inc_y 非 1 的情况需保留通用路径处理，不可完全依赖向量化路径']",
+  "conflicts": [
+    "避免在尾部处理中重复设置 LMUL=8 而导致寄存器溢出",
+    "避免在主循环向量化中使用与 tail_divisible=false 不兼容的固定 vl 模式",
+    "避免在未处理别名问题的前提下对 x 和 y 指针进行向量化操作"
+  ]
+}

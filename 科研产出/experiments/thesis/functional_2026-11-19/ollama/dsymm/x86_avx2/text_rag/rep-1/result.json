@@ -1,0 +1,49 @@
+{
+  "analogy_source": "gemm",
+  "card_ids": [
+    "stg:abstract:vector_fma",
+    "stg:abstract:pointer_precompute",
+    "stg:abstract:register_blocking",
+    "stg:abstract:tail_handling"
+  ],
+  "contract_sha256": "1998f1147530fbd0cb7b46f9e7ca4f7e60d20e9bb8cc625dfde2edb0d39aed1d",
+  "knowledge_bytes": 4470,
+  "method": "text_rag",
+  "operator": "dsymm",
+  "profile": "x86_avx2",
+  "prompt": "dsymm/x86_avx2/text_rag.json",
+  "prompt_sha256": "c72aa41ea9027edf9df6ef9712c260576d187880bc49b3f60412dce24ded921f",
+  "repetition": 1,
+  "source_sha256": "2b054ea1fb3ef0c2781e028c6d754a08de7d41cf530fe1cbceb1efa19b540ffd",
+  "split": "near_transfer",
+  "status": "prepared",
+  "engine": "ollama",
+  "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+  "repair_attempted": true,
+  "initial": {
+    "status": "compile_failed",
+    "compile_ok": false,
+    "correct": null,
+    "failure_reason": "other_compiler_error",
+    "usage": {
+      "prompt_tokens": 3030,
+      "completion_tokens": 793,
+      "total_tokens": 3823
+    },
+    "diagnostic": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymm\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c: In function 'op_dsymm':\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymm\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c:24:39: error: variable-sized object may not be initialized except with an empty initializer\n   24 |             double sum[reg_block_n] = {0.0};\n      |                                       ^\n",
+    "candidate_sha256": "1d223a0434a15690b4b122bad252b45355062c3c812acd476e04d6b97c3ece03"
+  },
+  "final": {
+    "status": "compile_failed",
+    "compile_ok": false,
+    "correct": null,
+    "failure_reason": "link_or_missing_symbol",
+    "usage": {
+      "prompt_tokens": 2586,
+      "completion_tokens": 805,
+      "total_tokens": 3391
+    },
+    "diagnostic": "C:/msys64/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: C:\\Users\\MSI\\AppData\\Local\\Temp\\ccvL5taw.o:candidate.c:(.text+0x21b): undefined reference to `op_dscal'\ncollect2.exe: error: ld returned 1 exit status\n",
+    "candidate_sha256": "46a6275fa91663f3cbb7e2b9e27954cfe378ea09348c1d79e8c687ccff788f14"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "analogy_source": "gemv",
+  "card_ids": [
+    "stg:abstract:vector_fma",
+    "stg:abstract:register_blocking",
+    "stg:abstract:tail_handling",
+    "stg:abstract:k_unroll"
+  ],
+  "contract_sha256": "3ec32f9475c48aa5f192dc136516548d7b094f6fa631cd084582a3f3a806e7b2",
+  "knowledge_bytes": 4505,
+  "method": "text_rag",
+  "operator": "dsymv",
+  "profile": "x86_avx2",
+  "prompt": "dsymv/x86_avx2/text_rag.json",
+  "prompt_sha256": "21a64841e633e3302f76394000c40cabc505ad05273ff48713c525b43a74cdb8",
+  "repetition": 1,
+  "source_sha256": "8494a5751a22999b7d05267cd907678c866e376873badef34a708eebf2d2588a",
+  "split": "holdout",
+  "status": "prepared",
+  "engine": "ollama",
+  "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+  "repair_attempted": false,
+  "initial": {
+    "status": "passed",
+    "compile_ok": true,
+    "correct": true,
+    "failure_reason": null,
+    "usage": {
+      "prompt_tokens": 2877,
+      "completion_tokens": 325,
+      "total_tokens": 3202
+    },
+    "diagnostic": "",
+    "candidate_sha256": "779911650aa393bf474e0b48f1aed9d8ef351b075eec553bf36d786d808651ca"
+  },
+  "final": {
+    "status": "passed",
+    "compile_ok": true,
+    "correct": true,
+    "failure_reason": null,
+    "usage": {
+      "prompt_tokens": 2877,
+      "completion_tokens": 325,
+      "total_tokens": 3202
+    },
+    "diagnostic": "",
+    "candidate_sha256": "779911650aa393bf474e0b48f1aed9d8ef351b075eec553bf36d786d808651ca"
+  }
+}

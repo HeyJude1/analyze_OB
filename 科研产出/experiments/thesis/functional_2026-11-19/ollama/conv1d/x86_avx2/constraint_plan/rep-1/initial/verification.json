@@ -1,0 +1,46 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "amd64",
+  "results": [
+    {
+      "task": "conv1d",
+      "target": "x86",
+      "variant": "candidate",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\conv1d\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c",
+      "source_sha256": "29b9081a53155e2b4f4cd6d17d7a4c1cb3f0acd853cf6c4e027fa44be36fb8d6",
+      "status": "passed",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Iinclude",
+          "-DOPBENCH_TASK_CONV1D",
+          "driver/check.c",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\conv1d\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c",
+          "-o",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\conv1d\\x86_avx2\\constraint_plan\\rep-1\\initial\\bin\\conv1d-x86-candidate.exe",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\conv1d\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c: In function 'op_conv1d':\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\conv1d\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c:8: warning: ignoring '#pragma omp simd' [-Wunknown-pragmas]\n    8 |     #pragma omp simd reduction(+:sum)\n"
+      },
+      "binary_sha256": "87e74e6c5781e5b7300db63ed3f0102e470593e897d5d65ab1a6ad3e6ad9f071",
+      "check": {
+        "argv": [
+          "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\thesis\\functional_2026-11-19\\ollama\\conv1d\\x86_avx2\\constraint_plan\\rep-1\\initial\\bin\\conv1d-x86-candidate.exe"
+        ],
+        "exit_code": 0,
+        "stdout": "8 cases, 0 failures\n",
+        "stderr": ""
+      },
+      "environment": "native"
+    }
+  ]
+}

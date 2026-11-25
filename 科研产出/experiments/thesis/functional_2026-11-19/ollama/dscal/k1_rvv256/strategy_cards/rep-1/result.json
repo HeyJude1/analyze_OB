@@ -1,0 +1,49 @@
+{
+  "analogy_source": "axpy",
+  "card_ids": [
+    "stg:abstract:register_blocking",
+    "stg:abstract:vector_fma",
+    "stg:abstract:tail_handling",
+    "stg:abstract:stride_dispatch"
+  ],
+  "contract_sha256": "2daff4c2d3b6dff62ae5ca12435a0298c6c878a3aa751d74c6d7003cc5afb6f8",
+  "knowledge_bytes": 4537,
+  "method": "strategy_cards",
+  "operator": "dscal",
+  "profile": "k1_rvv256",
+  "prompt": "dscal/k1_rvv256/strategy_cards.json",
+  "prompt_sha256": "33c5be3f7e7a59977e169cf12c6b56e7c1ee32aadda1a2e4af9d3b3f92a1e831",
+  "repetition": 1,
+  "source_sha256": "fe07cac3a572e7b9ad0706633dde40f5fb508145ea138cb551c7f0f057b56e59",
+  "split": "holdout",
+  "status": "prepared",
+  "engine": "ollama",
+  "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+  "repair_attempted": true,
+  "initial": {
+    "status": "compile_failed",
+    "compile_ok": false,
+    "correct": null,
+    "failure_reason": "intrinsic_or_target_error",
+    "usage": {
+      "prompt_tokens": 2545,
+      "completion_tokens": 431,
+      "total_tokens": 2976
+    },
+    "diagnostic": "../experiments/thesis/functional_2026-11-19/ollama/dscal/k1_rvv256/strategy_cards/rep-1/initial/candidate.c: In function ‘op_dscal’:\n../experiments/thesis/functional_2026-11-19/ollama/dscal/k1_rvv256/strategy_cards/rep-1/initial/candidate.c:8:13: error: unknown type name ‘__m256d’\n    8 |             __m256d vec_x = _mm256_loadu_pd(&x[4 * i]);\n      |             ^~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dscal/k1_rvv256/strategy_cards/rep-1/initial/candidate.c:8:29: error: implicit declaration of function ‘_mm256_loadu_pd’ [-Wimplicit-function-declaration]\n    8 |             __m256d vec_x = _mm256_loadu_pd(&x[4 * i]);\n      |                             ^~~~~~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dscal/k1_rvv256/strategy_cards/rep-1/initial/candidate.c:9:21: error: implicit declaration of function ‘_mm256_mul_pd’ [-Wimplicit-function-declaration]\n    9 |             vec_x = _mm256_mul_pd(vec_x, _mm256_set1_pd(alpha));\n      |                     ^~~~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dscal/k1_rvv256/strategy_cards/rep-1/initial/candidate.c:9:42: error: implicit declaration of function ‘_mm256_set1_pd’ [-Wimplicit-function-declaration]\n    9 |             vec_x = _mm256_mul_pd(vec_x, _mm256_set1_pd(alpha));\n      |                                          ^~~~~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dscal/k1_rvv256/strategy_cards/rep-1/initial/candidate.c:10:13: error: implicit declaration of function ‘_mm256_storeu_pd’ [-Wimplicit-function-declaration]\n   10 |             _mm256_storeu_pd(&x[4 * i], vec_x);\n      |             ^~~~~~~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dscal/k1_rvv256/strategy_cards/rep-1/initial/candidate.c:20:13: error: unknown type name ‘__m256d’\n   20 |             __m256d vec_x = _mm256_loadu_pd(&x[(ptrdiff_t)i * incx]);\n      |             ^~~~~~~\n",
+    "candidate_sha256": "442a920c6f80138829015644f5e2acb1361a6e8b1dc66c853c38cb5d1a989a4e"
+  },
+  "final": {
+    "status": "compile_failed",
+    "compile_ok": false,
+    "correct": null,
+    "failure_reason": "intrinsic_or_target_error",
+    "usage": {
+      "prompt_tokens": 2016,
+      "completion_tokens": 326,
+      "total_tokens": 2342
+    },
+    "diagnostic": "../experiments/thesis/functional_2026-11-19/ollama/dscal/k1_rvv256/strategy_cards/rep-1/repair/candidate.c: In function ‘op_dscal’:\n../experiments/thesis/functional_2026-11-19/ollama/dscal/k1_rvv256/strategy_cards/rep-1/repair/candidate.c:8:13: error: unknown type name ‘__m256d’\n    8 |             __m256d vec_x = _mm256_loadu_pd(&x[4 * i]);\n      |             ^~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dscal/k1_rvv256/strategy_cards/rep-1/repair/candidate.c:8:29: error: implicit declaration of function ‘_mm256_loadu_pd’ [-Wimplicit-function-declaration]\n    8 |             __m256d vec_x = _mm256_loadu_pd(&x[4 * i]);\n      |                             ^~~~~~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dscal/k1_rvv256/strategy_cards/rep-1/repair/candidate.c:9:21: error: implicit declaration of function ‘_mm256_mul_pd’ [-Wimplicit-function-declaration]\n    9 |             vec_x = _mm256_mul_pd(vec_x, _mm256_set1_pd(alpha));\n      |                     ^~~~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dscal/k1_rvv256/strategy_cards/rep-1/repair/candidate.c:9:42: error: implicit declaration of function ‘_mm256_set1_pd’ [-Wimplicit-function-declaration]\n    9 |             vec_x = _mm256_mul_pd(vec_x, _mm256_set1_pd(alpha));\n      |                                          ^~~~~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dscal/k1_rvv256/strategy_cards/rep-1/repair/candidate.c:10:13: error: implicit declaration of function ‘_mm256_storeu_pd’ [-Wimplicit-function-declaration]\n   10 |             _mm256_storeu_pd(&x[4 * i], vec_x);\n      |             ^~~~~~~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dscal/k1_rvv256/strategy_cards/rep-1/repair/candidate.c:20:13: error: unknown type name ‘__m256d’\n   20 |             __m256d vec_x = _mm256_loadu_pd(&x[(ptrdiff_t)i * incx]);\n      |             ^~~~~~~\n",
+    "candidate_sha256": "442a920c6f80138829015644f5e2acb1361a6e8b1dc66c853c38cb5d1a989a4e"
+  }
+}

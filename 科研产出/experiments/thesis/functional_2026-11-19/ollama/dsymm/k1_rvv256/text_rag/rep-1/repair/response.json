@@ -1,0 +1,9 @@
+{
+  "raw": "```c\n#include \"opbench.h\"\n\nstatic double symmetric_at(const double *a, size_t lda, size_t i, size_t j, char uplo) {\n    const int stored = uplo == 'U' ? i <= j : i >= j;\n    return stored ? a[i * lda + j] : a[j * lda + i];\n}\n\nvoid op_dsymm(char side, char uplo, size_t m, size_t n, double alpha,\n              const double *a, size_t lda, const double *b, size_t ldb,\n              double beta, double *c, size_t ldc) {\n    if (m == 0 || n == 0 || (alpha == 0.0 && beta == 1.0)) return;\n\n    // Precompute pointers\n    const double *a_base = a;\n    const double *b_base = b;\n    double *c_base = c;\n\n    // Register blocking parameters\n    const size_t reg_block_m = 4;\n    const size_t reg_block_n = 4;\n\n    for (size_t i0 = 0; i0 < m; i0 += reg_block_m) {\n        for (size_t j0 = 0; j0 < n; j0 += reg_block_n) {\n            double sum[reg_block_m * reg_block_n];\n\n            for (size_t p = 0; p < m; ++p) {\n                const double a_val = symmetric_at(a_base, lda, i0 + p, p, uplo);\n                for (size_t j = j0; j < n && j < j0 + reg_block_n; ++j) {\n                    sum[(i0 + p - i0) * reg_block_n + (j - j0)] += a_val * b_base[p * ldb + j];\n                }\n            }\n\n            for (size_t i = i0; i < m && i < i0 + reg_block_m; ++i) {\n                const size_t index = i * ldc + j0;\n                c[index] = alpha * sum[(i - i0) * reg_block_n + 0] +\n                           (beta == 0.0 ? 0.0 : beta * c_base[index]);\n            }\n        }\n    }\n}\n```",
+  "usage": {
+    "prompt_tokens": 2353,
+    "completion_tokens": 478,
+    "total_tokens": 2831
+  },
+  "stop_reason": "stop"
+}

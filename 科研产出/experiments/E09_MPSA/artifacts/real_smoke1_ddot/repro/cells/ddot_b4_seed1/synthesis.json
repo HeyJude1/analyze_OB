@@ -1,0 +1,37 @@
+{
+  "criteria": {
+    "supportive": {
+      "score": 0.85,
+      "reason": "策略 stg:dot:specialize_d、stg:dot:split_d 和 stg:dot:tail_handle_d 均采用 LMUL=8 与 SEW=64，向量配置一致，支持同时使用。split_d 的归约链与 specialize_d 的寄存器分组调优可协同工作，但需注意归约顺序与寄存器压力。"
+    },
+    "complementarity": {
+      "score": 0.9,
+      "reason": "specialize_d 负责主循环向量化与寄存器分组，split_d 优化归约链并提升归约并行度，tail_handle_d 处理尾部动态 vl 与掩码逻辑，三者分别作用于主循环向量化、累加链优化与尾部处理，形成阶段互补。"
+    },
+    "accuracy": {
+      "score": 0.7,
+      "reason": "归约顺序与浮点精度顺序可能因策略组合而变化，可能影响数值一致性。split_d 的 split_factor=1 无法完全掩盖延迟，可能引入额外舍入误差。需确保最终归约顺序与串行版本一致。"
+    },
+    "completeness": {
+      "score": 0.8,
+      "reason": "specialize_d 与 split_d 覆盖主循环向量化与归约优化，tail_handle_d 支持尾部处理。但 inc_x / inc_y != 1 的任意步长未被优化，n<=0 的边界处理未明确提及，需额外补充。"
+    }
+  },
+  "criteria_scores": {
+    "supportive": 0.85,
+    "complementarity": 0.9,
+    "accuracy": 0.7,
+    "completeness": 0.8
+  },
+  "overall": "策略组合具备高向量效率与阶段互补性，适用于大规模双精度 dot 运算，但需关注数值一致性与寄存器压力。",
+  "recommended": [
+    "stg:dot:specialize_d",
+    "stg:dot:split_d",
+    "stg:dot:tail_handle_d"
+  ],
+  "guidance": "['主循环使用 LMUL=8、SEW=64 向量寄存器分组调优，适配 k1_rvv256 硬件特性', '采用 split_factor=2 或 4 的归约链优化，掩盖指令延迟并提升并行度', '尾部使用动态 vl 与掩码处理，适配 tail_divisible == false 的非整除情况', '保持 stride_x=1、stride_y=1 的内存访问模式，避免非单位步长性能下降', '在策略组合基础上，补充 inc_x/inc_y != 1 的任意步长兼容路径', '添加 n <= 0 的边界条件处理逻辑，确保完整语义覆盖']",
+  "conflicts": [
+    "避免同时使用多个尾部处理策略（如重复启用 tail_handle_d 与其它尾部优化）",
+    "避免设置 split_factor > 4，可能导致寄存器资源争用加剧"
+  ]
+}

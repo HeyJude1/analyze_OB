@@ -1,0 +1,13 @@
+{
+  "status": "compile_failed",
+  "compile_ok": false,
+  "correct": null,
+  "failure_reason": "other_compiler_error",
+  "usage": {
+    "prompt_tokens": 1841,
+    "completion_tokens": 286,
+    "total_tokens": 2127
+  },
+  "diagnostic": "../experiments/thesis/functional_2026-11-19/ollama/conv1d/k1_rvv256/constraint_plan/rep-1/repair/candidate.c: In function ‘op_conv1d’:\n../experiments/thesis/functional_2026-11-19/ollama/conv1d/k1_rvv256/constraint_plan/rep-1/repair/candidate.c:18:34: error: variable-sized object may not be initialized except with an empty initializer\n   18 |         double sum[block_size] = {0.0};\n      |                                  ^\n../experiments/thesis/functional_2026-11-19/ollama/conv1d/k1_rvv256/constraint_plan/rep-1/repair/candidate.c:10:15: warning: unused variable ‘reserved_vector_registers’ [-Wunused-variable]\n   10 |     const int reserved_vector_registers = 4;\n      |               ^~~~~~~~~~~~~~~~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/conv1d/k1_rvv256/constraint_plan/rep-1/repair/candidate.c:9:15: warning: unused variable ‘vector_elements_per_register’ [-Wunused-variable]\n    9 |     const int vector_elements_per_register = 4;\n      |               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/conv1d/k1_rvv256/constraint_plan/rep-1/repair/candidate.c:8:15: warning: unused variable ‘unroll_factor’ [-Wunused-variable]\n    8 |     const int unroll_factor = 4;\n      |               ^~~~~~~~~~~~~\n",
+  "candidate_sha256": "65bd495242f7266d4f442d60df280a0204073f12bb18bc914fceff7dc6d9d185"
+}

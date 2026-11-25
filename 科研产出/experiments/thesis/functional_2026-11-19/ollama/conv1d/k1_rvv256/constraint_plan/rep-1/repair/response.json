@@ -1,0 +1,9 @@
+{
+  "raw": "```c\n#include \"opbench.h\"\n\nvoid op_conv1d(size_t n, size_t k, const double *x, const double *w, double *y) {\n    if (k == 0 || k > n) return;\n    const size_t len = n - k + 1;\n\n    // Vectorization parameters\n    const int unroll_factor = 4;\n    const int vector_elements_per_register = 4;\n    const int reserved_vector_registers = 4;\n\n    // Tail handling parameters\n    const int block_size = 8;\n\n    // Loop over the output array in blocks\n    for (size_t i = 0; i < len; i += block_size) {\n        size_t end = (i + block_size > len) ? len : i + block_size;\n        double sum[block_size] = {0.0};\n\n        // Vectorized inner loop\n        for (size_t j = 0; j < k; ++j) {\n            for (size_t ii = i; ii < end; ++ii) {\n                sum[ii - i] += x[ii + j] * w[k - 1 - j];\n            }\n        }\n\n        // Store the results\n        for (size_t ii = i; ii < end; ++ii) {\n            y[ii] = sum[ii - i];\n        }\n    }\n}\n```",
+  "usage": {
+    "prompt_tokens": 1841,
+    "completion_tokens": 286,
+    "total_tokens": 2127
+  },
+  "stop_reason": "stop"
+}

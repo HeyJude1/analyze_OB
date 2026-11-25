@@ -1,0 +1,59 @@
+{
+  "ok": false,
+  "compile_ok": false,
+  "correct": false,
+  "maxdiff": null,
+  "reldiff": null,
+  "qemu_exit": null,
+  "stdout": "[build] cc=riscv64-linux-gnu-gcc\n[build] driver=/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/tasks/daxpy/driver/test_daxpy.c\n[build] generated=/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_smoke3_all/daxpy_b4/harness/generated.c\n[build] gcc_exit=1\n[build] FAIL（见 build.stderr.log）\n",
+  "stderr": "/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_smoke3_all/daxpy_b4/harness/generated.c: In function ‘daxpy_k’:\n/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_smoke3_all/daxpy_b4/harness/generated.c:18:13: warning: implicit declaration of function ‘__riscv_vse64’; did you mean ‘__riscv_vlenb’? [-Wimplicit-function-declaration]\n   18 |             __riscv_vse64(y + i, vacc, vl);\n      |             ^~~~~~~~~~~~~\n      |             __riscv_vlenb\n/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_smoke3_all/daxpy_b4/harness/generated.c:25:44: warning: implicit declaration of function ‘__riscv_vlxei64_v_f64m8’; did you mean ‘__riscv_vloxei64_v_f64m8’? [-Wimplicit-function-declaration]\n   25 |             vacc = __riscv_vfmacc_vf_f64m8(__riscv_vlxei64_v_f64m8(y, iy, vl), da, __riscv_vlxei64_v_f64m8(x, ix, vl), vl);\n      |                                            ^~~~~~~~~~~~~~~~~~~~~~~\n      |                                            __riscv_vloxei64_v_f64m8\n/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_smoke3_all/daxpy_b4/harness/generated.c:25:44: error: incompatible type for argument 1 of ‘__riscv_vfmacc_vf_f64m8’\n   25 |             vacc = __riscv_vfmacc_vf_f64m8(__riscv_vlxei64_v_f64m8(y, iy, vl), da, __riscv_vlxei64_v_f64m8(x, ix, vl), vl);\n      |                                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n      |                                            |\n      |                                            int\nIn file included from /mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_smoke3_all/daxpy_b4/harness/generated.c:3:\n/usr/lib/gcc-cross/riscv64-linux-gnu/13/include/riscv_vector.h:94:9: note: expected ‘vfloat64m8_t’ but argument is of type ‘int’\n   94 | #pragma riscv intrinsic \"vector\"\n      |         ^~~~~\n/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_smoke3_all/daxpy_b4/harness/generated.c:25:84: error: incompatible type for argument 3 of ‘__riscv_vfmacc_vf_f64m8’\n   25 |             vacc = __riscv_vfmacc_vf_f64m8(__riscv_vlxei64_v_f64m8(y, iy, vl), da, __riscv_vlxei64_v_f64m8(x, ix, vl), vl);\n      |                                                                                    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n      |                                                                                    |\n      |                                                                                    int\n/usr/lib/gcc-cross/riscv64-linux-gnu/13/include/riscv_vector.h:94:9: note: expected ‘vfloat64m8_t’ but argument is of type ‘int’\n   94 | #pragma riscv intrinsic \"vector\"\n      |         ^~~~~\n/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_smoke3_all/daxpy_b4/harness/generated.c:26:13: warning: implicit declaration of function ‘__riscv_vsxei64’; did you mean ‘__riscv_vsm_v_b4’? [-Wimplicit-function-declaration]\n   26 |             __riscv_vsxei64(y, iy, vacc, vl);\n      |             ^~~~~~~~~~~~~~~\n      |             __riscv_vsm_v_b4\n",
+  "timeout": false,
+  "best_ms": null,
+  "qemu_only": true,
+  "n": 16384,
+  "reps": 10,
+  "tolerance": 1e-10,
+  "op": "daxpy",
+  "task_dir": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\tasks\\daxpy",
+  "driver": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\tasks\\daxpy\\driver\\test_daxpy.c",
+  "generated_c": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\real_smoke3_all\\daxpy_b4\\harness\\generated.c",
+  "out_dir": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\real_smoke3_all\\daxpy_b4\\harness",
+  "scripts": {
+    "build": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\real_smoke3_all\\daxpy_b4\\harness\\build.sh",
+    "run": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\real_smoke3_all\\daxpy_b4\\harness\\run.sh"
+  },
+  "logs": {
+    "build_stdout": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\real_smoke3_all\\daxpy_b4\\harness\\build.stdout.log",
+    "build_stderr": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\real_smoke3_all\\daxpy_b4\\harness\\build.stderr.log",
+    "qemu_stdout": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\real_smoke3_all\\daxpy_b4\\harness\\qemu.stdout.log",
+    "qemu_stderr": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\real_smoke3_all\\daxpy_b4\\harness\\qemu.stderr.log"
+  },
+  "commands": {
+    "build": [
+      "wsl.exe",
+      "-d",
+      "Ubuntu",
+      "-e",
+      "bash",
+      "/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_smoke3_all/daxpy_b4/harness/build.sh"
+    ]
+  },
+  "compile_timeout": false,
+  "elapsed_build_s": 1.753,
+  "elapsed_run_s": null,
+  "elapsed_s": 1.755,
+  "error": "compile_failed：      |                                                                                    int | /usr/lib/gcc-cross/riscv64-linux-gnu/13/include/riscv_vector.h:94:9: note: expected ‘vfloat64m8_t’ but argument is of type ‘int’ |    94 | #pragma riscv intrinsic \"vector\" |       |         ^~~~~ | /mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_smoke3_all/daxpy_b4/harness/generated.c:26:13: warning: implicit declaration of function ‘__riscv_vsxei64’; did you mean ‘__riscv_vsm_v_b4’? [-Wimplicit-function-declaration] |    26 |             __riscv_vsxei64(y, iy, vacc, vl); |       |             ^~~~~~~~~~~~~~~ |       |             __riscv_vsm_v_b4（见 C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\real_smoke3_all\\daxpy_b4\\harness\\build.stderr.log）",
+  "env": {
+    "wsl_distro": "Ubuntu",
+    "cc": "riscv64-linux-gnu-gcc",
+    "cflags": [
+      "-O3",
+      "-march=rv64gcv_zvl256b_zba_zbb_zbc_zbs",
+      "-mabi=lp64d",
+      "-static"
+    ],
+    "qemu": "qemu-riscv64",
+    "qemu_cpu": "rv64,v=true,vlen=256,zba=true,zbb=true,zbc=true,zbs=true",
+    "flags_source": "experiments/harness/qemu.py"
+  }
+}

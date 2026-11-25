@@ -1,0 +1,7 @@
+dsymm x86 candidate: compile_error 
+
+..\experiments\thesis\functional_2026-11-19\ollama\dsymm\x86_avx2\no_knowledge\rep-1\initial\candidate.c: In function 'op_dsymm':
+..\experiments\thesis\functional_2026-11-19\ollama\dsymm\x86_avx2\no_knowledge\rep-1\initial\candidate.c:28:30: error: 'i' undeclared (first use in this function)
+   28 |                     sum += b[i * ldb + p] * symmetric_at(a, lda, m - 1, p, uplo);
+      |                              ^
+..\experiments\thesis\functional_2026-11-19\ollama\dsymm\x86_avx2\no_knowledge\rep-1\initial\candidate.c:28:30: note: each undeclared identifier is reported only once for each function it appears in

@@ -1,0 +1,123 @@
+你是 BLAS 算子优化策略的「综合专家」。下面是同一算子、同一硬件上 top-k 策略的逐条适用性分析结果。请按 4 个标准综合，形成最终的代码生成指导。
+
+【目标算子】daxpy（知识图谱规范名：axpy）
+【目标硬件 profile】k1_rvv256
+【任务函数签名】int daxpy_k(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, double da, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y, double *dummy, BLASLONG dummy2)
+【查询代码特征】{
+  "aligned": true,
+  "dtype": "d",
+  "loop_depth": 1,
+  "precision": "double",
+  "reduction": false,
+  "size_regime": "large",
+  "stride_x": 1,
+  "stride_y": 1,
+  "structural": "none",
+  "tail_divisible": false
+}
+
+【4 个综合标准（必须逐一给出 0~1 分数与理由）】
+- supportive（相互支持性）：各策略的适用条件/参数是否一致、能否同时采用，是否会互相抵消；
+- complementarity（互补性）：策略是否作用于不同阶段（向量化 / 循环展开 / 尾部处理 / 寄存器分块 / 步长特化等），组合后是否覆盖更多场景；
+- accuracy（正确性/数值一致性）：组合实现是否保持 BLAS 语义与数值容差，n<=0 / 尾部 / 任意步长 / 别名等边界是否安全；
+- completeness（覆盖完整性）：是否覆盖主循环、尾部、任意步长、n<=0 等分支，是否遗漏关键实现环节。
+
+【逐条适用性分析（JSON 数组）】
+[
+  {
+    "strategy_id": "stg:axpy:specialize_d",
+    "strategy_name": "LMUL/SEW 向量寄存器分组调优",
+    "applies": true,
+    "confidence": 0.8,
+    "evidence": [
+      "conditions_satisfied 中包含 dtype、loop_depth、size_regime，且 dtype 为 d，loop_depth >= 1，size_regime 为 large，均满足策略硬性条件",
+      "evidence 中 ev:axpy:geomean 的 speedup 值为 1.2134，表明在 QEMU 上有性能提升",
+      "arch_parameters.rvv.lmul=8 和 sew=64 与目标硬件 k1_rvv256 的 RVV 架构特性一致",
+      "template 中的分支结构支持单位步长快速路径和通用路径，适配 stride_x=1 和 stride_y=1 的情况"
+    ],
+    "risks": [
+      "tail_divisible 为 false，可能导致向量化处理尾部未对齐部分时出现边界错误",
+      "x 和 y 可能存在别名，需注意内存访问顺序以避免数据竞争",
+      "LMUL=8 导致的寄存器压力可能影响实际性能，尤其在多线程或复杂指令混合场景",
+      "stride_x=1、stride_y=1 的快速路径虽在 template 中支持，但非单位步长路径的实现复杂度未在 evidence 中体现"
+    ],
+    "parameters": {
+      "SEW": 64,
+      "LMUL": 8
+    },
+    "conflicts": []
+  },
+  {
+    "strategy_id": "stg:axpy:tail_handle_d",
+    "strategy_name": "动态 vl / 掩码尾部处理",
+    "applies": true,
+    "confidence": 0.7473,
+    "evidence": [
+      "策略 conditions 中 dtype 为 [\"d\"]，与查询代码特征 dtype: \"double\" 匹配",
+      "策略 conditions 中 loop_depth >= 1，查询代码 loop_depth 为 1，匹配",
+      "策略 conditions 中 size_regime 包含 \"large\"，查询代码 size_regime 为 \"large\"，匹配",
+      "策略 conditions 中 tail_divisible 为 soft constraint 且值为 false，查询代码 tail_divisible 为 false，匹配",
+      "策略 why_selected 中 hardware 为 k1_rvv256，与目标硬件一致",
+      "策略 arch_parameters 中 rvv 的 sew=64、lmul=8，与查询代码 double 类型和目标硬件 rvv256 能力匹配",
+      "策略 evidence 中 speedup 和 pass_rate 支持 operator 级有效性"
+    ],
+    "risks": [
+      "尾部处理依赖动态 vl，需确保 vl 设置正确，否则可能导致越界或漏算",
+      "动态 vl 可能导致性能不稳定，尤其在不同硬件上 VLMAX 变化时",
+      "向量化实现需确保 y[iy] += da * x[ix] 的数值一致性，尤其在浮点精度方面",
+      "未处理任意步长（stride_x / stride_y > 1）的情况，可能影响通用性",
+      "别名问题：x 和 y 指针可能重叠，影响向量加载/存储的正确性",
+      "LMUL=8 导致高寄存器压力，可能影响编译器调度效率或引发溢出"
+    ],
+    "parameters": {
+      "sew": 64,
+      "lmul": 8
+    },
+    "conflicts": []
+  },
+  {
+    "strategy_id": "stg:axpy:vectorize_d",
+    "strategy_name": "RVV 向量化内核（vsetvl + vle/vfmacc/vse）",
+    "applies": true,
+    "confidence": 0.7473,
+    "evidence": [
+      "conditions_satisfied 中包含 dtype、loop_depth、size_regime、stride_x 和 aligned，符合策略要求",
+      "evidence 中 ev:axpy:geomean 和 ev:axpy:pass_rate 表明在 QEMU 上策略有效且通过测试",
+      "arch_scope 和 arch_parameters 明确支持 rvv，且 vector_len 为 32，符合 k1_rvv256 的能力"
+    ],
+    "risks": [
+      "tail_divisible 为 false，可能导致尾部处理逻辑缺失或性能下降",
+      "指针别名（alias）可能导致向量化失效或错误",
+      "LMUL=8 在 k1_rvv256 上可能引发寄存器压力问题",
+      "编译器对 RVV 内建函数的支持可能影响最终性能",
+      "stride_x 和 stride_y 未检查是否一致，可能影响向量化对齐"
+    ],
+    "parameters": {
+      "lmul": 8,
+      "sew": 64,
+      "vector_len": 32
+    },
+    "conflicts": []
+  }
+]
+
+【综合要求】
+1. 综合判断这些策略能否组合、在哪些阶段互补、组合后正确性与覆盖度是否足够；
+2. `recommended` 只写 JSON 数组里真实出现的策略 id，按建议采用顺序排列；
+3. `guidance` 要能直接指导代码生成（主循环怎么循环分块/向量化、尾部怎么处理、参数取什么量级、哪些策略不要用）；
+4. 不要写 C 代码，不要编造未给出的性能数字。
+
+【输出要求】
+只输出一个严格 JSON 对象（不要 markdown 代码围栏、不要解释文字），格式：
+{
+  "criteria": {
+    "supportive": {"score": 0.0, "reason": "策略之间是否相互支持、条件是否一致"},
+    "complementarity": {"score": 0.0, "reason": "策略是否互补（向量化 / 展开 / 尾部 / 分块 / 参数调优）"},
+    "accuracy": {"score": 0.0, "reason": "组合后正确性与数值一致性风险是否可控"},
+    "completeness": {"score": 0.0, "reason": "是否覆盖主循环、尾部、任意步长、n<=0 等"}
+  },
+  "overall": "一句话综合结论",
+  "recommended": ["策略 id，按优先级"],
+  "guidance": "分条给出代码生成阶段的实现要点",
+  "conflicts": ["生成时需要避免的冲突"]
+}

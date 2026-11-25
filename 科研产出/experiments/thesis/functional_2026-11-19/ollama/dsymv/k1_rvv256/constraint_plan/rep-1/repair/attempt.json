@@ -1,0 +1,13 @@
+{
+  "status": "compile_failed",
+  "compile_ok": false,
+  "correct": null,
+  "failure_reason": "other_compiler_error",
+  "usage": {
+    "prompt_tokens": 2194,
+    "completion_tokens": 456,
+    "total_tokens": 2650
+  },
+  "diagnostic": "../experiments/thesis/functional_2026-11-19/ollama/dsymv/k1_rvv256/constraint_plan/rep-1/repair/candidate.c: In function ‘op_dsymv’:\n../experiments/thesis/functional_2026-11-19/ollama/dsymv/k1_rvv256/constraint_plan/rep-1/repair/candidate.c:30:39: error: implicit declaration of function ‘__builtin_reduce_add’; did you mean ‘__builtin_huge_val’? [-Wimplicit-function-declaration]\n   30 |                             sum[m] += __builtin_reduce_add(va * vx);\n      |                                       ^~~~~~~~~~~~~~~~~~~~\n      |                                       __builtin_huge_val\n",
+  "candidate_sha256": "57c2f7c3e332a9f10243e8cdd02801a6d4acd1d44006afd4f3c249847f4d5c7d"
+}

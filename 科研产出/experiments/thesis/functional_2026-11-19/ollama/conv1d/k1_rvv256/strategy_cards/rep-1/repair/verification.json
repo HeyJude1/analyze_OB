@@ -1,0 +1,37 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "x86_64",
+  "results": [
+    {
+      "task": "conv1d",
+      "target": "rvv",
+      "variant": "candidate",
+      "compiler_version": "riscv64-buildroot-linux-gnu-gcc.br_real (Buildroot 2021.11-18033-g83947c7bb6) 14.3.0",
+      "source": "../experiments/thesis/functional_2026-11-19/ollama/conv1d/k1_rvv256/strategy_cards/rep-1/repair/candidate.c",
+      "source_sha256": "960e9815921fb203b190e4560a38518fbce815b504b644ae4612d9f3c00dea6b",
+      "status": "compile_error",
+      "compile": {
+        "argv": [
+          "/mnt/c/Users/MSI/Desktop/cx_operator_tool/operator_extract/toolchain/riscv-gcc-14.3/bin/riscv64-buildroot-linux-gnu-gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-march=rv64gcv",
+          "-mabi=lp64d",
+          "-static",
+          "-Iinclude",
+          "-DOPBENCH_TASK_CONV1D",
+          "driver/check.c",
+          "../experiments/thesis/functional_2026-11-19/ollama/conv1d/k1_rvv256/strategy_cards/rep-1/repair/candidate.c",
+          "-o",
+          "../experiments/thesis/functional_2026-11-19/ollama/conv1d/k1_rvv256/strategy_cards/rep-1/repair/bin/conv1d-rvv-candidate",
+          "-lm"
+        ],
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "../experiments/thesis/functional_2026-11-19/ollama/conv1d/k1_rvv256/strategy_cards/rep-1/repair/candidate.c: In function ‘op_conv1d’:\n../experiments/thesis/functional_2026-11-19/ollama/conv1d/k1_rvv256/strategy_cards/rep-1/repair/candidate.c:9:13: error: unknown type name ‘vfloat64m8_t’\n    9 |     typedef vfloat64m8_t vec_t;\n      |             ^~~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/conv1d/k1_rvv256/strategy_cards/rep-1/repair/candidate.c:10:20: error: implicit declaration of function ‘vsetvl_e64m8’ [-Wimplicit-function-declaration]\n   10 |     const int vl = vsetvl_e64m8(len);\n      |                    ^~~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/conv1d/k1_rvv256/strategy_cards/rep-1/repair/candidate.c:15:14: error: implicit declaration of function ‘vle64_v_f64m8’ [-Wimplicit-function-declaration]\n   15 |         vx = vle64_v_f64m8(x + i, vl);\n      |              ^~~~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/conv1d/k1_rvv256/strategy_cards/rep-1/repair/candidate.c:18:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘size_t’ {aka ‘long unsigned int’} [-Wsign-compare]\n   18 |         for (int j = 0; j < k; ++j) {\n      |                           ^\n../experiments/thesis/functional_2026-11-19/ollama/conv1d/k1_rvv256/strategy_cards/rep-1/repair/candidate.c:20:18: error: implicit declaration of function ‘vfma_vv_f64’ [-Wimplicit-function-declaration]\n   20 |             vy = vfma_vv_f64(vy, vx, vw, vl);\n      |                  ^~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/conv1d/k1_rvv256/strategy_cards/rep-1/repair/candidate.c:23:9: error: implicit declaration of function ‘vse64_v_f64m8’ [-Wimplicit-function-declaration]\n   23 |         vse64_v_f64m8(y + i, vy, vl);\n      |         ^~~~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/conv1d/k1_rvv256/strategy_cards/rep-1/repair/candidate.c:12:12: warning: unused variable ‘sum’ [-Wunused-variable]\n   12 |     double sum[vl];\n      |            ^~~\n"
+      }
+    }
+  ]
+}

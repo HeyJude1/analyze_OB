@@ -1,0 +1,46 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "amd64",
+  "results": [
+    {
+      "task": "dasum",
+      "target": "x86",
+      "variant": "candidate",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dasum\\x86_avx2\\constraint_plan\\rep-1\\repair\\candidate.c",
+      "source_sha256": "ed44334b34a6078f6cc43e60b236a4537d6ad12e1eff4e433c9d74db2a2dc29e",
+      "status": "check_failed",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DASUM",
+          "driver/check.c",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dasum\\x86_avx2\\constraint_plan\\rep-1\\repair\\candidate.c",
+          "-o",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dasum\\x86_avx2\\constraint_plan\\rep-1\\repair\\bin\\dasum-x86-candidate.exe",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "2044a37e39c9e50b80794d80cd6413db5d85cc43471bf6211a98f543852ab6cc",
+      "check": {
+        "argv": [
+          "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\thesis\\functional_2026-11-19\\ollama\\dasum\\x86_avx2\\constraint_plan\\rep-1\\repair\\bin\\dasum-x86-candidate.exe"
+        ],
+        "exit_code": 3221225477,
+        "stdout": "",
+        "stderr": ""
+      },
+      "environment": "native"
+    }
+  ]
+}

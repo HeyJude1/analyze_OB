@@ -1,0 +1,49 @@
+{
+  "analogy_source": null,
+  "card_ids": [
+    "stg:axpy:specialize_s",
+    "stg:abstract:register_blocking",
+    "stg:abstract:vector_fma",
+    "stg:abstract:tail_handling"
+  ],
+  "contract_sha256": "371402f379cceaebd4ee2cd5d53b323433b08980d45a6ad1b974b37783189d24",
+  "knowledge_bytes": 5365,
+  "method": "strategy_cards",
+  "operator": "daxpy",
+  "profile": "x86_avx2",
+  "prompt": "daxpy/x86_avx2/strategy_cards.json",
+  "prompt_sha256": "a6c13a26d4d5983c67168bf25b3f3269b179e17d31e20d31f59094e2bb086fca",
+  "repetition": 1,
+  "source_sha256": "8f5e498023abd606f24e4bad0a2642fa5d658a4b56181cc56da12c1b0dcf383b",
+  "split": "build",
+  "status": "prepared",
+  "engine": "ollama",
+  "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+  "repair_attempted": false,
+  "initial": {
+    "status": "passed",
+    "compile_ok": true,
+    "correct": true,
+    "failure_reason": null,
+    "usage": {
+      "prompt_tokens": 2899,
+      "completion_tokens": 227,
+      "total_tokens": 3126
+    },
+    "diagnostic": "",
+    "candidate_sha256": "720fe2379cbb0b288f93ee20ff3022280dc9d8f3fcc334f139503cba1cafb5c4"
+  },
+  "final": {
+    "status": "passed",
+    "compile_ok": true,
+    "correct": true,
+    "failure_reason": null,
+    "usage": {
+      "prompt_tokens": 2899,
+      "completion_tokens": 227,
+      "total_tokens": 3126
+    },
+    "diagnostic": "",
+    "candidate_sha256": "720fe2379cbb0b288f93ee20ff3022280dc9d8f3fcc334f139503cba1cafb5c4"
+  }
+}

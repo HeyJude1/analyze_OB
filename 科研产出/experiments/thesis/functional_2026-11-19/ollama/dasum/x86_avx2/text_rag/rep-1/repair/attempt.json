@@ -1,0 +1,13 @@
+{
+  "status": "run_timeout",
+  "compile_ok": true,
+  "correct": false,
+  "failure_reason": "candidate_timed_out",
+  "usage": {
+    "prompt_tokens": 1513,
+    "completion_tokens": 269,
+    "total_tokens": 1782
+  },
+  "diagnostic": "",
+  "candidate_sha256": "5508709ec0857fa289da54f659a8a4d3dea0c743ad19c8031d7f2f6436ee54a9"
+}

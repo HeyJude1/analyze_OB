@@ -1,0 +1,36 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "amd64",
+  "results": [
+    {
+      "task": "dscal",
+      "target": "x86",
+      "variant": "candidate",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c",
+      "source_sha256": "b4a57c3f3d4c9f402e88b806b2e7feb262f0e649ddabdca95dcc289083a8c53e",
+      "status": "compile_error",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DSCAL",
+          "driver/check.c",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c",
+          "-o",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\text_rag\\rep-1\\repair\\bin\\dscal-x86-candidate.exe",
+          "-lm"
+        ],
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c: In function 'op_dscal':\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c:5:9: error: unknown type name '__m256d'\n    5 |         __m256d v_alpha = _mm256_set1_pd(alpha);\n      |         ^~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c:5:27: error: implicit declaration of function '_mm256_set1_pd' [-Wimplicit-function-declaration]\n    5 |         __m256d v_alpha = _mm256_set1_pd(alpha);\n      |                           ^~~~~~~~~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c:7:13: error: unknown type name '__m256d'\n    7 |             __m256d v_x = _mm256_loadu_pd(x + 4 * i);\n      |             ^~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c:7:27: error: implicit declaration of function '_mm256_loadu_pd' [-Wimplicit-function-declaration]\n    7 |             __m256d v_x = _mm256_loadu_pd(x + 4 * i);\n      |                           ^~~~~~~~~~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c:8:19: error: implicit declaration of function '_mm256_mul_pd' [-Wimplicit-function-declaration]\n    8 |             v_x = _mm256_mul_pd(v_x, v_alpha);\n      |                   ^~~~~~~~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c:9:13: error: implicit declaration of function '_mm256_storeu_pd' [-Wimplicit-function-declaration]\n    9 |             _mm256_storeu_pd(x + 4 * i, v_x);\n      |             ^~~~~~~~~~~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c:15:9: error: unknown type name '__m256d'\n   15 |         __m256d v_alpha = _mm256_set1_pd(alpha);\n      |         ^~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c:17:13: error: unknown type name '__m256d'\n   17 |             __m256d v_x = _mm256_loadu_pd(x + i * incx);\n      |             ^~~~~~~\n"
+      }
+    }
+  ]
+}

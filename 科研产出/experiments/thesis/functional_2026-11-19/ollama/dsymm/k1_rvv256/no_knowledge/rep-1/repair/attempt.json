@@ -1,0 +1,13 @@
+{
+  "status": "compile_failed",
+  "compile_ok": false,
+  "correct": null,
+  "failure_reason": "other_compiler_error",
+  "usage": {
+    "prompt_tokens": 2265,
+    "completion_tokens": 428,
+    "total_tokens": 2693
+  },
+  "diagnostic": "../experiments/thesis/functional_2026-11-19/ollama/dsymm/k1_rvv256/no_knowledge/rep-1/repair/candidate.c: In function ‘op_dsymm’:\n../experiments/thesis/functional_2026-11-19/ollama/dsymm/k1_rvv256/no_knowledge/rep-1/repair/candidate.c:28:30: error: ‘i’ undeclared (first use in this function)\n   28 |                     sum += b[i * ldb + p] * symmetric_at(a, lda, p, j, uplo);\n      |                              ^\n../experiments/thesis/functional_2026-11-19/ollama/dsymm/k1_rvv256/no_knowledge/rep-1/repair/candidate.c:28:30: note: each undeclared identifier is reported only once for each function it appears in\n",
+  "candidate_sha256": "b95e8309400d43417bba7faa07964c413e743a5344d8b22c77efb8820aa67914"
+}

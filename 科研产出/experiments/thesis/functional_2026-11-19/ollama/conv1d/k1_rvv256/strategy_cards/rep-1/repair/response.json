@@ -1,0 +1,9 @@
+{
+  "raw": "```c\n#include \"opbench.h\"\n\nvoid op_conv1d(size_t n, size_t k, const double *x, const double *w, double *y) {\n    if (k == 0 || k > n) return;\n    const size_t len = n - k + 1;\n\n    // Vectorize the convolution with SIMD instructions\n#ifdef __riscv_vector\n    typedef vfloat64m8_t vec_t;\n    const int vl = vsetvl_e64m8(len);\n    vec_t vx, vw, vy;\n    double sum[vl];\n\n    for (size_t i = 0; i < len; i += vl) {\n        vx = vle64_v_f64m8(x + i, vl);\n        vy = vle64_v_f64m8(y + i, vl);\n\n        for (int j = 0; j < k; ++j) {\n            vw = vle64_v_f64m8(w + k - 1 - j, vl);\n            vy = vfma_vv_f64(vy, vx, vw, vl);\n        }\n\n        vse64_v_f64m8(y + i, vy, vl);\n    }\n#else\n    for (size_t i = 0; i < len; ++i) {\n        double sum = 0.0;\n        for (size_t j = 0; j < k; ++j) sum += x[i + j] * w[k - 1 - j];\n        y[i] = sum;\n    }\n#endif\n}\n```",
+  "usage": {
+    "prompt_tokens": 2137,
+    "completion_tokens": 339,
+    "total_tokens": 2476
+  },
+  "stop_reason": "stop"
+}

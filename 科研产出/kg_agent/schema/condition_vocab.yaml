@@ -1,0 +1,33 @@
+# kg_agent 条件谓词闭集（Schema v1.5）
+# SPEC §3 的 8 类（实为 10 个）受控谓词；策略 conditions 只能引用本表 pred，value 类型必须匹配。
+# hard=true -> 检索硬过滤；hard=false -> 软加权（weight 默认 1.0）
+
+predicates:
+  dtype:          {type: enum, values: [s, d, c, z], ops: [eq, ne, in], description: "BLAS 数据类型"}
+  precision:      {type: enum, values: [single, double], ops: [eq, ne, in], description: "精度"}
+  stride_x:       {type: int, ops: [eq, ne, gt, lt, ge, le], description: "x 步长 incx"}
+  stride_y:       {type: int, ops: [eq, ne, gt, lt, ge, le], description: "y 步长 incy"}
+  loop_depth:     {type: int, ops: [ge, le, eq, gt, lt], description: "循环嵌套深度"}
+  size_regime:    {type: enum, values: [small, medium, large], ops: [eq, ne, in], description: "规模档（阈值按算子定义）"}
+  aligned:        {type: bool, ops: [eq], description: "数据是否按向量宽度对齐"}
+  tail_divisible: {type: bool, ops: [eq], description: "n 是否整除向量宽度"}
+  structural:     {type: enum, values: [symmetric, triangular, hermitian, banded, none], ops: [eq, ne, in], description: "矩阵结构性质"}
+  reduction:      {type: bool, ops: [eq], description: "是否含跨迭代归约（dot/nrm2/asum 等）"}
+
+# 条件谓词 -> CodeCharacteristic.char_type（实体字段闭集）
+char_type_map:
+  dtype: dtype
+  precision: precision
+  stride_x: stride
+  stride_y: stride
+  loop_depth: loop_depth
+  size_regime: size_regime
+  aligned: alignment
+  tail_divisible: tail_divisibility
+  structural: structural_property
+  reduction: data_dependency
+
+# 规模档默认阈值（元素个数；在 config.yaml 可按算子覆盖）
+size_regime_thresholds:
+  small: 64
+  medium: 1024

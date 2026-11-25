@@ -1,0 +1,36 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "amd64",
+  "results": [
+    {
+      "task": "conv1d",
+      "target": "x86",
+      "variant": "candidate",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\conv1d\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c",
+      "source_sha256": "bbf5e9765a3744a2021ff5ef481c8bdcf02989b8d5029520f8dd4b86e8fa40da",
+      "status": "compile_error",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Iinclude",
+          "-DOPBENCH_TASK_CONV1D",
+          "driver/check.c",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\conv1d\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c",
+          "-o",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\conv1d\\x86_avx2\\text_rag\\rep-1\\initial\\bin\\conv1d-x86-candidate.exe",
+          "-lm"
+        ],
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\conv1d\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c: In function 'op_conv1d':\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\conv1d\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c:13:39: error: variable-sized object may not be initialized except with an empty initializer\n   13 |             double sum[reg_block_n] = {0.0};\n      |                                       ^\n"
+      }
+    }
+  ]
+}

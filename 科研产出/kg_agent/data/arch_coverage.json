@@ -1,0 +1,915 @@
+{
+  "arch_matrix": {
+    "arm_neon": {
+      "asum": 2,
+      "axpy": 2,
+      "copy": 1,
+      "dot": 3,
+      "gemm": 2,
+      "gemv": 2,
+      "nrm2": 1,
+      "rot": 1,
+      "scal": 1,
+      "swap": 1,
+      "trmm": 1
+    },
+    "arm_sve": {
+      "copy": 1,
+      "dot": 1,
+      "gemm": 3,
+      "symm": 1,
+      "trmm": 1
+    },
+    "rvv": {
+      "asum": 1,
+      "axpby": 1,
+      "axpy": 1,
+      "copy": 1,
+      "dot": 1,
+      "gemm": 1,
+      "gemv": 1,
+      "hemv": 1,
+      "nrm2": 1,
+      "rot": 1,
+      "scal": 1,
+      "swap": 1,
+      "symm": 1,
+      "trmm": 1
+    },
+    "x86_avx2": {
+      "asum": 2,
+      "axpy": 2,
+      "copy": 1,
+      "dot": 2,
+      "gemm": 2,
+      "gemv": 3,
+      "nrm2": 1,
+      "rot": 2,
+      "scal": 2,
+      "swap": 1,
+      "symm": 1,
+      "symv": 2,
+      "trmm": 1
+    },
+    "x86_avx512": {
+      "asum": 1,
+      "axpy": 1,
+      "dot": 1,
+      "gemm": 3,
+      "rot": 1,
+      "scal": 1,
+      "symm": 1,
+      "symv": 1
+    }
+  },
+  "cross_arch_shared": [
+    {
+      "action": "vectorize",
+      "arch_evidence_count": 6,
+      "arch_parameters": {
+        "arm_neon": {
+          "vector_width": 128
+        },
+        "rvv": {
+          "vector_width": 256
+        },
+        "x86_avx2": {
+          "vector_width": 256
+        },
+        "x86_avx512": {
+          "vector_width": 512
+        }
+      },
+      "arches": [
+        "arm_neon",
+        "rvv",
+        "x86_avx2",
+        "x86_avx512"
+      ],
+      "id": "stg:asum:vectorize_x",
+      "op": "asum"
+    },
+    {
+      "action": "tile",
+      "arch_evidence_count": 4,
+      "arch_parameters": {
+        "arm_neon": {
+          "reg_block_n": 8
+        },
+        "x86_avx2": {
+          "reg_block_n": 4
+        }
+      },
+      "arches": [
+        "arm_neon",
+        "x86_avx2"
+      ],
+      "id": "stg:axpy:tile_x",
+      "op": "axpy"
+    },
+    {
+      "action": "vectorize",
+      "arch_evidence_count": 6,
+      "arch_parameters": {
+        "arm_neon": {
+          "vector_width": 128
+        },
+        "rvv": {
+          "lmul": 8,
+          "sew": 64,
+          "vector_len": 32
+        },
+        "x86_avx2": {
+          "vector_width": 256
+        },
+        "x86_avx512": {
+          "vector_width": 512
+        }
+      },
+      "arches": [
+        "arm_neon",
+        "rvv",
+        "x86_avx2",
+        "x86_avx512"
+      ],
+      "id": "stg:axpy:vectorize_x",
+      "op": "axpy"
+    },
+    {
+      "action": "unroll",
+      "arch_evidence_count": 2,
+      "arch_parameters": {
+        "arm_neon": {
+          "unroll_factor": 4
+        },
+        "arm_sve": {
+          "unroll_factor": 8
+        }
+      },
+      "arches": [
+        "arm_neon",
+        "arm_sve"
+      ],
+      "id": "stg:copy:unroll_x",
+      "op": "copy"
+    },
+    {
+      "action": "vectorize",
+      "arch_evidence_count": 3,
+      "arch_parameters": {
+        "arm_neon": {
+          "vector_width": 128
+        },
+        "arm_sve": {
+          "vector_width": 256
+        },
+        "rvv": {
+          "lmul": 8,
+          "sew": 64,
+          "vector_len": 32
+        }
+      },
+      "arches": [
+        "arm_neon",
+        "arm_sve",
+        "rvv"
+      ],
+      "id": "stg:copy:vectorize_x",
+      "op": "copy"
+    },
+    {
+      "action": "tile",
+      "arch_evidence_count": 7,
+      "arch_parameters": {
+        "arm_neon": {
+          "reg_block_n": 24
+        },
+        "arm_sve": {
+          "reg_block_n": 7
+        },
+        "rvv": {
+          "lmul": 8,
+          "reg_block_n": 1,
+          "sew": 64,
+          "vector_len": 32
+        },
+        "x86_avx2": {
+          "reg_block_n": 4
+        }
+      },
+      "arches": [
+        "arm_neon",
+        "arm_sve",
+        "rvv",
+        "x86_avx2"
+      ],
+      "id": "stg:dot:tile_x",
+      "op": "dot"
+    },
+    {
+      "action": "unroll",
+      "arch_evidence_count": 4,
+      "arch_parameters": {
+        "arm_neon": {
+          "unroll_factor": 24
+        },
+        "arm_sve": {
+          "unroll_factor": 7
+        }
+      },
+      "arches": [
+        "arm_neon",
+        "arm_sve"
+      ],
+      "id": "stg:dot:unroll_x",
+      "op": "dot"
+    },
+    {
+      "action": "vectorize",
+      "arch_evidence_count": 8,
+      "arch_parameters": {
+        "arm_neon": {
+          "vector_width": 128
+        },
+        "arm_sve": {
+          "vector_width": 256
+        },
+        "rvv": {
+          "lmul": 8,
+          "sew": 64,
+          "vector_len": 32
+        },
+        "x86_avx2": {
+          "vector_width": 256
+        },
+        "x86_avx512": {
+          "vector_width": 512
+        }
+      },
+      "arches": [
+        "arm_neon",
+        "arm_sve",
+        "rvv",
+        "x86_avx2",
+        "x86_avx512"
+      ],
+      "id": "stg:dot:vectorize_x",
+      "op": "dot"
+    },
+    {
+      "action": "prefetch",
+      "arch_evidence_count": 10,
+      "arch_parameters": {
+        "arm_neon": {
+          "prefetch_distance": 4
+        },
+        "arm_sve": {
+          "prefetch_distance": 50
+        },
+        "x86_avx2": {
+          "prefetch_distance": 91
+        },
+        "x86_avx512": {
+          "prefetch_distance": 80
+        }
+      },
+      "arches": [
+        "arm_neon",
+        "arm_sve",
+        "x86_avx2",
+        "x86_avx512"
+      ],
+      "id": "stg:gemm:prefetch_x",
+      "op": "gemm"
+    },
+    {
+      "action": "tile",
+      "arch_evidence_count": 11,
+      "arch_parameters": {
+        "arm_neon": {
+          "reg_block_m": 4,
+          "reg_block_n": 4
+        },
+        "arm_sve": {
+          "reg_block_m": 1,
+          "reg_block_n": 8
+        },
+        "rvv": {
+          "k_unroll": 8,
+          "lmul": 2,
+          "reg_block_n": 8,
+          "sew": 64,
+          "vector_len": 8
+        },
+        "x86_avx2": {
+          "reg_block_m": 16,
+          "reg_block_n": 2
+        },
+        "x86_avx512": {
+          "reg_block_m": 16,
+          "reg_block_n": 2
+        }
+      },
+      "arches": [
+        "arm_neon",
+        "arm_sve",
+        "rvv",
+        "x86_avx2",
+        "x86_avx512"
+      ],
+      "id": "stg:gemm:tile_x",
+      "op": "gemm"
+    },
+    {
+      "action": "unroll",
+      "arch_evidence_count": 11,
+      "arch_parameters": {
+        "arm_neon": {
+          "unroll_factor": 16
+        },
+        "arm_sve": {
+          "unroll_factor": 8
+        },
+        "rvv": {
+          "k_unroll": 8
+        },
+        "x86_avx2": {
+          "unroll_factor": 32
+        },
+        "x86_avx512": {
+          "unroll_factor": 32
+        }
+      },
+      "arches": [
+        "arm_neon",
+        "arm_sve",
+        "rvv",
+        "x86_avx2",
+        "x86_avx512"
+      ],
+      "id": "stg:gemm:unroll_x",
+      "op": "gemm"
+    },
+    {
+      "action": "vectorize",
+      "arch_evidence_count": 11,
+      "arch_parameters": {
+        "arm_neon": {
+          "vector_width": 128
+        },
+        "arm_sve": {
+          "vector_width": 256
+        },
+        "rvv": {
+          "lmul": 2,
+          "sew": 64,
+          "vector_len": 8
+        },
+        "x86_avx2": {
+          "vector_width": 256
+        },
+        "x86_avx512": {
+          "vector_width": 512
+        }
+      },
+      "arches": [
+        "arm_neon",
+        "arm_sve",
+        "rvv",
+        "x86_avx2",
+        "x86_avx512"
+      ],
+      "id": "stg:gemm:vectorize_x",
+      "op": "gemm"
+    },
+    {
+      "action": "tile",
+      "arch_evidence_count": 5,
+      "arch_parameters": {
+        "arm_neon": {
+          "reg_block_n": 9
+        },
+        "x86_avx2": {
+          "reg_block_n": 4
+        }
+      },
+      "arches": [
+        "arm_neon",
+        "x86_avx2"
+      ],
+      "id": "stg:gemv:tile_x",
+      "op": "gemv"
+    },
+    {
+      "action": "unroll",
+      "arch_evidence_count": 5,
+      "arch_parameters": {
+        "arm_neon": {
+          "unroll_factor": 7
+        },
+        "x86_avx2": {
+          "unroll_factor": 4
+        }
+      },
+      "arches": [
+        "arm_neon",
+        "x86_avx2"
+      ],
+      "id": "stg:gemv:unroll_x",
+      "op": "gemv"
+    },
+    {
+      "action": "vectorize",
+      "arch_evidence_count": 6,
+      "arch_parameters": {
+        "arm_neon": {
+          "vector_width": 128
+        },
+        "rvv": {
+          "lmul": 8,
+          "sew": 64,
+          "vector_len": 32
+        },
+        "x86_avx2": {
+          "vector_width": 256
+        }
+      },
+      "arches": [
+        "arm_neon",
+        "rvv",
+        "x86_avx2"
+      ],
+      "id": "stg:gemv:vectorize_x",
+      "op": "gemv"
+    },
+    {
+      "action": "vectorize",
+      "arch_evidence_count": 3,
+      "arch_parameters": {
+        "arm_neon": {
+          "vector_width": 128
+        },
+        "rvv": {
+          "lmul": 4,
+          "sew": 64,
+          "vector_len": 16
+        },
+        "x86_avx2": {
+          "vector_width": 128
+        }
+      },
+      "arches": [
+        "arm_neon",
+        "rvv",
+        "x86_avx2"
+      ],
+      "id": "stg:nrm2:vectorize_x",
+      "op": "nrm2"
+    },
+    {
+      "action": "tile",
+      "arch_evidence_count": 4,
+      "arch_parameters": {
+        "arm_neon": {
+          "reg_block_n": 6
+        },
+        "x86_avx2": {
+          "reg_block_n": 12
+        },
+        "x86_avx512": {
+          "reg_block_n": 12
+        }
+      },
+      "arches": [
+        "arm_neon",
+        "x86_avx2",
+        "x86_avx512"
+      ],
+      "id": "stg:rot:tile_x",
+      "op": "rot"
+    },
+    {
+      "action": "unroll",
+      "arch_evidence_count": 4,
+      "arch_parameters": {
+        "arm_neon": {
+          "unroll_factor": 7
+        },
+        "x86_avx2": {
+          "unroll_factor": 12
+        },
+        "x86_avx512": {
+          "unroll_factor": 12
+        }
+      },
+      "arches": [
+        "arm_neon",
+        "x86_avx2",
+        "x86_avx512"
+      ],
+      "id": "stg:rot:unroll_x",
+      "op": "rot"
+    },
+    {
+      "action": "vectorize",
+      "arch_evidence_count": 5,
+      "arch_parameters": {
+        "arm_neon": {
+          "vector_width": 128
+        },
+        "rvv": {
+          "lmul": 8,
+          "sew": 64,
+          "vector_len": 32
+        },
+        "x86_avx2": {
+          "vector_width": 256
+        },
+        "x86_avx512": {
+          "vector_width": 512
+        }
+      },
+      "arches": [
+        "arm_neon",
+        "rvv",
+        "x86_avx2",
+        "x86_avx512"
+      ],
+      "id": "stg:rot:vectorize_x",
+      "op": "rot"
+    },
+    {
+      "action": "vectorize",
+      "arch_evidence_count": 5,
+      "arch_parameters": {
+        "arm_neon": {
+          "vector_width": 128
+        },
+        "rvv": {
+          "lmul": 8,
+          "sew": 64,
+          "vector_len": 32
+        },
+        "x86_avx2": {
+          "vector_width": 256
+        },
+        "x86_avx512": {
+          "vector_width": 512
+        }
+      },
+      "arches": [
+        "arm_neon",
+        "rvv",
+        "x86_avx2",
+        "x86_avx512"
+      ],
+      "id": "stg:scal:vectorize_x",
+      "op": "scal"
+    },
+    {
+      "action": "vectorize",
+      "arch_evidence_count": 2,
+      "arch_parameters": {
+        "arm_neon": {
+          "vector_width": 128
+        },
+        "rvv": {
+          "lmul": 8,
+          "sew": 64,
+          "vector_len": 32
+        }
+      },
+      "arches": [
+        "arm_neon",
+        "rvv"
+      ],
+      "id": "stg:swap:vectorize_x",
+      "op": "swap"
+    },
+    {
+      "action": "prefetch",
+      "arch_evidence_count": 2,
+      "arch_parameters": {
+        "x86_avx2": {
+          "prefetch_distance": 72
+        },
+        "x86_avx512": {
+          "prefetch_distance": 80
+        }
+      },
+      "arches": [
+        "x86_avx2",
+        "x86_avx512"
+      ],
+      "id": "stg:symm:prefetch_x",
+      "op": "symm"
+    },
+    {
+      "action": "tile",
+      "arch_evidence_count": 3,
+      "arch_parameters": {
+        "rvv": {
+          "k_unroll": 8,
+          "lmul": 2,
+          "reg_block_n": 8,
+          "sew": 64,
+          "vector_len": 8
+        },
+        "x86_avx2": {
+          "reg_block_m": 4,
+          "reg_block_n": 8
+        },
+        "x86_avx512": {
+          "reg_block_m": 16,
+          "reg_block_n": 2
+        }
+      },
+      "arches": [
+        "rvv",
+        "x86_avx2",
+        "x86_avx512"
+      ],
+      "id": "stg:symm:tile_x",
+      "op": "symm"
+    },
+    {
+      "action": "unroll",
+      "arch_evidence_count": 3,
+      "arch_parameters": {
+        "rvv": {
+          "k_unroll": 8
+        },
+        "x86_avx2": {
+          "unroll_factor": 32
+        },
+        "x86_avx512": {
+          "unroll_factor": 32
+        }
+      },
+      "arches": [
+        "rvv",
+        "x86_avx2",
+        "x86_avx512"
+      ],
+      "id": "stg:symm:unroll_x",
+      "op": "symm"
+    },
+    {
+      "action": "vectorize",
+      "arch_evidence_count": 4,
+      "arch_parameters": {
+        "arm_sve": {
+          "vector_width": 256
+        },
+        "rvv": {
+          "lmul": 2,
+          "sew": 64,
+          "vector_len": 8
+        },
+        "x86_avx2": {
+          "vector_width": 256
+        },
+        "x86_avx512": {
+          "vector_width": 512
+        }
+      },
+      "arches": [
+        "arm_sve",
+        "rvv",
+        "x86_avx2",
+        "x86_avx512"
+      ],
+      "id": "stg:symm:vectorize_x",
+      "op": "symm"
+    },
+    {
+      "action": "vectorize",
+      "arch_evidence_count": 3,
+      "arch_parameters": {
+        "x86_avx2": {
+          "vector_width": 256
+        },
+        "x86_avx512": {
+          "vector_width": 512
+        }
+      },
+      "arches": [
+        "x86_avx2",
+        "x86_avx512"
+      ],
+      "id": "stg:symv:vectorize_x",
+      "op": "symv"
+    },
+    {
+      "action": "prefetch",
+      "arch_evidence_count": 2,
+      "arch_parameters": {
+        "arm_neon": {
+          "prefetch_distance": 4
+        },
+        "arm_sve": {
+          "prefetch_distance": 31
+        }
+      },
+      "arches": [
+        "arm_neon",
+        "arm_sve"
+      ],
+      "id": "stg:trmm:prefetch_x",
+      "op": "trmm"
+    },
+    {
+      "action": "tile",
+      "arch_evidence_count": 4,
+      "arch_parameters": {
+        "arm_neon": {
+          "reg_block_m": 4,
+          "reg_block_n": 8
+        },
+        "arm_sve": {
+          "reg_block_m": 1,
+          "reg_block_n": 8
+        },
+        "rvv": {
+          "lmul": 2,
+          "reg_block_n": 8,
+          "sew": 64,
+          "vector_len": 8
+        },
+        "x86_avx2": {
+          "reg_block_m": 4,
+          "reg_block_n": 8
+        }
+      },
+      "arches": [
+        "arm_neon",
+        "arm_sve",
+        "rvv",
+        "x86_avx2"
+      ],
+      "id": "stg:trmm:tile_x",
+      "op": "trmm"
+    },
+    {
+      "action": "unroll",
+      "arch_evidence_count": 3,
+      "arch_parameters": {
+        "arm_neon": {
+          "unroll_factor": 32
+        },
+        "arm_sve": {
+          "unroll_factor": 8
+        },
+        "x86_avx2": {
+          "unroll_factor": 32
+        }
+      },
+      "arches": [
+        "arm_neon",
+        "arm_sve",
+        "x86_avx2"
+      ],
+      "id": "stg:trmm:unroll_x",
+      "op": "trmm"
+    },
+    {
+      "action": "vectorize",
+      "arch_evidence_count": 4,
+      "arch_parameters": {
+        "arm_neon": {
+          "vector_width": 128
+        },
+        "arm_sve": {
+          "vector_width": 256
+        },
+        "rvv": {
+          "lmul": 2,
+          "sew": 64,
+          "vector_len": 8
+        },
+        "x86_avx2": {
+          "vector_width": 256
+        }
+      },
+      "arches": [
+        "arm_neon",
+        "arm_sve",
+        "rvv",
+        "x86_avx2"
+      ],
+      "id": "stg:trmm:vectorize_x",
+      "op": "trmm"
+    }
+  ],
+  "cross_arch_shared_count": 30,
+  "implementation_files": 70,
+  "op_arch_count": {
+    "asum": 4,
+    "axpby": 1,
+    "axpy": 4,
+    "copy": 4,
+    "dot": 5,
+    "gemm": 5,
+    "gemv": 3,
+    "hemv": 1,
+    "nrm2": 3,
+    "rot": 4,
+    "scal": 4,
+    "swap": 3,
+    "symm": 4,
+    "symv": 2,
+    "trmm": 4
+  },
+  "ops_by_arch": {
+    "arm_neon": [
+      "asum",
+      "axpy",
+      "copy",
+      "dot",
+      "gemm",
+      "gemv",
+      "nrm2",
+      "rot",
+      "scal",
+      "swap",
+      "trmm"
+    ],
+    "arm_sve": [
+      "copy",
+      "dot",
+      "gemm",
+      "symm",
+      "trmm"
+    ],
+    "rvv": [
+      "asum",
+      "axpby",
+      "axpy",
+      "copy",
+      "dot",
+      "gemm",
+      "gemv",
+      "hemv",
+      "nrm2",
+      "rot",
+      "scal",
+      "swap",
+      "symm",
+      "trmm"
+    ],
+    "x86_avx2": [
+      "asum",
+      "axpy",
+      "copy",
+      "dot",
+      "gemm",
+      "gemv",
+      "nrm2",
+      "rot",
+      "scal",
+      "swap",
+      "symm",
+      "symv",
+      "trmm"
+    ],
+    "x86_avx512": [
+      "asum",
+      "axpy",
+      "dot",
+      "gemm",
+      "rot",
+      "scal",
+      "symm",
+      "symv"
+    ]
+  },
+  "ops_with_multi_arch": 13,
+  "ops_with_multi_arch_list": [
+    "asum",
+    "axpy",
+    "copy",
+    "dot",
+    "gemm",
+    "gemv",
+    "nrm2",
+    "rot",
+    "scal",
+    "swap",
+    "symm",
+    "symv",
+    "trmm"
+  ],
+  "schema_version": "kg-v1.5",
+  "strategies_by_arch": {
+    "arm_neon": 37,
+    "arm_sve": 15,
+    "rvv": 42,
+    "x86_avx2": 29,
+    "x86_avx512": 16
+  },
+  "strategies_by_arch_scope": {
+    "arch_agnostic": 93,
+    "arch_specific": 139,
+    "parameterized": 30
+  }
+}

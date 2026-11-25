@@ -1,0 +1,49 @@
+{
+  "analogy_source": "axpy",
+  "card_ids": [
+    "stg:abstract:vector_fma",
+    "stg:abstract:tail_handling",
+    "stg:abstract:stride_dispatch",
+    "stg:abstract:register_blocking"
+  ],
+  "contract_sha256": "2daff4c2d3b6dff62ae5ca12435a0298c6c878a3aa751d74c6d7003cc5afb6f8",
+  "knowledge_bytes": 4482,
+  "method": "text_rag",
+  "operator": "dscal",
+  "profile": "x86_avx2",
+  "prompt": "dscal/x86_avx2/text_rag.json",
+  "prompt_sha256": "fcc0b93f6d87596262dbf5b9cfde95eb1fe412ab26cdcdaaf5fbe2ceb3f09d8f",
+  "repetition": 1,
+  "source_sha256": "fe07cac3a572e7b9ad0706633dde40f5fb508145ea138cb551c7f0f057b56e59",
+  "split": "holdout",
+  "status": "prepared",
+  "engine": "ollama",
+  "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+  "repair_attempted": true,
+  "initial": {
+    "status": "compile_failed",
+    "compile_ok": false,
+    "correct": null,
+    "failure_reason": "intrinsic_or_target_error",
+    "usage": {
+      "prompt_tokens": 2584,
+      "completion_tokens": 325,
+      "total_tokens": 2909
+    },
+    "diagnostic": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c: In function 'op_dscal':\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c:5:9: error: unknown type name '__m256d'\n    5 |         __m256d v_alpha = _mm256_set1_pd(alpha);\n      |         ^~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c:5:27: error: implicit declaration of function '_mm256_set1_pd' [-Wimplicit-function-declaration]\n    5 |         __m256d v_alpha = _mm256_set1_pd(alpha);\n      |                           ^~~~~~~~~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c:7:13: error: unknown type name '__m256d'\n    7 |             __m256d v_x = _mm256_loadu_pd(x + 4 * i);\n      |             ^~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c:7:27: error: implicit declaration of function '_mm256_loadu_pd' [-Wimplicit-function-declaration]\n    7 |             __m256d v_x = _mm256_loadu_pd(x + 4 * i);\n      |                           ^~~~~~~~~~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c:8:19: error: implicit declaration of function '_mm256_mul_pd' [-Wimplicit-function-declaration]\n    8 |             v_x = _mm256_mul_pd(v_x, v_alpha);\n      |                   ^~~~~~~~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c:9:13: error: implicit declaration of function '_mm256_storeu_pd' [-Wimplicit-function-declaration]\n    9 |             _mm256_storeu_pd(x + 4 * i, v_x);\n      |             ^~~~~~~~~~~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c:15:9: error: unknown type name '__m256d'\n   15 |         __m256d v_alpha = _mm256_set1_pd(alpha);\n      |         ^~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c:17:13: error: unknown type name '__m256d'\n   17 |             __m256d v_x = _mm256_loadu_pd(x + i * incx);\n      |             ^~~~~~~\n",
+    "candidate_sha256": "b4a57c3f3d4c9f402e88b806b2e7feb262f0e649ddabdca95dcc289083a8c53e"
+  },
+  "final": {
+    "status": "compile_failed",
+    "compile_ok": false,
+    "correct": null,
+    "failure_reason": "intrinsic_or_target_error",
+    "usage": {
+      "prompt_tokens": 2053,
+      "completion_tokens": 325,
+      "total_tokens": 2378
+    },
+    "diagnostic": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c: In function 'op_dscal':\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c:5:9: error: unknown type name '__m256d'\n    5 |         __m256d v_alpha = _mm256_set1_pd(alpha);\n      |         ^~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c:5:27: error: implicit declaration of function '_mm256_set1_pd' [-Wimplicit-function-declaration]\n    5 |         __m256d v_alpha = _mm256_set1_pd(alpha);\n      |                           ^~~~~~~~~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c:7:13: error: unknown type name '__m256d'\n    7 |             __m256d v_x = _mm256_loadu_pd(x + 4 * i);\n      |             ^~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c:7:27: error: implicit declaration of function '_mm256_loadu_pd' [-Wimplicit-function-declaration]\n    7 |             __m256d v_x = _mm256_loadu_pd(x + 4 * i);\n      |                           ^~~~~~~~~~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c:8:19: error: implicit declaration of function '_mm256_mul_pd' [-Wimplicit-function-declaration]\n    8 |             v_x = _mm256_mul_pd(v_x, v_alpha);\n      |                   ^~~~~~~~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c:9:13: error: implicit declaration of function '_mm256_storeu_pd' [-Wimplicit-function-declaration]\n    9 |             _mm256_storeu_pd(x + 4 * i, v_x);\n      |             ^~~~~~~~~~~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c:15:9: error: unknown type name '__m256d'\n   15 |         __m256d v_alpha = _mm256_set1_pd(alpha);\n      |         ^~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c:17:13: error: unknown type name '__m256d'\n   17 |             __m256d v_x = _mm256_loadu_pd(x + i * incx);\n      |             ^~~~~~~\n",
+    "candidate_sha256": "b4a57c3f3d4c9f402e88b806b2e7feb262f0e649ddabdca95dcc289083a8c53e"
+  }
+}

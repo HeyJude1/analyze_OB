@@ -1,0 +1,411 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "x86_64",
+  "results": [
+    {
+      "task": "daxpy",
+      "target": "rvv",
+      "variant": "arch",
+      "compiler_version": "riscv64-buildroot-linux-gnu-gcc.br_real (Buildroot 2021.11-18033-g83947c7bb6) 14.3.0",
+      "source": "tasks/daxpy/riscv_rvv.c",
+      "source_sha256": "844143745610733ae29472679623820aa9995b8b34d5655227b62e9b4ffcc794",
+      "status": "passed",
+      "compile": {
+        "argv": [
+          "/mnt/c/Users/MSI/Desktop/cx_operator_tool/operator_extract/toolchain/riscv-gcc-14.3/bin/riscv64-buildroot-linux-gnu-gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-march=rv64gcv",
+          "-mabi=lp64d",
+          "-static",
+          "-Werror",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DAXPY",
+          "driver/check.c",
+          "tasks/daxpy/riscv_rvv.c",
+          "-o",
+          ".build/holdouts-arch128/daxpy-rvv-arch",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "e2657a8bfe7566fd8bedc839d42a24f79e947adf5b9f7c31d735ae82703dfa6a",
+      "check": {
+        "argv": [
+          "qemu-riscv64",
+          "-cpu",
+          "rv64,v=true,vlen=128,elen=64,vext_spec=v1.0",
+          "/mnt/c/Users/MSI/Desktop/开题/科研产出/算子输入/.build/holdouts-arch128/daxpy-rvv-arch"
+        ],
+        "exit_code": 0,
+        "stdout": "60 cases, 0 failures\n",
+        "stderr": ""
+      },
+      "environment": "external_runner"
+    },
+    {
+      "task": "ddot",
+      "target": "rvv",
+      "variant": "arch",
+      "compiler_version": "riscv64-buildroot-linux-gnu-gcc.br_real (Buildroot 2021.11-18033-g83947c7bb6) 14.3.0",
+      "source": "tasks/ddot/riscv_rvv.c",
+      "source_sha256": "9d3acebdc1b6287c8a094777b828b4a3486511c6f02192d1e1c8a9b6daf69255",
+      "status": "passed",
+      "compile": {
+        "argv": [
+          "/mnt/c/Users/MSI/Desktop/cx_operator_tool/operator_extract/toolchain/riscv-gcc-14.3/bin/riscv64-buildroot-linux-gnu-gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-march=rv64gcv",
+          "-mabi=lp64d",
+          "-static",
+          "-Werror",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DDOT",
+          "driver/check.c",
+          "tasks/ddot/riscv_rvv.c",
+          "-o",
+          ".build/holdouts-arch128/ddot-rvv-arch",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "4dde340270ea1cc4fab7fd3dd96c9d22e7895baef7a92a6bec5726c21d691ac8",
+      "check": {
+        "argv": [
+          "qemu-riscv64",
+          "-cpu",
+          "rv64,v=true,vlen=128,elen=64,vext_spec=v1.0",
+          "/mnt/c/Users/MSI/Desktop/开题/科研产出/算子输入/.build/holdouts-arch128/ddot-rvv-arch"
+        ],
+        "exit_code": 0,
+        "stdout": "60 cases, 0 failures\n",
+        "stderr": ""
+      },
+      "environment": "external_runner"
+    },
+    {
+      "task": "dgemv",
+      "target": "rvv",
+      "variant": "arch",
+      "compiler_version": "riscv64-buildroot-linux-gnu-gcc.br_real (Buildroot 2021.11-18033-g83947c7bb6) 14.3.0",
+      "source": "tasks/dgemv/riscv_rvv.c",
+      "source_sha256": "116e3e0b99c1654958e413c37748e9a9d8be853f71d0e3a388af98cad54f5eea",
+      "status": "passed",
+      "compile": {
+        "argv": [
+          "/mnt/c/Users/MSI/Desktop/cx_operator_tool/operator_extract/toolchain/riscv-gcc-14.3/bin/riscv64-buildroot-linux-gnu-gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-march=rv64gcv",
+          "-mabi=lp64d",
+          "-static",
+          "-Werror",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DGEMV",
+          "driver/check.c",
+          "tasks/dgemv/riscv_rvv.c",
+          "-o",
+          ".build/holdouts-arch128/dgemv-rvv-arch",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "6d3511e0f7e3a914029d8e8f6ed2c4ee0286ec10c6ac34ea755018c52f3d7058",
+      "check": {
+        "argv": [
+          "qemu-riscv64",
+          "-cpu",
+          "rv64,v=true,vlen=128,elen=64,vext_spec=v1.0",
+          "/mnt/c/Users/MSI/Desktop/开题/科研产出/算子输入/.build/holdouts-arch128/dgemv-rvv-arch"
+        ],
+        "exit_code": 0,
+        "stdout": "84 cases, 0 failures\n",
+        "stderr": ""
+      },
+      "environment": "external_runner"
+    },
+    {
+      "task": "dgemm",
+      "target": "rvv",
+      "variant": "arch",
+      "compiler_version": "riscv64-buildroot-linux-gnu-gcc.br_real (Buildroot 2021.11-18033-g83947c7bb6) 14.3.0",
+      "source": "tasks/dgemm/riscv_rvv.c",
+      "source_sha256": "ba9f588d4d0c1e79717a109ada52bc4e6c175412a5609233351dcdb90ec38eac",
+      "status": "passed",
+      "compile": {
+        "argv": [
+          "/mnt/c/Users/MSI/Desktop/cx_operator_tool/operator_extract/toolchain/riscv-gcc-14.3/bin/riscv64-buildroot-linux-gnu-gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-march=rv64gcv",
+          "-mabi=lp64d",
+          "-static",
+          "-Werror",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DGEMM",
+          "driver/check.c",
+          "tasks/dgemm/riscv_rvv.c",
+          "-o",
+          ".build/holdouts-arch128/dgemm-rvv-arch",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "921477c55e0cbf262dd918891f3703a393cab5cac919ffe46c10e3e4195d0f0c",
+      "check": {
+        "argv": [
+          "qemu-riscv64",
+          "-cpu",
+          "rv64,v=true,vlen=128,elen=64,vext_spec=v1.0",
+          "/mnt/c/Users/MSI/Desktop/开题/科研产出/算子输入/.build/holdouts-arch128/dgemm-rvv-arch"
+        ],
+        "exit_code": 0,
+        "stdout": "32 cases, 0 failures\n",
+        "stderr": ""
+      },
+      "environment": "external_runner"
+    },
+    {
+      "task": "dscal",
+      "target": "rvv",
+      "variant": "arch",
+      "compiler_version": "riscv64-buildroot-linux-gnu-gcc.br_real (Buildroot 2021.11-18033-g83947c7bb6) 14.3.0",
+      "source": "tasks/dscal/riscv_rvv.c",
+      "source_sha256": "3da9294e49ad746d84eeccd54cb9a07fde1eb01eb08506742ad71b36b490f9cc",
+      "status": "passed",
+      "compile": {
+        "argv": [
+          "/mnt/c/Users/MSI/Desktop/cx_operator_tool/operator_extract/toolchain/riscv-gcc-14.3/bin/riscv64-buildroot-linux-gnu-gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-march=rv64gcv",
+          "-mabi=lp64d",
+          "-static",
+          "-Werror",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DSCAL",
+          "driver/check.c",
+          "tasks/dscal/riscv_rvv.c",
+          "-o",
+          ".build/holdouts-arch128/dscal-rvv-arch",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "b5487882c5faaa07191de9fc471238e95693fb7651724dbb5e122893aab83c94",
+      "check": {
+        "argv": [
+          "qemu-riscv64",
+          "-cpu",
+          "rv64,v=true,vlen=128,elen=64,vext_spec=v1.0",
+          "/mnt/c/Users/MSI/Desktop/开题/科研产出/算子输入/.build/holdouts-arch128/dscal-rvv-arch"
+        ],
+        "exit_code": 0,
+        "stdout": "384 cases, 0 failures\n",
+        "stderr": ""
+      },
+      "environment": "external_runner"
+    },
+    {
+      "task": "dasum",
+      "target": "rvv",
+      "variant": "arch",
+      "compiler_version": "riscv64-buildroot-linux-gnu-gcc.br_real (Buildroot 2021.11-18033-g83947c7bb6) 14.3.0",
+      "source": "tasks/dasum/riscv_rvv.c",
+      "source_sha256": "eea8fbe38925009b16250763159f8e4e143481a019224db5b396b614347886ce",
+      "status": "passed",
+      "compile": {
+        "argv": [
+          "/mnt/c/Users/MSI/Desktop/cx_operator_tool/operator_extract/toolchain/riscv-gcc-14.3/bin/riscv64-buildroot-linux-gnu-gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-march=rv64gcv",
+          "-mabi=lp64d",
+          "-static",
+          "-Werror",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DASUM",
+          "driver/check.c",
+          "tasks/dasum/riscv_rvv.c",
+          "-o",
+          ".build/holdouts-arch128/dasum-rvv-arch",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "5d111b60aa95865009313be12665428742091323362d821bc68a3e43fe432c28",
+      "check": {
+        "argv": [
+          "qemu-riscv64",
+          "-cpu",
+          "rv64,v=true,vlen=128,elen=64,vext_spec=v1.0",
+          "/mnt/c/Users/MSI/Desktop/开题/科研产出/算子输入/.build/holdouts-arch128/dasum-rvv-arch"
+        ],
+        "exit_code": 0,
+        "stdout": "288 cases, 0 failures\n",
+        "stderr": ""
+      },
+      "environment": "external_runner"
+    },
+    {
+      "task": "dsymv",
+      "target": "rvv",
+      "variant": "arch",
+      "compiler_version": "riscv64-buildroot-linux-gnu-gcc.br_real (Buildroot 2021.11-18033-g83947c7bb6) 14.3.0",
+      "source": "tasks/dsymv/riscv_rvv.c",
+      "source_sha256": "f4e4b0d201b5c3eeb85ac16fb5e19fe859195240e70e9a6b5f6f1bc8fc2a0a9c",
+      "status": "passed",
+      "compile": {
+        "argv": [
+          "/mnt/c/Users/MSI/Desktop/cx_operator_tool/operator_extract/toolchain/riscv-gcc-14.3/bin/riscv64-buildroot-linux-gnu-gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-march=rv64gcv",
+          "-mabi=lp64d",
+          "-static",
+          "-Werror",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DSYMV",
+          "driver/check.c",
+          "tasks/dsymv/riscv_rvv.c",
+          "-o",
+          ".build/holdouts-arch128/dsymv-rvv-arch",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "ed560e1481d70242a4670b011ba98a9f7e9a6d4a6a3acf0f1decf5c858b07429",
+      "check": {
+        "argv": [
+          "qemu-riscv64",
+          "-cpu",
+          "rv64,v=true,vlen=128,elen=64,vext_spec=v1.0",
+          "/mnt/c/Users/MSI/Desktop/开题/科研产出/算子输入/.build/holdouts-arch128/dsymv-rvv-arch"
+        ],
+        "exit_code": 0,
+        "stdout": "720 cases, 0 failures\n",
+        "stderr": ""
+      },
+      "environment": "external_runner"
+    },
+    {
+      "task": "dsymm",
+      "target": "rvv",
+      "variant": "arch",
+      "compiler_version": "riscv64-buildroot-linux-gnu-gcc.br_real (Buildroot 2021.11-18033-g83947c7bb6) 14.3.0",
+      "source": "tasks/dsymm/riscv_rvv.c",
+      "source_sha256": "e7841c88bd42f5a836aa4a54d708b452e1475913cd5bf37565a36d1726a5906d",
+      "status": "passed",
+      "compile": {
+        "argv": [
+          "/mnt/c/Users/MSI/Desktop/cx_operator_tool/operator_extract/toolchain/riscv-gcc-14.3/bin/riscv64-buildroot-linux-gnu-gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-march=rv64gcv",
+          "-mabi=lp64d",
+          "-static",
+          "-Werror",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DSYMM",
+          "driver/check.c",
+          "tasks/dsymm/riscv_rvv.c",
+          "-o",
+          ".build/holdouts-arch128/dsymm-rvv-arch",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "c6545d85de3a837346cfa3c004649009e56e024fd8b961a2a7d9d610705fc5a2",
+      "check": {
+        "argv": [
+          "qemu-riscv64",
+          "-cpu",
+          "rv64,v=true,vlen=128,elen=64,vext_spec=v1.0",
+          "/mnt/c/Users/MSI/Desktop/开题/科研产出/算子输入/.build/holdouts-arch128/dsymm-rvv-arch"
+        ],
+        "exit_code": 0,
+        "stdout": "288 cases, 0 failures\n",
+        "stderr": ""
+      },
+      "environment": "external_runner"
+    },
+    {
+      "task": "conv1d",
+      "target": "rvv",
+      "variant": "arch",
+      "compiler_version": "riscv64-buildroot-linux-gnu-gcc.br_real (Buildroot 2021.11-18033-g83947c7bb6) 14.3.0",
+      "source": "tasks/conv1d/riscv_rvv.c",
+      "source_sha256": "ed2265c240dd2c4710bb0b92b174716f6687eff772cc129ab01a4916643d07d0",
+      "status": "passed",
+      "compile": {
+        "argv": [
+          "/mnt/c/Users/MSI/Desktop/cx_operator_tool/operator_extract/toolchain/riscv-gcc-14.3/bin/riscv64-buildroot-linux-gnu-gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-march=rv64gcv",
+          "-mabi=lp64d",
+          "-static",
+          "-Werror",
+          "-Iinclude",
+          "-DOPBENCH_TASK_CONV1D",
+          "driver/check.c",
+          "tasks/conv1d/riscv_rvv.c",
+          "-o",
+          ".build/holdouts-arch128/conv1d-rvv-arch",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "9836daab0aa467e11a4a8d6c0ac514f79461b033bb6062c63547d3cdffe467d8",
+      "check": {
+        "argv": [
+          "qemu-riscv64",
+          "-cpu",
+          "rv64,v=true,vlen=128,elen=64,vext_spec=v1.0",
+          "/mnt/c/Users/MSI/Desktop/开题/科研产出/算子输入/.build/holdouts-arch128/conv1d-rvv-arch"
+        ],
+        "exit_code": 0,
+        "stdout": "8 cases, 0 failures\n",
+        "stderr": ""
+      },
+      "environment": "external_runner"
+    }
+  ]
+}

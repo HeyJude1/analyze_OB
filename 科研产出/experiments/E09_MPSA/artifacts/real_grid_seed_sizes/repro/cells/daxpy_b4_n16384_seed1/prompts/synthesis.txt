@@ -1,0 +1,130 @@
+你是 BLAS 算子优化策略的「综合专家」。下面是同一算子、同一硬件上 top-k 策略的逐条适用性分析结果。请按 4 个标准综合，形成最终的代码生成指导。
+
+【目标算子】daxpy（知识图谱规范名：axpy）
+【目标硬件 profile】k1_rvv256
+【任务函数签名】int daxpy_k(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, double da, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y, double *dummy, BLASLONG dummy2)
+【查询代码特征】{
+  "aligned": true,
+  "dtype": "d",
+  "loop_depth": 1,
+  "precision": "double",
+  "reduction": false,
+  "size_regime": "large",
+  "stride_x": 1,
+  "stride_y": 1,
+  "structural": "none",
+  "tail_divisible": false
+}
+
+【4 个综合标准（必须逐一给出 0~1 分数与理由）】
+- supportive（相互支持性）：各策略的适用条件/参数是否一致、能否同时采用，是否会互相抵消；
+- complementarity（互补性）：策略是否作用于不同阶段（向量化 / 循环展开 / 尾部处理 / 寄存器分块 / 步长特化等），组合后是否覆盖更多场景；
+- accuracy（正确性/数值一致性）：组合实现是否保持 BLAS 语义与数值容差，n<=0 / 尾部 / 任意步长 / 别名等边界是否安全；
+- completeness（覆盖完整性）：是否覆盖主循环、尾部、任意步长、n<=0 等分支，是否遗漏关键实现环节。
+
+【逐条适用性分析（JSON 数组）】
+[
+  {
+    "strategy_id": "stg:axpy:specialize_d",
+    "strategy_name": "LMUL/SEW 向量寄存器分组调优",
+    "applies": true,
+    "confidence": 0.8,
+    "evidence": [
+      "策略条件 dtype 匹配目标算子（值为 \"d\"）",
+      "策略条件 loop_depth >= 1 与查询特征一致",
+      "策略条件 size_regime 包含 \"large\"，与查询特征匹配",
+      "参数 sew 固定为 64，与 double 类型一致",
+      "参数 lmul 设置为 8，与硬件 k1_rvv256 的向量寄存器宽度适配",
+      "evidence 表明在类似硬件上实现了性能提升（speedup 1.2134）"
+    ],
+    "risks": [
+      "尾部处理未对齐：tail_divisible 为 false，可能需要额外处理未对齐部分",
+      "寄存器压力高：LMUL=8 可能导致寄存器溢出，影响性能",
+      "编译器对 RVV 扩展支持不足可能导致代码无法正确生成",
+      "通用路径中可能未处理任意步长的边界情况",
+      "别名问题未在策略中体现，可能影响数值一致性"
+    ],
+    "parameters": {
+      "sew": 64,
+      "lmul": 8
+    },
+    "conflicts": []
+  },
+  {
+    "strategy_id": "stg:axpy:tail_handle_d",
+    "strategy_name": "动态 vl / 掩码尾部处理",
+    "applies": true,
+    "confidence": 0.7473,
+    "evidence": [
+      "策略 conditions 中 dtype 为 'd'，与查询代码特征匹配",
+      "策略 conditions 中 loop_depth >= 1，与查询代码特征匹配",
+      "策略 conditions 中 size_regime 包含 large，与查询代码特征匹配",
+      "策略 conditions 中 tail_divisible 为 false，与查询代码特征匹配",
+      "策略 evidence 中 ev:axpy:geomean 表明在 QEMU 上有性能提升",
+      "策略 why_selected 中 conditions_satisfied 包含 dtype、loop_depth、size_regime、tail_divisible"
+    ],
+    "risks": [
+      "动态 vl 控制可能增加编译器优化不确定性，影响性能一致性",
+      "尾部处理依赖 vl 的动态设置，可能在边界条件（如 n == 0）下引发错误",
+      "未考虑 inc_x 或 inc_y 非 1 的情况，可能影响通用性",
+      "LMUL=8 可能导致寄存器压力过高，影响其他操作的调度",
+      "未处理向量别名（x 和 y 指针重叠）情况，可能导致数据竞争"
+    ],
+    "parameters": {
+      "SEW": 64,
+      "LMUL": 8
+    },
+    "conflicts": []
+  },
+  {
+    "strategy_id": "stg:axpy:vectorize_d",
+    "strategy_name": "RVV 向量化内核（vsetvl + vle/vfmacc/vse）",
+    "applies": true,
+    "confidence": 0.7473,
+    "evidence": [
+      "策略条件中 dtype 满足 'd'（double）要求",
+      "loop_depth >= 1 的条件被满足",
+      "size_regime 为 large，匹配策略适用范围",
+      "stride_x == 1，符合向量化策略要求",
+      "aligned == true，满足向量化对齐要求",
+      "evidence ev:axpy:geomean 表明在 qemu-riscv64-vlen256 平台有 1.2134 的 speedup",
+      "参数 par:sew=64，与 double 类型一致",
+      "参数 par:lmul=8，说明向量寄存器利用充分"
+    ],
+    "risks": [
+      "tail_divisible == false，可能存在尾部处理开销，需在循环中重新计算 vl",
+      "指针别名（x 和 y 重叠）可能导致向量化失效或结果不一致",
+      "编译器是否能正确处理 RVV 内建函数存在不确定性",
+      "LMUL=8 可能导致寄存器压力过高，影响实际性能",
+      "依赖 __riscv_vsetvl_e64m8 控制向量长度，ISA 支持需验证"
+    ],
+    "parameters": {
+      "SEW": 64,
+      "LMUL": 8,
+      "vector_len": 32,
+      "vl": "循环内动态计算以适配剩余长度"
+    },
+    "conflicts": []
+  }
+]
+
+【综合要求】
+1. 综合判断这些策略能否组合、在哪些阶段互补、组合后正确性与覆盖度是否足够；
+2. `recommended` 只写 JSON 数组里真实出现的策略 id，按建议采用顺序排列；
+3. `guidance` 要能直接指导代码生成（主循环怎么循环分块/向量化、尾部怎么处理、参数取什么量级、哪些策略不要用）；
+4. 不要写 C 代码，不要编造未给出的性能数字。
+
+【输出要求】
+只输出一个严格 JSON 对象（不要 markdown 代码围栏、不要解释文字），格式：
+{
+  "criteria": {
+    "supportive": {"score": 0.0, "reason": "策略之间是否相互支持、条件是否一致"},
+    "complementarity": {"score": 0.0, "reason": "策略是否互补（向量化 / 展开 / 尾部 / 分块 / 参数调优）"},
+    "accuracy": {"score": 0.0, "reason": "组合后正确性与数值一致性风险是否可控"},
+    "completeness": {"score": 0.0, "reason": "是否覆盖主循环、尾部、任意步长、n<=0 等"}
+  },
+  "overall": "一句话综合结论",
+  "recommended": ["策略 id，按优先级"],
+  "guidance": "分条给出代码生成阶段的实现要点",
+  "conflicts": ["生成时需要避免的冲突"]
+}

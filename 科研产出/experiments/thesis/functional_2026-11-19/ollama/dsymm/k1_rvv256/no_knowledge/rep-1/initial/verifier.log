@@ -1,0 +1,8 @@
+dsymm rvv candidate: compile_error 
+
+wsl: �hKm0R localhost �NtM�n�FO*g\��P0R WSL0NAT !j_N�v WSL N/ec localhost �Nt0
+../experiments/thesis/functional_2026-11-19/ollama/dsymm/k1_rvv256/no_knowledge/rep-1/initial/candidate.c: In function ‘op_dsymm’:
+../experiments/thesis/functional_2026-11-19/ollama/dsymm/k1_rvv256/no_knowledge/rep-1/initial/candidate.c:28:30: error: ‘i’ undeclared (first use in this function)
+   28 |                     sum += b[i * ldb + p] * symmetric_at(a, lda, p, j, uplo);
+      |                              ^
+../experiments/thesis/functional_2026-11-19/ollama/dsymm/k1_rvv256/no_knowledge/rep-1/initial/candidate.c:28:30: note: each undeclared identifier is reported only once for each function it appears in

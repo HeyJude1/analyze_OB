@@ -1,0 +1,36 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "amd64",
+  "results": [
+    {
+      "task": "dgemm",
+      "target": "x86",
+      "variant": "candidate",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c",
+      "source_sha256": "d20f1b7cb264ae67d5cd6fff13dd7e0eee4c3b3580c337f695248c8b37b47161",
+      "status": "compile_error",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DGEMM",
+          "driver/check.c",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c",
+          "-o",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\constraint_plan\\rep-1\\initial\\bin\\dgemm-x86-candidate.exe",
+          "-lm"
+        ],
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c: In function 'op_dgemm':\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c:25:20: error: 'reg_block_m' undeclared (first use in this function); did you mean 'reg_block_n'?\n   25 |         double acc[reg_block_m][reg_block_n] = {0.0};\n      |                    ^~~~~~~~~~~\n      |                    reg_block_n\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c:25:20: note: each undeclared identifier is reported only once for each function it appears in\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c:25:48: error: variable-sized object may not be initialized except with an empty initializer\n   25 |         double acc[reg_block_m][reg_block_n] = {0.0};\n      |                                                ^\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c:25:16: warning: unused variable 'acc' [-Wunused-variable]\n   25 |         double acc[reg_block_m][reg_block_n] = {0.0};\n      |                ^~~\n"
+      }
+    }
+  ]
+}

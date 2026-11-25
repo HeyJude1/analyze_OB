@@ -1,0 +1,9 @@
+{
+  "raw": "```c\n#include \"opbench.h\"\n\nvoid op_dsymv(char uplo, size_t n, double alpha, const double *a, size_t lda,\n              const double *x, ptrdiff_t incx, double beta, double *y, ptrdiff_t incy) {\n    if (n == 0 || (alpha == 0.0 && beta == 1.0)) return;\n\n    // Loop unroll factor\n    const int K_UNROLL = 4;\n    size_t i, j;\n\n    for (i = 0; i < n - K_UNROLL + 1; i += K_UNROLL) {\n        double sum[K_UNROLL];\n\n        if (alpha != 0.0) {\n            for (j = 0; j < n; ++j) {\n                const int stored = uplo == 'U' ? i <= j : i >= j;\n                const double aij = stored ? a[i * lda + j] : a[j * lda + i];\n                sum[0] += aij * x[(ptrdiff_t)j * incx];\n                sum[1] += aij * x[(ptrdiff_t)(j + 1) * incx];\n                sum[2] += aij * x[(ptrdiff_t)(j + 2) * incx];\n                sum[3] += aij * x[(ptrdiff_t)(j + 3) * incx];\n            }\n        }\n\n        for (int k = 0; k < K_UNROLL; ++k) {\n            const ptrdiff_t index = (ptrdiff_t)(i + k) * incy;\n            y[index] = alpha * sum[k] + (beta == 0.0 ? 0.0 : beta * y[index]);\n        }\n    }\n\n    // Handle remaining elements\n    for (; i < n; ++i) {\n        double sum = 0.0;\n\n        if (alpha != 0.0) {\n            for (j = 0; j < n; ++j) {\n                const int stored = uplo == 'U' ? i <= j : i >= j;\n                const double aij = stored ? a[i * lda + j] : a[j * lda + i];\n                sum += aij * x[(ptrdiff_t)j * incx];\n            }\n        }\n\n        const ptrdiff_t index = (ptrdiff_t)i * incy;\n        y[index] = alpha * sum + (beta == 0.0 ? 0.0 : beta * y[index]);\n    }\n}\n```",
+  "usage": {
+    "prompt_tokens": 2193,
+    "completion_tokens": 538,
+    "total_tokens": 2731
+  },
+  "stop_reason": "stop"
+}

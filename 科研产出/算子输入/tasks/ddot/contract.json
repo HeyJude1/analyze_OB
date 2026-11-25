@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "task": "ddot",
+  "symbol": "op_ddot",
+  "split": "build",
+  "features": {
+    "dtype": "d",
+    "precision": "double",
+    "loop_depth": 1,
+    "structural": "none",
+    "reduction": true,
+    "layout": "strided_vector"
+  },
+  "pattern": "dot_product",
+  "dimensions": [
+    "n"
+  ],
+  "semantics": "Return sum(x[i*incx]*y[i*incy]) for 0 <= i < n. Return 0 when n==0; no input writes.",
+  "parameters": [
+    "n",
+    "x",
+    "incx",
+    "y",
+    "incy"
+  ],
+  "benchmark_cases": [
+    {
+      "id": "small",
+      "n": 1009,
+      "incx": 1,
+      "incy": 1
+    },
+    {
+      "id": "medium",
+      "n": 65537,
+      "incx": 1,
+      "incy": 1
+    },
+    {
+      "id": "large",
+      "n": 2097143,
+      "incx": 1,
+      "incy": 1
+    },
+    {
+      "id": "strided",
+      "n": 65537,
+      "incx": 2,
+      "incy": 3
+    }
+  ],
+  "memory_contract": "Arrays referenced by the same call occupy disjoint storage. Negative increments are valid and the supplied pointer is logical element zero. Increments are nonzero and leading dimensions at least the corresponding row width. Offsets are representable in ptrdiff_t.",
+  "numeric_contract": "FP64 finite inputs in the validation domain; FMA and reassociation in explicit vector reductions permitted within numerical tolerance. Smoke comparator: |observed-reference| <= 2e-12 + 3e-12*|reference|; exact guard/unchanged-input checks where applicable."
+}

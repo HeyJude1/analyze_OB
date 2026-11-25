@@ -1,0 +1,13 @@
+{
+  "status": "compile_failed",
+  "compile_ok": false,
+  "correct": null,
+  "failure_reason": "other_compiler_error",
+  "usage": {
+    "prompt_tokens": 3396,
+    "completion_tokens": 819,
+    "total_tokens": 4215
+  },
+  "diagnostic": "../experiments/thesis/functional_2026-11-19/ollama/dsymm/k1_rvv256/constraint_plan/rep-1/initial/candidate.c: In function ‘op_dsymm’:\n../experiments/thesis/functional_2026-11-19/ollama/dsymm/k1_rvv256/constraint_plan/rep-1/initial/candidate.c:26:43: error: variable-sized object may not be initialized except with an empty initializer\n   26 |             double sum[unroll * unroll] = {0.0};\n      |                                           ^\n../experiments/thesis/functional_2026-11-19/ollama/dsymm/k1_rvv256/constraint_plan/rep-1/initial/candidate.c:22:15: warning: unused variable ‘lmul_max’ [-Wunused-variable]\n   22 |     const int lmul_max = 8;\n      |               ^~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dsymm/k1_rvv256/constraint_plan/rep-1/initial/candidate.c:21:15: warning: unused variable ‘vector_registers’ [-Wunused-variable]\n   21 |     const int vector_registers = 32;\n      |               ^~~~~~~~~~~~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dsymm/k1_rvv256/constraint_plan/rep-1/initial/candidate.c:20:15: warning: unused variable ‘elements_per_register’ [-Wunused-variable]\n   20 |     const int elements_per_register = vlen_bits / sizeof(double);\n      |               ^~~~~~~~~~~~~~~~~~~~~\n",
+  "candidate_sha256": "3f95acf71d143f6879f4ae97ece9bfb2d3e0ec4aca599fde88b816aadbcd7e7f"
+}

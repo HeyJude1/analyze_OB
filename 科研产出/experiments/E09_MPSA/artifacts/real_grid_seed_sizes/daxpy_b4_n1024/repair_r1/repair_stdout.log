@@ -1,0 +1,65 @@
+{
+  "status": "ok",
+  "op": "daxpy",
+  "op_canonical": "axpy",
+  "profile": "k1_rvv256",
+  "mode": "b4",
+  "provider": "dashscope",
+  "model": "qwen-plus-2025-04-28",
+  "out_dir": "C:\\Users\\MSI\\Desktop\\����\\���в���\\experiments\\E09_MPSA\\runs\\real_grid_seed_sizes\\daxpy_b4_n1024\\repair_r1",
+  "result_path": "C:\\Users\\MSI\\Desktop\\����\\���в���\\experiments\\E09_MPSA\\runs\\real_grid_seed_sizes\\daxpy_b4_n1024\\repair_r1\\repair_result.json",
+  "repaired_c_path": "C:\\Users\\MSI\\Desktop\\����\\���в���\\experiments\\E09_MPSA\\runs\\real_grid_seed_sizes\\daxpy_b4_n1024\\repair_r1\\repaired.c",
+  "error_source": "C:\\Users\\MSI\\Desktop\\����\\���в���\\experiments\\E09_MPSA\\runs\\real_grid_seed_sizes\\daxpy_b4_n1024\\harness\\build.stderr.log",
+  "input_error_preview": "/mnt/c/Users/MSI/Desktop/����/���в���/experiments/E09_MPSA/runs/real_grid_seed_sizes/daxpy_b4_n1024/harness/generated.c: In function ��daxpy_k��:\n/mnt/c/Users/MSI/Desktop/����/���в���/experiments/E09_MPSA/runs/re",
+  "fix_summary": {
+    "changed": true,
+    "original_chars": 1690,
+    "repaired_chars": 731,
+    "intrinsics_used": [],
+    "mock": false
+  },
+  "calls": 1,
+  "usage": {
+    "calls": 1,
+    "prompt_tokens": 2661,
+    "completion_tokens": 254,
+    "total_tokens": 2915,
+    "by_stage": {
+      "analysis": {
+        "calls": 0,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "synthesis": {
+        "calls": 0,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "generate": {
+        "calls": 0,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "repair": {
+        "calls": 1,
+        "prompt_tokens": 2661,
+        "completion_tokens": 254,
+        "total_tokens": 2915
+      }
+    }
+  },
+  "elapsed_s": 5.224,
+  "code_meta": {
+    "signature": "int daxpy_k(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, double da, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y, double *dummy, BLASLONG dummy2)",
+    "function_name": "daxpy_k",
+    "wrapped_body": false,
+    "fences_removed": false,
+    "prologue_added": true,
+    "repairs": [],
+    "char_count": 731
+  },
+  "code_preview": "typedef long long BLASLONG;\n\nint daxpy_k(BLASLONG n, BLASLONG dummy0, BLASLONG dummy1, double da, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y, double *dummy, BLASLONG dummy2)\n{\n    if (n <= 0"
+}

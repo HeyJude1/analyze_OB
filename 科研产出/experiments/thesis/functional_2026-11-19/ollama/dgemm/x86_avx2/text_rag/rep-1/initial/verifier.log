@@ -1,0 +1,12 @@
+dgemm x86 candidate: check_failed 32 cases, 1588 failures
+
+dgemm case 9 cell 1: got nan expected 0
+dgemm case 9 cell 2: got nan expected 0
+dgemm case 9 cell 3: got nan expected 0
+dgemm case 9 cell 4: got nan expected 0
+dgemm case 9 cell 5: got nan expected 0
+dgemm case 9 cell 6: got nan expected 0
+dgemm case 9 cell 7: got nan expected 0
+dgemm case 9 cell 8: got nan expected 0
+dgemm case 9 cell 9: got nan expected 0
+dgemm case 9 cell 13: got nan expected 0

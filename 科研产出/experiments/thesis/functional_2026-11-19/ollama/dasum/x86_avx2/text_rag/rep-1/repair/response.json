@@ -1,0 +1,9 @@
+{
+  "raw": "```c\n#include \"opbench.h\"\n\n#include <math.h>\n#include <immintrin.h>\n\n#define BLOCK_SIZE 16\n\ndouble op_dasum(size_t n, const double *x, ptrdiff_t incx) {\n    double sum = 0.0;\n    size_t i;\n\n    // Handle the main loop in blocks\n    for (i = 0; i <= n - BLOCK_SIZE; i += BLOCK_SIZE) {\n        __m256d vsum = _mm256_setzero_pd();\n        for (int j = 0; j < BLOCK_SIZE; ++j) {\n            vsum = _mm256_add_pd(vsum, _mm256_and_pd(_mm256_loadu_pd(&x[(i + j) * incx]), _mm256_set1_pd(0.0)));\n        }\n        double s[4];\n        _mm256_storeu_pd(s, vsum);\n        sum += s[0] + s[1] + s[2] + s[3];\n    }\n\n    // Handle the tail\n    for (; i < n; ++i) {\n        sum += fabs(x[(ptrdiff_t)i * incx]);\n    }\n\n    return sum;\n}\n```",
+  "usage": {
+    "prompt_tokens": 1513,
+    "completion_tokens": 269,
+    "total_tokens": 1782
+  },
+  "stop_reason": "stop"
+}

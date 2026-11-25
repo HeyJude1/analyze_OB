@@ -1,0 +1,44 @@
+{
+  "analogy_source": "dot",
+  "card_ids": [],
+  "contract_sha256": "5e998ce525341a58ef53e035e89170cf28355a203166b02971b4de12348a5e90",
+  "knowledge_bytes": 0,
+  "method": "no_knowledge",
+  "operator": "dasum",
+  "profile": "k1_rvv256",
+  "prompt": "dasum/k1_rvv256/no_knowledge.json",
+  "prompt_sha256": "2df1e7f5cc670eecabb5837df83910877e87eb7be3cf2a959f19a8fa94f44c2e",
+  "repetition": 1,
+  "source_sha256": "cc032d0101696873b29211d52155bf01b71bffac2dfd71b1a327b40780dff6cc",
+  "split": "holdout",
+  "status": "prepared",
+  "engine": "ollama",
+  "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+  "repair_attempted": true,
+  "initial": {
+    "status": "compile_failed",
+    "compile_ok": false,
+    "correct": null,
+    "failure_reason": "missing_header",
+    "usage": {
+      "prompt_tokens": 1152,
+      "completion_tokens": 291,
+      "total_tokens": 1443
+    },
+    "diagnostic": "../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/no_knowledge/rep-1/initial/candidate.c:4:10: fatal error: immintrin.h: No such file or directory\n    4 | #include <immintrin.h>\n      |          ^~~~~~~~~~~~~\ncompilation terminated.\n",
+    "candidate_sha256": "1139ae2338d79ee24a332e3e2ab07071b8dade63560093cc9e740c6627dc21a0"
+  },
+  "final": {
+    "status": "compile_failed",
+    "compile_ok": false,
+    "correct": null,
+    "failure_reason": "other_compiler_error",
+    "usage": {
+      "prompt_tokens": 1617,
+      "completion_tokens": 221,
+      "total_tokens": 1838
+    },
+    "diagnostic": "../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/no_knowledge/rep-1/repair/candidate.c: In function ‘op_dasum’:\n../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/no_knowledge/rep-1/repair/candidate.c:15:9: error: implicit declaration of function ‘memcpy’ [-Wimplicit-function-declaration]\n   15 |         memcpy(vec_x1, &x[i], sizeof(double) * 4);\n      |         ^~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/no_knowledge/rep-1/repair/candidate.c:4:1: note: include ‘<string.h>’ or provide a declaration of ‘memcpy’\n    3 | #include <math.h>\n  +++ |+#include <string.h>\n    4 | \n../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/no_knowledge/rep-1/repair/candidate.c:15:9: warning: incompatible implicit declaration of built-in function ‘memcpy’ [-Wbuiltin-declaration-mismatch]\n   15 |         memcpy(vec_x1, &x[i], sizeof(double) * 4);\n      |         ^~~~~~\n../experiments/thesis/functional_2026-11-19/ollama/dasum/k1_rvv256/no_knowledge/rep-1/repair/candidate.c:15:9: note: include ‘<string.h>’ or provide a declaration of ‘memcpy’\n",
+    "candidate_sha256": "68df1b0d17aa1170bead4213e5c4b3fd382fb75bf261f175c3519d7c107b68b8"
+  }
+}

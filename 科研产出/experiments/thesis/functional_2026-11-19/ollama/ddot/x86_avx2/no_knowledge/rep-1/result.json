@@ -1,0 +1,44 @@
+{
+  "analogy_source": null,
+  "card_ids": [],
+  "contract_sha256": "b37b2a09a49f0212c735ac0ca1b7751bbab78ee24991a4480202abbf020403f3",
+  "knowledge_bytes": 0,
+  "method": "no_knowledge",
+  "operator": "ddot",
+  "profile": "x86_avx2",
+  "prompt": "ddot/x86_avx2/no_knowledge.json",
+  "prompt_sha256": "f8ababc2a1d0261b32b9f93dcb36736b1f670c79f6405995431dbd246e93ebbb",
+  "repetition": 1,
+  "source_sha256": "2ccf407f991c84249d1daa56d61be416adffdca8f0c846a8d9d60fba58033129",
+  "split": "build",
+  "status": "prepared",
+  "engine": "ollama",
+  "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+  "repair_attempted": false,
+  "initial": {
+    "status": "passed",
+    "compile_ok": true,
+    "correct": true,
+    "failure_reason": null,
+    "usage": {
+      "prompt_tokens": 1124,
+      "completion_tokens": 99,
+      "total_tokens": 1223
+    },
+    "diagnostic": "",
+    "candidate_sha256": "574593bbbe4691051126216c6f33c9bcf560330b5ddd0a30fe4970c4e569162f"
+  },
+  "final": {
+    "status": "passed",
+    "compile_ok": true,
+    "correct": true,
+    "failure_reason": null,
+    "usage": {
+      "prompt_tokens": 1124,
+      "completion_tokens": 99,
+      "total_tokens": 1223
+    },
+    "diagnostic": "",
+    "candidate_sha256": "574593bbbe4691051126216c6f33c9bcf560330b5ddd0a30fe4970c4e569162f"
+  }
+}

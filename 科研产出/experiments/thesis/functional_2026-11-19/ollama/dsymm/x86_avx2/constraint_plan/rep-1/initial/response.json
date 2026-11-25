@@ -1,0 +1,9 @@
+{
+  "raw": "```c\n#include \"opbench.h\"\n\nstatic double symmetric_at(const double *a, size_t lda, size_t i, size_t j, char uplo) {\n    const int stored = uplo == 'U' ? i <= j : i >= j;\n    return stored ? a[i * lda + j] : a[j * lda + i];\n}\n\nvoid op_dsymm(char side, char uplo, size_t m, size_t n, double alpha,\n              const double *a, size_t lda, const double *b, size_t ldb,\n              double beta, double *c, size_t ldc) {\n    if (m == 0 || n == 0 || (alpha == 0.0 && beta == 1.0)) return;\n\n    // Unroll factor for loop unrolling\n    const int K_UNROLL = 4;\n\n    for (size_t i = 0; i < m; ++i) {\n        for (size_t j = 0; j < n; j += K_UNROLL) {\n            double sum[K_UNROLL] = {0.0};\n            if (alpha != 0.0 && side == 'L') {\n                for (size_t p = 0; p < m; ++p)\n                    for (int k = 0; k < K_UNROLL; ++k)\n                        sum[k] += symmetric_at(a, lda, i, p, uplo) * b[p * ldb + j + k];\n            } else if (alpha != 0.0) {\n                for (size_t p = 0; p < n; ++p)\n                    for (int k = 0; k < K_UNROLL; ++k)\n                        sum[k] += b[i * ldb + p] * symmetric_at(a, lda, p, j + k, uplo);\n            }\n            for (int k = 0; k < K_UNROLL; ++k) {\n                const size_t index = i * ldc + j + k;\n                c[index] = alpha * sum[k] + (beta == 0.0 ? 0.0 : beta * c[index]);\n            }\n        }\n    }\n}\n```",
+  "usage": {
+    "prompt_tokens": 3258,
+    "completion_tokens": 460,
+    "total_tokens": 3718
+  },
+  "stop_reason": "stop"
+}

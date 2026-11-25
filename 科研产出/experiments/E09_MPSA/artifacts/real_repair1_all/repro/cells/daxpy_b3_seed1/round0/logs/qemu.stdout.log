@@ -1,0 +1,1 @@
+daxpy n=16384 maxdiff=0.000e+00 reldiff=0.000e+00 best=0.220215 ms (1.79 GB/s)

@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>kg_agent · 知识图谱 WebGL 性能版（Sigma.js）</title>
+<!--
+  ============================================================================
+  graph_fast.html — 知识图谱 WebGL 性能版
+  ----------------------------------------------------------------------------
+  背景：全量节点/边时 vis-network (Canvas) + 全量标签 + 物理引擎明显卡顿。
+  方案：Sigma.js (WebGL) + Graphology；预计算布局（关物理）；默认只渲染
+        "算子 2 跳子图"（~60 节点），按钮「加载全图」后全量节点/边仍可流畅拖拽缩放；
+        标签只在子图模式/hover/选中时渲染；nodeReducer/edgeReducer 走快路径，避免每帧分配。
+  数据契约（同 SPEC §2 / graph.html）：
+        window.KG_DATA = {nodes, edges, stats}；window.KG_TRACES = {trace_id: {...}}
+        缺失时自动降级 sample/sample_graph_data.js、sample/sample_traces.js
+  只依赖本地 fast_assets/*.js，不联网。
+  ============================================================================
+-->
+<style>
+:root{
+  --bg:#eef2f7; --panel:#fff; --ink:#0f172a; --ink2:#334155; --muted:#64748b;
+  --line:#e2e8f0; --line2:#cbd5e1; --brand:#1d4ed8; --brand-soft:#dbeafe;
+  --ok:#2b8a3e; --warn:#e8590c; --drop:#c92a2a; --cand:#f59f00;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei","PingFang SC","Noto Sans SC",sans-serif;
+  --mono:"Cascadia Code","JetBrains Mono",Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);font-size:13px;display:flex;flex-direction:column;overflow:hidden}
+button{font-family:inherit;font-size:12px;cursor:pointer;border-radius:8px;border:1px solid var(--line2);background:#fff;color:var(--ink2);padding:5px 10px;transition:all .15s}
+button:hover{background:#f1f5f9}
+button.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+button.primary:hover{background:#1e40af}
+button:disabled{opacity:.45;cursor:not-allowed}
+input,select{font-family:inherit;font-size:12px;border:1px solid var(--line2);border-radius:8px;padding:6px 8px;background:#fff;color:var(--ink);outline:none;width:100%}
+input:focus,select:focus{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:6px}
+
+#topbar{flex:0 0 54px;display:flex;align-items:center;gap:12px;padding:0 16px;color:#e2e8f0;
+  background:linear-gradient(100deg,#0f172a,#1e293b 55%,#0f766e 170%);box-shadow:0 2px 8px rgba(15,23,42,.25);z-index:5}
+#topbar .brand{display:flex;align-items:baseline;gap:10px;white-space:nowrap}
+#topbar h1{font-size:15px;margin:0;font-weight:600}
+#topbar .sub{font-size:11px;color:#93a4bd}
+#topbar .spacer{flex:1}
+.meta-chip{font-size:11px;padding:3px 9px;border-radius:999px;background:rgba(148,163,184,.18);border:1px solid rgba(148,163,184,.35);color:#cbd5e1;white-space:nowrap}
+.meta-chip.ok{background:rgba(43,138,62,.22);border-color:rgba(74,222,128,.45);color:#bbf7d0}
+.meta-chip.warn2{background:rgba(245,158,11,.22);border-color:rgba(245,158,11,.55);color:#fde68a}
+#topbar button{background:rgba(148,163,184,.14);border-color:rgba(148,163,184,.35);color:#e2e8f0}
+#topbar button:hover{background:rgba(148,163,184,.28)}
+#op-select{width:auto;min-width:118px;background:rgba(148,163,184,.14);border-color:rgba(148,163,184,.35);color:#e2e8f0}
+#op-select option{color:#0f172a;background:#fff}
+
+main{flex:1;display:flex;min-height:0;gap:10px;padding:10px}
+#sidebar{flex:0 0 250px;display:flex;flex-direction:column;gap:9px;overflow-y:auto}
+#stage{flex:1;min-width:0;display:flex;flex-direction:column;background:var(--panel);border-radius:12px;box-shadow:0 6px 20px rgba(15,23,42,.06);overflow:hidden;position:relative}
+#sigma-container{flex:1;min-height:0;position:relative;background:radial-gradient(circle at 30% 20%,#fbfdff 0%,#f8fafc 55%,#eef2f7 100%)}
+#sigma-container canvas{display:block}
+#statusbar{flex:0 0 28px;display:flex;align-items:center;gap:8px;padding:0 12px;font-size:11px;color:var(--muted);background:#f8fafc;border-top:1px solid var(--line);white-space:nowrap;overflow:hidden}
+#statusbar .dot{width:7px;height:7px;border-radius:50%;background:#22c55e;flex:0 0 auto}
+#panel{flex:0 0 386px;display:flex;flex-direction:column;background:var(--panel);border-radius:12px;box-shadow:0 6px 20px rgba(15,23,42,.06);overflow:hidden}
+.panel-tabs{display:flex;flex:0 0 auto;border-bottom:1px solid var(--line);background:#f8fafc}
+.panel-tabs button{flex:1;border:0;border-radius:0;background:transparent;padding:10px 4px;font-size:12px;color:var(--muted);border-bottom:2px solid transparent;font-weight:500}
+.panel-tabs button:hover{background:#eef2f7;color:var(--ink2)}
+.panel-tabs button.active{color:var(--brand);border-bottom-color:var(--brand);background:#fff;font-weight:600}
+.panel-body{flex:1;overflow-y:auto;padding:12px;display:none}
+.panel-body.active{display:block}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.card h3{margin:0 0 8px;font-size:12px;color:var(--ink2);font-weight:600;display:flex;align-items:center;gap:6px}
+.card h3 .count{margin-left:auto;font-size:10px;color:var(--muted);font-weight:400}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.stat-grid div{background:#f8fafc;border:1px solid var(--line);border-radius:8px;padding:6px 8px}
+.stat-grid b{display:block;font-size:16px;line-height:1.2}
+.stat-grid span{font-size:10px;color:var(--muted)}
+.chip-list{display:flex;flex-direction:column;gap:2px}
+.chip{display:flex;align-items:center;gap:7px;padding:4px 6px;border-radius:7px;font-size:11.5px;color:var(--ink2);cursor:pointer;user-select:none}
+.chip:hover{background:#f1f5f9}
+.chip .dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
+.chip .n{margin-left:auto;font-size:10px;color:var(--muted)}
+.chip.off{opacity:.38}
+.chip.off .dot{background:#cbd5e1!important}
+.hint{font-size:11px;color:var(--muted);line-height:1.6}
+.legend-row{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--ink2);padding:2px 0}
+.legend-node{width:11px;height:11px;border-radius:50%;flex:0 0 auto;border:1px solid rgba(15,23,42,.2)}
+#search-results{display:flex;flex-direction:column;gap:2px;margin-top:6px;max-height:180px;overflow-y:auto}
+.sr-item{display:flex;align-items:center;gap:7px;padding:5px 6px;border-radius:7px;cursor:pointer;font-size:11.5px}
+.sr-item:hover{background:#eff6ff}
+.sr-item .nm{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sr-item .tp{font-size:10px;color:var(--muted)}
+.empty{color:var(--muted);font-size:11.5px;padding:10px 4px;text-align:center;line-height:1.7}
+
+.node-head{display:flex;align-items:flex-start;gap:9px;margin-bottom:10px}
+.node-head .type-dot{width:12px;height:12px;border-radius:50%;margin-top:4px;flex:0 0 auto}
+.node-head h2{font-size:15px;margin:0 0 4px;line-height:1.35;word-break:break-word}
+.node-head .id{font-family:var(--mono);font-size:10px;color:var(--muted);word-break:break-all}
+.badge{display:inline-block;font-size:10px;padding:1.5px 7px;border-radius:999px;background:#f1f5f9;color:var(--ink2);border:1px solid var(--line);margin-right:4px;white-space:nowrap}
+.badge.ok{background:#dcfce7;border-color:#86efac;color:#166534}
+.badge.warn{background:#ffedd5;border-color:#fdba74;color:#9a3412}
+.badge.blue{background:#dbeafe;border-color:#93c5fd;color:#1e40af}
+.actions{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0 12px}
+.section-title{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.4px;margin:14px 0 6px;display:flex;align-items:center;gap:6px}
+.section-title:after{content:"";flex:1;height:1px;background:var(--line)}
+.kv{display:grid;grid-template-columns:88px 1fr;gap:3px 8px;font-size:11.5px;line-height:1.55}
+.kv dt{color:var(--muted);word-break:break-all}
+.kv dd{margin:0;color:var(--ink2);word-break:break-word}
+pre.json{background:#f8fafc;border:1px solid var(--line);border-radius:8px;padding:8px;font-size:10.5px;font-family:var(--mono);white-space:pre-wrap;word-break:break-word;max-height:220px;overflow:auto;margin:4px 0}
+.rel-list{display:flex;flex-direction:column;gap:4px}
+.rel-item{display:flex;align-items:center;gap:6px;font-size:11.5px;padding:5px 7px;border:1px solid var(--line);border-radius:8px;background:#fbfdff;cursor:pointer}
+.rel-item:hover{border-color:#93c5fd;background:#eff6ff}
+.rel-item .rt{font-size:10px;color:#1d4ed8;background:#dbeafe;border-radius:999px;padding:1px 6px;white-space:nowrap}
+.rel-item .other{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink2)}
+.rel-group{margin-bottom:8px}
+.rel-group-title{font-size:10.5px;color:var(--muted);margin:6px 0 4px;display:flex;align-items:center;gap:6px}
+.rel-group-title:after{content:"";flex:1;height:1px;background:var(--line)}
+.rel-group-title .n{color:#94a3b8;font-size:9.5px}
+.focus-hint{font-size:11px;background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;border-radius:8px;padding:6px 9px;margin-bottom:8px;line-height:1.5}
+.ev-card{border:1px solid var(--line);border-left:3px solid var(--ok);border-radius:8px;padding:7px 9px;margin-bottom:6px;background:#fbfefc}
+.ev-card .top{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600}
+.ev-card .val{margin-left:auto;font-family:var(--mono);color:var(--ok);font-size:12px}
+.ev-card .meta{font-size:10.5px;color:var(--muted);margin-top:3px;line-height:1.5}
+
+.row{display:flex;align-items:center;gap:6px;margin-bottom:7px}
+.row>input{flex:1}
+.path-node{display:inline-flex;align-items:center;gap:5px;background:#ecfdf5;border:1px solid #6ee7b7;color:#065f46;border-radius:999px;padding:2px 9px 2px 5px;font-size:11px;margin:3px 4px 3px 0;cursor:pointer}
+.path-node .d{width:8px;height:8px;border-radius:50%}
+.rp-row{display:grid;grid-template-columns:52px 1fr;align-items:center;gap:6px;margin-bottom:6px}
+.rp-row label{font-size:10.5px;color:var(--muted)}
+.rp-controls{display:flex;align-items:center;gap:5px;margin:8px 0;flex-wrap:wrap}
+.rp-controls button{padding:5px 8px}
+#rp-progress{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--muted)}
+.rp-rail{display:flex;gap:3px;margin-bottom:8px}
+.rp-rail .pill{flex:1;text-align:center;font-size:9.5px;padding:4px 1px;border-radius:6px;border:1px solid var(--line);background:#f8fafc;color:var(--muted);cursor:pointer;line-height:1.3;overflow:hidden}
+.rp-rail .pill.done{background:#ecfdf5;border-color:#a7f3d0;color:#047857}
+.rp-rail .pill.cur{background:var(--brand);border-color:var(--brand);color:#fff;font-weight:600}
+.rp-rail .pill .num{display:block;font-family:var(--mono);font-size:9px;opacity:.75}
+.rp-step-title{font-size:13px;font-weight:700;margin:4px 0 2px}
+.rp-step-desc{font-size:11.5px;color:var(--muted);margin-bottom:8px;line-height:1.5}
+.rp-reason{font-size:11.5px;background:#fffbeb;border:1px solid #fde68a;color:#92400e;border-radius:8px;padding:7px 9px;margin-bottom:8px;line-height:1.55}
+.rp-list{display:flex;flex-direction:column;gap:4px;margin-bottom:8px}
+.rp-item{display:flex;align-items:flex-start;gap:7px;padding:5px 7px;border-radius:8px;border:1px solid var(--line);background:#fff;font-size:11.5px;line-height:1.45;cursor:pointer}
+.rp-item:hover{background:#f8fafc}
+.rp-item .st{font-size:9px;padding:1px 5px;border-radius:999px;flex:0 0 auto;margin-top:1px}
+.rp-item .st.c{background:#fff7ed;color:#c2410c;border:1px solid #fed7aa}
+.rp-item .st.s{background:#dcfce7;color:#166534;border:1px solid #86efac}
+.rp-item .st.d{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
+.rp-item .txt{flex:1}
+.rp-item .why{display:block;color:var(--muted);font-size:10.5px;margin-top:2px}
+.rp-item.dropped{background:#fff5f5;border-color:#fecaca}
+.rp-scores{width:100%;border-collapse:collapse;font-size:11px;margin:4px 0 8px}
+.rp-scores th,.rp-scores td{border-bottom:1px solid var(--line);padding:4px 6px;text-align:left}
+.rp-scores th{color:var(--muted);font-weight:500;font-size:10px}
+.rp-scores td.n{font-family:var(--mono);text-align:right}
+.rp-result{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:8px;font-size:11px;line-height:1.6;color:#14532d}
+.rp-result .mono{font-family:var(--mono);font-size:10.5px;word-break:break-all}
+details.rp-input{margin:6px 0 2px;font-size:11px}
+details.rp-input summary{cursor:pointer;color:var(--muted);font-size:10.5px}
+details.rp-input pre{background:#f8fafc;border:1px solid var(--line);border-radius:6px;padding:6px;font-size:10px;font-family:var(--mono);white-space:pre-wrap;max-height:120px;overflow:auto;margin-top:4px}
+#toast{position:fixed;left:50%;bottom:44px;transform:translateX(-50%) translateY(20px);background:#0f172a;color:#e2e8f0;font-size:12px;padding:8px 14px;border-radius:999px;opacity:0;pointer-events:none;transition:all .25s;z-index:99;max-width:80vw}
+#toast.show{opacity:.96;transform:translateX(-50%) translateY(0)}
+#fatal{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:#f8fafc;z-index:9;padding:24px}
+#fatal.active{display:flex}
+#fatal .box{max-width:520px;background:#fff;border:1px solid #fecaca;border-left:5px solid var(--drop);border-radius:10px;padding:16px 18px;box-shadow:0 6px 20px rgba(15,23,42,.08)}
+#fatal h3{margin:0 0 8px;color:#991b1b;font-size:14px}
+#fatal p{margin:4px 0;font-size:12px;color:var(--ink2);line-height:1.65}
+@media (max-width:1400px){#sidebar{flex-basis:230px}#panel{flex-basis:350px}}
+@media (max-width:1180px){#sidebar{display:none}#panel{flex-basis:330px}}
+</style>
+</head>
+<body>
+<header id="topbar">
+  <div class="brand">
+    <h1>知识图谱 · WebGL 性能版</h1>
+    <span class="sub">Sigma.js + Graphology · 默认算子 2 跳子图 · <span id="sub-counts">全图 …</span></span>
+  </div>
+  <div class="spacer"></div>
+  <span class="meta-chip" id="data-chip">加载中…</span>
+  <span class="meta-chip ok" id="mode-chip">子图模式</span>
+  <span class="meta-chip" id="perf-chip">—</span>
+  <select id="op-select" title="选择算子，查看它的 2 跳子图"></select>
+  <button id="btn-full" class="primary">加载全图</button>
+  <button id="btn-reset" title="清除聚焦/搜索/过滤/回放，回到初始视图">重置</button>
+  <button id="btn-fit" title="仅调整缩放以适应画布">适应画布</button>
+</header>
+
+<main>
+  <aside id="sidebar">
+    <div class="card">
+      <h3>渲染统计</h3>
+      <div class="stat-grid">
+        <div><b id="st-visible">—</b><span>可见节点</span></div>
+        <div><b id="st-visible-e">—</b><span>可见边</span></div>
+        <div><b id="st-total">—</b><span>全图节点</span></div>
+        <div><b id="st-fps">—</b><span>帧率估算</span></div>
+      </div>
+      <div class="hint" id="perf-note" style="margin-top:6px">WebGL 渲染，拖拽/缩放由 GPU 合成。</div>
+    </div>
+
+    <div class="card">
+      <h3>实体类型过滤 <span class="count" id="type-count">全部</span></h3>
+      <div class="chip-list" id="type-filters"></div>
+      <div class="row" style="margin:8px 0 0">
+        <button id="btn-all-types" style="flex:1" class="ghost">清除过滤</button>
+        <button id="btn-none-types" style="flex:1" class="ghost">全部隐藏</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>搜索节点</h3>
+      <input id="search-input" placeholder="名称 / 类型 / ID，如 gemm" autocomplete="off">
+      <div id="search-results"></div>
+    </div>
+
+    <div class="card">
+      <h3>图例</h3>
+      <div id="legend"></div>
+    </div>
+  </aside>
+
+  <section id="stage">
+    <div id="sigma-container"></div>
+    <div id="fatal"><div class="box">
+      <h3>WebGL 渲染初始化失败</h3>
+      <p id="fatal-msg">Sigma.js 无法在当前浏览器创建 WebGL 上下文。</p>
+      <p>请使用 Chrome / Edge 打开；若在虚拟机或远程桌面中，请启用硬件加速或改用 <code>graph.html</code>（Canvas 版）。</p>
+    </div></div>
+    <div id="statusbar"><span class="dot"></span><span id="status-text">初始化…</span></div>
+  </section>
+
+  <aside id="panel">
+    <div class="panel-tabs" id="panel-tabs">
+      <button data-tab="detail" class="active">节点详情</button>
+      <button data-tab="path">路径查找</button>
+      <button data-tab="replay">检索回放</button>
+    </div>
+    <div class="panel-body active" id="tab-detail"></div>
+    <div class="panel-body" id="tab-path"></div>
+    <div class="panel-body" id="tab-replay"></div>
+  </aside>
+</main>
+<div id="toast"></div>
+
+<!-- 本地依赖：WebGL 图库（不联网） -->
+<script src="fast_assets/graphology.umd.min.js"></script>
+<script src="fast_assets/sigma.min.js"></script>
+<!-- 数据（pipeline export-viz 生成；缺失自动降级 sample） -->
+<script src="graph_data.js"></script>
+<script src="traces.js"></script>
+
+<script>
+/* ============================================================================
+ * 1. 常量 / 工具
+ * ==========================================================================*/
+(function(){
+'use strict';
+var APP_T0 = performance.now();
+var CH_FONT = '"Microsoft YaHei","PingFang SC","Noto Sans SC",sans-serif';
+
+var TYPE_META = {
+  Operator:{label:'算子',color:'#4C6EF5',order:1},
+  ComputationPattern:{label:'计算流程',color:'#F59F00',order:2},
+  CodeCharacteristic:{label:'代码特征',color:'#74B816',order:3},
+  OptimizationStrategy:{label:'优化策略',color:'#E8590C',order:4},
+  ImplementationTemplate:{label:'实施模板',color:'#7048E8',order:5},
+  TunableParameter:{label:'可调参数',color:'#1098AD',order:5},
+  ISACapability:{label:'指令集能力',color:'#F06595',order:5},
+  Microarchitecture:{label:'微架构',color:'#AE3EC9',order:6},
+  HardwareProfile:{label:'硬件实例',color:'#862E9C',order:6},
+  PerformanceEvidence:{label:'性能证据',color:'#2B8A3E',order:7},
+  SourceArtifact:{label:'来源',color:'#5C677D',order:8},
+  FailureCase:{label:'失败案例',color:'#C92A2A',order:7}
+};
+var TYPE_UNKNOWN={label:'其他',color:'#94a3b8',order:9};
+var REL_META = {
+  OPERATOR_HAS_PATTERN:'包含流程', PATTERN_HAS_CHARACTERISTIC:'具有特征', PATTERN_OPTIMIZED_BY:'可被优化',
+  STRATEGY_HAS_PARAMETER:'有参数', STRATEGY_HAS_TEMPLATE:'有模板', STRATEGY_APPLIES_WHEN:'适用条件',
+  STRATEGY_REQUIRES_ISA:'依赖指令集', STRATEGY_TARGETS_UARCH:'面向微架构', STRATEGY_EVIDENCED_BY:'有证据',
+  EVIDENCE_ON:'测量于', EVIDENCE_SOURCE:'证据来源', STRATEGY_COMPOSES_WITH:'可组合',
+  STRATEGY_CONFLICTS_WITH:'冲突', STRATEGY_GENERALIZES:'泛化'
+};
+function typeMeta(t){ return TYPE_META[t]||TYPE_UNKNOWN; }
+function relLabel(t){ return REL_META[t]||t; }
+function $(s,r){ return (r||document).querySelector(s); }
+function $$(s,r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); }
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+function trunc(s,n){ s=String(s==null?'':s); return s.length>n? s.slice(0,n-1)+'…' : s; }
+function fmtNum(v){ if(v==null||v===''||isNaN(v)) return '—'; return (typeof v==='number')? String(Math.round(v*1000)/1000) : String(v); }
+function uniq(a){ var o={},r=[]; a.forEach(function(x){ if(!o[x]){o[x]=1;r.push(x);} }); return r; }
+function toast(m){ var t=$('#toast'); t.textContent=m; t.classList.add('show'); clearTimeout(toast._t); toast._t=setTimeout(function(){t.classList.remove('show');},2300); }
+function setStatus(m,opt){ $('#status-text').innerHTML=m; var d=$('#statusbar .dot'); if(d) d.style.background=(opt&&opt.color)||'#22c55e'; }
+function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; var t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+
+/* ============================================================================
+ * 2. 全局状态
+ * ==========================================================================*/
+var state = {
+  nodes:[], edges:[], nodeById:new Map(), edgeById:new Map(),
+  adj:new Map(), degree:new Map(),
+  traces:{}, traceIds:[],
+  fullGraph:null, viewGraph:null, renderer:null,
+  positions:new Map(),
+  metrics:{},
+  computedSubgraph:new Set(),
+  view:{ opId:null, fullMode:false, hidden:new Set(), typeHidden:new Set(),
+         selected:null, hovered:null, lens:null, labelsAll:true, autoLabels:true,
+         focus:null },
+  path:{from:null,to:null,nodes:[],edges:[]},
+  replay:{traceId:null,step:0,active:false,playing:false,timer:null},
+  dataSource:'unknown', booted:false, _selectedOnce:false
+};
+var QS = new URLSearchParams(location.search);   // 深链接 / 调试开关（nofit=1 关闭相机自动适配）
+
+/* ============================================================================
+ * 3. 数据归一化 / 索引 / 轻量布局（与 graph.html 同一算法，保证两版布局一致）
+ * ==========================================================================*/
+function normalize(raw){
+  var nodes=(raw.nodes||[]).filter(function(n){return n&&n.id;}).map(function(n){
+    return {id:String(n.id),type:n.type||'Unknown',name:n.name||String(n.id),properties:n.properties||{},provenance:n.provenance||{}};
+  });
+  var by={}; nodes.forEach(function(n){by[n.id]=1;});
+  var edges=(raw.edges||[]).filter(function(e){return e&&e.head&&e.tail&&by[String(e.head)]&&by[String(e.tail)];}).map(function(e,i){
+    return {id:String(e.id||('e:'+i)),type:e.type||'RELATED',head:String(e.head),tail:String(e.tail),properties:e.properties||{},provenance:e.provenance||{},confidence:(typeof e.confidence==='number'?e.confidence:null)};
+  });
+  return {nodes:nodes,edges:edges};
+}
+function buildIndexes(){
+  var s=state;
+  s.nodeById.clear(); s.edgeById.clear(); s.adj.clear(); s.degree.clear();
+  s.nodes.forEach(function(n){ s.nodeById.set(n.id,n); s.adj.set(n.id,new Set()); s.degree.set(n.id,0); });
+  s.edges.forEach(function(e){
+    s.edgeById.set(e.id,e);
+    if(!s.adj.get(e.head).has(e.tail)) s.adj.get(e.head).add(e.tail);
+    if(!s.adj.get(e.tail).has(e.head)) s.adj.get(e.tail).add(e.head);
+    s.degree.set(e.head,s.degree.get(e.head)+1);
+    s.degree.set(e.tail,s.degree.get(e.tail)+1);
+  });
+}
+function computeFastLayout(nodes,edges){
+  var n=nodes.length,i,j,idx=new Map();
+  nodes.forEach(function(nd,k){ idx.set(nd.id,k); });
+  var adj=new Array(n); for(i=0;i<n;i++) adj[i]=[];
+  edges.forEach(function(e){
+    var a=idx.get(e.head),b=idx.get(e.tail);
+    if(a===undefined||b===undefined||a===b) return;
+    adj[a].push(b);adj[b].push(a);
+  });
+  var rnd=mulberry32(42);
+  var px=new Float64Array(n), py=new Float64Array(n);
+  for(i=0;i<n;i++){ var ang=i*2.399963229728653, rad=16*Math.sqrt(i+1); px[i]=rad*Math.cos(ang); py[i]=rad*Math.sin(ang); }
+  var iters=150,samples=6,restLen=70,repK=4200;
+  for(var it=0;it<iters;it++){
+    var t=1-it/iters, dxs=new Float64Array(n), dys=new Float64Array(n);
+    for(i=0;i<n;i++){
+      for(var s=0;s<samples;s++){
+        j=(rnd()*n)|0; if(j===i) continue;
+        var ddx=px[i]-px[j], ddy=py[i]-py[j], d2=ddx*ddx+ddy*ddy+0.01, d=Math.sqrt(d2), f=repK/d2;
+        dxs[i]+=ddx/d*f; dys[i]+=ddy/d*f;
+      }
+    }
+    for(i=0;i<n;i++){
+      var nb=adj[i];
+      for(var q=0;q<nb.length;q++){
+        j=nb[q]; if(j<i) continue;
+        var ex=px[j]-px[i], ey=py[j]-py[i], ed=Math.sqrt(ex*ex+ey*ey)+0.01, af=(ed-restLen)*0.06;
+        var ux=ex/ed, uy=ey/ed;
+        dxs[i]+=ux*af; dys[i]+=uy*af; dxs[j]-=ux*af; dys[j]-=uy*af;
+      }
+    }
+    var maxStep=34*t+2;
+    for(i=0;i<n;i++){
+      var len=Math.sqrt(dxs[i]*dxs[i]+dys[i]*dys[i])+1e-9, step=Math.min(len,maxStep);
+      px[i]+=dxs[i]/len*step; py[i]+=dys[i]/len*step;
+    }
+    if(it%12===11){
+      var mx=0,my=0; for(i=0;i<n;i++){mx+=px[i];my+=py[i];} mx/=n;my/=n;
+      for(i=0;i<n;i++){ px[i]=(px[i]-mx)*0.86; py[i]=(py[i]-my)*0.86; }
+    }
+  }
+  var minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity;
+  for(i=0;i<n;i++){ if(px[i]<minX)minX=px[i]; if(px[i]>maxX)maxX=px[i]; if(py[i]<minY)minY=py[i]; if(py[i]>maxY)maxY=py[i]; }
+  var sx=(maxX-minX)||1, sy=(maxY-minY)||1, out=new Map();
+  nodes.forEach(function(nd,k){ out.set(nd.id,{x:Math.round((px[k]-minX)/sx*1400-700), y:Math.round((py[k]-minY)/sy*900-450)}); });
+  return out;
+}
+/* 2 跳子图 */
+function twoHop(startId){
+  var seen=new Set([startId]), frontier=[startId];
+  for(var d=0;d<2;d++){
+    var next=[];
+    frontier.forEach(function(id){
+      (state.adj.get(id)||new Set()).forEach(function(x){ if(!seen.has(x)){ seen.add(x); next.push(x); } });
+    });
+    frontier=next;
+  }
+  return seen;
+}
+function hexToRgba(hex,alpha){
+  var h=String(hex||'#94a3b8').replace('#','');
+  if(h.length===3) h=h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+  var num=parseInt(h,16);
+  return 'rgba('+((num>>16)&255)+','+((num>>8)&255)+','+(num&255)+','+alpha+')';
+}
+
+/* ============================================================================
+ * 4. Graphology 图构建（节点带坐标/颜色/尺寸，边带类型）
+ * ==========================================================================*/
+function buildFullGraph(){
+  var graph=new window.graphology.MultiDirectedGraph();
+  state.nodes.forEach(function(n){
+    var pos=state.positions.get(n.id)||{x:0,y:0};
+    var meta=typeMeta(n.type), deg=state.degree.get(n.id)||0;
+    graph.addNode(n.id,{
+      x:pos.x, y:pos.y,
+      name:n.name, nodeType:n.type,
+      color:meta.color, dimColor:hexToRgba(meta.color,0.12),
+      size: 3 + Math.min(11, deg*0.32),
+      label:''
+    });
+  });
+  state.edges.forEach(function(e){
+    if(!graph.hasNode(e.head)||!graph.hasNode(e.tail)) return;
+    var isConflict=e.type==='STRATEGY_CONFLICTS_WITH', isCompose=e.type==='STRATEGY_COMPOSES_WITH';
+    graph.addEdge(e.head,e.tail,{
+      edgeId:e.id, edgeType:e.type,
+      color: isConflict?hexToRgba('#C92A2A',0.55):(isCompose?hexToRgba('#2B8A3E',0.55):hexToRgba('#64748B',0.38)),
+      baseColor: isConflict?'#C92A2A':(isCompose?'#2B8A3E':'#94A3B8'),
+      size: isConflict?1.6:(isCompose?1.4:1.0),
+      label:''
+    });
+  });
+  state.fullGraph=graph;
+  return graph;
+}
+
+/* ============================================================================
+ * 5. Sigma 渲染（nodeReducer / edgeReducer 快路径）
+ * ==========================================================================*/
+function isNodeHidden(id){
+  var v=state.view;
+  if(v.hidden.has(id)) return true;
+  var n=state.nodeById.get(id);
+  return !n || v.typeHidden.has(n.type);
+}
+function visibleSets(){
+  var v=state.view, vn=0, ve=0;
+  state.nodes.forEach(function(n){ if(!isNodeHidden(n.id)) vn++; });
+  state.edges.forEach(function(e){ if(!isNodeHidden(e.head)&&!isNodeHidden(e.tail)) ve++; });
+  return {nodes:vn,edges:ve};
+}
+function nodeReducer(id,data){
+  var v=state.view;
+  if(v.hidden.has(id) || v.typeHidden.has(data.nodeType)) return Object.assign({},data,{hidden:true});
+  var lens=v.lens, sel=(v.selected===id), hov=(v.hovered===id);
+  var color=data.color, label='', zIndex=1, size=data.size, changed=false;
+  var showLabel = v.labelsAll || sel || hov;
+  if(lens && lens.kind==='focus'){
+    /* 聚焦：中心放大加粗、邻居正常高亮，其余变暗且隐藏标签 */
+    if(lens.sel && lens.sel.has(id)){ color='#1C7ED6'; zIndex=5; showLabel=true; size=data.size*1.7; changed=true; }
+    else if(lens.hi && lens.hi.has(id)){ color='#0CA678'; zIndex=3; showLabel=true; size=data.size*1.2; changed=true; }
+    else { color=data.dimColor; zIndex=0; showLabel=false; size=Math.max(1.4,data.size*0.8); changed=true; }
+  } else if(lens){
+    if(lens.sel && lens.sel.has(id)){ color='#2B8A3E'; zIndex=3; showLabel=true; }
+    else if(lens.hi && lens.hi.has(id)){ color=(lens.kind==='search'?'#7048E8':(lens.kind==='path'?'#0CA678':'#F59F00')); zIndex=2; showLabel=true; }
+    else if(lens.warn && lens.warn.has(id)){ color='#C92A2A'; }
+    else { color=data.dimColor; zIndex=0; showLabel=false; }
+  }
+  if(sel){ color='#1C7ED6'; zIndex=4; showLabel=true; }
+  if(showLabel) label=trunc(data.name,16);
+  if(!changed && color===data.color && label==='' && zIndex===1) return data;   // 快路径：不分配对象
+  return Object.assign({},data,{color:color,label:label,zIndex:zIndex,size:size});
+}
+function edgeReducer(id,data){
+  var v=state.view;
+  var src=state.fullGraph.source(id), tgt=state.fullGraph.target(id);
+  if(isNodeHidden(src)||isNodeHidden(tgt)) return Object.assign({},data,{hidden:true});
+  var lens=v.lens;
+  if(lens && lens.edgeHi && lens.edgeHi.has(data.edgeId)){
+    return Object.assign({},data,{color:'#0CA678',size:2.2,zIndex:2});
+  }
+  if(lens){
+    if(lens.sel && (lens.sel.has(src)||lens.sel.has(tgt))){ /* 路径节点间已处理 */ }
+    return Object.assign({},data,{color:hexToRgba(data.baseColor,0.08),size:0.6,zIndex:0});
+  }
+  if(data.size===1.0 && data.color===hexToRgba('#64748B',0.38)) return data;
+  return data;
+}
+function initSigma(){
+  var container=$('#sigma-container');
+  state.renderer=new window.Sigma(state.fullGraph,container,{
+    renderEdgeLabels:false,
+    renderLabels:true,
+    labelDensity:0.25, labelGridCellSize:160, labelRenderedSizeThreshold:0,
+    defaultNodeColor:'#94a3b8', defaultNodeSize:4,
+    minCameraRatio:0.03, maxCameraRatio:12,
+    hideEdgesOnMove:true,
+    enableEdgeEvents:false,
+    autoRescale:false, autoCenter:false,
+    nodeReducer:nodeReducer, edgeReducer:edgeReducer
+  });
+  var r=state.renderer;
+  // Sigma 的节点/空白事件是 clickNode / clickStage（不是 click；click 只在 mouseCaptor 上发原始坐标）
+  r.on('clickNode', function(p){
+    if(p&&p.node) selectNode(p.node);
+  });
+  r.on('clickStage', function(){
+    if(state.view.focus) exitFocus('blank');   // 点空白退出聚焦
+  });
+  r.on('doubleClickNode', function(p){ if(p&&p.node) focusNode(p.node); });
+  r.on('enterNode', function(p){ if(!p||!p.node) return; state.view.hovered=p.node; r.refresh(); });
+  r.on('leaveNode', function(){ if(state.view.hovered){ state.view.hovered=null; r.refresh(); } });
+  // 首帧时间
+  requestAnimationFrame(function(){
+    state.metrics.firstRenderMs=Math.round(performance.now());
+    updateVisibleStats();
+    if(QS.get('debug')==='1'){
+      try{
+        var cam=r.getCamera().getState();
+        console.log('[SIGMA_DEBUG] '+JSON.stringify({
+          cam:cam,
+          dims:(r.getDimensions? r.getDimensions():null),
+          bbox:(r.getBBox? r.getBBox():null),
+          graphDims:(r.getGraphDimensions? r.getGraphDimensions():null),
+          nodeCount:state.fullGraph.order, edgeCount:state.fullGraph.size
+        }));
+      }catch(e){ console.log('[SIGMA_DEBUG] err '+e); }
+    }
+  });
+}
+function refresh(){ if(state.renderer) state.renderer.refresh(); }
+function updateVisibleStats(){
+  var c=visibleSets();
+  state.metrics.visibleNodes=c.nodes; state.metrics.visibleEdges=c.edges;
+  $('#st-visible').textContent=c.nodes;
+  $('#st-visible-e').textContent=c.edges;
+  $('#st-total').textContent=state.nodes.length;
+  $('#perf-chip').textContent='可见 '+c.nodes+'/'+state.nodes.length+' 节点';
+  $('#mode-chip').textContent=state.view.fullMode?'全图模式':'子图模式';
+  $('#mode-chip').className='meta-chip '+(state.view.fullMode?'warn2':'ok');
+  $('#btn-full').textContent=state.view.fullMode?'回到子图':'加载全图';
+  $('#mode-chip').title='全图 '+state.nodes.length+' 节点 / '+state.edges.length+' 边；子图模式只渲染当前算子 2 跳邻居';
+}
+function focusNode(id){
+  var r=state.renderer; if(!r) return;
+  var a=state.fullGraph.getNodeAttributes(id); if(!a) return;
+  var dims=r.getDimensions(), cam=r.getCamera(), st=cam.getState();
+  var targetRatio=Math.max(0.12, Math.min(st.ratio||1, 0.45));
+  /* 先把 ratio 缩到目标值，再按"屏幕偏移 × ratio"换算相机中心（sigma v3 的 x/y ∈ [0,1]） */
+  cam.setState({x:st.x, y:st.y, ratio:targetRatio, angle:st.angle||0});
+  r.refresh();
+  var p=r.graphToViewport({x:a.x, y:a.y});
+  if(!p) return;
+  cam.animate({
+    x: st.x + (p.x-dims.width/2)*targetRatio/dims.width,
+    y: st.y - (p.y-dims.height/2)*targetRatio/dims.height,
+    ratio: targetRatio
+  },{duration:420});
+}
+/* 屏幕坐标 bbox（基于当前相机） */
+function screenBBox(ids){
+  var minX=Infinity,maxX=-Infinity,minY=Infinity,maxY=-Infinity,got=0;
+  (ids||[]).forEach(function(id){
+    var a=state.fullGraph.getNodeAttributes(id); if(!a) return;
+    var p=state.renderer.graphToViewport({x:a.x,y:a.y});
+    if(!p||isNaN(p.x)||isNaN(p.y)) return;
+    if(p.x<minX)minX=p.x; if(p.x>maxX)maxX=p.x; if(p.y<minY)minY=p.y; if(p.y>maxY)maxY=p.y; got++;
+  });
+  return got? {minX:minX,maxX:maxX,minY:minY,maxY:maxY,w:(maxX-minX),h:(maxY-minY)} : null;
+}
+/* Sigma v3 相机：x/y ∈ [0,1]（0.5 为视口中心），ratio=1 表示铺满视口；ratio 越大越"拉远"。
+ * 这里用两次 setState：先按 bbox 尺寸定 ratio，再按 bbox 中心平移相机，逼近"fit"。 */
+function fitNodes(ids){
+  var r=state.renderer; if(!r) return;
+  var cam=r.getCamera(), dims=r.getDimensions();
+  var w=dims.width||900, h=dims.height||600;
+  var st=cam.getState()||{x:0.5,y:0.5,ratio:1,angle:0};
+  var fallback=function(){ cam.setState({x:0.5,y:0.5,ratio:1,angle:st.angle||0}); r.refresh(); };
+  if(!ids||!ids.length){ fallback(); return; }
+  var b=screenBBox(ids);
+  if(!b){ fallback(); return; }
+  var k=Math.max(b.w/(w*0.82), b.h/(h*0.82));
+  k=Math.max(0.05, Math.min(20, k));
+  var ratio=Math.max(0.03, Math.min(12, (st.ratio||1)*k));
+  cam.setState({x:st.x,y:st.y,ratio:ratio,angle:st.angle||0});
+  r.refresh();
+  var b2=screenBBox(ids);
+  if(b2){
+    var cx=(b2.minX+b2.maxX)/2, cy=(b2.minY+b2.maxY)/2;
+    /* sigma v3：x 向右为正、y 向上为正（屏幕 y 向下），移动量与 ratio 成正比 */
+    cam.setState({
+      x:st.x + (cx-w/2)*ratio/w,
+      y:st.y - (cy-h/2)*ratio/h,
+      ratio:ratio, angle:st.angle||0
+    });
+    r.refresh();
+  }
+}
+
+/* ============================================================================
+ * 6. 子图 / 全图切换
+ * ==========================================================================*/
+function setSubgraph(opId, noFit){
+  var t=performance.now();
+  state.view.opId=opId;
+  state.view.fullMode=false;
+  state.computedSubgraph=twoHop(opId);
+  state.view.hidden=new Set();
+  state.nodes.forEach(function(n){ if(!state.computedSubgraph.has(n.id)) state.view.hidden.add(n.id); });
+  state.view.autoLabels = true;
+  state.view.labelsAll = true;      // 子图较小（~40 节点）默认显示标签
+  state.metrics.subgraphNodes=state.computedSubgraph.size;
+  refresh(); updateVisibleStats();
+  if(!noFit && QS.get('nofit')!=='1') fitNodes(Array.from(state.computedSubgraph));  setStatus('子图模式：<b>'+opId+'</b> 2 跳内 <b>'+state.computedSubgraph.size+'</b> 个节点（WebGL 渲染）；点「加载全图」查看 '+state.nodes.length+' 节点全图');
+  state.metrics.subgraphMs=Math.round(performance.now()-t);
+}
+function setFullGraph(noFit){
+  var t=performance.now();
+  state.view.fullMode=true;
+  state.view.hidden=new Set();
+  state.view.labelsAll=false;       // 全图模式下默认不渲染标签（hover/选中才显示）
+  refresh(); updateVisibleStats();
+  if(!noFit) fitNodes(state.nodes.map(function(n){return n.id;}));
+  state.metrics.loadFullMs=Math.round(performance.now()-t);
+  setStatus('全图模式：<b>'+state.nodes.length+'</b> 节点 / <b>'+state.edges.length+'</b> 边 · WebGL 渲染（拖拽/缩放流畅）；标签在 hover / 选中时显示');
+}
+function expandVisible(ids){
+  var added=0;
+  ids.forEach(function(id){ if(state.view.hidden.has(id)){ state.view.hidden.delete(id); added++; } });
+  return added;
+}
+/* 高亮/搜索/路径/回放前，确保相关节点在可见集内 */
+function ensureVisible(ids){
+  var added=expandVisible(ids||[]);
+  if(added) refresh();
+  return added;
+}
+
+/* ============================================================================
+ * 7. 左侧 UI：类型过滤 / 图例 / 搜索 / 算子选择
+ * ==========================================================================*/
+function renderTypeFilters(){
+  var box=$('#type-filters'); box.innerHTML='';
+  var counts={}; state.nodes.forEach(function(n){ counts[n.type]=(counts[n.type]||0)+1; });
+  var types=Object.keys(counts).sort(function(a,b){ return typeMeta(a).order-typeMeta(b).order; });
+  types.forEach(function(t){
+    var meta=typeMeta(t), on=!state.view.typeHidden.has(t);
+    var el=document.createElement('div'); el.className='chip'+(on?'':' off');
+    el.innerHTML='<span class="dot" style="background:'+meta.color+'"></span><span>'+esc(meta.label)+'</span><span class="n">'+counts[t]+'</span>';
+    el.onclick=function(){ toggleType(t); };
+    box.appendChild(el);
+  });
+  $('#type-count').textContent = state.view.typeHidden.size? ('已隐藏 '+state.view.typeHidden.size+' 类') : '全部';
+}
+function toggleType(t){
+  if(state.view.typeHidden.has(t)) state.view.typeHidden.delete(t); else state.view.typeHidden.add(t);
+  renderTypeFilters(); refresh(); updateVisibleStats();
+}
+function setAllTypes(show){
+  state.view.typeHidden.clear();
+  if(!show) Object.keys(TYPE_META).forEach(function(t){ state.view.typeHidden.add(t); });
+  renderTypeFilters(); refresh(); updateVisibleStats();
+}
+function renderLegend(){
+  var box=$('#legend'); box.innerHTML='';
+  var counts={}; state.nodes.forEach(function(n){ counts[n.type]=(counts[n.type]||0)+1; });
+  Object.keys(counts).sort(function(a,b){ return typeMeta(a).order-typeMeta(b).order; }).forEach(function(t){
+    var meta=typeMeta(t);
+    var row=document.createElement('div'); row.className='legend-row';
+    row.innerHTML='<span class="legend-node" style="background:'+meta.color+'"></span><span>'+esc(meta.label)+'</span>'+
+      '<span style="margin-left:auto;color:#94a3b8;font-size:10px">'+counts[t]+'</span>';
+    box.appendChild(row);
+  });
+  var note=document.createElement('div'); note.className='hint'; note.style.marginTop='6px';
+  note.innerHTML='默认渲染当前算子 2 跳子图；「加载全图」后 '+state.nodes.length+' 节点 / '+state.edges.length+' 边由 WebGL 渲染。<br>标签：子图模式默认显示，全图模式 hover/选中显示。';
+  box.appendChild(note);
+}
+function renderOperatorSelect(){
+  var ops=state.nodes.filter(function(n){return n.type==='Operator';})
+    .sort(function(a,b){ return (state.degree.get(b.id)||0)-(state.degree.get(a.id)||0); });
+  var sel=$('#op-select'); sel.innerHTML='';
+  ops.forEach(function(o){
+    var op=new Option(o.name+'（'+(state.degree.get(o.id)||0)+' 邻居）', o.id);
+    sel.appendChild(op);
+  });
+  if(state.view.opId) sel.value=state.view.opId;
+  sel.onchange=function(){ setSubgraph(sel.value); };
+}
+var searchTimer=null;
+function onSearchInput(){
+  if(state.view.focus){ state.view.focus=null; state.view.lens=null; }   // 搜索镜头与聚焦互斥
+  var q=$('#search-input').value.trim().toLowerCase();
+  clearTimeout(searchTimer);
+  searchTimer=setTimeout(function(){
+    if(!q){ state.view.lens=null; renderSearchResults(''); refresh(); return; }
+    var hits=new Set();
+    state.nodes.forEach(function(n){
+      if((n.name+' '+n.id+' '+typeMeta(n.type).label+' '+n.type).toLowerCase().indexOf(q)>=0) hits.add(n.id);
+    });
+    state.view.lens = hits.size? {kind:'search',sel:new Set(),hi:hits,warn:new Set(),edgeHi:new Set()} : null;
+    renderSearchResults(q, hits);
+    refresh();
+  }, 120);
+}
+function renderSearchResults(q, hits){
+  var box=$('#search-results');
+  if(!hits || !hits.size){ box.innerHTML=q?'<div class="empty">没有匹配节点</div>':''; return; }
+  var list=state.nodes.filter(function(n){ return hits.has(n.id); }).slice(0,10);
+  box.innerHTML='';
+  list.forEach(function(n){
+    var meta=typeMeta(n.type);
+    var el=document.createElement('div'); el.className='sr-item';
+    el.innerHTML='<span class="dot" style="width:8px;height:8px;border-radius:50%;background:'+meta.color+'"></span>'+
+      '<span class="nm">'+esc(n.name)+'</span><span class="tp">'+esc(meta.label)+'</span>';
+    el.onclick=function(){ ensureVisible([n.id]); selectNode(n.id); };
+    box.appendChild(el);
+  });
+}
+
+/* ============================================================================
+ * 8. 详情 / 路径 / 回放（复用 graph.html 的 UI 逻辑，适配 WebGL 刷新）
+ * ==========================================================================*/
+function selectNode(id){
+  if(!state.nodeById.has(id)) return;
+  ensureVisible([id]);
+  enterFocus(id);                         // 点击即聚焦：该节点 + 1 跳邻居
+  switchTab('detail'); renderDetail(); refresh();
+  if(state.view.focus){
+    var fids=[id].concat(Array.from(state.view.focus.neighbors));
+    fitNodes(fids);                       // 让"中心 + 1 跳邻居"都落在视口内
+  }
+  setStatus('已聚焦：<b>'+esc(state.nodeById.get(id).name)+'</b>（'+(state.view.focus?state.view.focus.neighbors.size:0)+
+    ' 个邻居）· 点空白 / Esc / 重置 退出');
+}
+/* ===== 聚焦（点击节点 → 该节点 + 所有 1 跳邻居；其余变暗、隐藏标签） ===== */
+function enterFocus(id){
+  var n=state.nodeById.get(id); if(!n) return false;
+  var neighbors=new Set(), edges=new Set();
+  (state.adj.get(id)||new Set()).forEach(function(x){ neighbors.add(x); });
+  state.edges.forEach(function(e){
+    if(e.head===id || e.tail===id) edges.add(e.id);
+  });
+  ensureVisible(Array.from(neighbors).concat([id]));   // 邻居若在子图外，聚焦时临时加载
+  state.view.focus={centerId:id, neighbors:neighbors, edges:edges};
+  state.view.selected=id;
+  state.view.lens={kind:'focus', sel:new Set([id]), hi:neighbors, warn:new Set(), edgeHi:edges};
+  return true;
+}
+function exitFocus(source){
+  if(!state.view.focus) return false;
+  state.view.focus=null;
+  state.view.lens=null;
+  refresh();
+  setStatus('已退出聚焦'+(source==='blank'?'（点击空白处）':'')+' · 当前为完整视图');
+  return true;
+}
+/* ===== 重置：清聚焦/搜索/类型过滤/路径/回放；全图模式保持全图，子图模式回默认子图 ===== */
+function resetAllView(){
+  state.view.focus=null;
+  state.view.lens=null;
+  state.view.selected=null;
+  state.view.typeHidden.clear();
+  $('#search-input').value='';
+  renderSearchResults('', new Set());
+  state.path={from:null,to:null,nodes:[],edges:[]};
+  stopPlay(); state.replay.active=false; state.replay.step=0;
+  renderTypeFilters(); renderDetail();
+  if(state.view.fullMode){
+    refresh(); updateVisibleStats();
+    fitNodes(state.nodes.map(function(n){ return n.id; }));
+  }else{
+    var op=state.view.opId;
+    setSubgraph(op, true);
+    fitNodes(Array.from(state.computedSubgraph));
+  }
+  setStatus('已重置：清除聚焦 / 搜索 / 类型过滤 / 路径 / 回放，回到'+(state.view.fullMode?'全图':'默认子图')+'视图');
+  toast('已重置为初始视图');
+}
+function renderDetail(){
+  var box=$('#tab-detail');
+  if(!state.view.selected){ box.innerHTML='<div class="empty">点击图中节点查看属性、来源与关联证据；也可用左侧搜索定位。</div>'; return; }
+  var n=state.nodeById.get(state.view.selected);
+  var meta=typeMeta(n.type), props=n.properties||{}, prov=n.provenance||{}, html=[];
+  html.push('<div class="node-head"><span class="type-dot" style="background:'+meta.color+'"></span><div style="min-width:0">'+
+    '<h2>'+esc(n.name)+'</h2><div class="id">'+esc(n.id)+'</div></div></div>');
+  var badges='<span class="badge blue">'+esc(meta.label)+'</span>';
+  if(props.status) badges+='<span class="badge '+(props.status==='verified'?'ok':(props.status==='sample'||props.status==='qemu_only'?'warn':''))+'">'+esc(props.status)+'</span>';
+  if(props.confidence!=null) badges+='<span class="badge">confidence '+fmtNum(props.confidence)+'</span>';
+  if(n.type==='OptimizationStrategy'&&props.family) badges+='<span class="badge">'+esc(props.family)+'</span>';
+  html.push('<div>'+badges+'</div>');
+  var hiddenN=0;
+  (state.adj.get(n.id)||new Set()).forEach(function(x){ if(isNodeHidden(x)) hiddenN++; });
+  html.push('<div class="actions"><button data-action="expand" class="primary">展开 1 跳邻居</button>'+
+    '<button data-action="focus">聚焦</button><button data-action="path-from">设为起点</button>'+
+    '<button data-action="path-to">设为终点</button><button data-action="copy" class="ghost">复制 ID</button></div>');
+  if(hiddenN) html.push('<div class="hint" style="background:#fffbeb;border:1px solid #fde68a;color:#92400e;border-radius:8px;padding:6px 9px;margin-bottom:10px">当前视图外还有 <b>'+hiddenN+'</b> 个邻居，可点「展开 1 跳邻居」加载。</div>');
+  html.push('<div class="section-title">属性</div>');
+  var skip={};
+  if(props.description){ html.push('<div style="font-size:12px;line-height:1.65;color:#334155;margin-bottom:8px">'+esc(props.description)+'</div>'); skip.description=1; }
+  var rows=[];
+  Object.keys(props).forEach(function(k){
+    if(skip[k]) return;
+    var v=props[k]; if(v==null||v==='') return;
+    var shown;
+    if(k==='conditions'&&Array.isArray(v)){
+      shown=v.map(function(c){
+        var val=Array.isArray(c.value)?('{'+c.value.join(', ')+'}'):String(c.value);
+        return '<span class="badge '+(c.hard?'warn':'')+'">'+esc(c.pred)+' '+esc(c.op)+' '+esc(val)+'</span>';
+      }).join('')||'<span style="color:#94a3b8">（无）</span>';
+    } else if(typeof v==='object'){ shown='<pre class="json">'+esc(JSON.stringify(v,null,2))+'</pre>'; }
+    else { shown=esc(String(v)); }
+    rows.push('<dt>'+esc(k)+'</dt><dd>'+shown+'</dd>');
+  });
+  html.push(rows.length?('<dl class="kv">'+rows.join('')+'</dl>'):'<div class="empty">（无额外属性）</div>');
+  html.push('<div class="section-title">来源文件 / 行号</div>');
+  if(prov.source_file){
+    html.push('<dl class="kv"><dt>file</dt><dd style="font-family:var(--mono);font-size:10.5px;word-break:break-all">'+esc(prov.source_file)+'</dd>'+
+      '<dt>line</dt><dd>'+(prov.line_start!=null?(prov.line_start+' – '+(prov.line_end!=null?prov.line_end:'?')):'—')+(prov.line_confidence?(' <span class="badge">'+esc(prov.line_confidence)+'</span>'):'')+'</dd>'+
+      '<dt>commit</dt><dd>'+esc(prov.commit||'—')+'</dd></dl>');
+  } else html.push('<div class="empty">该节点未登记来源</div>');
+  /* 关联证据 */
+  var evIds=[];
+  var adj=state.adj.get(n.id)||new Set();
+  adj.forEach(function(x){
+    var xn=state.nodeById.get(x); if(xn&&xn.type==='PerformanceEvidence') evIds.push(x);
+    if(n.type==='OptimizationStrategy'){ /* direct evidence already included */ }
+  });
+  if(n.type==='ComputationPattern'){
+    adj.forEach(function(sid){
+      var sn=state.nodeById.get(sid);
+      if(sn&&sn.type==='OptimizationStrategy'){
+        (state.adj.get(sid)||new Set()).forEach(function(x){ var xn=state.nodeById.get(x); if(xn&&xn.type==='PerformanceEvidence') evIds.push(x); });
+      }
+    });
+  }
+  evIds=uniq(evIds);
+  if(evIds.length){
+    html.push('<div class="section-title">关联性能证据 <span style="margin-left:auto;font-size:10px;color:#94a3b8">'+evIds.length+'</span></div>');
+    evIds.forEach(function(eid){
+      var ev=state.nodeById.get(eid), p=ev.properties||{};
+      var statusCls=(p.status==='qemu_only'||p.status==='sample')?'warn':(p.status==='verified'?'ok':'');
+      html.push('<div class="ev-card"><div class="top"><span>'+esc(ev.name)+'</span><span class="val">'+esc(fmtNum(p.value)+(p.unit?(' '+p.unit):''))+'</span></div>'+
+        '<div class="meta">'+esc(p.metric||'')+(p.status?(' · <span class="badge '+statusCls+'">'+esc(p.status)+'</span>'):'')+(p.note?('<br>注：'+esc(p.note)):'')+'</div></div>');
+    });
+  }
+  /* 关联节点（按关系类型分组，点击切换聚焦） */
+  var rels=[];
+  state.edges.forEach(function(e){ if(e.head===n.id||e.tail===n.id) rels.push(e); });
+  html.push('<div class="section-title">关联节点（按关系） <span style="margin-left:auto;font-size:10px;color:#94a3b8">'+rels.length+'</span></div>');
+  if(state.view.focus && state.view.focus.centerId===n.id){
+    html.push('<div class="focus-hint">已聚焦：<b>'+esc(n.name)+'</b> 及其 <b>'+state.view.focus.neighbors.size+'</b> 个邻居；其余节点/边已变暗。<br>'+
+      '点画布空白处、按 <b>Esc</b> 或点顶部「重置」退出。</div>');
+  }
+  if(!rels.length) html.push('<div class="empty">孤立节点</div>');
+  else{
+    var groups={}, order=[];
+    rels.forEach(function(e){
+      var key=relLabel(e.type);
+      if(!groups[key]){ groups[key]=[]; order.push(key); }
+      groups[key].push(e);
+    });
+    order.forEach(function(key){
+      var list=groups[key];
+      html.push('<div class="rel-group"><div class="rel-group-title">'+esc(key)+'<span class="n">'+list.length+' 个</span></div><div class="rel-list">');
+      list.slice(0,80).forEach(function(e){
+        var out=e.head===n.id, other=out?e.tail:e.head;
+        html.push('<div class="rel-item" data-goto="'+esc(other)+'" title="点击聚焦到「'+esc(nodeLabel(other))+'」">'+
+          '<span style="color:#94a3b8">'+(out?'→':'←')+'</span>'+
+          '<span class="other">'+esc(nodeLabel(other))+'</span>'+
+          '<span class="tp" style="font-size:10px;color:#94a3b8">'+esc(nodeTypeLabel(other))+'</span></div>');
+      });
+      html.push('</div></div>');
+    });
+  }
+  box.innerHTML=html.join('');
+}
+function nodeLabel(id){ var n=state.nodeById.get(id); return n?n.name:id; }
+function nodeTypeLabel(id){ var n=state.nodeById.get(id); return n?typeMeta(n.type).label:'未知'; }
+
+/* ---------- 路径 ---------- */
+function bfsPath(from,to){
+  if(!state.nodeById.has(from)||!state.nodeById.has(to)) return null;
+  if(from===to) return {nodes:[from],edges:[]};
+  var prev=new Map(), prevEdge=new Map(), q=[from], seen=new Set([from]);
+  while(q.length){
+    var cur=q.shift(), nb=state.adj.get(cur)||new Set();
+    var stop=false;
+    nb.forEach(function(nx){
+      if(stop||seen.has(nx)) return;
+      seen.add(nx); prev.set(nx,cur);
+      var e=null;
+      state.edges.forEach(function(ee){ if(!e&&((ee.head===cur&&ee.tail===nx)||(ee.head===nx&&ee.tail===cur))) e=ee; });
+      prevEdge.set(nx,e); q.push(nx);
+      if(nx===to) stop=true;
+    });
+    if(stop) break;
+  }
+  if(!prev.has(to)) return null;
+  var nodes=[to], edges=[], c=to;
+  while(c!==from){ nodes.unshift(prev.get(c)); edges.unshift(prevEdge.get(c)); c=prev.get(c); }
+  return {nodes:nodes, edges:edges.filter(Boolean)};
+}
+function findPath(){
+  var f=$('#path-from').value.trim(), t=$('#path-to').value.trim();
+  var fid=state.nodeById.has(f)?f:byName(f), tid=state.nodeById.has(t)?t:byName(t);
+  if(!fid||!tid){ toast('请选择有效起点/终点'); return; }
+  var res=bfsPath(fid,tid);
+  if(!res){ toast('两点不连通'); return; }
+  state.path={from:fid,to:tid,nodes:res.nodes,edges:res.edges};
+  ensureVisible(res.nodes);
+  state.view.lens={kind:'path',sel:new Set(res.nodes),hi:new Set(),warn:new Set(),edgeHi:new Set(res.edges.map(function(e){return e.id;}))};
+  refresh(); renderPathResult(); if(state.renderer) fitNodes(res.nodes);
+  switchTab('path');
+  setStatus('路径：<b>'+res.nodes.length+'</b> 节点 / <b>'+res.edges.length+'</b> 关系（BFS 最短路，WebGL 高亮）',{color:'#0CA678'});
+}
+function byName(s){ var q=s.toLowerCase(), hit=null; state.nodes.forEach(function(n){ if(!hit&&(n.name.toLowerCase()===q||n.id.toLowerCase()===q)) hit=n.id; }); return hit; }
+function renderPathTab(){
+  var box=$('#tab-path');
+  box.innerHTML='<div class="hint">在图中任选两个节点，BFS 找最短关系路径。路径可能跨越子图外的节点，会自动加载。</div>'+
+    '<div style="margin:10px 0 4px"><input id="path-from" list="node-list" placeholder="起点：名称或 ID"></div>'+
+    '<div style="margin:4px 0 6px"><input id="path-to" list="node-list" placeholder="终点：名称或 ID"></div>'+
+    '<div class="row"><button class="primary" id="path-find" style="flex:1">查找最短路</button>'+
+    '<button id="path-clear" class="ghost">清除</button></div><datalist id="node-list"></datalist><div id="path-result"></div>';
+  var dl=$('#node-list');
+  state.nodes.slice().sort(function(a,b){ return (state.degree.get(b.id)||0)-(state.degree.get(a.id)||0); }).slice(0,200).forEach(function(n){
+    var o=document.createElement('option'); o.value=n.id; o.label=n.name+'（'+typeMeta(n.type).label+'）'; dl.appendChild(o);
+  });
+  if(state.path.from) $('#path-from').value=state.path.from;
+  if(state.path.to) $('#path-to').value=state.path.to;
+  $('#path-find').onclick=findPath;
+  $('#path-clear').onclick=function(){
+    state.path={from:null,to:null,nodes:[],edges:[]};
+    if(state.view.lens&&state.view.lens.kind==='path') state.view.lens=null;
+    refresh(); renderPathTab(); setStatus('已清除路径高亮');
+  };
+  renderPathResult();
+}
+function renderPathResult(){
+  var box=$('#path-result'); if(!box) return;
+  if(!state.path.nodes.length){ box.innerHTML='<div class="empty">尚未查找路径。</div>'; return; }
+  var html='<div class="section-title">路径节点 <span style="margin-left:auto;font-size:10px;color:#94a3b8">'+state.path.nodes.length+'</span></div><div>';
+  state.path.nodes.forEach(function(id,i){
+    if(i) html+='<span style="color:#94a3b8"> → </span>';
+    var n=state.nodeById.get(id), meta=typeMeta(n.type);
+    html+='<span class="path-node" data-goto="'+esc(id)+'"><span class="d" style="background:'+meta.color+'"></span>'+esc(n.name)+'</span>';
+  });
+  html+='</div><div class="section-title">路径关系 <span style="margin-left:auto;font-size:10px;color:#94a3b8">'+state.path.edges.length+'</span></div><div class="rel-list">';
+  state.path.edges.forEach(function(e){
+    html+='<div class="rel-item"><span class="rt">'+esc(relLabel(e.type))+'</span><span class="other" style="white-space:normal">'+
+      esc(nodeLabel(e.head))+' <span style="color:#94a3b8">→</span> '+esc(nodeLabel(e.tail))+'</span></div>';
+  });
+  html+='</div>';
+  box.innerHTML=html;
+}
+
+/* ---------- 检索回放 ---------- */
+function traceList(){ return state.traceIds.map(function(id){ return state.traces[id]; }); }
+function currentTrace(){ return state.traces[state.replay.traceId]||null; }
+function currentStep(){ var t=currentTrace(); return t&&t.steps?t.steps[state.replay.step]:null; }
+function initReplayTab(){
+  var box=$('#tab-replay');
+  box.innerHTML='<div class="hint">选择 trace，逐步查看检索过程；图中橙=候选、绿=选中、红=淘汰（WebGL 高亮）。</div>'+
+    '<div class="rp-row"><label>算子</label><select id="rp-op"></select></div>'+
+    '<div class="rp-row"><label>硬件</label><select id="rp-hw"></select></div>'+
+    '<div class="rp-row"><label>trace</label><select id="rp-trace"></select></div>'+
+    '<div class="rp-controls"><button data-rp="reset">⟲ 重置</button><button data-rp="prev">◀</button>'+
+    '<button data-rp="play" class="primary" id="rp-play">▶ 播放</button><button data-rp="next">▶</button>'+
+    '<span id="rp-progress">—</span></div><div class="rp-rail" id="rp-rail"></div><div id="rp-detail"></div>';
+  buildReplaySelectors(); bindReplayControls(); renderReplay();
+}
+function buildReplaySelectors(){
+  var traces=traceList();
+  var ops=uniq(traces.map(function(t){return (t.query||{}).operator||'—';}));
+  var hws=uniq(traces.map(function(t){return (t.query||{}).hardware_profile_id||'—';}));
+  $('#rp-op').innerHTML=ops.map(function(o){return '<option>'+esc(o)+'</option>';}).join('');
+  $('#rp-hw').innerHTML=hws.map(function(h){return '<option>'+esc(h)+'</option>';}).join('');
+  var t=currentTrace();
+  if(t&&t.query){ if(t.query.operator) $('#rp-op').value=t.query.operator; if(t.query.hardware_profile_id) $('#rp-hw').value=t.query.hardware_profile_id; }
+  refreshTraceOptions();
+}
+function refreshTraceOptions(){
+  var op=$('#rp-op').value, hw=$('#rp-hw').value;
+  var list=traceList().filter(function(t){ var q=t.query||{}; return (q.operator||'—')===op&&(q.hardware_profile_id||'—')===hw; });
+  if(!list.length) list=traceList();
+  var sel=$('#rp-trace'); if(!sel) return;
+  sel.innerHTML=list.map(function(t){ return '<option value="'+esc(t.trace_id)+'">'+esc(t.trace_id)+'</option>'; }).join('');
+  if(list.length){ sel.value=list[0].trace_id; setTrace(list[0].trace_id,true); }
+}
+function bindReplayControls(){
+  $('#rp-op').onchange=refreshTraceOptions;
+  $('#rp-hw').onchange=refreshTraceOptions;
+  $('#rp-trace').onchange=function(){ setTrace(this.value,true); };
+  $$('#tab-replay [data-rp]').forEach(function(btn){
+    btn.onclick=function(){
+      var a=btn.getAttribute('data-rp');
+      if(a==='prev') stepBy(-1); else if(a==='next') stepBy(1);
+      else if(a==='play') togglePlay(); else resetReplay();
+    };
+  });
+}
+function setTrace(tid,force){
+  if(!state.traces[tid]) return;
+  state.view.focus=null;
+  if(state.replay.traceId===tid&&!force) return;
+  state.replay.traceId=tid; state.replay.step=0; state.replay.active=true;
+  stopPlay(); renderReplay(); switchTab('replay');
+  var t=currentTrace(); if(t&&t.query){
+    if(t.query.operator) $('#rp-op').value=t.query.operator;
+    if(t.query.hardware_profile_id) $('#rp-hw').value=t.query.hardware_profile_id;
+  }
+}
+function stepBy(d){
+  var t=currentTrace(); if(!t) return;
+  state.view.focus=null;
+  var n=Math.min(t.steps.length-1,Math.max(0,state.replay.step+d));
+  if(n===state.replay.step){ if(d>0) stopPlay(); return; }
+  state.replay.step=n; state.replay.active=true; renderReplay();
+}
+function jumpStep(i){
+  var t=currentTrace(); if(!t) return;
+  state.view.focus=null;
+  state.replay.step=Math.max(0,Math.min(t.steps.length-1,i));
+  state.replay.active=true; stopPlay(); renderReplay();
+}
+function togglePlay(){
+  if(state.replay.playing){ stopPlay(); renderReplay(); return; }
+  var t=currentTrace(); if(!t) return;
+  state.view.focus=null;
+  if(state.replay.step>=t.steps.length-1) state.replay.step=0;
+  state.replay.playing=true; state.replay.active=true; renderReplay();
+  state.replay.timer=setInterval(function(){
+    var tr=currentTrace(); if(!tr){ stopPlay(); return; }
+    if(state.replay.step>=tr.steps.length-1){ stopPlay(); renderReplay(); return; }
+    state.replay.step++; renderReplay();
+  },1900);
+}
+function stopPlay(){ if(state.replay.timer){ clearInterval(state.replay.timer); state.replay.timer=null; } state.replay.playing=false; var b=$('#rp-play'); if(b) b.textContent='▶ 播放'; }
+function resetReplay(){ stopPlay(); state.replay.active=false; state.replay.step=0; state.view.lens=null; refresh(); renderReplay(); setStatus('已重置回放（取消高亮）'); }
+function renderReplay(){
+  var box=$('#tab-replay'); if(!box||!$('#rp-rail')) return;
+  var t=currentTrace();
+  if(!t){ $('#rp-detail').innerHTML='<div class="empty">没有 trace 数据（traces.js 缺失？）</div>'; return; }
+  var steps=t.steps||[], idx=state.replay.step;
+  var rail=[];
+  steps.forEach(function(s,i){
+    var cls=i===idx?'cur':(i<idx?'done':'');
+    rail.push('<div class="pill '+cls+'" data-step="'+i+'"><span class="num">'+(i+1)+'</span>'+esc(shortStep(s.name))+'</div>');
+  });
+  $('#rp-rail').innerHTML=rail.join('');
+  $$('#rp-rail .pill').forEach(function(el){ el.onclick=function(){ jumpStep(parseInt(el.getAttribute('data-step'),10)); }; });
+  $('#rp-progress').textContent=(idx+1)+' / '+steps.length;
+  $('#rp-play').textContent=state.replay.playing?'⏸ 暂停':'▶ 播放';
+  var pb=$('#tab-replay [data-rp="prev"]'), nb=$('#tab-replay [data-rp="next"]');
+  if(pb) pb.disabled=idx<=0; if(nb) nb.disabled=idx>=steps.length-1;
+  var step=steps[idx], sel=new Set(step.selected||[]), dropped={};
+  (step.dropped||[]).forEach(function(d){ dropped[d.id||d]=d.reason||d; });
+  var cand=(step.candidates||[]).slice();
+  sel.forEach(function(id){ if(cand.indexOf(id)<0) cand.push(id); });
+  var html=[];
+  html.push('<div class="rp-step-title">第 '+(idx+1)+' 步 · '+esc(step.name)+'</div>');
+  html.push('<div class="rp-step-desc">'+esc(step.description||'')+'</div>');
+  if(step.reason) html.push('<div class="rp-reason"><b>reason：</b>'+esc(step.reason)+'</div>');
+  html.push('<div class="section-title">候选 / 选中 / 淘汰 <span style="margin-left:auto;font-size:10px;color:#94a3b8">'+cand.length+'</span></div>');
+  html.push('<div class="rp-list">');
+  cand.forEach(function(id){
+    var n=state.nodeById.get(id); var st,cls,label,why='';
+    if(sel.has(id)){ st='s';cls='';label='选中'; }
+    else if(dropped[id]!==undefined){ st='d';cls=' dropped';label='淘汰';why=dropped[id]; }
+    else { st='c';cls='';label='候选'; }
+    html.push('<div class="rp-item'+cls+'" data-goto="'+esc(id)+'"><span class="st '+st+'">'+label+'</span><span class="txt"><b>'+esc(n?n.name:id)+'</b>'+
+      (why?('<span class="why">淘汰原因：'+esc(why)+'</span>'):'')+'</span></div>');
+  });
+  html.push('</div>');
+  if(step.scores){
+    html.push('<div class="section-title">打分</div><table class="rp-scores"><thead><tr><th>策略</th><th style="text-align:right">总分</th></tr></thead><tbody>');
+    Object.keys(step.scores).forEach(function(id){ html.push('<tr><td>'+esc(nodeLabel(id))+'</td><td class="n">'+fmtNum(step.scores[id])+'</td></tr>'); });
+    html.push('</tbody></table>');
+  }
+  if(step.result){
+    html.push('<div class="section-title">StrategyPack 预览</div><div class="rp-result"><div class="mono">strategies: '+esc((step.result.strategies||[]).join(', '))+'</div>'+
+      '<div class="mono">templates: '+esc((step.result.templates||[]).join(', '))+'</div>'+
+      (step.result.prompt_preview?('<div style="margin-top:6px">'+esc(step.result.prompt_preview)+'</div>'):'')+'</div>');
+  }
+  if(step.input) html.push('<details class="rp-input"><summary>step.input</summary><pre>'+esc(JSON.stringify(step.input,null,2))+'</pre></details>');
+  $('#rp-detail').innerHTML=html.join('');
+
+  /* 高亮 + 自动加载 + 相机跟随 */
+  var stepIds=(step.candidates||[]).concat(step.selected||[]).concat((step.dropped||[]).map(function(d){return d.id||d;}));
+  if(t.query&&t.query.operator_id) stepIds.push(t.query.operator_id);
+  stepIds=uniq(stepIds);
+  var union=new Set(stepIds);
+  var edgeHi=new Set();
+  state.edges.forEach(function(e){ if(union.has(e.head)&&union.has(e.tail)) edgeHi.add(e.id); });
+  state.view.lens={kind:'replay',sel:new Set(step.selected||[]),hi:new Set(step.candidates||[]),warn:new Set(Object.keys(dropped)),edgeHi:edgeHi};
+  ensureVisible(stepIds);
+  refresh();
+  if(state.follow!==false) fitNodes(stepIds);
+  setStatus('回放 <b>'+(idx+1)+'/'+steps.length+'</b>：'+esc(step.name)+'（'+(step.selected||[]).length+' 选中 / '+(step.dropped||[]).length+' 淘汰）',{color:'#F59F00'});
+}
+function shortStep(n){
+  var map={pattern_match:'流程匹配',strategy_recall:'策略召回',condition_filter:'条件过滤',hardware_filter:'硬件过滤',
+           conflict_resolve:'冲突消解',score_and_select:'打分选择',pack:'组装'};
+  return map[n]||n;
+}
+
+/* ============================================================================
+ * 9. Tab / 事件 / 深链接 / 自检 / 启动
+ * ==========================================================================*/
+function switchTab(name){
+  $$('#panel-tabs button').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-tab')===name); });
+  $$('.panel-body').forEach(function(b){ b.classList.toggle('active', b.id==='tab-'+name); });
+  if(name==='detail') renderDetail();
+  if(name==='path') renderPathTab();
+  if(name==='replay'){ if(!$('#rp-rail')) initReplayTab(); else renderReplay(); }
+}
+function bindEvents(){
+  $$('#panel-tabs button').forEach(function(b){ b.onclick=function(){ switchTab(b.getAttribute('data-tab')); }; });
+  $('#btn-full').onclick=function(){
+    if(state.view.fullMode) setSubgraph(state.view.opId);
+    else setFullGraph();
+  };
+  $('#btn-fit').onclick=function(){
+    if(state.view.fullMode) fitNodes(state.nodes.map(function(n){return n.id;}));
+    else fitNodes(Array.from(state.computedSubgraph));
+    toast('已适应画布（缩放/平移，不改筛选与聚焦）');
+  };
+  $('#btn-reset').onclick=function(){ resetAllView(); };
+  $('#btn-all-types').onclick=function(){ setAllTypes(true); };
+  $('#btn-none-types').onclick=function(){ setAllTypes(false); };
+  $('#search-input').oninput=function(){ if(state.view.focus){ state.view.focus=null; state.view.lens=null; refresh(); } onSearchInput(); };
+  $('#search-input').onkeydown=function(ev){ if(ev.key==='Escape'){ this.value=''; onSearchInput(); } };
+  $('#panel').addEventListener('click',function(ev){
+    var t=ev.target;
+    var g=t.closest?t.closest('[data-goto]'):null;
+    if(g){ var id=g.getAttribute('data-goto'); if(state.nodeById.has(id)){ selectNode(id); } return; }
+    var a=t.closest?t.closest('[data-action]'):null;
+    if(a){
+      var act=a.getAttribute('data-action'), id=state.view.selected; if(!id) return;
+      if(act==='expand'){
+        var nb=Array.from(state.adj.get(id)||[]);
+        var added=expandVisible(nb.concat([id]));
+        refresh(); renderDetail();
+        if(added) { toast('已加载 '+added+' 个邻居节点'); fitNodes(nb.concat([id])); }
+        else toast('邻居已全部可见');
+      }
+      else if(act==='focus'){ if(!state.view.focus || state.view.focus.centerId!==id){ enterFocus(id); refresh(); } if(state.view.focus){ fitNodes([id].concat(Array.from(state.view.focus.neighbors))); } }
+      else if(act==='path-from'){ ensureVisible([id]); state.path.from=id; switchTab('path'); renderPathTab(); $('#path-from').value=id; }
+      else if(act==='path-to'){ ensureVisible([id]); state.path.to=id; switchTab('path'); renderPathTab(); $('#path-to').value=id; }
+      else if(act==='copy'){ try{ navigator.clipboard.writeText(id); toast('已复制：'+id); }catch(e){ toast('复制失败'); } }
+    }
+  });
+  document.addEventListener('keydown',function(ev){
+    if(ev.target&&/INPUT|SELECT|TEXTAREA/.test(ev.target.tagName)) return;
+    if(ev.key==='ArrowLeft'&&(state.replay.active||$('#tab-replay').classList.contains('active'))){ stepBy(-1); ev.preventDefault(); }
+    if(ev.key==='ArrowRight'&&(state.replay.active||$('#tab-replay').classList.contains('active'))){ stepBy(1); ev.preventDefault(); }
+    if(ev.key==='Escape'){
+      if(state.view.focus) exitFocus('esc');
+      else if(state.replay.active) resetReplay();
+      else resetAllView();
+    }
+  });
+}
+function applyDeepLink(){
+  var qs=new URLSearchParams(location.search);
+  if(qs.get('op')&&state.nodeById.has(qs.get('op'))){ $('#op-select').value=qs.get('op'); setSubgraph(qs.get('op')); }
+  if(qs.get('full')==='1'){ setFullGraph(); }
+  if(qs.get('panel')==='replay'||qs.get('step')){ switchTab('replay'); }
+  if(qs.get('trace')&&state.traces[qs.get('trace')]) setTrace(qs.get('trace'),true);
+  if(qs.get('step')){ var i=parseInt(qs.get('step'),10); if(!isNaN(i)){ state.replay.active=true; jumpStep(i-1); } }
+  if(qs.get('select')&&state.nodeById.has(qs.get('select'))){ selectNode(qs.get('select')); }
+  if(qs.get('focus')&&state.nodeById.has(qs.get('focus'))){ selectNode(qs.get('focus')); }
+  if(qs.get('q')){ $('#search-input').value=qs.get('q'); onSearchInput(); }
+  /* ?reset=1：先按 select 聚焦，再重置回初始视图（用于截图/演示） */
+  if(qs.get('reset')==='1'){ setTimeout(function(){ resetAllView(); }, 200); }
+  if(qs.get('selftest')==='1') setTimeout(runSelfTest,600);
+  if(qs.get('perfprobe')==='1') setTimeout(function(){ try{ console.log('[KG_FAST_PERF] '+JSON.stringify(state.metrics)); }catch(e){} },300);
+  if(qs.get('bench')==='1') setTimeout(runBench,500);
+}
+
+/* 自检（8 项）：子图/全图/过滤/搜索/详情/路径/回放/统计 */
+function runSelfTest(){
+  var res=[]; function ck(n,c,i){ res.push({name:n,ok:!!c,info:i===undefined?'':String(i)}); }
+  try{
+    var c0=visibleSets();
+    ck('数据加载', state.nodes.length>=15&&state.edges.length>=20, state.nodes.length+'节点/'+state.edges.length+'边');
+    ck('子图默认渲染', c0.nodes>0&&c0.nodes<state.nodes.length, '可见 '+c0.nodes+'/'+state.nodes.length);
+    var op=state.view.opId;
+    ck('算子 2 跳子图', !!op && state.computedSubgraph.size>=5, op+' → '+state.computedSubgraph.size+' 节点');
+    setFullGraph(true); var c1=visibleSets();
+    ck('加载全图', c1.nodes===state.nodes.length, '可见 '+c1.nodes+'/'+state.nodes.length);
+    setSubgraph(op,true);
+    var strat=null; state.nodes.forEach(function(n){ if(!strat&&n.type==='OptimizationStrategy') strat=n; });
+    selectNode(strat.id);
+    ck('① 详情面板', $('#tab-detail').textContent.indexOf(strat.name)>=0);
+    var before=state.view.typeHidden.size; toggleType('PerformanceEvidence');
+    ck('② 类型过滤', state.view.typeHidden.size===before+1); toggleType('PerformanceEvidence');
+    $('#search-input').value=String(strat.name).slice(0,2); onSearchInput();
+    ck('③ 搜索', true);   // 搜索是 120ms 防抖异步，紧接断言只验证不抛异常
+    var nb=Array.from(state.adj.get(strat.id)||[])[0];
+    if(!$('#path-from')) switchTab('path');
+    $('#path-from').value=strat.id; $('#path-to').value=nb||'';
+    findPath();
+    ck('④ 路径查找', state.path.nodes.length>=2, state.path.nodes.length+'节点/'+state.path.edges.length+'边');
+    /* ⑥ 点击聚焦（该节点 + 1 跳邻居；其余变暗） */
+    selectNode(strat.id);
+    var f=state.view.focus;
+    ck('⑥ 点击聚焦', !!f && f.neighbors.size>0 && !!(state.view.lens && state.view.lens.kind==='focus'),
+       '邻居 '+(f?f.neighbors.size:0)+' 个');
+    ck('⑦ 退出聚焦', exitFocus('esc')===true && state.view.focus===null && state.view.lens===null);
+    /* ⑧ 重置：制造脏状态后恢复 */
+    $('#search-input').value='gemm'; onSearchInput(); toggleType('PerformanceEvidence'); selectNode(strat.id);
+    resetAllView();
+    ck('⑧ 重置视图', state.view.focus===null && state.view.typeHidden.size===0 && $('#search-input').value==='' &&
+       (state.view.fullMode ? visibleSets().nodes===state.nodes.length : visibleSets().nodes<state.nodes.length),
+       '可见 '+visibleSets().nodes+'/'+state.nodes.length+' 节点');
+    switchTab('replay');
+    ck('⑤ 回放初始化', !!$('#rp-rail')&&$('#rp-rail').querySelectorAll('.pill').length>=7, Object.keys(state.traces).length+' traces');
+    var ok=true;
+    for(var i=0;i<7;i++){ jumpStep(i); if(!currentStep()){ ok=false; break; } }
+    ck('⑨ 回放 7 步', ok);
+    ck('⑩ 图例', $('#legend').children.length>=8, $('#legend').children.length+' rows');
+    ck('⑪ WebGL 渲染器', !!(state.renderer&&state.renderer.getGraph), state.renderer?'Sigma':'none');
+  }catch(e){ ck('未捕获异常', false, (e&&e.stack)||e); }
+  var passed=res.filter(function(r){return r.ok;}).length;
+  var log=res.map(function(r){ return (r.ok?'PASS':'FAIL')+' '+r.name+(r.info?(' ('+r.info+')'):''); }).join('\n');
+  document.body.setAttribute('data-selftest',(passed===res.length?'pass':'fail')+' '+passed+'/'+res.length);
+  var box=document.createElement('div'); box.id='selftest-log'; box.style.display='none'; box.textContent=log; document.body.appendChild(box);
+  try{ console.log('[selftest-fast]\n'+log); }catch(e){}
+  setStatus('自检：'+(passed===res.length?'全部通过':'存在失败')+' '+passed+'/'+res.length,{color:passed===res.length?'#2B8A3E':'#C92A2A'});
+}
+function runBench(){
+  var out={renderer:'sigma-webgl'};
+  try{
+    var i,t;
+    /* 1) 子图 → 全图（加载全图耗时） */
+    t=performance.now(); setFullGraph(true); out.loadFullMs=Math.round((performance.now()-t)*100)/100;
+    var c=visibleSets(); out.fullVisibleNodes=c.nodes; out.fullVisibleEdges=c.edges;
+    /* 2) 全图下相机平移 + refresh 的"提交"耗时（WebGL draw 异步，actual paint 另计） */
+    var cam=state.renderer.getCamera();
+    t=performance.now();
+    for(i=0;i<20;i++){ cam.setState({x:0.25+i*0.025,y:0.25+i*0.02,ratio:1.1}); state.renderer.refresh(); }
+    out.fullSubmitMs=Math.round((performance.now()-t)/20*100)/100;
+    /* 3) 全图下选中切换 */
+    t=performance.now();
+    for(i=0;i<20;i++){ state.view.selected=state.nodes[(i*7)%state.nodes.length].id; state.renderer.refresh(); }
+    out.fullSelectMs=Math.round((performance.now()-t)/20*100)/100;
+    /* 4) 回到子图 */
+    t=performance.now(); setSubgraph(state.view.opId,true); out.backToSubgraphMs=Math.round((performance.now()-t)*100)/100;
+    out.bootMs=state.metrics.bootMs; out.layoutMs=state.metrics.layoutMs;
+    out.sigmaInitMs=state.metrics.sigmaInitMs; out.totalNodes=state.nodes.length; out.totalEdges=state.edges.length;
+    out.subgraphNodes=state.computedSubgraph.size;
+  }catch(e){ out.error=String(e); }
+  /* 5) rAF 帧率估算（全图状态下持续移动相机 0.8s；headless 虚拟时间仅供参考） */
+  try{
+    setFullGraph(true);
+    var frames=0, t0=null;
+    var cam2=state.renderer.getCamera();
+    var done=function(fps){
+      out.fpsEst=fps; out.fpsNote='headless 虚拟时间，仅供参考；真实浏览器由 GPU 合成';
+      window.__KG_FAST_BENCH__=out;
+      try{ console.log('[KG_FAST_BENCH] '+JSON.stringify(out)); }catch(e){}
+      setSubgraph(state.view.opId,false);
+    };
+    var tick=function(ts){
+      if(t0===null) t0=ts;
+      frames++;
+      try{ cam2.setState({x:0.5+0.08*Math.sin(frames/9),y:0.5+0.06*Math.cos(frames/8),ratio:1.1}); state.renderer.refresh(); }catch(e){}
+      if(ts-t0<800) requestAnimationFrame(tick);
+      else done(Math.round(frames*1000/(ts-t0)));
+    };
+    requestAnimationFrame(tick);
+  }catch(e){ out.fpsError=String(e); window.__KG_FAST_BENCH__=out; try{ console.log('[KG_FAST_BENCH] '+JSON.stringify(out)); }catch(e2){} }
+}
+
+/* ---------- 启动 ---------- */
+function loadScript(src,ok,fail){ var s=document.createElement('script'); s.src=src; s.async=false; s.onload=function(){ok&&ok();}; s.onerror=function(){fail&&fail();}; document.head.appendChild(s); }
+function showFatal(msg){ $('#fatal-msg').textContent=msg; $('#fatal').classList.add('active'); setStatus('WebGL 初始化失败',{color:'#C92A2A'}); }
+function boot(fromSample){
+  var raw=window.KG_DATA;
+  if(!raw||!Array.isArray(raw.nodes)||!raw.nodes.length){ showFatal('未找到 window.KG_DATA（graph_data.js 与 sample 均未加载）。'); return; }
+  if(!window.Sigma||!window.graphology){ showFatal('Sigma.js / Graphology 未加载（请确认 fast_assets/ 下两个 js 与本页面同目录）。'); return; }
+  var norm=normalize(raw); state.nodes=norm.nodes; state.edges=norm.edges;
+  buildIndexes();
+  state.traces=window.KG_TRACES||{}; state.traceIds=Object.keys(state.traces);
+  state.dataSource=fromSample?'sample':'real';
+  var t0=performance.now();
+  state.positions=computeFastLayout(state.nodes,state.edges);
+  state.metrics.layoutMs=Math.round(performance.now()-t0);
+  state.metrics.totalNodes=state.nodes.length; state.metrics.totalEdges=state.edges.length;
+  buildFullGraph();
+  state.metrics.graphBuildMs=Math.round(performance.now()-t0);
+  // 默认算子：优先 gemm，否则度数最高的 Operator
+  var op=null; state.nodes.forEach(function(n){ if(n.id==='op:gemm') op=n; });
+  if(!op){ state.nodes.forEach(function(n){ if(!op&&n.type==='Operator') op=n; }); }
+  var t1=performance.now();
+  try{
+    initSigma();
+  }catch(e){
+    showFatal('Sigma.js WebGL 初始化失败：'+String(e && e.message || e)+'（建议用 Chrome/Edge 并开启硬件加速；Canvas 版请用 graph.html）');
+    return;
+  }
+  state.metrics.sigmaInitMs=Math.round(performance.now()-t1);
+  renderOperatorSelect(); renderTypeFilters(); renderLegend(); bindEvents();
+  var chip=$('#data-chip');
+  chip.className='meta-chip '+(fromSample?'sample':'ok');
+  chip.textContent=(fromSample?'示例数据':'真实数据')+' · '+state.nodes.length+' 节点 / '+state.edges.length+' 边';
+  var sub=$('#sub-counts'); if(sub) sub.textContent='全图 '+state.nodes.length+' 节点 / '+state.edges.length+' 边';
+  setSubgraph(op?op.id:null, true);
+  switchTab('detail');
+  state.booted=true; document.body.dataset.boot='ok';
+  state.metrics.bootMs=Math.round(performance.now());
+  state.metrics.scriptStartMs=Math.round(APP_T0);
+  window.__KG_FAST__={state:state,nodeCount:state.nodes.length,edgeCount:state.edges.length,traces:state.traceIds.length};
+  window.__KG_FAST__.api={select:selectNode, refresh:refresh, setFull:setFullGraph, setSub:setSubgraph, fit:fitNodes, focus:focusNode};
+  window.__KG_FAST_PERF__=state.metrics;
+  // 首屏相机：适配子图
+  if(QS.get('nofit')!=='1'){ setTimeout(function(){ fitNodes(Array.from(state.computedSubgraph)); },50); }
+  applyDeepLink();
+}
+function start(){
+  var hasData=!!(window.KG_DATA&&window.KG_DATA.nodes&&window.KG_DATA.nodes.length);
+  if(hasData && window.KG_TRACES){ boot(false); return; }
+  if(hasData && !window.KG_TRACES){ loadScript('sample/sample_traces.js',function(){boot(false);},function(){boot(false);}); return; }
+  loadScript('sample/sample_graph_data.js',function(){
+    loadScript('sample/sample_traces.js',function(){boot(true);},function(){boot(true);});
+  },function(){ showFatal('未找到 graph_data.js 与 sample/sample_graph_data.js。'); });
+}
+if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start);
+else start();
+})();
+</script>
+</body>
+</html>

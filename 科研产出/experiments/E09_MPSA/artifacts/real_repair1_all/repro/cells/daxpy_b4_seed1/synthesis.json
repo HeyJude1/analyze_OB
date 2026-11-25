@@ -1,0 +1,38 @@
+{
+  "criteria": {
+    "supportive": {
+      "score": 0.85,
+      "reason": "三条策略均采用 LMUL=8 和 SEW=64，向量寄存器参数一致，条件匹配良好，可共用同一向量配置。策略之间未出现参数冲突，但需注意尾部处理与主循环的衔接一致性。"
+    },
+    "complementarity": {
+      "score": 0.9,
+      "reason": "stg:axpy:vectorize_d 负责主循环向量化，stg:axpy:tail_handle_d 处理尾部动态部分，stg:axpy:specialize_d 进行寄存器分组调优，三者分别作用于内核、尾部、寄存器管理，覆盖多个优化阶段，形成完整闭环。"
+    },
+    "accuracy": {
+      "score": 0.7,
+      "reason": "策略均未明确处理指针别名问题，尾部处理存在动态 vl 控制流，可能影响数值一致性。建议在生成代码时加入别名检测机制或确保 y 不与 x 别名。"
+    },
+    "completeness": {
+      "score": 0.8,
+      "reason": "主循环由向量化策略覆盖，尾部由动态 vl 掩码策略处理，单位步长已优化，但未明确处理 n<=0 的情况，建议加入 early return 分支处理。"
+    }
+  },
+  "criteria_scores": {
+    "supportive": 0.85,
+    "complementarity": 0.9,
+    "accuracy": 0.7,
+    "completeness": 0.8
+  },
+  "overall": "三策略组合具备良好一致性与互补性，可实现完整向量化与尾部处理，但需注意别名处理与边界数值一致性。",
+  "recommended": [
+    "stg:axpy:vectorize_d",
+    "stg:axpy:tail_handle_d",
+    "stg:axpy:specialize_d"
+  ],
+  "guidance": "['主循环使用 RVV 向量化内核，vsetvl 配合 vle/vfmacc/vse 指令，LMUL=8，SEW=64，vector_len=32。', '尾部处理采用动态 vl 设置与掩码机制，确保 tail_divisible=false 时的完整性。', '寄存器分组采用 LMUL=8 以提升并行度，注意控制寄存器压力，避免冲突。', '步长特化路径仅保留单位步长逻辑，因 stride_x 和 stride_y 均为 1。', '加入 n <= 0 的 early return 分支，避免无效执行。']",
+  "conflicts": [
+    "避免同时使用多个尾部处理策略，当前仅采用 stg:axpy:tail_handle_d 即可。",
+    "不要修改 LMUL/SEW 参数，确保三策略间的向量配置一致性。",
+    "不建议在向量化阶段引入额外标量循环展开，以免干扰编译器调度与寄存器分配。"
+  ]
+}

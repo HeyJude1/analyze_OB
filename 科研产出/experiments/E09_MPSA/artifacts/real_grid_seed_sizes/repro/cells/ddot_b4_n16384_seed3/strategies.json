@@ -1,0 +1,62 @@
+[
+  {
+    "id": "stg:dot:specialize_d",
+    "name": "LMUL/SEW 向量寄存器分组调优",
+    "family": "SIMD向量指令",
+    "action": "specialize",
+    "level": "instruction",
+    "level_stage": "core",
+    "arch_scope": "arch_specific",
+    "score": 0.745
+  },
+  {
+    "id": "stg:dot:split_d",
+    "name": "向量归约累加链",
+    "family": "循环拆分",
+    "action": "split",
+    "level": "instruction",
+    "level_stage": "core",
+    "arch_scope": "arch_specific",
+    "score": 0.745
+  },
+  {
+    "id": "stg:dot:tail_handle_d",
+    "name": "动态 vl / 掩码尾部处理",
+    "family": "尾部处理",
+    "action": "tail_handle",
+    "level": "instruction",
+    "level_stage": "post",
+    "arch_scope": "arch_specific",
+    "score": 0.745
+  },
+  {
+    "id": "stg:dot:tile_d",
+    "name": "向量寄存器输出分块",
+    "family": "分块Tiling",
+    "action": "tile",
+    "level": "instruction",
+    "level_stage": "core",
+    "arch_scope": "arch_specific",
+    "score": 0.745
+  },
+  {
+    "id": "stg:dot:vectorize_d",
+    "name": "RVV 向量化内核（vsetvl + vle/vfmacc/vse）",
+    "family": "SIMD向量指令",
+    "action": "vectorize",
+    "level": "instruction",
+    "level_stage": "core",
+    "arch_scope": "arch_specific",
+    "score": 0.745
+  },
+  {
+    "id": "stg:dot:reduce_register_pressure_s",
+    "name": "标量归约累加链",
+    "family": "循环拆分",
+    "action": "reduce_register_pressure",
+    "level": "code",
+    "level_stage": "core",
+    "arch_scope": "arch_agnostic",
+    "score": 0.7
+  }
+]

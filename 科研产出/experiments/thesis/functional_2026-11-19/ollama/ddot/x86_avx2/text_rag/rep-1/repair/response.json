@@ -1,0 +1,9 @@
+{
+  "raw": "```c\n#include \"opbench.h\"\n\ndouble op_ddot(size_t n, const double *x, ptrdiff_t incx,\n               const double *y, ptrdiff_t incy) {\n    double sum = 0.0;\n    if (incx == 1 && incy == 1) {\n        for (size_t i = 0; i + 4 <= n; i += 4) {\n            __m256d x_vec = _mm256_loadu_pd(&x[i]);\n            __m256d y_vec = _mm256_loadu_pd(&y[i]);\n            __m256d prod_vec = _mm256_mul_pd(x_vec, y_vec);\n            sum += _mm256_reduce_add_pd(prod_vec);\n        }\n        for (; i < n; ++i) {\n            sum += x[i] * y[i];\n        }\n    } else {\n        for (size_t i = 0; i + 4 <= n; i += 4) {\n            __m256d x_vec = _mm256_loadu_pd(&x[(ptrdiff_t)i * incx]);\n            __m256d y_vec = _mm256_loadu_pd(&y[(ptrdiff_t)i * incy]);\n            __m256d prod_vec = _mm256_mul_pd(x_vec, y_vec);\n            sum += _mm256_reduce_add_pd(prod_vec);\n        }\n        for (; i < n; ++i) {\n            sum += x[(ptrdiff_t)i * incx] * y[(ptrdiff_t)i * incy];\n        }\n    }\n    return sum;\n}\n```",
+  "usage": {
+    "prompt_tokens": 2242,
+    "completion_tokens": 361,
+    "total_tokens": 2603
+  },
+  "stop_reason": "stop"
+}

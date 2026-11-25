@@ -1,0 +1,12 @@
+dsymm x86 candidate: check_failed 288 cases, 3136 failures
+
+dsymm case 49 modified guard 2
+dsymm case 49 modified guard 3
+dsymm case 49 modified guard 4
+dsymm case 50 modified guard 2
+dsymm case 50 modified guard 3
+dsymm case 50 modified guard 4
+dsymm case 51 modified guard 2
+dsymm case 51 modified guard 3
+dsymm case 51 modified guard 4
+dsymm case 52 modified guard 2

@@ -1,0 +1,48 @@
+dgemm x86 candidate: compile_error 
+
+..\experiments\thesis\functional_2026-11-19\ollama\dgemm\x86_avx2\text_rag\rep-1\repair\candidate.c: In function 'op_dgemm':
+..\experiments\thesis\functional_2026-11-19\ollama\dgemm\x86_avx2\text_rag\rep-1\repair\candidate.c:20:9: error: unknown type name '__m256d'
+   20 |         __m256d valpha = _mm256_set1_pd(alpha);
+      |         ^~~~~~~
+..\experiments\thesis\functional_2026-11-19\ollama\dgemm\x86_avx2\text_rag\rep-1\repair\candidate.c:20:26: error: implicit declaration of function '_mm256_set1_pd' [-Wimplicit-function-declaration]
+   20 |         __m256d valpha = _mm256_set1_pd(alpha);
+      |                          ^~~~~~~~~~~~~~
+..\experiments\thesis\functional_2026-11-19\ollama\dgemm\x86_avx2\text_rag\rep-1\repair\candidate.c:21:9: error: unknown type name '__m256d'
+   21 |         __m256d vbeta = _mm256_set1_pd(beta);
+      |         ^~~~~~~
+..\experiments\thesis\functional_2026-11-19\ollama\dgemm\x86_avx2\text_rag\rep-1\repair\candidate.c:25:17: error: unknown type name '__m256d'
+   25 |                 __m256d vsum = _mm256_setzero_pd();
+      |                 ^~~~~~~
+..\experiments\thesis\functional_2026-11-19\ollama\dgemm\x86_avx2\text_rag\rep-1\repair\candidate.c:25:32: error: implicit declaration of function '_mm256_setzero_pd' [-Wimplicit-function-declaration]
+   25 |                 __m256d vsum = _mm256_setzero_pd();
+      |                                ^~~~~~~~~~~~~~~~~
+..\experiments\thesis\functional_2026-11-19\ollama\dgemm\x86_avx2\text_rag\rep-1\repair\candidate.c:27:21: error: unknown type name '__m256d'
+   27 |                     __m256d va = _mm256_loadu_pd(&a[i * lda + p]);
+      |                     ^~~~~~~
+..\experiments\thesis\functional_2026-11-19\ollama\dgemm\x86_avx2\text_rag\rep-1\repair\candidate.c:27:34: error: implicit declaration of function '_mm256_loadu_pd' [-Wimplicit-function-declaration]
+   27 |                     __m256d va = _mm256_loadu_pd(&a[i * lda + p]);
+      |                                  ^~~~~~~~~~~~~~~
+..\experiments\thesis\functional_2026-11-19\ollama\dgemm\x86_avx2\text_rag\rep-1\repair\candidate.c:28:21: error: unknown type name '__m256d'
+   28 |                     __m256d vb = _mm256_loadu_pd(&b[p * ldb + j]);
+      |                     ^~~~~~~
+..\experiments\thesis\functional_2026-11-19\ollama\dgemm\x86_avx2\text_rag\rep-1\repair\candidate.c:29:28: error: implicit declaration of function '_mm256_add_pd' [-Wimplicit-function-declaration]
+   29 |                     vsum = _mm256_add_pd(vsum, _mm256_mul_pd(va, vb));
+      |                            ^~~~~~~~~~~~~
+..\experiments\thesis\functional_2026-11-19\ollama\dgemm\x86_avx2\text_rag\rep-1\repair\candidate.c:29:48: error: implicit declaration of function '_mm256_mul_pd' [-Wimplicit-function-declaration]
+   29 |                     vsum = _mm256_add_pd(vsum, _mm256_mul_pd(va, vb));
+      |                                                ^~~~~~~~~~~~~
+..\experiments\thesis\functional_2026-11-19\ollama\dgemm\x86_avx2\text_rag\rep-1\repair\candidate.c:31:17: error: unknown type name '__m256d'
+   31 |                 __m256d vproduct = _mm256_mul_pd(valpha, vsum);
+      |                 ^~~~~~~
+..\experiments\thesis\functional_2026-11-19\ollama\dgemm\x86_avx2\text_rag\rep-1\repair\candidate.c:32:17: error: unknown type name '__m256d'
+   32 |                 __m256d vout = _mm256_loadu_pd(&c[i * ldc + j]);
+      |                 ^~~~~~~
+..\experiments\thesis\functional_2026-11-19\ollama\dgemm\x86_avx2\text_rag\rep-1\repair\candidate.c:35:17: error: implicit declaration of function '_mm256_storeu_pd' [-Wimplicit-function-declaration]
+   35 |                 _mm256_storeu_pd(&c[i * ldc + j], vout);
+      |                 ^~~~~~~~~~~~~~~~
+..\experiments\thesis\functional_2026-11-19\ollama\dgemm\x86_avx2\text_rag\rep-1\repair\candidate.c:17:13: warning: unused variable 'pc' [-Wunused-variable]
+   17 |     double *pc = c;
+      |             ^~
+..\experiments\thesis\functional_2026-11-19\ollama\dgemm\x86_avx2\text_rag\rep-1\repair\candidate.c:16:19: warning: unused variable 'pa' [-Wunused-variable]
+   16 |     const double *pa = a;
+      |                   ^~

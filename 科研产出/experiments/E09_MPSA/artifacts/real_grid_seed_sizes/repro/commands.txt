@@ -1,0 +1,122 @@
+# 自动记录：每个 cell 的 mpsa 生成命令
+
+## daxpy_b3_n1024_seed1
+mpsa: C:\Users\MSI\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\python.exe -m kgagent.cli mpsa --op daxpy --profile k1_rvv256 --code C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\tasks\daxpy\input\generic.c --mode b3 --provider dashscope --out C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\runs\real_grid_seed_sizes\daxpy_b3_n1024 --top-k 6
+build: cd cells/daxpy_b3_n1024_seed1/final && bash build.sh
+run:   cd cells/daxpy_b3_n1024_seed1/final && bash run.sh
+
+## daxpy_b3_n16384_seed1
+mpsa: C:\Users\MSI\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\python.exe -m kgagent.cli mpsa --op daxpy --profile k1_rvv256 --code C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\tasks\daxpy\input\generic.c --mode b3 --provider dashscope --out C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\runs\real_grid_seed_sizes\daxpy_b3_n16384 --top-k 6
+build: cd cells/daxpy_b3_n16384_seed1/final && bash build.sh
+run:   cd cells/daxpy_b3_n16384_seed1/final && bash run.sh
+
+## daxpy_b3_n1024_seed2
+mpsa: C:\Users\MSI\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\python.exe -m kgagent.cli mpsa --op daxpy --profile k1_rvv256 --code C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\tasks\daxpy\input\generic.c --mode b3 --provider dashscope --out C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\runs\real_grid_seed_sizes\daxpy_b3_n1024 --top-k 6
+build: cd cells/daxpy_b3_n1024_seed2/final && bash build.sh
+run:   cd cells/daxpy_b3_n1024_seed2/final && bash run.sh
+
+## daxpy_b3_n16384_seed2
+mpsa: C:\Users\MSI\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\python.exe -m kgagent.cli mpsa --op daxpy --profile k1_rvv256 --code C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\tasks\daxpy\input\generic.c --mode b3 --provider dashscope --out C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\runs\real_grid_seed_sizes\daxpy_b3_n16384 --top-k 6
+build: cd cells/daxpy_b3_n16384_seed2/final && bash build.sh
+run:   cd cells/daxpy_b3_n16384_seed2/final && bash run.sh
+
+## daxpy_b3_n1024_seed3
+mpsa: C:\Users\MSI\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\python.exe -m kgagent.cli mpsa --op daxpy --profile k1_rvv256 --code C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\tasks\daxpy\input\generic.c --mode b3 --provider dashscope --out C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\runs\real_grid_seed_sizes\daxpy_b3_n1024 --top-k 6
+build: cd cells/daxpy_b3_n1024_seed3/final && bash build.sh
+run:   cd cells/daxpy_b3_n1024_seed3/final && bash run.sh
+
+## daxpy_b3_n16384_seed3
+mpsa: C:\Users\MSI\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\python.exe -m kgagent.cli mpsa --op daxpy --profile k1_rvv256 --code C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\tasks\daxpy\input\generic.c --mode b3 --provider dashscope --out C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\runs\real_grid_seed_sizes\daxpy_b3_n16384 --top-k 6
+build: cd cells/daxpy_b3_n16384_seed3/final && bash build.sh
+run:   cd cells/daxpy_b3_n16384_seed3/final && bash run.sh
+
+## daxpy_b4_n1024_seed1
+mpsa: C:\Users\MSI\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\python.exe -m kgagent.cli mpsa --op daxpy --profile k1_rvv256 --code C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\tasks\daxpy\input\generic.c --mode b4 --provider dashscope --out C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\runs\real_grid_seed_sizes\daxpy_b4_n1024 --top-k 6 --analysis-k 3
+build: cd cells/daxpy_b4_n1024_seed1/final && bash build.sh
+run:   cd cells/daxpy_b4_n1024_seed1/final && bash run.sh
+
+## daxpy_b4_n16384_seed1
+mpsa: C:\Users\MSI\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\python.exe -m kgagent.cli mpsa --op daxpy --profile k1_rvv256 --code C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\tasks\daxpy\input\generic.c --mode b4 --provider dashscope --out C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\runs\real_grid_seed_sizes\daxpy_b4_n16384 --top-k 6 --analysis-k 3
+build: cd cells/daxpy_b4_n16384_seed1/final && bash build.sh
+run:   cd cells/daxpy_b4_n16384_seed1/final && bash run.sh
+
+## daxpy_b4_n1024_seed2
+mpsa: C:\Users\MSI\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\python.exe -m kgagent.cli mpsa --op daxpy --profile k1_rvv256 --code C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\tasks\daxpy\input\generic.c --mode b4 --provider dashscope --out C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\runs\real_grid_seed_sizes\daxpy_b4_n1024 --top-k 6 --analysis-k 3
+build: cd cells/daxpy_b4_n1024_seed2/final && bash build.sh
+run:   cd cells/daxpy_b4_n1024_seed2/final && bash run.sh
+
+## daxpy_b4_n16384_seed2
+mpsa: C:\Users\MSI\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\python.exe -m kgagent.cli mpsa --op daxpy --profile k1_rvv256 --code C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\tasks\daxpy\input\generic.c --mode b4 --provider dashscope --out C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\runs\real_grid_seed_sizes\daxpy_b4_n16384 --top-k 6 --analysis-k 3
+build: cd cells/daxpy_b4_n16384_seed2/final && bash build.sh
+run:   cd cells/daxpy_b4_n16384_seed2/final && bash run.sh
+
+## daxpy_b4_n1024_seed3
+mpsa: C:\Users\MSI\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\python.exe -m kgagent.cli mpsa --op daxpy --profile k1_rvv256 --code C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\tasks\daxpy\input\generic.c --mode b4 --provider dashscope --out C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\runs\real_grid_seed_sizes\daxpy_b4_n1024 --top-k 6 --analysis-k 3
+build: cd cells/daxpy_b4_n1024_seed3/final && bash build.sh
+run:   cd cells/daxpy_b4_n1024_seed3/final && bash run.sh
+
+## daxpy_b4_n16384_seed3
+mpsa: C:\Users\MSI\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\python.exe -m kgagent.cli mpsa --op daxpy --profile k1_rvv256 --code C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\tasks\daxpy\input\generic.c --mode b4 --provider dashscope --out C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\runs\real_grid_seed_sizes\daxpy_b4_n16384 --top-k 6 --analysis-k 3
+build: cd cells/daxpy_b4_n16384_seed3/final && bash build.sh
+run:   cd cells/daxpy_b4_n16384_seed3/final && bash run.sh
+
+## ddot_b3_n1024_seed1
+mpsa: C:\Users\MSI\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\python.exe -m kgagent.cli mpsa --op ddot --profile k1_rvv256 --code C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\tasks\ddot\input\generic.c --mode b3 --provider dashscope --out C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\runs\real_grid_seed_sizes\ddot_b3_n1024 --top-k 6
+build: cd cells/ddot_b3_n1024_seed1/final && bash build.sh
+run:   cd cells/ddot_b3_n1024_seed1/final && bash run.sh
+
+## ddot_b3_n16384_seed1
+mpsa: C:\Users\MSI\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\python.exe -m kgagent.cli mpsa --op ddot --profile k1_rvv256 --code C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\tasks\ddot\input\generic.c --mode b3 --provider dashscope --out C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\runs\real_grid_seed_sizes\ddot_b3_n16384 --top-k 6
+build: cd cells/ddot_b3_n16384_seed1/final && bash build.sh
+run:   cd cells/ddot_b3_n16384_seed1/final && bash run.sh
+
+## ddot_b3_n1024_seed2
+mpsa: C:\Users\MSI\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\python.exe -m kgagent.cli mpsa --op ddot --profile k1_rvv256 --code C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\tasks\ddot\input\generic.c --mode b3 --provider dashscope --out C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\runs\real_grid_seed_sizes\ddot_b3_n1024 --top-k 6
+build: cd cells/ddot_b3_n1024_seed2/final && bash build.sh
+run:   cd cells/ddot_b3_n1024_seed2/final && bash run.sh
+
+## ddot_b3_n16384_seed2
+mpsa: C:\Users\MSI\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\python.exe -m kgagent.cli mpsa --op ddot --profile k1_rvv256 --code C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\tasks\ddot\input\generic.c --mode b3 --provider dashscope --out C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\runs\real_grid_seed_sizes\ddot_b3_n16384 --top-k 6
+build: cd cells/ddot_b3_n16384_seed2/final && bash build.sh
+run:   cd cells/ddot_b3_n16384_seed2/final && bash run.sh
+
+## ddot_b3_n1024_seed3
+mpsa: C:\Users\MSI\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\python.exe -m kgagent.cli mpsa --op ddot --profile k1_rvv256 --code C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\tasks\ddot\input\generic.c --mode b3 --provider dashscope --out C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\runs\real_grid_seed_sizes\ddot_b3_n1024 --top-k 6
+build: cd cells/ddot_b3_n1024_seed3/final && bash build.sh
+run:   cd cells/ddot_b3_n1024_seed3/final && bash run.sh
+
+## ddot_b3_n16384_seed3
+mpsa: C:\Users\MSI\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\python.exe -m kgagent.cli mpsa --op ddot --profile k1_rvv256 --code C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\tasks\ddot\input\generic.c --mode b3 --provider dashscope --out C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\runs\real_grid_seed_sizes\ddot_b3_n16384 --top-k 6
+build: cd cells/ddot_b3_n16384_seed3/final && bash build.sh
+run:   cd cells/ddot_b3_n16384_seed3/final && bash run.sh
+
+## ddot_b4_n1024_seed1
+mpsa: C:\Users\MSI\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\python.exe -m kgagent.cli mpsa --op ddot --profile k1_rvv256 --code C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\tasks\ddot\input\generic.c --mode b4 --provider dashscope --out C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\runs\real_grid_seed_sizes\ddot_b4_n1024 --top-k 6 --analysis-k 3
+build: cd cells/ddot_b4_n1024_seed1/final && bash build.sh
+run:   cd cells/ddot_b4_n1024_seed1/final && bash run.sh
+
+## ddot_b4_n16384_seed1
+mpsa: C:\Users\MSI\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\python.exe -m kgagent.cli mpsa --op ddot --profile k1_rvv256 --code C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\tasks\ddot\input\generic.c --mode b4 --provider dashscope --out C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\runs\real_grid_seed_sizes\ddot_b4_n16384 --top-k 6 --analysis-k 3
+build: cd cells/ddot_b4_n16384_seed1/final && bash build.sh
+run:   cd cells/ddot_b4_n16384_seed1/final && bash run.sh
+
+## ddot_b4_n1024_seed2
+mpsa: C:\Users\MSI\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\python.exe -m kgagent.cli mpsa --op ddot --profile k1_rvv256 --code C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\tasks\ddot\input\generic.c --mode b4 --provider dashscope --out C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\runs\real_grid_seed_sizes\ddot_b4_n1024 --top-k 6 --analysis-k 3
+build: cd cells/ddot_b4_n1024_seed2/final && bash build.sh
+run:   cd cells/ddot_b4_n1024_seed2/final && bash run.sh
+
+## ddot_b4_n16384_seed2
+mpsa: C:\Users\MSI\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\python.exe -m kgagent.cli mpsa --op ddot --profile k1_rvv256 --code C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\tasks\ddot\input\generic.c --mode b4 --provider dashscope --out C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\runs\real_grid_seed_sizes\ddot_b4_n16384 --top-k 6 --analysis-k 3
+build: cd cells/ddot_b4_n16384_seed2/final && bash build.sh
+run:   cd cells/ddot_b4_n16384_seed2/final && bash run.sh
+
+## ddot_b4_n1024_seed3
+mpsa: C:\Users\MSI\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\python.exe -m kgagent.cli mpsa --op ddot --profile k1_rvv256 --code C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\tasks\ddot\input\generic.c --mode b4 --provider dashscope --out C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\runs\real_grid_seed_sizes\ddot_b4_n1024 --top-k 6 --analysis-k 3
+build: cd cells/ddot_b4_n1024_seed3/final && bash build.sh
+run:   cd cells/ddot_b4_n1024_seed3/final && bash run.sh
+
+## ddot_b4_n16384_seed3
+mpsa: C:\Users\MSI\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python\python.exe -m kgagent.cli mpsa --op ddot --profile k1_rvv256 --code C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\tasks\ddot\input\generic.c --mode b4 --provider dashscope --out C:\Users\MSI\Desktop\开题\科研产出\experiments\E09_MPSA\runs\real_grid_seed_sizes\ddot_b4_n16384 --top-k 6 --analysis-k 3
+build: cd cells/ddot_b4_n16384_seed3/final && bash build.sh
+run:   cd cells/ddot_b4_n16384_seed3/final && bash run.sh
+

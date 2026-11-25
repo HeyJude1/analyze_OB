@@ -1,0 +1,13 @@
+dsymv rvv candidate: check_failed 720 cases, 3787 failures
+
+wsl: �hKm0R localhost �NtM�n�FO*g\��P0R WSL0NAT !j_N�v WSL N/ec localhost �Nt0
+dsymv triangle/stride/alpha/beta case 61 cell 1: got nan expected -5.4676666971554013
+dsymv triangle/stride/alpha/beta case 62 cell 1: got nan expected -1.8123713527851459
+dsymv triangle/stride/alpha/beta case 66 cell 1: got nan expected -5.5474392981024288
+dsymv triangle/stride/alpha/beta case 67 cell 1: got nan expected 5.6614061873368566
+dsymv triangle/stride/alpha/beta case 68 cell 1: got nan expected 3.652440318302387
+dsymv triangle/stride/alpha/beta case 72 cell 1: got nan expected -3.0951916920544011
+dsymv triangle/stride/alpha/beta case 73 cell 1: got nan expected -0.27242856841320212
+dsymv triangle/stride/alpha/beta case 74 cell 1: got nan expected 1.5443236074270554
+dsymv triangle/stride/alpha/beta case 78 cell 1: got nan expected 9.302250068599653
+dsymv triangle/stride/alpha/beta case 79 cell 1: got nan expected -4.9465204145529773

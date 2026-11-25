@@ -1,0 +1,37 @@
+{
+  "criteria": {
+    "supportive": {
+      "score": 0.8,
+      "reason": "策略之间参数基本一致（SEW=64, LMUL=8），均可适用于double类型与RISC-V Vector Extension。stg:dot:specialize_d 与 stg:dot:split_d 侧重向量寄存器与归约链优化，stg:dot:tail_handle_d 专门处理尾部，三者核心参数无冲突。"
+    },
+    "complementarity": {
+      "score": 0.9,
+      "reason": "stg:dot:specialize_d 优化主循环向量化与寄存器分组；stg:dot:split_d 优化归约延迟与顺序；stg:dot:tail_handle_d 处理尾部掩码与动态vl，三者分别作用于主循环向量化、归约链、尾部处理，覆盖多个优化阶段，组合后可提升整体性能。"
+    },
+    "accuracy": {
+      "score": 0.65,
+      "reason": "由于double累加顺序变化可能影响数值一致性，且stg:dot:split_d 的split_factor=1未优化归约顺序，存在潜在数值偏差。此外，stg:dot:tail_handle_d 在尾部处理中可能引入向量与标量混合计算误差，需特别注意数值一致性。"
+    },
+    "completeness": {
+      "score": 0.85,
+      "reason": "stg:dot:specialize_d 和 stg:dot:split_d 覆盖主循环向量化与归约优化；stg:dot:tail_handle_d 处理尾部动态vl与掩码；但均未明确处理n<=0或非单位步长路径，边界条件覆盖略显不足。"
+    }
+  },
+  "criteria_scores": {
+    "supportive": 0.8,
+    "complementarity": 0.9,
+    "accuracy": 0.65,
+    "completeness": 0.85
+  },
+  "overall": "三策略组合后可覆盖主循环向量化、归约链优化与尾部处理，策略参数一致且互补性强，适合k1_rvv256平台下的ddot实现，但需注意数值一致性与边界条件处理。",
+  "recommended": [
+    "stg:dot:specialize_d",
+    "stg:dot:split_d",
+    "stg:dot:tail_handle_d"
+  ],
+  "guidance": "['主循环采用LMUL=8、SEW=64的向量寄存器分组策略，适配double类型与k1_rvv256硬件', '在主循环中引入split_factor=2或4的归约链优化，以掩盖归约延迟并提升性能', '尾部处理采用动态vl与掩码机制，确保tail_divisible=false时的正确性', '注意double累加顺序变化带来的数值一致性问题，必要时采用标量补偿或排序累加', '非单位步长路径需额外处理，确保向量化加载对齐与正确性']",
+  "conflicts": [
+    "避免在归约链中使用过高的split_factor，以免寄存器压力过高影响性能",
+    "避免在尾部处理中混合使用向量与标量计算，以防止数值误差累积"
+  ]
+}

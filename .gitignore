@@ -142,3 +142,11 @@ Thumbs.db
 # Local configuration
 config.local.json
 local_config.json
+
+# Thesis research snapshots retain experiment logs and exclude local build products.
+!/科研产出/**/*.log
+/科研产出/**/.build/
+/科研产出/**/bin/
+/科研产出/**/*.exe
+/科研产出/**/*.o
+/科研产出/**/*.a

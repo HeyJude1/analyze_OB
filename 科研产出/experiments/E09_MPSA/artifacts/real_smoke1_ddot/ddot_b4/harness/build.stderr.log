@@ -1,0 +1,10 @@
+/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_smoke1_ddot/ddot_b4/harness/generated.c: In function ‘ddot_k’:
+/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_smoke1_ddot/ddot_b4/harness/generated.c:13:29: warning: implicit declaration of function ‘__riscv_vmvinf_f64m8’; did you mean ‘__riscv_vfmv_s_f_f64m8’? [-Wimplicit-function-declaration]
+   13 |         vfloat64m8_t vsum = __riscv_vmvinf_f64m8();
+      |                             ^~~~~~~~~~~~~~~~~~~~
+      |                             __riscv_vfmv_s_f_f64m8
+/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_smoke1_ddot/ddot_b4/harness/generated.c:13:29: error: incompatible types when initializing type ‘vfloat64m8_t’ using type ‘int’
+/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_smoke1_ddot/ddot_b4/harness/generated.c:21:15: warning: implicit declaration of function ‘__riscv_vfmv_f_s_f64m8’; did you mean ‘__riscv_vfmv_s_f_f64m8’? [-Wimplicit-function-declaration]
+   21 |         dot = __riscv_vfmv_f_s_f64m8(vsum, vl);
+      |               ^~~~~~~~~~~~~~~~~~~~~~
+      |               __riscv_vfmv_s_f_f64m8

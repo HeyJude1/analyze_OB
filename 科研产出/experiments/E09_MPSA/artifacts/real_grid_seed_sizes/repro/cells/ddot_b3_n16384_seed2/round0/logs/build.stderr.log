@@ -1,0 +1,9 @@
+/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_grid_seed_sizes/ddot_b3_n16384/harness/generated.c: In function ‘ddot_k’:
+/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_grid_seed_sizes/ddot_b3_n16384/harness/generated.c:19:20: warning: implicit declaration of function ‘__riscv_vfmvvp_vv_f64m8’; did you mean ‘__riscv_vfmax_vv_f64m8’? [-Wimplicit-function-declaration]
+   19 |             vsum = __riscv_vfmvvp_vv_f64m8(vsum, vx, vy, vl);
+      |                    ^~~~~~~~~~~~~~~~~~~~~~~
+      |                    __riscv_vfmax_vv_f64m8
+/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_grid_seed_sizes/ddot_b3_n16384/harness/generated.c:19:20: error: incompatible types when assigning to type ‘vfloat64m8_t’ from type ‘int’
+/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_grid_seed_sizes/ddot_b3_n16384/harness/generated.c:35:20: error: incompatible types when assigning to type ‘vfloat64m8_t’ from type ‘int’
+   35 |             vsum = __riscv_vfmvvp_vv_f64m8(vsum, vx, vy, vl);
+      |                    ^~~~~~~~~~~~~~~~~~~~~~~

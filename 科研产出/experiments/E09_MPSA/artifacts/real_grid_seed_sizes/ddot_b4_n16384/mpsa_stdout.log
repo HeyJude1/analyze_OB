@@ -1,0 +1,80 @@
+{
+  "status": "ok",
+  "op": "ddot",
+  "op_canonical": "dot",
+  "profile": "k1_rvv256",
+  "mode": "b4",
+  "provider": "dashscope",
+  "model": "qwen-plus-2025-04-28",
+  "out_dir": "C:\\Users\\MSI\\Desktop\\����\\���в���\\experiments\\E09_MPSA\\runs\\real_grid_seed_sizes\\ddot_b4_n16384",
+  "result_path": "C:\\Users\\MSI\\Desktop\\����\\���в���\\experiments\\E09_MPSA\\runs\\real_grid_seed_sizes\\ddot_b4_n16384\\mpsa_result.json",
+  "generated_c_path": "C:\\Users\\MSI\\Desktop\\����\\���в���\\experiments\\E09_MPSA\\runs\\real_grid_seed_sizes\\ddot_b4_n16384\\generated.c",
+  "retrieved": {
+    "count": 6,
+    "top_k": 6,
+    "strategy_ids": [
+      "stg:dot:specialize_d",
+      "stg:dot:split_d",
+      "stg:dot:tail_handle_d",
+      "stg:dot:tile_d",
+      "stg:dot:vectorize_d",
+      "stg:dot:reduce_register_pressure_s"
+    ],
+    "trace_id": "trace:20261112T212452:dot:k1_rvv256"
+  },
+  "analysis": {
+    "analysis_k": 3,
+    "count": 3,
+    "strategy_ids": [
+      "stg:dot:specialize_d",
+      "stg:dot:split_d",
+      "stg:dot:tail_handle_d"
+    ]
+  },
+  "synthesis": {
+    "criteria_scores": {
+      "supportive": 0.9,
+      "complementarity": 0.95,
+      "accuracy": 0.7,
+      "completeness": 0.9
+    },
+    "overall": "��������Ͼ߱��߻�������һ���ԣ����γ�����ʵ�����̣������� k1_rvv256 �ϵĴ��ģ double ������㡣"
+  },
+  "usage": {
+    "calls": 5,
+    "prompt_tokens": 20039,
+    "completion_tokens": 2083,
+    "total_tokens": 22122,
+    "by_stage": {
+      "analysis": {
+        "calls": 3,
+        "prompt_tokens": 6405,
+        "completion_tokens": 1012,
+        "total_tokens": 7417
+      },
+      "synthesis": {
+        "calls": 1,
+        "prompt_tokens": 1888,
+        "completion_tokens": 614,
+        "total_tokens": 2502
+      },
+      "generate": {
+        "calls": 1,
+        "prompt_tokens": 11746,
+        "completion_tokens": 457,
+        "total_tokens": 12203
+      }
+    }
+  },
+  "elapsed_s": 47.011,
+  "code_meta": {
+    "signature": "double ddot_k(BLASLONG n, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y)",
+    "function_name": "ddot_k",
+    "wrapped_body": false,
+    "fences_removed": false,
+    "prologue_added": true,
+    "repairs": [],
+    "char_count": 1133
+  },
+  "code_preview": "typedef long long BLASLONG;\n\n#include <riscv_vector.h>\ndouble ddot_k(BLASLONG n, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y)\n{\n    double dot = 0.0;\n\n    if (n <= 0) return dot;\n\n    // ��·����"
+}

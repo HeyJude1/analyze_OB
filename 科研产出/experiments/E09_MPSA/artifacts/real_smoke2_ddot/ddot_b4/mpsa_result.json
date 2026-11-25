@@ -1,0 +1,359 @@
+{
+  "schema_version": "mpsa-v1",
+  "op": "ddot",
+  "op_canonical": "dot",
+  "profile": "k1_rvv256",
+  "mode": "b4",
+  "provider": "dashscope",
+  "model": "qwen-plus-2025-04-28",
+  "model_requested": "qwen-plus-2025-04-28",
+  "created_at": "2026-11-12T20:48:09+08:00",
+  "retrieved": {
+    "top_k": 6,
+    "count": 6,
+    "trace_id": "trace:20261112T204721:dot:k1_rvv256",
+    "query": {
+      "operator": "dot",
+      "raw_operator": "ddot",
+      "hardware_profile_id": "k1_rvv256",
+      "hardware_profile_node": "hw:k1_rvv256",
+      "code_features": {
+        "dtype": "d",
+        "precision": "double",
+        "stride_x": 1,
+        "stride_y": 1,
+        "loop_depth": 1,
+        "size_regime": "large",
+        "aligned": true,
+        "tail_divisible": false,
+        "structural": "none",
+        "reduction": true
+      },
+      "top_k": 6
+    },
+    "strategy_ids": [
+      "stg:dot:specialize_d",
+      "stg:dot:split_d",
+      "stg:dot:tail_handle_d",
+      "stg:dot:tile_d",
+      "stg:dot:vectorize_d",
+      "stg:dot:reduce_register_pressure_s"
+    ],
+    "strategies": [
+      {
+        "id": "stg:dot:specialize_d",
+        "name": "LMUL/SEW 向量寄存器分组调优",
+        "family": "SIMD向量指令",
+        "action": "specialize",
+        "level": "instruction",
+        "level_stage": "core",
+        "arch_scope": "arch_specific",
+        "score": 0.745
+      },
+      {
+        "id": "stg:dot:split_d",
+        "name": "向量归约累加链",
+        "family": "循环拆分",
+        "action": "split",
+        "level": "instruction",
+        "level_stage": "core",
+        "arch_scope": "arch_specific",
+        "score": 0.745
+      },
+      {
+        "id": "stg:dot:tail_handle_d",
+        "name": "动态 vl / 掩码尾部处理",
+        "family": "尾部处理",
+        "action": "tail_handle",
+        "level": "instruction",
+        "level_stage": "post",
+        "arch_scope": "arch_specific",
+        "score": 0.745
+      },
+      {
+        "id": "stg:dot:tile_d",
+        "name": "向量寄存器输出分块",
+        "family": "分块Tiling",
+        "action": "tile",
+        "level": "instruction",
+        "level_stage": "core",
+        "arch_scope": "arch_specific",
+        "score": 0.745
+      },
+      {
+        "id": "stg:dot:vectorize_d",
+        "name": "RVV 向量化内核（vsetvl + vle/vfmacc/vse）",
+        "family": "SIMD向量指令",
+        "action": "vectorize",
+        "level": "instruction",
+        "level_stage": "core",
+        "arch_scope": "arch_specific",
+        "score": 0.745
+      },
+      {
+        "id": "stg:dot:reduce_register_pressure_s",
+        "name": "标量归约累加链",
+        "family": "循环拆分",
+        "action": "reduce_register_pressure",
+        "level": "code",
+        "level_stage": "core",
+        "arch_scope": "arch_agnostic",
+        "score": 0.7
+      }
+    ],
+    "prompt_preview": "你是 OpenBLAS kernel 优化专家。目标算子：dot（dtype=d，loop_depth=1，stride_x=1，size_regime=large）。\n目标硬件 profile：k1_rvv256。请只使用下列知识块中的策略与模板槽位，不要引入未给出的性能数字。\n1) LMUL/SEW 向量寄存器分组调优（SIMD向量指令/specialize，score=0.745）：条件 dtype in ['d']、loop_depth ge 1、reduction eq True、size_regime in ['medium', 'large']；参数 lmul=8、sew=64。\n2) 向量归约累加链（循环拆分/split，score=0.745）：条件 dtype in ['d']、loop_depth ge 1、reduction eq True、size_regime in ['medium', 'large']；参数 lmul=8、sew=64、split_factor=1。\n3) 动态 vl / 掩码尾部处理（尾部处理/tail_handle，score=0.7"
+  },
+  "analysis": {
+    "analysis_k": 3,
+    "count": 3,
+    "items": [
+      {
+        "strategy_id": "stg:dot:specialize_d",
+        "strategy_name": "LMUL/SEW 向量寄存器分组调优",
+        "applies": true,
+        "confidence": 0.8,
+        "evidence": [
+          "策略 conditions 中 dtype 的硬性约束为 'd'，与目标算子代码特征匹配",
+          "loop_depth >= 1 的硬性条件满足查询代码特征",
+          "reduction == true 的硬性条件与代码特征一致",
+          "size_regime 为 large，符合策略适用范围",
+          "arch_parameters 中指定的 sew=64 和 lmul=8 与目标硬件 k1_rvv256 的能力适配",
+          "模板中提供针对 inc_x == 1 和 inc_y == 1 的快速路径，与查询特征中的 stride_x=1、stride_y=1 匹配"
+        ],
+        "risks": [
+          "尾部处理风险：tail_divisible == false，可能无法完整向量化尾部，需额外处理",
+          "寄存器压力风险：LMUL=8 在 k1_rvv256 上可能导致较高的寄存器占用，影响性能",
+          "数值一致性风险：向量化可能导致浮点计算顺序变化，影响结果一致性",
+          "别名风险：x 和 y 指针可能存在别名问题，影响向量化执行的正确性",
+          "ISA 支持风险：目标硬件是否完整支持 RVV 指令集，特别是 vle64/vlse64 等操作"
+        ],
+        "parameters": {
+          "sew": 64,
+          "lmul": 8
+        },
+        "conflicts": [],
+        "raw": {
+          "applies": true,
+          "confidence": 0.8,
+          "evidence": [
+            "策略 conditions 中 dtype 的硬性约束为 'd'，与目标算子代码特征匹配",
+            "loop_depth >= 1 的硬性条件满足查询代码特征",
+            "reduction == true 的硬性条件与代码特征一致",
+            "size_regime 为 large，符合策略适用范围",
+            "arch_parameters 中指定的 sew=64 和 lmul=8 与目标硬件 k1_rvv256 的能力适配",
+            "模板中提供针对 inc_x == 1 和 inc_y == 1 的快速路径，与查询特征中的 stride_x=1、stride_y=1 匹配"
+          ],
+          "risks": [
+            "尾部处理风险：tail_divisible == false，可能无法完整向量化尾部，需额外处理",
+            "寄存器压力风险：LMUL=8 在 k1_rvv256 上可能导致较高的寄存器占用，影响性能",
+            "数值一致性风险：向量化可能导致浮点计算顺序变化，影响结果一致性",
+            "别名风险：x 和 y 指针可能存在别名问题，影响向量化执行的正确性",
+            "ISA 支持风险：目标硬件是否完整支持 RVV 指令集，特别是 vle64/vlse64 等操作"
+          ],
+          "parameters": {
+            "sew": 64,
+            "lmul": 8
+          },
+          "conflicts": []
+        }
+      },
+      {
+        "strategy_id": "stg:dot:split_d",
+        "strategy_name": "向量归约累加链",
+        "applies": true,
+        "confidence": 0.745,
+        "evidence": [
+          "满足 hard 条件：dtype == 'd'",
+          "满足 hard 条件：loop_depth >= 1",
+          "满足 hard 条件：reduction == true",
+          "满足 hard 条件：size_regime 在 ['medium', 'large'] 中",
+          "arch_scope 包含目标硬件 k1_rvv256",
+          "evidence 中 ev:dot:geomean 提供了速度提升的实测依据",
+          "template 提供了明确的向量归约实现结构"
+        ],
+        "risks": [
+          "尾部处理风险：tail_divisible == false 可能导致向量加载/存储越界",
+          "数值一致性风险：浮点归约顺序变化可能影响结果精度",
+          "寄存器压力风险：LMUL=8 可能导致向量寄存器资源不足",
+          "编译器支持风险：RISC-V V 扩展版本是否完整支持归约指令",
+          "性能可移植性风险：QEMU 上的证据不代表真实硬件性能表现"
+        ],
+        "parameters": {
+          "lmul": 8,
+          "sew": 64,
+          "split_factor": 1
+        },
+        "conflicts": [],
+        "raw": {
+          "applies": true,
+          "confidence": 0.745,
+          "evidence": [
+            "满足 hard 条件：dtype == 'd'",
+            "满足 hard 条件：loop_depth >= 1",
+            "满足 hard 条件：reduction == true",
+            "满足 hard 条件：size_regime 在 ['medium', 'large'] 中",
+            "arch_scope 包含目标硬件 k1_rvv256",
+            "evidence 中 ev:dot:geomean 提供了速度提升的实测依据",
+            "template 提供了明确的向量归约实现结构"
+          ],
+          "risks": [
+            "尾部处理风险：tail_divisible == false 可能导致向量加载/存储越界",
+            "数值一致性风险：浮点归约顺序变化可能影响结果精度",
+            "寄存器压力风险：LMUL=8 可能导致向量寄存器资源不足",
+            "编译器支持风险：RISC-V V 扩展版本是否完整支持归约指令",
+            "性能可移植性风险：QEMU 上的证据不代表真实硬件性能表现"
+          ],
+          "parameters": {
+            "lmul": 8,
+            "sew": 64,
+            "split_factor": 1
+          },
+          "conflicts": []
+        }
+      },
+      {
+        "strategy_id": "stg:dot:tail_handle_d",
+        "strategy_name": "动态 vl / 掩码尾部处理",
+        "applies": true,
+        "confidence": 0.745,
+        "evidence": [
+          "策略 conditions 中 dtype 为 [\"d\"] 与目标算子匹配",
+          "loop_depth >= 1 条件满足（当前 loop_depth 为 1）",
+          "reduction == true 条件满足",
+          "size_regime 为 large，策略支持",
+          "tail_divisible == false 条件为 soft constraint，未完全满足但不影响适用性",
+          "evidence 中 speedup 和 pass_rate 支持策略在 operator 级的可行性",
+          "template 支持动态 vl 处理尾部，适用于当前硬件 k1_rvv256",
+          "arch_parameters 设置 sew=64, lmul=8，与目标硬件和数据类型匹配"
+        ],
+        "risks": [
+          "尾部处理依赖动态 vl，若编译器优化不当可能导致边界处理错误",
+          "double 类型精度可能因向量寄存器舍入导致数值不一致",
+          "高 LMUL（8）可能导致寄存器压力过高，影响性能",
+          "编译器对 RISC-V Vector Extension 支持不完善可能影响生成代码质量",
+          "未考虑 x 和 y 指针可能别名导致的副作用"
+        ],
+        "parameters": {
+          "SEW": 64,
+          "LMUL": 8
+        },
+        "conflicts": [],
+        "raw": {
+          "applies": true,
+          "confidence": 0.745,
+          "evidence": [
+            "策略 conditions 中 dtype 为 [\"d\"] 与目标算子匹配",
+            "loop_depth >= 1 条件满足（当前 loop_depth 为 1）",
+            "reduction == true 条件满足",
+            "size_regime 为 large，策略支持",
+            "tail_divisible == false 条件为 soft constraint，未完全满足但不影响适用性",
+            "evidence 中 speedup 和 pass_rate 支持策略在 operator 级的可行性",
+            "template 支持动态 vl 处理尾部，适用于当前硬件 k1_rvv256",
+            "arch_parameters 设置 sew=64, lmul=8，与目标硬件和数据类型匹配"
+          ],
+          "risks": [
+            "尾部处理依赖动态 vl，若编译器优化不当可能导致边界处理错误",
+            "double 类型精度可能因向量寄存器舍入导致数值不一致",
+            "高 LMUL（8）可能导致寄存器压力过高，影响性能",
+            "编译器对 RISC-V Vector Extension 支持不完善可能影响生成代码质量",
+            "未考虑 x 和 y 指针可能别名导致的副作用"
+          ],
+          "parameters": {
+            "SEW": 64,
+            "LMUL": 8
+          },
+          "conflicts": []
+        }
+      }
+    ]
+  },
+  "synthesis": {
+    "criteria": {
+      "supportive": {
+        "score": 0.85,
+        "reason": "三个策略都要求 dtype == 'd'、loop_depth >= 1、reduction == true、size_regime 为 large，且参数上都使用 sew=64 和 lmul=8，条件基本一致，可以同时采用。但尾部处理策略（tail_handle_d）和向量归约策略（split_d）在尾部处理方式上需要协调，不能完全独立实施。"
+      },
+      "complementarity": {
+        "score": 0.9,
+        "reason": "specialize_d 负责主循环向量化和寄存器分组，split_d 优化归约路径，tail_handle_d 处理尾部边界问题，三者分别作用于向量化、归约链和尾部处理阶段，组合后能覆盖更多实现环节。"
+      },
+      "accuracy": {
+        "score": 0.7,
+        "reason": "向量化和归约顺序变化可能引入浮点精度误差，策略中未明确提供数值一致性保证机制。此外，尾部处理依赖动态 vl 和掩码，若实现不当可能导致精度问题。别名处理也未被策略覆盖，存在一定风险。"
+      },
+      "completeness": {
+        "score": 0.85,
+        "reason": "specialize_d 和 split_d 主要覆盖主循环阶段，tail_handle_d 覆盖尾部处理，组合后基本覆盖主循环和尾部。但对 n<=0 和任意步长的支持未被完整覆盖，需要额外分支处理。"
+      }
+    },
+    "criteria_scores": {
+      "supportive": 0.85,
+      "complementarity": 0.9,
+      "accuracy": 0.7,
+      "completeness": 0.85
+    },
+    "overall": "三策略组合可形成主循环向量化+归约优化+尾部掩码处理的完整实现，但需注意数值一致性和边界处理细节。",
+    "recommended": [
+      "stg:dot:specialize_d",
+      "stg:dot:split_d",
+      "stg:dot:tail_handle_d"
+    ],
+    "guidance": "['主循环采用 LMUL=8 和 SEW=64 进行向量寄存器分组，充分利用 k1_rvv256 的向量能力。', '使用 split_d 提供的向量归约结构优化累加链，提升归约性能。', '尾部采用动态 vl 和掩码机制处理非整除部分，确保边界安全。', '主循环参数建议采用 8 路展开，配合向量寄存器宽度，提高指令级并行度。', '对 n <= 0 情况单独处理，返回 0.0，确保边界正确。', '避免对 inc_x != 1 或 inc_y != 1 的情况做向量化，使用标量路径处理。']",
+    "conflicts": [
+      "stg:dot:split_d 和 stg:dot:tail_handle_d 在尾部归约顺序和掩码处理方式上可能存在冲突，需统一尾部归约逻辑。",
+      "高 LMUL=8 可能在某些硬件上导致寄存器资源不足，影响性能，建议根据硬件实际能力评估是否降低 LMUL。"
+    ]
+  },
+  "prompt": {
+    "analysis": [
+      "你是 BLAS 算子优化策略的「适用性分析器」。目标：判断下面这一条从知识图谱检索到的优化策略，在目标硬件上实现目标算子内核时是否适用、如何落地、有何风险。\n\n【目标算子】ddot（知识图谱规范名：dot）\n【目标硬件 profile】k1_rvv256\n【查询代码特征】{\n  \"aligned\": true,\n  \"dtype\": \"d\",\n  \"loop_depth\": 1,\n  \"precision\": \"double\",\n  \"reduction\": true,\n  \"size_regime\": \"large\",\n  \"stride_x\": 1,\n  \"stride_y\": 1,\n  \"structural\": \"none\",\n  \"tail_divisible\": false\n}\n【任务函数签名（生成代码必须逐字一致）】double ddot_k(BLASLONG n, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y)\n\n【基线 generic 实现（仅供参考语义，不要求照抄）】\n/* 由 tools/clean_generic.py 从 OpenBLAS 提取的 generic.c\n * 来源：15_ddot_op\\ddot_k.c\n * 清洗：去掉 common.h 依赖，仅保留最小 typedef；函数体保持原样（未优化参考实现）。\n */\n#include <stdio.h>\n#include <stddef.h>\n#include <stdlib.h>\n#include <math.h>\n\ntypedef long long BLASLONG;\ntypedef int blasint;\n\n#include <stdio.h>\n\ndouble ddot_k(BLASLONG n, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y)\n\n{\n BLASLONG i=0;\n BLASLONG ix=0,iy=0;\n double dot = 0.0 ;\n\n if ( n < 0 ) return(dot);\n\n while(i < n)\n {\n\n\n\n  dot += y[iy] * x[ix];\n\n  ix += inc_x ;\n  iy += inc_y ;\n  i++ ;\n\n }\n return(dot);\n\n}\n\n【待分析策略（StrategyPack 中的一项，JSON）】\n{\n  \"id\": \"stg:dot:specialize_d\",\n  \"name\": \"LMUL/SEW 向量寄存器分组调优\",\n  \"family\": \"SIMD向量指令\",\n  \"action\": \"specialize\",\n  \"level\": \"instruction\",\n  \"stage\": \"core\",\n  \"arch_scope\": \"arch_specific\",\n  \"arch\": \"rvv\",\n  \"arches\": [\n    \"rvv\"\n  ],\n  \"arch_parameters\": {\n    \"rvv\": {\n      \"lmul\": 8,\n      \"sew\": 64\n    }\n  },\n  \"score\": 0.745,\n  \"score_breakdown\": {\n    \"match_p\": 1.0,\n    \"fit_c\": 1.0,\n    \"hw\": 1.0,\n    \"ev\": 0.3502,\n    \"sup\": 0.2,\n    \"tr_penalty\": 0.3,\n    \"total\": 0.745\n  },\n  \"why_selected\": {\n    \"patterns\": [\n      \"pat:dot:core.reduction\"\n    ],\n    \"conditions_satisfied\": [\n      \"dtype\",\n      \"loop_depth\",\n      \"reduction\",\n      \"size_regime\"\n    ],\n    \"hardware\": \"k1_rvv256\",\n    \"source\": \"../cx_operator_tool/operator_extract/openblas_newtest1/15_ddot_op/ddot_k_rvv.c\"\n  },\n  \"conditions\": [\n    {\n      \"hard\": true,\n      \"op\": \"in\",\n      \"pred\": \"dtype\",\n      \"value\": [\n        \"d\"\n      ]\n    },\n    {\n      \"hard\": true,\n      \"op\": \"ge\",\n      \"pred\": \"loop_depth\",\n      \"value\": 1\n    },\n    {\n      \"hard\": true,\n      \"op\": \"eq\",\n      \"pred\": \"reduction\",\n      \"value\": true\n    },\n    {\n      \"hard\": true,\n      \"op\": \"in\",\n      \"pred\": \"size_regime\",\n      \"value\": [\n        \"medium\",\n        \"large\"\n      ]\n    }\n  ],\n  \"template\": {\n    \"id\": \"tpl:dot:specialize_d\",\n    \"language\": \"c\",\n    \"skeleton\": \"if (inc_x == 1 && inc_y == 1) {\\n    /* 单位步长快速路径：vle{{SEW}}/vse{{SEW}} */\\n} else if (inc_y == 1) {\\n    /* 跨步 x：vlse{{SEW}} + 连续 y */\\n} else {\\n    /* 通用 strided 路径 */\\n}\",\n    \"slots\": [\n      {\n        \"default\": 64,\n        \"name\": \"SEW\",\n        \"source\": \"par:sew\",\n        \"type\": \"int\"\n      },\n      {\n        \"default\": 8,\n        \"name\": \"LMUL\",\n        \"source\": \"par:lmul\",\n        \"type\": \"int\"\n      }\n    ],\n    \"check_hints\": [\n      \"把最常用路径（stride=1）放在分支最前\",\n      \"多版本代码用宏展开，避免源码重复\"\n    ]\n  },\n  \"parameters\": [\n    {\n      \"id\": \"par:lmul\",\n      \"derived_from\": \"num_vector_regs / 同时活跃向量数\",\n      \"effect_direction\": \"LMUL 越大单指令吞吐越高、可用寄存器组越少\",\n      \"kind\": \"lmul\",\n      \"name\": \"lmul\",\n      \"range\": [\n        1,\n        2,\n        4,\n        8\n      ],\n      \"unit\": \"regs\",\n      \"used_by_strategies\": 38,\n      \"value_in_source\": 8,\n      \"value_in_instance\": 8\n    },\n    {\n      \"id\": \"par:sew\",\n      \"derived_from\": \"dtype\",\n      \"effect_direction\": \"由数据类型决定（double 固定 64）\",\n      \"kind\": \"sew\",\n      \"name\": \"sew\",\n      \"range\": [\n        32,\n        64\n      ],\n      \"unit\": \"bits\",\n      \"used_by_strategies\": 38,\n      \"value_in_source\": 64,\n      \"value_in_instance\": 64\n    }\n  ],\n  \"evidence\": [\n    {\n      \"id\": \"ev:dot:geomean\",\n      \"metric\": \"speedup\",\n      \"value\": 1.1584,\n      \"platform_id\": \"hw:qemu-riscv64-vlen256\",\n      \"role\": \"supports\",\n      \"scope\": \"operator\",\n      \"caveat\": \"QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据\"\n    },\n    {\n      \"id\": \"ev:dot:pass_rate\",\n      \"metric\": \"pass_rate\",\n      \"value\": 1.0,\n      \"platform_id\": \"hw:qemu-riscv64-vlen256\",\n      \"role\": \"supports\",\n      \"scope\": \"operator\",\n      \"caveat\": \"QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据\"\n    }\n  ],\n  \"provenance\": {\n    \"commit\": \"OpenBLAS 0.3.27.dev\",\n    \"extractor_version\": \"kgagent-v1.5\",\n    \"line_confidence\": \"exact\",\n    \"line_end\": 106,\n    \"line_start\": 13,\n    \"origin_file\": \"../cx_operator_tool/operator_extract/openblas_newtest1/15_ddot_op/ddot_k_rvv.c\",\n    \"source_file\": \"../cx_operator_tool/operator_extract/openblas_newtest1/15_ddot_op/ddot_k_rvv.c\"\n  }\n}\n\n【分析要求】\n1. 只做适用性分析，不要写 C 代码；\n2. `applies` 表示该策略在 k1_rvv256 上实现 ddot 时是否适用；`confidence` 是 0~1 置信度；\n3. `evidence` 必须引用策略 JSON 中真实存在的字段（conditions / parameters / template / evidence / why_selected），不要编造；\n4. `risks` 关注正确性（数值一致性、尾部/边界、任意步长、别名）与性能风险（寄存器压力、编译器/ISA 支持）；\n5. 不得引入策略数据中没有的性能数字。\n\n【输出要求】\n只输出一个严格 JSON 对象（不要 markdown 代码围栏、不要解释文字、不要多余字段之外的散文），格式：\n{\n  \"applies\": true,\n  \"confidence\": 0.8,\n  \"evidence\": [\"引用策略 conditions / parameters / evidence 的具体依据\"],\n  \"risks\": [\"实现或正确性风险\"],\n  \"parameters\": {\"参数名\": \"建议值或取值依据\"},\n  \"conflicts\": [\"与 pack 中其它策略可能冲突的点；若无则空数组\"]\n}\n",
+      "你是 BLAS 算子优化策略的「适用性分析器」。目标：判断下面这一条从知识图谱检索到的优化策略，在目标硬件上实现目标算子内核时是否适用、如何落地、有何风险。\n\n【目标算子】ddot（知识图谱规范名：dot）\n【目标硬件 profile】k1_rvv256\n【查询代码特征】{\n  \"aligned\": true,\n  \"dtype\": \"d\",\n  \"loop_depth\": 1,\n  \"precision\": \"double\",\n  \"reduction\": true,\n  \"size_regime\": \"large\",\n  \"stride_x\": 1,\n  \"stride_y\": 1,\n  \"structural\": \"none\",\n  \"tail_divisible\": false\n}\n【任务函数签名（生成代码必须逐字一致）】double ddot_k(BLASLONG n, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y)\n\n【基线 generic 实现（仅供参考语义，不要求照抄）】\n/* 由 tools/clean_generic.py 从 OpenBLAS 提取的 generic.c\n * 来源：15_ddot_op\\ddot_k.c\n * 清洗：去掉 common.h 依赖，仅保留最小 typedef；函数体保持原样（未优化参考实现）。\n */\n#include <stdio.h>\n#include <stddef.h>\n#include <stdlib.h>\n#include <math.h>\n\ntypedef long long BLASLONG;\ntypedef int blasint;\n\n#include <stdio.h>\n\ndouble ddot_k(BLASLONG n, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y)\n\n{\n BLASLONG i=0;\n BLASLONG ix=0,iy=0;\n double dot = 0.0 ;\n\n if ( n < 0 ) return(dot);\n\n while(i < n)\n {\n\n\n\n  dot += y[iy] * x[ix];\n\n  ix += inc_x ;\n  iy += inc_y ;\n  i++ ;\n\n }\n return(dot);\n\n}\n\n【待分析策略（StrategyPack 中的一项，JSON）】\n{\n  \"id\": \"stg:dot:split_d\",\n  \"name\": \"向量归约累加链\",\n  \"family\": \"循环拆分\",\n  \"action\": \"split\",\n  \"level\": \"instruction\",\n  \"stage\": \"core\",\n  \"arch_scope\": \"arch_specific\",\n  \"arch\": \"rvv\",\n  \"arches\": [\n    \"rvv\"\n  ],\n  \"arch_parameters\": {\n    \"rvv\": {\n      \"lmul\": 8,\n      \"sew\": 64,\n      \"split_factor\": 1\n    }\n  },\n  \"score\": 0.745,\n  \"score_breakdown\": {\n    \"match_p\": 1.0,\n    \"fit_c\": 1.0,\n    \"hw\": 1.0,\n    \"ev\": 0.3502,\n    \"sup\": 0.2,\n    \"tr_penalty\": 0.3,\n    \"total\": 0.745\n  },\n  \"why_selected\": {\n    \"patterns\": [\n      \"pat:dot:core.reduction\"\n    ],\n    \"conditions_satisfied\": [\n      \"dtype\",\n      \"loop_depth\",\n      \"reduction\",\n      \"size_regime\"\n    ],\n    \"hardware\": \"k1_rvv256\",\n    \"source\": \"../cx_operator_tool/operator_extract/openblas_newtest1/15_ddot_op/ddot_k_rvv.c\"\n  },\n  \"conditions\": [\n    {\n      \"hard\": true,\n      \"op\": \"in\",\n      \"pred\": \"dtype\",\n      \"value\": [\n        \"d\"\n      ]\n    },\n    {\n      \"hard\": true,\n      \"op\": \"ge\",\n      \"pred\": \"loop_depth\",\n      \"value\": 1\n    },\n    {\n      \"hard\": true,\n      \"op\": \"eq\",\n      \"pred\": \"reduction\",\n      \"value\": true\n    },\n    {\n      \"hard\": true,\n      \"op\": \"in\",\n      \"pred\": \"size_regime\",\n      \"value\": [\n        \"medium\",\n        \"large\"\n      ]\n    }\n  ],\n  \"template\": {\n    \"id\": \"tpl:dot:split_d\",\n    \"language\": \"c\",\n    \"skeleton\": \"vfloat{{SEW}}m{{LMUL}}_t vsum[{{SPLIT_FACTOR}}] = {0};\\nfor (i = 0; i < n; i += vl) {\\n    /* {{SPLIT_FACTOR}} 条独立累加链，最后 vfredosum 归约 */\\n}\\ndouble s = /* 归约 vsum[0..{{SPLIT_FACTOR}}-1] */;\",\n    \"slots\": [\n      {\n        \"default\": 1,\n        \"name\": \"SPLIT_FACTOR\",\n        \"source\": \"par:split_factor\",\n        \"type\": \"int\"\n      },\n      {\n        \"default\": 64,\n        \"name\": \"SEW\",\n        \"source\": \"par:sew\",\n        \"type\": \"int\"\n      },\n      {\n        \"default\": 8,\n        \"name\": \"LMUL\",\n        \"source\": \"par:lmul\",\n        \"type\": \"int\"\n      }\n    ],\n    \"check_hints\": [\n      \"归约链是延迟瓶颈，需要多条独立链\",\n      \"最终归约顺序不影响浮点结果时可用无序归约\"\n    ]\n  },\n  \"parameters\": [\n    {\n      \"id\": \"par:lmul\",\n      \"derived_from\": \"num_vector_regs / 同时活跃向量数\",\n      \"effect_direction\": \"LMUL 越大单指令吞吐越高、可用寄存器组越少\",\n      \"kind\": \"lmul\",\n      \"name\": \"lmul\",\n      \"range\": [\n        1,\n        2,\n        4,\n        8\n      ],\n      \"unit\": \"regs\",\n      \"used_by_strategies\": 38,\n      \"value_in_source\": 8,\n      \"value_in_instance\": 8\n    },\n    {\n      \"id\": \"par:sew\",\n      \"derived_from\": \"dtype\",\n      \"effect_direction\": \"由数据类型决定（double 固定 64）\",\n      \"kind\": \"sew\",\n      \"name\": \"sew\",\n      \"range\": [\n        32,\n        64\n      ],\n      \"unit\": \"bits\",\n      \"used_by_strategies\": 38,\n      \"value_in_source\": 64,\n      \"value_in_instance\": 64\n    },\n    {\n      \"id\": \"par:split_factor\",\n      \"derived_from\": \"num_vector_regs / 归约指令延迟\",\n      \"effect_direction\": \"独立链越多归约延迟越低，最终归约多一次开销\",\n      \"kind\": \"blocking\",\n      \"name\": \"split_factor\",\n      \"range\": [\n        1,\n        2,\n        4\n      ],\n      \"unit\": \"chains\",\n      \"used_by_strategies\": 2,\n      \"value_in_source\": 1,\n      \"value_in_instance\": 1\n    }\n  ],\n  \"evidence\": [\n    {\n      \"id\": \"ev:dot:geomean\",\n      \"metric\": \"speedup\",\n      \"value\": 1.1584,\n      \"platform_id\": \"hw:qemu-riscv64-vlen256\",\n      \"role\": \"supports\",\n      \"scope\": \"operator\",\n      \"caveat\": \"QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据\"\n    },\n    {\n      \"id\": \"ev:dot:pass_rate\",\n      \"metric\": \"pass_rate\",\n      \"value\": 1.0,\n      \"platform_id\": \"hw:qemu-riscv64-vlen256\",\n      \"role\": \"supports\",\n      \"scope\": \"operator\",\n      \"caveat\": \"QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据\"\n    }\n  ],\n  \"provenance\": {\n    \"commit\": \"OpenBLAS 0.3.27.dev\",\n    \"extractor_version\": \"kgagent-v1.5\",\n    \"line_confidence\": \"exact\",\n    \"line_end\": 106,\n    \"line_start\": 13,\n    \"origin_file\": \"../cx_operator_tool/operator_extract/openblas_newtest1/15_ddot_op/ddot_k_rvv.c\",\n    \"source_file\": \"../cx_operator_tool/operator_extract/openblas_newtest1/15_ddot_op/ddot_k_rvv.c\"\n  }\n}\n\n【分析要求】\n1. 只做适用性分析，不要写 C 代码；\n2. `applies` 表示该策略在 k1_rvv256 上实现 ddot 时是否适用；`confidence` 是 0~1 置信度；\n3. `evidence` 必须引用策略 JSON 中真实存在的字段（conditions / parameters / template / evidence / why_selected），不要编造；\n4. `risks` 关注正确性（数值一致性、尾部/边界、任意步长、别名）与性能风险（寄存器压力、编译器/ISA 支持）；\n5. 不得引入策略数据中没有的性能数字。\n\n【输出要求】\n只输出一个严格 JSON 对象（不要 markdown 代码围栏、不要解释文字、不要多余字段之外的散文），格式：\n{\n  \"applies\": true,\n  \"confidence\": 0.8,\n  \"evidence\": [\"引用策略 conditions / parameters / evidence 的具体依据\"],\n  \"risks\": [\"实现或正确性风险\"],\n  \"parameters\": {\"参数名\": \"建议值或取值依据\"},\n  \"conflicts\": [\"与 pack 中其它策略可能冲突的点；若无则空数组\"]\n}\n",
+      "你是 BLAS 算子优化策略的「适用性分析器」。目标：判断下面这一条从知识图谱检索到的优化策略，在目标硬件上实现目标算子内核时是否适用、如何落地、有何风险。\n\n【目标算子】ddot（知识图谱规范名：dot）\n【目标硬件 profile】k1_rvv256\n【查询代码特征】{\n  \"aligned\": true,\n  \"dtype\": \"d\",\n  \"loop_depth\": 1,\n  \"precision\": \"double\",\n  \"reduction\": true,\n  \"size_regime\": \"large\",\n  \"stride_x\": 1,\n  \"stride_y\": 1,\n  \"structural\": \"none\",\n  \"tail_divisible\": false\n}\n【任务函数签名（生成代码必须逐字一致）】double ddot_k(BLASLONG n, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y)\n\n【基线 generic 实现（仅供参考语义，不要求照抄）】\n/* 由 tools/clean_generic.py 从 OpenBLAS 提取的 generic.c\n * 来源：15_ddot_op\\ddot_k.c\n * 清洗：去掉 common.h 依赖，仅保留最小 typedef；函数体保持原样（未优化参考实现）。\n */\n#include <stdio.h>\n#include <stddef.h>\n#include <stdlib.h>\n#include <math.h>\n\ntypedef long long BLASLONG;\ntypedef int blasint;\n\n#include <stdio.h>\n\ndouble ddot_k(BLASLONG n, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y)\n\n{\n BLASLONG i=0;\n BLASLONG ix=0,iy=0;\n double dot = 0.0 ;\n\n if ( n < 0 ) return(dot);\n\n while(i < n)\n {\n\n\n\n  dot += y[iy] * x[ix];\n\n  ix += inc_x ;\n  iy += inc_y ;\n  i++ ;\n\n }\n return(dot);\n\n}\n\n【待分析策略（StrategyPack 中的一项，JSON）】\n{\n  \"id\": \"stg:dot:tail_handle_d\",\n  \"name\": \"动态 vl / 掩码尾部处理\",\n  \"family\": \"尾部处理\",\n  \"action\": \"tail_handle\",\n  \"level\": \"instruction\",\n  \"stage\": \"post\",\n  \"arch_scope\": \"arch_specific\",\n  \"arch\": \"rvv\",\n  \"arches\": [\n    \"rvv\"\n  ],\n  \"arch_parameters\": {\n    \"rvv\": {\n      \"lmul\": 8,\n      \"sew\": 64\n    }\n  },\n  \"score\": 0.745,\n  \"score_breakdown\": {\n    \"match_p\": 1.0,\n    \"fit_c\": 1.0,\n    \"hw\": 1.0,\n    \"ev\": 0.3502,\n    \"sup\": 0.2,\n    \"tr_penalty\": 0.3,\n    \"total\": 0.745\n  },\n  \"why_selected\": {\n    \"patterns\": [\n      \"pat:dot:post.tail_case\"\n    ],\n    \"conditions_satisfied\": [\n      \"dtype\",\n      \"loop_depth\",\n      \"reduction\",\n      \"size_regime\",\n      \"tail_divisible\"\n    ],\n    \"hardware\": \"k1_rvv256\",\n    \"source\": \"../cx_operator_tool/operator_extract/openblas_newtest1/15_ddot_op/ddot_k_rvv.c\"\n  },\n  \"conditions\": [\n    {\n      \"hard\": true,\n      \"op\": \"in\",\n      \"pred\": \"dtype\",\n      \"value\": [\n        \"d\"\n      ]\n    },\n    {\n      \"hard\": true,\n      \"op\": \"ge\",\n      \"pred\": \"loop_depth\",\n      \"value\": 1\n    },\n    {\n      \"hard\": true,\n      \"op\": \"eq\",\n      \"pred\": \"reduction\",\n      \"value\": true\n    },\n    {\n      \"hard\": true,\n      \"op\": \"in\",\n      \"pred\": \"size_regime\",\n      \"value\": [\n        \"medium\",\n        \"large\"\n      ]\n    },\n    {\n      \"hard\": false,\n      \"op\": \"eq\",\n      \"pred\": \"tail_divisible\",\n      \"value\": false\n    }\n  ],\n  \"template\": {\n    \"id\": \"tpl:dot:tail_handle_d\",\n    \"language\": \"c\",\n    \"skeleton\": \"for (BLASLONG i = 0; i < n; i += vl) {\\n    size_t vl = __riscv_vsetvl_e{{SEW}}m{{LMUL}}(n - i);   /* 动态 vl 天然处理尾部 */\\n    /* 主体：vle / 计算 / vse */\\n}\",\n    \"slots\": [\n      {\n        \"default\": 64,\n        \"name\": \"SEW\",\n        \"source\": \"par:sew\",\n        \"type\": \"int\"\n      },\n      {\n        \"default\": 8,\n        \"name\": \"LMUL\",\n        \"source\": \"par:lmul\",\n        \"type\": \"int\"\n      }\n    ],\n    \"check_hints\": [\n      \"vl 是剩余长度与 VLMAX 的较小者\",\n      \"不要假设 n 整除 VLMAX\"\n    ]\n  },\n  \"parameters\": [\n    {\n      \"id\": \"par:lmul\",\n      \"derived_from\": \"num_vector_regs / 同时活跃向量数\",\n      \"effect_direction\": \"LMUL 越大单指令吞吐越高、可用寄存器组越少\",\n      \"kind\": \"lmul\",\n      \"name\": \"lmul\",\n      \"range\": [\n        1,\n        2,\n        4,\n        8\n      ],\n      \"unit\": \"regs\",\n      \"used_by_strategies\": 38,\n      \"value_in_source\": 8,\n      \"value_in_instance\": 8\n    },\n    {\n      \"id\": \"par:sew\",\n      \"derived_from\": \"dtype\",\n      \"effect_direction\": \"由数据类型决定（double 固定 64）\",\n      \"kind\": \"sew\",\n      \"name\": \"sew\",\n      \"range\": [\n        32,\n        64\n      ],\n      \"unit\": \"bits\",\n      \"used_by_strategies\": 38,\n      \"value_in_source\": 64,\n      \"value_in_instance\": 64\n    }\n  ],\n  \"evidence\": [\n    {\n      \"id\": \"ev:dot:geomean\",\n      \"metric\": \"speedup\",\n      \"value\": 1.1584,\n      \"platform_id\": \"hw:qemu-riscv64-vlen256\",\n      \"role\": \"supports\",\n      \"scope\": \"operator\",\n      \"caveat\": \"QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据\"\n    },\n    {\n      \"id\": \"ev:dot:pass_rate\",\n      \"metric\": \"pass_rate\",\n      \"value\": 1.0,\n      \"platform_id\": \"hw:qemu-riscv64-vlen256\",\n      \"role\": \"supports\",\n      \"scope\": \"operator\",\n      \"caveat\": \"QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据\"\n    }\n  ],\n  \"provenance\": {\n    \"commit\": \"OpenBLAS 0.3.27.dev\",\n    \"extractor_version\": \"kgagent-v1.5\",\n    \"line_confidence\": \"exact\",\n    \"line_end\": 106,\n    \"line_start\": 13,\n    \"origin_file\": \"../cx_operator_tool/operator_extract/openblas_newtest1/15_ddot_op/ddot_k_rvv.c\",\n    \"source_file\": \"../cx_operator_tool/operator_extract/openblas_newtest1/15_ddot_op/ddot_k_rvv.c\"\n  }\n}\n\n【分析要求】\n1. 只做适用性分析，不要写 C 代码；\n2. `applies` 表示该策略在 k1_rvv256 上实现 ddot 时是否适用；`confidence` 是 0~1 置信度；\n3. `evidence` 必须引用策略 JSON 中真实存在的字段（conditions / parameters / template / evidence / why_selected），不要编造；\n4. `risks` 关注正确性（数值一致性、尾部/边界、任意步长、别名）与性能风险（寄存器压力、编译器/ISA 支持）；\n5. 不得引入策略数据中没有的性能数字。\n\n【输出要求】\n只输出一个严格 JSON 对象（不要 markdown 代码围栏、不要解释文字、不要多余字段之外的散文），格式：\n{\n  \"applies\": true,\n  \"confidence\": 0.8,\n  \"evidence\": [\"引用策略 conditions / parameters / evidence 的具体依据\"],\n  \"risks\": [\"实现或正确性风险\"],\n  \"parameters\": {\"参数名\": \"建议值或取值依据\"},\n  \"conflicts\": [\"与 pack 中其它策略可能冲突的点；若无则空数组\"]\n}\n"
+    ],
+    "synthesis": "你是 BLAS 算子优化策略的「综合专家」。下面是同一算子、同一硬件上 top-k 策略的逐条适用性分析结果。请按 4 个标准综合，形成最终的代码生成指导。\n\n【目标算子】ddot（知识图谱规范名：dot）\n【目标硬件 profile】k1_rvv256\n【任务函数签名】double ddot_k(BLASLONG n, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y)\n【查询代码特征】{\n  \"aligned\": true,\n  \"dtype\": \"d\",\n  \"loop_depth\": 1,\n  \"precision\": \"double\",\n  \"reduction\": true,\n  \"size_regime\": \"large\",\n  \"stride_x\": 1,\n  \"stride_y\": 1,\n  \"structural\": \"none\",\n  \"tail_divisible\": false\n}\n\n【4 个综合标准（必须逐一给出 0~1 分数与理由）】\n- supportive（相互支持性）：各策略的适用条件/参数是否一致、能否同时采用，是否会互相抵消；\n- complementarity（互补性）：策略是否作用于不同阶段（向量化 / 循环展开 / 尾部处理 / 寄存器分块 / 步长特化等），组合后是否覆盖更多场景；\n- accuracy（正确性/数值一致性）：组合实现是否保持 BLAS 语义与数值容差，n<=0 / 尾部 / 任意步长 / 别名等边界是否安全；\n- completeness（覆盖完整性）：是否覆盖主循环、尾部、任意步长、n<=0 等分支，是否遗漏关键实现环节。\n\n【逐条适用性分析（JSON 数组）】\n[\n  {\n    \"strategy_id\": \"stg:dot:specialize_d\",\n    \"strategy_name\": \"LMUL/SEW 向量寄存器分组调优\",\n    \"applies\": true,\n    \"confidence\": 0.8,\n    \"evidence\": [\n      \"策略 conditions 中 dtype 的硬性约束为 'd'，与目标算子代码特征匹配\",\n      \"loop_depth >= 1 的硬性条件满足查询代码特征\",\n      \"reduction == true 的硬性条件与代码特征一致\",\n      \"size_regime 为 large，符合策略适用范围\",\n      \"arch_parameters 中指定的 sew=64 和 lmul=8 与目标硬件 k1_rvv256 的能力适配\",\n      \"模板中提供针对 inc_x == 1 和 inc_y == 1 的快速路径，与查询特征中的 stride_x=1、stride_y=1 匹配\"\n    ],\n    \"risks\": [\n      \"尾部处理风险：tail_divisible == false，可能无法完整向量化尾部，需额外处理\",\n      \"寄存器压力风险：LMUL=8 在 k1_rvv256 上可能导致较高的寄存器占用，影响性能\",\n      \"数值一致性风险：向量化可能导致浮点计算顺序变化，影响结果一致性\",\n      \"别名风险：x 和 y 指针可能存在别名问题，影响向量化执行的正确性\",\n      \"ISA 支持风险：目标硬件是否完整支持 RVV 指令集，特别是 vle64/vlse64 等操作\"\n    ],\n    \"parameters\": {\n      \"sew\": 64,\n      \"lmul\": 8\n    },\n    \"conflicts\": []\n  },\n  {\n    \"strategy_id\": \"stg:dot:split_d\",\n    \"strategy_name\": \"向量归约累加链\",\n    \"applies\": true,\n    \"confidence\": 0.745,\n    \"evidence\": [\n      \"满足 hard 条件：dtype == 'd'\",\n      \"满足 hard 条件：loop_depth >= 1\",\n      \"满足 hard 条件：reduction == true\",\n      \"满足 hard 条件：size_regime 在 ['medium', 'large'] 中\",\n      \"arch_scope 包含目标硬件 k1_rvv256\",\n      \"evidence 中 ev:dot:geomean 提供了速度提升的实测依据\",\n      \"template 提供了明确的向量归约实现结构\"\n    ],\n    \"risks\": [\n      \"尾部处理风险：tail_divisible == false 可能导致向量加载/存储越界\",\n      \"数值一致性风险：浮点归约顺序变化可能影响结果精度\",\n      \"寄存器压力风险：LMUL=8 可能导致向量寄存器资源不足\",\n      \"编译器支持风险：RISC-V V 扩展版本是否完整支持归约指令\",\n      \"性能可移植性风险：QEMU 上的证据不代表真实硬件性能表现\"\n    ],\n    \"parameters\": {\n      \"lmul\": 8,\n      \"sew\": 64,\n      \"split_factor\": 1\n    },\n    \"conflicts\": []\n  },\n  {\n    \"strategy_id\": \"stg:dot:tail_handle_d\",\n    \"strategy_name\": \"动态 vl / 掩码尾部处理\",\n    \"applies\": true,\n    \"confidence\": 0.745,\n    \"evidence\": [\n      \"策略 conditions 中 dtype 为 [\\\"d\\\"] 与目标算子匹配\",\n      \"loop_depth >= 1 条件满足（当前 loop_depth 为 1）\",\n      \"reduction == true 条件满足\",\n      \"size_regime 为 large，策略支持\",\n      \"tail_divisible == false 条件为 soft constraint，未完全满足但不影响适用性\",\n      \"evidence 中 speedup 和 pass_rate 支持策略在 operator 级的可行性\",\n      \"template 支持动态 vl 处理尾部，适用于当前硬件 k1_rvv256\",\n      \"arch_parameters 设置 sew=64, lmul=8，与目标硬件和数据类型匹配\"\n    ],\n    \"risks\": [\n      \"尾部处理依赖动态 vl，若编译器优化不当可能导致边界处理错误\",\n      \"double 类型精度可能因向量寄存器舍入导致数值不一致\",\n      \"高 LMUL（8）可能导致寄存器压力过高，影响性能\",\n      \"编译器对 RISC-V Vector Extension 支持不完善可能影响生成代码质量\",\n      \"未考虑 x 和 y 指针可能别名导致的副作用\"\n    ],\n    \"parameters\": {\n      \"SEW\": 64,\n      \"LMUL\": 8\n    },\n    \"conflicts\": []\n  }\n]\n\n【综合要求】\n1. 综合判断这些策略能否组合、在哪些阶段互补、组合后正确性与覆盖度是否足够；\n2. `recommended` 只写 JSON 数组里真实出现的策略 id，按建议采用顺序排列；\n3. `guidance` 要能直接指导代码生成（主循环怎么循环分块/向量化、尾部怎么处理、参数取什么量级、哪些策略不要用）；\n4. 不要写 C 代码，不要编造未给出的性能数字。\n\n【输出要求】\n只输出一个严格 JSON 对象（不要 markdown 代码围栏、不要解释文字），格式：\n{\n  \"criteria\": {\n    \"supportive\": {\"score\": 0.0, \"reason\": \"策略之间是否相互支持、条件是否一致\"},\n    \"complementarity\": {\"score\": 0.0, \"reason\": \"策略是否互补（向量化 / 展开 / 尾部 / 分块 / 参数调优）\"},\n    \"accuracy\": {\"score\": 0.0, \"reason\": \"组合后正确性与数值一致性风险是否可控\"},\n    \"completeness\": {\"score\": 0.0, \"reason\": \"是否覆盖主循环、尾部、任意步长、n<=0 等\"}\n  },\n  \"overall\": \"一句话综合结论\",\n  \"recommended\": [\"策略 id，按优先级\"],\n  \"guidance\": \"分条给出代码生成阶段的实现要点\",\n  \"conflicts\": [\"生成时需要避免的冲突\"]\n}\n",
+    "generate": "你是 OpenBLAS 风格的高性能 C 内核实现工程师。B4 模式下，已经对每条检索策略做了逐条适用性分析并按 4 个标准综合。请结合「策略 pack + 逐条分析 + 综合报告」为下面的目标算子生成一个完整的 C 函数。\n\n【目标算子】ddot（知识图谱规范名：dot）\n【目标硬件 profile】k1_rvv256\n【查询代码特征】{\n  \"aligned\": true,\n  \"dtype\": \"d\",\n  \"loop_depth\": 1,\n  \"precision\": \"double\",\n  \"reduction\": true,\n  \"size_regime\": \"large\",\n  \"stride_x\": 1,\n  \"stride_y\": 1,\n  \"structural\": \"none\",\n  \"tail_divisible\": false\n}\n【必须逐字使用的函数签名】double ddot_k(BLASLONG n, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y)\n\n【基线 generic 实现（语义参考：生成实现的输出必须与它一致）】\n/* 由 tools/clean_generic.py 从 OpenBLAS 提取的 generic.c\n * 来源：15_ddot_op\\ddot_k.c\n * 清洗：去掉 common.h 依赖，仅保留最小 typedef；函数体保持原样（未优化参考实现）。\n */\n#include <stdio.h>\n#include <stddef.h>\n#include <stdlib.h>\n#include <math.h>\n\ntypedef long long BLASLONG;\ntypedef int blasint;\n\n#include <stdio.h>\n\ndouble ddot_k(BLASLONG n, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y)\n\n{\n BLASLONG i=0;\n BLASLONG ix=0,iy=0;\n double dot = 0.0 ;\n\n if ( n < 0 ) return(dot);\n\n while(i < n)\n {\n\n\n\n  dot += y[iy] * x[ix];\n\n  ix += inc_x ;\n  iy += inc_y ;\n  i++ ;\n\n }\n return(dot);\n\n}\n\n【知识图谱策略 pack（top-6，JSON）】\n[\n  {\n    \"id\": \"stg:dot:specialize_d\",\n    \"name\": \"LMUL/SEW 向量寄存器分组调优\",\n    \"family\": \"SIMD向量指令\",\n    \"action\": \"specialize\",\n    \"level\": \"instruction\",\n    \"stage\": \"core\",\n    \"arch_scope\": \"arch_specific\",\n    \"arch\": \"rvv\",\n    \"arches\": [\n      \"rvv\"\n    ],\n    \"arch_parameters\": {\n      \"rvv\": {\n        \"lmul\": 8,\n        \"sew\": 64\n      }\n    },\n    \"score\": 0.745,\n    \"score_breakdown\": {\n      \"match_p\": 1.0,\n      \"fit_c\": 1.0,\n      \"hw\": 1.0,\n      \"ev\": 0.3502,\n      \"sup\": 0.2,\n      \"tr_penalty\": 0.3,\n      \"total\": 0.745\n    },\n    \"why_selected\": {\n      \"patterns\": [\n        \"pat:dot:core.reduction\"\n      ],\n      \"conditions_satisfied\": [\n        \"dtype\",\n        \"loop_depth\",\n        \"reduction\",\n        \"size_regime\"\n      ],\n      \"hardware\": \"k1_rvv256\",\n      \"source\": \"../cx_operator_tool/operator_extract/openblas_newtest1/15_ddot_op/ddot_k_rvv.c\"\n    },\n    \"conditions\": [\n      {\n        \"hard\": true,\n        \"op\": \"in\",\n        \"pred\": \"dtype\",\n        \"value\": [\n          \"d\"\n        ]\n      },\n      {\n        \"hard\": true,\n        \"op\": \"ge\",\n        \"pred\": \"loop_depth\",\n        \"value\": 1\n      },\n      {\n        \"hard\": true,\n        \"op\": \"eq\",\n        \"pred\": \"reduction\",\n        \"value\": true\n      },\n      {\n        \"hard\": true,\n        \"op\": \"in\",\n        \"pred\": \"size_regime\",\n        \"value\": [\n          \"medium\",\n          \"large\"\n        ]\n      }\n    ],\n    \"template\": {\n      \"id\": \"tpl:dot:specialize_d\",\n      \"language\": \"c\",\n      \"skeleton\": \"if (inc_x == 1 && inc_y == 1) {\\n    /* 单位步长快速路径：vle{{SEW}}/vse{{SEW}} */\\n} else if (inc_y == 1) {\\n    /* 跨步 x：vlse{{SEW}} + 连续 y */\\n} else {\\n    /* 通用 strided 路径 */\\n}\",\n      \"slots\": [\n        {\n          \"default\": 64,\n          \"name\": \"SEW\",\n          \"source\": \"par:sew\",\n          \"type\": \"int\"\n        },\n        {\n          \"default\": 8,\n          \"name\": \"LMUL\",\n          \"source\": \"par:lmul\",\n          \"type\": \"int\"\n        }\n      ],\n      \"check_hints\": [\n        \"把最常用路径（stride=1）放在分支最前\",\n        \"多版本代码用宏展开，避免源码重复\"\n      ]\n    },\n    \"parameters\": [\n      {\n        \"id\": \"par:lmul\",\n        \"derived_from\": \"num_vector_regs / 同时活跃向量数\",\n        \"effect_direction\": \"LMUL 越大单指令吞吐越高、可用寄存器组越少\",\n        \"kind\": \"lmul\",\n        \"name\": \"lmul\",\n        \"range\": [\n          1,\n          2,\n          4,\n          8\n        ],\n        \"unit\": \"regs\",\n        \"used_by_strategies\": 38,\n        \"value_in_source\": 8,\n        \"value_in_instance\": 8\n      },\n      {\n        \"id\": \"par:sew\",\n        \"derived_from\": \"dtype\",\n        \"effect_direction\": \"由数据类型决定（double 固定 64）\",\n        \"kind\": \"sew\",\n        \"name\": \"sew\",\n        \"range\": [\n          32,\n          64\n        ],\n        \"unit\": \"bits\",\n        \"used_by_strategies\": 38,\n        \"value_in_source\": 64,\n        \"value_in_instance\": 64\n      }\n    ],\n    \"evidence\": [\n      {\n        \"id\": \"ev:dot:geomean\",\n        \"metric\": \"speedup\",\n        \"value\": 1.1584,\n        \"platform_id\": \"hw:qemu-riscv64-vlen256\",\n        \"role\": \"supports\",\n        \"scope\": \"operator\",\n        \"caveat\": \"QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据\"\n      },\n      {\n        \"id\": \"ev:dot:pass_rate\",\n        \"metric\": \"pass_rate\",\n        \"value\": 1.0,\n        \"platform_id\": \"hw:qemu-riscv64-vlen256\",\n        \"role\": \"supports\",\n        \"scope\": \"operator\",\n        \"caveat\": \"QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据\"\n      }\n    ],\n    \"provenance\": {\n      \"commit\": \"OpenBLAS 0.3.27.dev\",\n      \"extractor_version\": \"kgagent-v1.5\",\n      \"line_confidence\": \"exact\",\n      \"line_end\": 106,\n      \"line_start\": 13,\n      \"origin_file\": \"../cx_operator_tool/operator_extract/openblas_newtest1/15_ddot_op/ddot_k_rvv.c\",\n      \"source_file\": \"../cx_operator_tool/operator_extract/openblas_newtest1/15_ddot_op/ddot_k_rvv.c\"\n    }\n  },\n  {\n    \"id\": \"stg:dot:split_d\",\n    \"name\": \"向量归约累加链\",\n    \"family\": \"循环拆分\",\n    \"action\": \"split\",\n    \"level\": \"instruction\",\n    \"stage\": \"core\",\n    \"arch_scope\": \"arch_specific\",\n    \"arch\": \"rvv\",\n    \"arches\": [\n      \"rvv\"\n    ],\n    \"arch_parameters\": {\n      \"rvv\": {\n        \"lmul\": 8,\n        \"sew\": 64,\n        \"split_factor\": 1\n      }\n    },\n    \"score\": 0.745,\n    \"score_breakdown\": {\n      \"match_p\": 1.0,\n      \"fit_c\": 1.0,\n      \"hw\": 1.0,\n      \"ev\": 0.3502,\n      \"sup\": 0.2,\n      \"tr_penalty\": 0.3,\n      \"total\": 0.745\n    },\n    \"why_selected\": {\n      \"patterns\": [\n        \"pat:dot:core.reduction\"\n      ],\n      \"conditions_satisfied\": [\n        \"dtype\",\n        \"loop_depth\",\n        \"reduction\",\n        \"size_regime\"\n      ],\n      \"hardware\": \"k1_rvv256\",\n      \"source\": \"../cx_operator_tool/operator_extract/openblas_newtest1/15_ddot_op/ddot_k_rvv.c\"\n    },\n    \"conditions\": [\n      {\n        \"hard\": true,\n        \"op\": \"in\",\n        \"pred\": \"dtype\",\n        \"value\": [\n          \"d\"\n        ]\n      },\n      {\n        \"hard\": true,\n        \"op\": \"ge\",\n        \"pred\": \"loop_depth\",\n        \"value\": 1\n      },\n      {\n        \"hard\": true,\n        \"op\": \"eq\",\n        \"pred\": \"reduction\",\n        \"value\": true\n      },\n      {\n        \"hard\": true,\n        \"op\": \"in\",\n        \"pred\": \"size_regime\",\n        \"value\": [\n          \"medium\",\n          \"large\"\n        ]\n      }\n    ],\n    \"template\": {\n      \"id\": \"tpl:dot:split_d\",\n      \"language\": \"c\",\n      \"skeleton\": \"vfloat{{SEW}}m{{LMUL}}_t vsum[{{SPLIT_FACTOR}}] = {0};\\nfor (i = 0; i < n; i += vl) {\\n    /* {{SPLIT_FACTOR}} 条独立累加链，最后 vfredosum 归约 */\\n}\\ndouble s = /* 归约 vsum[0..{{SPLIT_FACTOR}}-1] */;\",\n      \"slots\": [\n        {\n          \"default\": 1,\n          \"name\": \"SPLIT_FACTOR\",\n          \"source\": \"par:split_factor\",\n          \"type\": \"int\"\n        },\n        {\n          \"default\": 64,\n          \"name\": \"SEW\",\n          \"source\": \"par:sew\",\n          \"type\": \"int\"\n        },\n        {\n          \"default\": 8,\n          \"name\": \"LMUL\",\n          \"source\": \"par:lmul\",\n          \"type\": \"int\"\n        }\n      ],\n      \"check_hints\": [\n        \"归约链是延迟瓶颈，需要多条独立链\",\n        \"最终归约顺序不影响浮点结果时可用无序归约\"\n      ]\n    },\n    \"parameters\": [\n      {\n        \"id\": \"par:lmul\",\n        \"derived_from\": \"num_vector_regs / 同时活跃向量数\",\n        \"effect_direction\": \"LMUL 越大单指令吞吐越高、可用寄存器组越少\",\n        \"kind\": \"lmul\",\n        \"name\": \"lmul\",\n        \"range\": [\n          1,\n          2,\n          4,\n          8\n        ],\n        \"unit\": \"regs\",\n        \"used_by_strategies\": 38,\n        \"value_in_source\": 8,\n        \"value_in_instance\": 8\n      },\n      {\n        \"id\": \"par:sew\",\n        \"derived_from\": \"dtype\",\n        \"effect_direction\": \"由数据类型决定（double 固定 64）\",\n        \"kind\": \"sew\",\n        \"name\": \"sew\",\n        \"range\": [\n          32,\n          64\n        ],\n        \"unit\": \"bits\",\n        \"used_by_strategies\": 38,\n        \"value_in_source\": 64,\n        \"value_in_instance\": 64\n      },\n      {\n        \"id\": \"par:split_factor\",\n        \"derived_from\": \"num_vector_regs / 归约指令延迟\",\n        \"effect_direction\": \"独立链越多归约延迟越低，最终归约多一次开销\",\n        \"kind\": \"blocking\",\n        \"name\": \"split_factor\",\n        \"range\": [\n          1,\n          2,\n          4\n        ],\n        \"unit\": \"chains\",\n        \"used_by_strategies\": 2,\n        \"value_in_source\": 1,\n        \"value_in_instance\": 1\n      }\n    ],\n    \"evidence\": [\n      {\n        \"id\": \"ev:dot:geomean\",\n        \"metric\": \"speedup\",\n        \"value\": 1.1584,\n        \"platform_id\": \"hw:qemu-riscv64-vlen256\",\n        \"role\": \"supports\",\n        \"scope\": \"operator\",\n        \"caveat\": \"QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据\"\n      },\n      {\n        \"id\": \"ev:dot:pass_rate\",\n        \"metric\": \"pass_rate\",\n        \"value\": 1.0,\n        \"platform_id\": \"hw:qemu-riscv64-vlen256\",\n        \"role\": \"supports\",\n        \"scope\": \"operator\",\n        \"caveat\": \"QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据\"\n      }\n    ],\n    \"provenance\": {\n      \"commit\": \"OpenBLAS 0.3.27.dev\",\n      \"extractor_version\": \"kgagent-v1.5\",\n      \"line_confidence\": \"exact\",\n      \"line_end\": 106,\n      \"line_start\": 13,\n      \"origin_file\": \"../cx_operator_tool/operator_extract/openblas_newtest1/15_ddot_op/ddot_k_rvv.c\",\n      \"source_file\": \"../cx_operator_tool/operator_extract/openblas_newtest1/15_ddot_op/ddot_k_rvv.c\"\n    }\n  },\n  {\n    \"id\": \"stg:dot:tail_handle_d\",\n    \"name\": \"动态 vl / 掩码尾部处理\",\n    \"family\": \"尾部处理\",\n    \"action\": \"tail_handle\",\n    \"level\": \"instruction\",\n    \"stage\": \"post\",\n    \"arch_scope\": \"arch_specific\",\n    \"arch\": \"rvv\",\n    \"arches\": [\n      \"rvv\"\n    ],\n    \"arch_parameters\": {\n      \"rvv\": {\n        \"lmul\": 8,\n        \"sew\": 64\n      }\n    },\n    \"score\": 0.745,\n    \"score_breakdown\": {\n      \"match_p\": 1.0,\n      \"fit_c\": 1.0,\n      \"hw\": 1.0,\n      \"ev\": 0.3502,\n      \"sup\": 0.2,\n      \"tr_penalty\": 0.3,\n      \"total\": 0.745\n    },\n    \"why_selected\": {\n      \"patterns\": [\n        \"pat:dot:post.tail_case\"\n      ],\n      \"conditions_satisfied\": [\n        \"dtype\",\n        \"loop_depth\",\n        \"reduction\",\n        \"size_regime\",\n        \"tail_divisible\"\n      ],\n      \"hardware\": \"k1_rvv256\",\n      \"source\": \"../cx_operator_tool/operator_extract/openblas_newtest1/15_ddot_op/ddot_k_rvv.c\"\n    },\n    \"conditions\": [\n      {\n        \"hard\": true,\n        \"op\": \"in\",\n        \"pred\": \"dtype\",\n        \"value\": [\n          \"d\"\n        ]\n      },\n      {\n        \"hard\": true,\n        \"op\": \"ge\",\n        \"pred\": \"loop_depth\",\n        \"value\": 1\n      },\n      {\n        \"hard\": true,\n        \"op\": \"eq\",\n        \"pred\": \"reduction\",\n        \"value\": true\n      },\n      {\n        \"hard\": true,\n        \"op\": \"in\",\n        \"pred\": \"size_regime\",\n        \"value\": [\n          \"medium\",\n          \"large\"\n        ]\n      },\n      {\n        \"hard\": false,\n        \"op\": \"eq\",\n        \"pred\": \"tail_divisible\",\n        \"value\": false\n      }\n    ],\n    \"template\": {\n      \"id\": \"tpl:dot:tail_handle_d\",\n      \"language\": \"c\",\n      \"skeleton\": \"for (BLASLONG i = 0; i < n; i += vl) {\\n    size_t vl = __riscv_vsetvl_e{{SEW}}m{{LMUL}}(n - i);   /* 动态 vl 天然处理尾部 */\\n    /* 主体：vle / 计算 / vse */\\n}\",\n      \"slots\": [\n        {\n          \"default\": 64,\n          \"name\": \"SEW\",\n          \"source\": \"par:sew\",\n          \"type\": \"int\"\n        },\n        {\n          \"default\": 8,\n          \"name\": \"LMUL\",\n          \"source\": \"par:lmul\",\n          \"type\": \"int\"\n        }\n      ],\n      \"check_hints\": [\n        \"vl 是剩余长度与 VLMAX 的较小者\",\n        \"不要假设 n 整除 VLMAX\"\n      ]\n    },\n    \"parameters\": [\n      {\n        \"id\": \"par:lmul\",\n        \"derived_from\": \"num_vector_regs / 同时活跃向量数\",\n        \"effect_direction\": \"LMUL 越大单指令吞吐越高、可用寄存器组越少\",\n        \"kind\": \"lmul\",\n        \"name\": \"lmul\",\n        \"range\": [\n          1,\n          2,\n          4,\n          8\n        ],\n        \"unit\": \"regs\",\n        \"used_by_strategies\": 38,\n        \"value_in_source\": 8,\n        \"value_in_instance\": 8\n      },\n      {\n        \"id\": \"par:sew\",\n        \"derived_from\": \"dtype\",\n        \"effect_direction\": \"由数据类型决定（double 固定 64）\",\n        \"kind\": \"sew\",\n        \"name\": \"sew\",\n        \"range\": [\n          32,\n          64\n        ],\n        \"unit\": \"bits\",\n        \"used_by_strategies\": 38,\n        \"value_in_source\": 64,\n        \"value_in_instance\": 64\n      }\n    ],\n    \"evidence\": [\n      {\n        \"id\": \"ev:dot:geomean\",\n        \"metric\": \"speedup\",\n        \"value\": 1.1584,\n        \"platform_id\": \"hw:qemu-riscv64-vlen256\",\n        \"role\": \"supports\",\n        \"scope\": \"operator\",\n        \"caveat\": \"QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据\"\n      },\n      {\n        \"id\": \"ev:dot:pass_rate\",\n        \"metric\": \"pass_rate\",\n        \"value\": 1.0,\n        \"platform_id\": \"hw:qemu-riscv64-vlen256\",\n        \"role\": \"supports\",\n        \"scope\": \"operator\",\n        \"caveat\": \"QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据\"\n      }\n    ],\n    \"provenance\": {\n      \"commit\": \"OpenBLAS 0.3.27.dev\",\n      \"extractor_version\": \"kgagent-v1.5\",\n      \"line_confidence\": \"exact\",\n      \"line_end\": 106,\n      \"line_start\": 13,\n      \"origin_file\": \"../cx_operator_tool/operator_extract/openblas_newtest1/15_ddot_op/ddot_k_rvv.c\",\n      \"source_file\": \"../cx_operator_tool/operator_extract/openblas_newtest1/15_ddot_op/ddot_k_rvv.c\"\n    }\n  },\n  {\n    \"id\": \"stg:dot:tile_d\",\n    \"name\": \"向量寄存器输出分块\",\n    \"family\": \"分块Tiling\",\n    \"action\": \"tile\",\n    \"level\": \"instruction\",\n    \"stage\": \"core\",\n    \"arch_scope\": \"arch_specific\",\n    \"arch\": \"rvv\",\n    \"arches\": [\n      \"rvv\"\n    ],\n    \"arch_parameters\": {\n      \"rvv\": {\n        \"lmul\": 8,\n        \"reg_block_n\": 1,\n        \"sew\": 64,\n        \"vector_len\": 32\n      }\n    },\n    \"score\": 0.745,\n    \"score_breakdown\": {\n      \"match_p\": 1.0,\n      \"fit_c\": 1.0,\n      \"hw\": 1.0,\n      \"ev\": 0.3502,\n      \"sup\": 0.2,\n      \"tr_penalty\": 0.3,\n      \"total\": 0.745\n    },\n    \"why_selected\": {\n      \"patterns\": [\n        \"pat:dot:core.reduction\"\n      ],\n      \"conditions_satisfied\": [\n        \"dtype\",\n        \"loop_depth\",\n        \"reduction\",\n        \"size_regime\"\n      ],\n      \"hardware\": \"k1_rvv256\",\n      \"source\": \"../cx_operator_tool/operator_extract/openblas_newtest1/15_ddot_op/ddot_k_rvv.c\"\n    },\n    \"conditions\": [\n      {\n        \"hard\": true,\n        \"op\": \"in\",\n        \"pred\": \"dtype\",\n        \"value\": [\n          \"d\"\n        ]\n      },\n      {\n        \"hard\": true,\n        \"op\": \"ge\",\n        \"pred\": \"loop_depth\",\n        \"value\": 1\n      },\n      {\n        \"hard\": true,\n        \"op\": \"eq\",\n        \"pred\": \"reduction\",\n        \"value\": true\n      },\n      {\n        \"hard\": true,\n        \"op\": \"in\",\n        \"pred\": \"size_regime\",\n        \"value\": [\n          \"medium\",\n          \"large\"\n        ]\n      }\n    ],\n    \"template\": {\n      \"id\": \"tpl:dot:tile_d\",\n      \"language\": \"c\",\n      \"skeleton\": \"for (j = bn / {{REG_BLOCK_N}}; j > 0; j--) {\\n    vfloat{{SEW}}m{{LMUL}}_t vres[{{REG_BLOCK_N}}];   /* {{REG_BLOCK_N}} 个向量累加器 */\\n    for (k = bk / {{K_UNROLL}}; k > 0; k--) {\\n        /* 每步 {{K_UNROLL}} 次 vle + {{REG_BLOCK_N}} 次 vfmacc，复用装入的 A */\\n    }\\n    /* 用掩码写回 {{REG_BLOCK_N}} 列 C */\\n}\",\n      \"slots\": [\n        {\n          \"default\": 8,\n          \"name\": \"REG_BLOCK_N\",\n          \"source\": \"par:reg_block_n\",\n          \"type\": \"int\"\n        },\n        {\n          \"default\": 8,\n          \"name\": \"K_UNROLL\",\n          \"source\": \"derived:isa_defaults\",\n          \"type\": \"int\"\n        },\n        {\n          \"default\": 64,\n          \"name\": \"SEW\",\n          \"source\": \"par:sew\",\n          \"type\": \"int\"\n        },\n        {\n          \"default\": 2,\n          \"name\": \"LMUL\",\n          \"source\": \"par:lmul\",\n          \"type\": \"int\"\n        }\n      ],\n      \"check_hints\": [\n        \"寄存器预算：REG_BLOCK_N*K_UNROLL 不要超过可用向量寄存器数\",\n        \"写回用掩码避免越界\"\n      ]\n    },\n    \"parameters\": [\n      {\n        \"id\": \"par:lmul\",\n        \"derived_from\": \"num_vector_regs / 同时活跃向量数\",\n        \"effect_direction\": \"LMUL 越大单指令吞吐越高、可用寄存器组越少\",\n        \"kind\": \"lmul\",\n        \"name\": \"lmul\",\n        \"range\": [\n          1,\n          2,\n          4,\n          8\n        ],\n        \"unit\": \"regs\",\n        \"used_by_strategies\": 38,\n        \"value_in_source\": 8,\n        \"value_in_instance\": 8\n      },\n      {\n        \"id\": \"par:reg_block_n\",\n        \"derived_from\": \"由标量/向量寄存器数量与 C 列块宽决定\",\n        \"effect_direction\": \"累加器越多，装入值复用次数越高；超过寄存器数会溢出到栈\",\n        \"kind\": \"blocking\",\n        \"name\": \"reg_block_n\",\n        \"range\": [\n          1,\n          2,\n          4,\n          8,\n          16,\n          32\n        ],\n        \"unit\": \"accumulators\",\n        \"used_by_strategies\": 29,\n        \"value_in_source\": 4,\n        \"value_in_instance\": 1\n      },\n      {\n        \"id\": \"par:sew\",\n        \"derived_from\": \"dtype\",\n        \"effect_direction\": \"由数据类型决定（double 固定 64）\",\n        \"kind\": \"sew\",\n        \"name\": \"sew\",\n        \"range\": [\n          32,\n          64\n        ],\n        \"unit\": \"bits\",\n        \"used_by_strategies\": 38,\n        \"value_in_source\": 64,\n        \"value_in_instance\": 64\n      },\n      {\n        \"id\": \"par:vector_len\",\n        \"derived_from\": \"VLEN*LMUL/SEW = 256*8/64 = 32\",\n        \"effect_direction\": \"等于 VLMAX 时无尾部开销；VLEN 越大单指令处理元素越多\",\n        \"kind\": \"vector_len\",\n        \"name\": \"vector_len\",\n        \"range\": [\n          4,\n          8,\n          16,\n          32\n        ],\n        \"unit\": \"elements\",\n        \"used_by_strategies\": 16,\n        \"value_in_source\": 32,\n        \"value_in_instance\": 32\n      }\n    ],\n    \"evidence\": [\n      {\n        \"id\": \"ev:dot:geomean\",\n        \"metric\": \"speedup\",\n        \"value\": 1.1584,\n        \"platform_id\": \"hw:qemu-riscv64-vlen256\",\n        \"role\": \"supports\",\n        \"scope\": \"operator\",\n        \"caveat\": \"QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据\"\n      },\n      {\n        \"id\": \"ev:dot:pass_rate\",\n        \"metric\": \"pass_rate\",\n        \"value\": 1.0,\n        \"platform_id\": \"hw:qemu-riscv64-vlen256\",\n        \"role\": \"supports\",\n        \"scope\": \"operator\",\n        \"caveat\": \"QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据\"\n      }\n    ],\n    \"provenance\": {\n      \"commit\": \"OpenBLAS 0.3.27.dev\",\n      \"extractor_version\": \"kgagent-v1.5\",\n      \"line_confidence\": \"exact\",\n      \"line_end\": 106,\n      \"line_start\": 13,\n      \"origin_file\": \"../cx_operator_tool/operator_extract/openblas_newtest1/15_ddot_op/ddot_k_rvv.c\",\n      \"source_file\": \"../cx_operator_tool/operator_extract/openblas_newtest1/15_ddot_op/ddot_k_rvv.c\"\n    }\n  },\n  {\n    \"id\": \"stg:dot:vectorize_d\",\n    \"name\": \"RVV 向量化内核（vsetvl + vle/vfmacc/vse）\",\n    \"family\": \"SIMD向量指令\",\n    \"action\": \"vectorize\",\n    \"level\": \"instruction\",\n    \"stage\": \"core\",\n    \"arch_scope\": \"arch_specific\",\n    \"arch\": \"rvv\",\n    \"arches\": [\n      \"rvv\"\n    ],\n    \"arch_parameters\": {\n      \"rvv\": {\n        \"lmul\": 8,\n        \"sew\": 64,\n        \"vector_len\": 32\n      }\n    },\n    \"score\": 0.745,\n    \"score_breakdown\": {\n      \"match_p\": 1.0,\n      \"fit_c\": 1.0,\n      \"hw\": 1.0,\n      \"ev\": 0.3502,\n      \"sup\": 0.2,\n      \"tr_penalty\": 0.3,\n      \"total\": 0.745\n    },\n    \"why_selected\": {\n      \"patterns\": [\n        \"pat:dot:core.reduction\"\n      ],\n      \"conditions_satisfied\": [\n        \"dtype\",\n        \"loop_depth\",\n        \"reduction\",\n        \"size_regime\",\n        \"stride_x\",\n        \"aligned\"\n      ],\n      \"hardware\": \"k1_rvv256\",\n      \"source\": \"../cx_operator_tool/operator_extract/openblas_newtest1/15_ddot_op/ddot_k_rvv.c\"\n    },\n    \"conditions\": [\n      {\n        \"hard\": true,\n        \"op\": \"in\",\n        \"pred\": \"dtype\",\n        \"value\": [\n          \"d\"\n        ]\n      },\n      {\n        \"hard\": true,\n        \"op\": \"ge\",\n        \"pred\": \"loop_depth\",\n        \"value\": 1\n      },\n      {\n        \"hard\": true,\n        \"op\": \"eq\",\n        \"pred\": \"reduction\",\n        \"value\": true\n      },\n      {\n        \"hard\": true,\n        \"op\": \"in\",\n        \"pred\": \"size_regime\",\n        \"value\": [\n          \"medium\",\n          \"large\"\n        ]\n      },\n      {\n        \"hard\": true,\n        \"op\": \"eq\",\n        \"pred\": \"stride_x\",\n        \"value\": 1\n      },\n      {\n        \"hard\": false,\n        \"op\": \"eq\",\n        \"pred\": \"aligned\",\n        \"value\": true\n      }\n    ],\n    \"template\": {\n      \"id\": \"tpl:dot:vectorize_d\",\n      \"language\": \"c\",\n      \"skeleton\": \"for (BLASLONG i = 0; i < n; i += vl) {\\n    size_t vl = __riscv_vsetvl_e{{SEW}}m{{LMUL}}(n - i);\\n    vfloat{{SEW}}m{{LMUL}}_t vx = __riscv_vle{{SEW}}_v_f{{SEW}}m{{LMUL}}(x + i, vl);\\n    vfloat{{SEW}}m{{LMUL}}_t vy = __riscv_vle{{SEW}}_v_f{{SEW}}m{{LMUL}}(y + i, vl);\\n    vy = __riscv_vfmacc_vv_f{{SEW}}m{{LMUL}}(vy, vx, {{ALPHA}}, vl);\\n    __riscv_vse{{SEW}}_v_f{{SEW}}m{{LMUL}}(y + i, vy, vl);\\n}\",\n      \"slots\": [\n        {\n          \"default\": 64,\n          \"name\": \"SEW\",\n          \"source\": \"par:sew\",\n          \"type\": \"int\"\n        },\n        {\n          \"default\": 8,\n          \"name\": \"LMUL\",\n          \"source\": \"par:lmul\",\n          \"type\": \"int\"\n        },\n        {\n          \"default\": \"alpha\",\n          \"name\": \"ALPHA\",\n          \"source\": \"operator.alpha\",\n          \"type\": \"expr\"\n        }\n      ],\n      \"check_hints\": [\n        \"vsetvl 必须在循环内按剩余长度重新计算\",\n        \"vl 与 pack 布局一致\",\n        \"指针别名会阻止向量化\"\n      ]\n    },\n    \"parameters\": [\n      {\n        \"id\": \"par:lmul\",\n        \"derived_from\": \"num_vector_regs / 同时活跃向量数\",\n        \"effect_direction\": \"LMUL 越大单指令吞吐越高、可用寄存器组越少\",\n        \"kind\": \"lmul\",\n        \"name\": \"lmul\",\n        \"range\": [\n          1,\n          2,\n          4,\n          8\n        ],\n        \"unit\": \"regs\",\n        \"used_by_strategies\": 38,\n        \"value_in_source\": 8,\n        \"value_in_instance\": 8\n      },\n      {\n        \"id\": \"par:sew\",\n        \"derived_from\": \"dtype\",\n        \"effect_direction\": \"由数据类型决定（double 固定 64）\",\n        \"kind\": \"sew\",\n        \"name\": \"sew\",\n        \"range\": [\n          32,\n          64\n        ],\n        \"unit\": \"bits\",\n        \"used_by_strategies\": 38,\n        \"value_in_source\": 64,\n        \"value_in_instance\": 64\n      },\n      {\n        \"id\": \"par:vector_len\",\n        \"derived_from\": \"VLEN*LMUL/SEW = 256*8/64 = 32\",\n        \"effect_direction\": \"等于 VLMAX 时无尾部开销；VLEN 越大单指令处理元素越多\",\n        \"kind\": \"vector_len\",\n        \"name\": \"vector_len\",\n        \"range\": [\n          4,\n          8,\n          16,\n          32\n        ],\n        \"unit\": \"elements\",\n        \"used_by_strategies\": 16,\n        \"value_in_source\": 32,\n        \"value_in_instance\": 32\n      }\n    ],\n    \"evidence\": [\n      {\n        \"id\": \"ev:dot:geomean\",\n        \"metric\": \"speedup\",\n        \"value\": 1.1584,\n        \"platform_id\": \"hw:qemu-riscv64-vlen256\",\n        \"role\": \"supports\",\n        \"scope\": \"operator\",\n        \"caveat\": \"QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据\"\n      },\n      {\n        \"id\": \"ev:dot:pass_rate\",\n        \"metric\": \"pass_rate\",\n        \"value\": 1.0,\n        \"platform_id\": \"hw:qemu-riscv64-vlen256\",\n        \"role\": \"supports\",\n        \"scope\": \"operator\",\n        \"caveat\": \"QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据\"\n      }\n    ],\n    \"provenance\": {\n      \"commit\": \"OpenBLAS 0.3.27.dev\",\n      \"extractor_version\": \"kgagent-v1.5\",\n      \"line_confidence\": \"exact\",\n      \"line_end\": 106,\n      \"line_start\": 13,\n      \"origin_file\": \"../cx_operator_tool/operator_extract/openblas_newtest1/15_ddot_op/ddot_k_rvv.c\",\n      \"source_file\": \"../cx_operator_tool/operator_extract/openblas_newtest1/15_ddot_op/ddot_k_rvv.c\"\n    }\n  },\n  {\n    \"id\": \"stg:dot:reduce_register_pressure_s\",\n    \"name\": \"标量归约累加链\",\n    \"family\": \"循环拆分\",\n    \"action\": \"reduce_register_pressure\",\n    \"level\": \"code\",\n    \"stage\": \"core\",\n    \"arch_scope\": \"arch_agnostic\",\n    \"arch\": null,\n    \"arches\": [],\n    \"arch_parameters\": {},\n    \"score\": 0.7,\n    \"score_breakdown\": {\n      \"match_p\": 1.0,\n      \"fit_c\": 1.0,\n      \"hw\": 0.7,\n      \"ev\": 0.3502,\n      \"sup\": 0.2,\n      \"tr_penalty\": 0.3,\n      \"total\": 0.7\n    },\n    \"why_selected\": {\n      \"patterns\": [\n        \"pat:dot:core.reduction\"\n      ],\n      \"conditions_satisfied\": [\n        \"dtype\",\n        \"loop_depth\",\n        \"reduction\",\n        \"size_regime\"\n      ],\n      \"hardware\": \"k1_rvv256\",\n      \"source\": \"../cx_operator_tool/operator_extract/openblas_newtest1/15_ddot_op/ddot_k.c\"\n    },\n    \"conditions\": [\n      {\n        \"hard\": true,\n        \"op\": \"in\",\n        \"pred\": \"dtype\",\n        \"value\": [\n          \"d\"\n        ]\n      },\n      {\n        \"hard\": true,\n        \"op\": \"ge\",\n        \"pred\": \"loop_depth\",\n        \"value\": 1\n      },\n      {\n        \"hard\": true,\n        \"op\": \"eq\",\n        \"pred\": \"reduction\",\n        \"value\": true\n      },\n      {\n        \"hard\": false,\n        \"op\": \"in\",\n        \"pred\": \"size_regime\",\n        \"value\": [\n          \"medium\",\n          \"large\"\n        ],\n        \"weight\": 1.0\n      }\n    ],\n    \"template\": {\n      \"id\": \"tpl:dot:reduce_register_pressure_s\",\n      \"language\": \"c\",\n      \"skeleton\": \"double acc[{{ACC_COUNT}}] = {0};\\nfor (BLASLONG i = 0; i < n; i += {{ACC_COUNT}}) { /* 累加器数量受寄存器限制 */ }\\ndouble s = 0; for (int t = 0; t < {{ACC_COUNT}}; t++) s += acc[t];\",\n      \"slots\": [\n        {\n          \"default\": 1,\n          \"name\": \"ACC_COUNT\",\n          \"source\": \"par:accumulator_count\",\n          \"type\": \"int\"\n        }\n      ],\n      \"check_hints\": [\n        \"累加器不要超过可用寄存器数\",\n        \"归约顺序影响浮点结果\"\n      ]\n    },\n    \"parameters\": [\n      {\n        \"id\": \"par:accumulator_count\",\n        \"derived_from\": \"寄存器预算 / 累加链延迟\",\n        \"effect_direction\": \"更多累加器可支持更大分块或更高程度的循环展开，但也增加寄存器压力\",\n        \"kind\": \"blocking\",\n        \"name\": \"accumulator_count\",\n        \"range\": [\n          1,\n          2,\n          4,\n          6,\n          8,\n          16\n        ],\n        \"unit\": \"elements\",\n        \"used_by_strategies\": 4,\n        \"value_in_source\": 8,\n        \"value_in_instance\": 1\n      }\n    ],\n    \"evidence\": [\n      {\n        \"id\": \"ev:dot:geomean\",\n        \"metric\": \"speedup\",\n        \"value\": 1.1584,\n        \"platform_id\": \"hw:qemu-riscv64-vlen256\",\n        \"role\": \"supports\",\n        \"scope\": \"operator\",\n        \"caveat\": \"QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据\"\n      },\n      {\n        \"id\": \"ev:dot:pass_rate\",\n        \"metric\": \"pass_rate\",\n        \"value\": 1.0,\n        \"platform_id\": \"hw:qemu-riscv64-vlen256\",\n        \"role\": \"supports\",\n        \"scope\": \"operator\",\n        \"caveat\": \"QEMU 计时不代表真实微架构；Ref 为同库参考实现而非策略消融，只能作 operator 级证据\"\n      }\n    ],\n    \"provenance\": {\n      \"commit\": \"OpenBLAS 0.3.27.dev\",\n      \"extractor_version\": \"kgagent-v1.5\",\n      \"line_confidence\": \"exact\",\n      \"line_end\": 33,\n      \"line_start\": 10,\n      \"origin_file\": \"kernel/mips/dot.c\",\n      \"source_file\": \"../cx_operator_tool/operator_extract/openblas_newtest1/15_ddot_op/ddot_k.c\"\n    }\n  }\n]\n\n【逐条适用性分析（前 3 条策略，JSON 数组）】\n[\n  {\n    \"strategy_id\": \"stg:dot:specialize_d\",\n    \"strategy_name\": \"LMUL/SEW 向量寄存器分组调优\",\n    \"applies\": true,\n    \"confidence\": 0.8,\n    \"evidence\": [\n      \"策略 conditions 中 dtype 的硬性约束为 'd'，与目标算子代码特征匹配\",\n      \"loop_depth >= 1 的硬性条件满足查询代码特征\",\n      \"reduction == true 的硬性条件与代码特征一致\",\n      \"size_regime 为 large，符合策略适用范围\",\n      \"arch_parameters 中指定的 sew=64 和 lmul=8 与目标硬件 k1_rvv256 的能力适配\",\n      \"模板中提供针对 inc_x == 1 和 inc_y == 1 的快速路径，与查询特征中的 stride_x=1、stride_y=1 匹配\"\n    ],\n    \"risks\": [\n      \"尾部处理风险：tail_divisible == false，可能无法完整向量化尾部，需额外处理\",\n      \"寄存器压力风险：LMUL=8 在 k1_rvv256 上可能导致较高的寄存器占用，影响性能\",\n      \"数值一致性风险：向量化可能导致浮点计算顺序变化，影响结果一致性\",\n      \"别名风险：x 和 y 指针可能存在别名问题，影响向量化执行的正确性\",\n      \"ISA 支持风险：目标硬件是否完整支持 RVV 指令集，特别是 vle64/vlse64 等操作\"\n    ],\n    \"parameters\": {\n      \"sew\": 64,\n      \"lmul\": 8\n    },\n    \"conflicts\": []\n  },\n  {\n    \"strategy_id\": \"stg:dot:split_d\",\n    \"strategy_name\": \"向量归约累加链\",\n    \"applies\": true,\n    \"confidence\": 0.745,\n    \"evidence\": [\n      \"满足 hard 条件：dtype == 'd'\",\n      \"满足 hard 条件：loop_depth >= 1\",\n      \"满足 hard 条件：reduction == true\",\n      \"满足 hard 条件：size_regime 在 ['medium', 'large'] 中\",\n      \"arch_scope 包含目标硬件 k1_rvv256\",\n      \"evidence 中 ev:dot:geomean 提供了速度提升的实测依据\",\n      \"template 提供了明确的向量归约实现结构\"\n    ],\n    \"risks\": [\n      \"尾部处理风险：tail_divisible == false 可能导致向量加载/存储越界\",\n      \"数值一致性风险：浮点归约顺序变化可能影响结果精度\",\n      \"寄存器压力风险：LMUL=8 可能导致向量寄存器资源不足\",\n      \"编译器支持风险：RISC-V V 扩展版本是否完整支持归约指令\",\n      \"性能可移植性风险：QEMU 上的证据不代表真实硬件性能表现\"\n    ],\n    \"parameters\": {\n      \"lmul\": 8,\n      \"sew\": 64,\n      \"split_factor\": 1\n    },\n    \"conflicts\": []\n  },\n  {\n    \"strategy_id\": \"stg:dot:tail_handle_d\",\n    \"strategy_name\": \"动态 vl / 掩码尾部处理\",\n    \"applies\": true,\n    \"confidence\": 0.745,\n    \"evidence\": [\n      \"策略 conditions 中 dtype 为 [\\\"d\\\"] 与目标算子匹配\",\n      \"loop_depth >= 1 条件满足（当前 loop_depth 为 1）\",\n      \"reduction == true 条件满足\",\n      \"size_regime 为 large，策略支持\",\n      \"tail_divisible == false 条件为 soft constraint，未完全满足但不影响适用性\",\n      \"evidence 中 speedup 和 pass_rate 支持策略在 operator 级的可行性\",\n      \"template 支持动态 vl 处理尾部，适用于当前硬件 k1_rvv256\",\n      \"arch_parameters 设置 sew=64, lmul=8，与目标硬件和数据类型匹配\"\n    ],\n    \"risks\": [\n      \"尾部处理依赖动态 vl，若编译器优化不当可能导致边界处理错误\",\n      \"double 类型精度可能因向量寄存器舍入导致数值不一致\",\n      \"高 LMUL（8）可能导致寄存器压力过高，影响性能\",\n      \"编译器对 RISC-V Vector Extension 支持不完善可能影响生成代码质量\",\n      \"未考虑 x 和 y 指针可能别名导致的副作用\"\n    ],\n    \"parameters\": {\n      \"SEW\": 64,\n      \"LMUL\": 8\n    },\n    \"conflicts\": []\n  }\n]\n\n【4 标准综合报告（supportive / complementarity / accuracy / completeness）】\n{\n  \"criteria\": {\n    \"supportive\": {\n      \"score\": 0.85,\n      \"reason\": \"三个策略都要求 dtype == 'd'、loop_depth >= 1、reduction == true、size_regime 为 large，且参数上都使用 sew=64 和 lmul=8，条件基本一致，可以同时采用。但尾部处理策略（tail_handle_d）和向量归约策略（split_d）在尾部处理方式上需要协调，不能完全独立实施。\"\n    },\n    \"complementarity\": {\n      \"score\": 0.9,\n      \"reason\": \"specialize_d 负责主循环向量化和寄存器分组，split_d 优化归约路径，tail_handle_d 处理尾部边界问题，三者分别作用于向量化、归约链和尾部处理阶段，组合后能覆盖更多实现环节。\"\n    },\n    \"accuracy\": {\n      \"score\": 0.7,\n      \"reason\": \"向量化和归约顺序变化可能引入浮点精度误差，策略中未明确提供数值一致性保证机制。此外，尾部处理依赖动态 vl 和掩码，若实现不当可能导致精度问题。别名处理也未被策略覆盖，存在一定风险。\"\n    },\n    \"completeness\": {\n      \"score\": 0.85,\n      \"reason\": \"specialize_d 和 split_d 主要覆盖主循环阶段，tail_handle_d 覆盖尾部处理，组合后基本覆盖主循环和尾部。但对 n<=0 和任意步长的支持未被完整覆盖，需要额外分支处理。\"\n    }\n  },\n  \"criteria_scores\": {\n    \"supportive\": 0.85,\n    \"complementarity\": 0.9,\n    \"accuracy\": 0.7,\n    \"completeness\": 0.85\n  },\n  \"overall\": \"三策略组合可形成主循环向量化+归约优化+尾部掩码处理的完整实现，但需注意数值一致性和边界处理细节。\",\n  \"recommended\": [\n    \"stg:dot:specialize_d\",\n    \"stg:dot:split_d\",\n    \"stg:dot:tail_handle_d\"\n  ],\n  \"guidance\": \"['主循环采用 LMUL=8 和 SEW=64 进行向量寄存器分组，充分利用 k1_rvv256 的向量能力。', '使用 split_d 提供的向量归约结构优化累加链，提升归约性能。', '尾部采用动态 vl 和掩码机制处理非整除部分，确保边界安全。', '主循环参数建议采用 8 路展开，配合向量寄存器宽度，提高指令级并行度。', '对 n <= 0 情况单独处理，返回 0.0，确保边界正确。', '避免对 inc_x != 1 或 inc_y != 1 的情况做向量化，使用标量路径处理。']\",\n  \"conflicts\": [\n    \"stg:dot:split_d 和 stg:dot:tail_handle_d 在尾部归约顺序和掩码处理方式上可能存在冲突，需统一尾部归约逻辑。\",\n    \"高 LMUL=8 可能在某些硬件上导致寄存器资源不足，影响性能，建议根据硬件实际能力评估是否降低 LMUL。\"\n  ]\n}\n\n【归约算子补充要求（目标算子为 ddot / dasum / dnrm2 等归约类时必须遵守）】\n- 向量累加器初始化为 0：`vfloat64m8_t vsum = __riscv_vfmv_v_f_f64m8(0.0, vlmax);`\n- 循环结束后**必须做水平归约**再返回标量，例如：\n  `vfloat64m1_t vred = __riscv_vfredusum_vs_f64m8_f64(vsum, __riscv_vfmv_v_f_f64m1(0.0, 1), vl);`\n  `dot = __riscv_vfmv_f_s_f64m1_f64(vred);`\n  或使用 `vfredosum`；**不能只取 `vsum[0]`，也不能用 `__riscv_vfmv_f_s_f64m8_f64(vsum)` 代替水平归约**。\n- 尾部剩余元素用标量循环累加；注意 n<=0、inc 任意（含负步长）。\n- 不要使用不存在的 intrinsic（例如 `__riscv_vmvinf_f64m8`、带两个参数的 `__riscv_vfmv_f_s_f64m8`）；只使用 `riscv_vector.h` 中真实存在的 API。\n\n【硬性要求】\n1. 只输出一个完整的 C 函数（函数签名 + 花括号函数体），不要输出 `main`，不要输出 BLAS/OpenBLAS 头文件，不要输出 markdown 代码围栏、解释文字或测试代码；\n2. 生成必须落实综合报告 `guidance` 中的实现要点；被判定 `applies=false` 的策略不得采用，`conflicts` 中列出的组合必须避免；\n3. 函数名、返回类型、参数列表必须与上面签名完全一致；\n4. 数值语义与基线一致：注意 n<=0、da==0、inc_x/inc_y 任意（含负步长）、尾部元素；\n5. 允许使用 RISC-V RVV intrinsic（需要时可写 `#include <riscv_vector.h>`），但不得依赖 OpenBLAS 内部头文件/宏；\n6. 不要编造未给出的性能数字；代码必须能被 C99/C11 编译器单独编译，不要留 TODO、伪代码或未定义的辅助函数（如需要可写 static 辅助函数放在目标函数之前）。\n"
+  },
+  "code": "typedef long long BLASLONG;\n\n#include <riscv_vector.h>\ndouble ddot_k(BLASLONG n, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y)\n{\n    if (n <= 0) return 0.0;\n\n    double dot = 0.0;\n\n    if (inc_x == 1 && inc_y == 1) {\n        /* 单位步长快速路径：vle64 + vfmacc + vfredusum */\n        size_t vlmax = __riscv_vsetvlmax_e64m8();\n        vfloat64m8_t vsum = __riscv_vfmv_v_f_f64m8(0.0, vlmax);\n\n        BLASLONG i = 0;\n        for (; i <= n - vlmax; i += vlmax) {\n            vfloat64m8_t vx = __riscv_vle64_v_f64m8(x + i, vlmax);\n            vfloat64m8_t vy = __riscv_vle64_v_f64m8(y + i, vlmax);\n            vsum = __riscv_vfmacc_vv_f64m8(vsum, vx, vy, vlmax);\n        }\n\n        /* 尾部处理 */\n        size_t vl = __riscv_vsetvl_e64m8(n - i);\n        if (vl > 0) {\n            vfloat64m8_t vx = __riscv_vle64_v_f64m8(x + i, vl);\n            vfloat64m8_t vy = __riscv_vle64_v_f64m8(y + i, vl);\n            vsum = __riscv_vfmacc_vv_f64m8(vsum, vx, vy, vl);\n        }\n\n        /* 水平归约 */\n        vfloat64m1_t vred = __riscv_vfredusum_vs_f64m8_f64m1(vsum, __riscv_vfmv_v_f_f64m1(0.0, 1), vlmax);\n        dot = __riscv_vfmv_f_s_f64m1_f64(vred);\n    } else {\n        /* 通用 strided 路径 */\n        BLASLONG ix = 0, iy = 0;\n        BLASLONG i = 0;\n        while (i < n) {\n            dot += x[ix] * y[iy];\n            ix += inc_x;\n            iy += inc_y;\n            i++;\n        }\n    }\n\n    return dot;\n}\n",
+  "code_meta": {
+    "signature": "double ddot_k(BLASLONG n, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y)",
+    "function_name": "ddot_k",
+    "wrapped_body": false,
+    "fences_removed": true,
+    "prologue_added": true,
+    "repairs": [],
+    "char_count": 1392
+  },
+  "usage": {
+    "calls": 5,
+    "prompt_tokens": 19852,
+    "completion_tokens": 2217,
+    "total_tokens": 22069,
+    "by_stage": {
+      "analysis": {
+        "calls": 3,
+        "prompt_tokens": 6405,
+        "completion_tokens": 952,
+        "total_tokens": 7357
+      },
+      "synthesis": {
+        "calls": 1,
+        "prompt_tokens": 1828,
+        "completion_tokens": 693,
+        "total_tokens": 2521
+      },
+      "generate": {
+        "calls": 1,
+        "prompt_tokens": 11619,
+        "completion_tokens": 572,
+        "total_tokens": 12191
+      }
+    }
+  },
+  "elapsed_s": 48.211,
+  "warnings": [],
+  "artifacts": {
+    "out_dir": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\real_smoke2_ddot\\ddot_b4",
+    "result_path": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\real_smoke2_ddot\\ddot_b4\\mpsa_result.json",
+    "generated_c_path": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\real_smoke2_ddot\\ddot_b4\\generated.c"
+  }
+}

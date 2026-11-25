@@ -1,0 +1,199 @@
+{
+  "arch_matrix": {
+    "rvv": {
+      "axpy": 1,
+      "dot": 1,
+      "gemm": 1,
+      "gemv": 1
+    },
+    "x86_avx2": {
+      "axpy": 2,
+      "dot": 2,
+      "gemm": 2,
+      "gemv": 3
+    }
+  },
+  "cross_arch_shared": [
+    {
+      "action": "vectorize",
+      "arch_evidence_count": 3,
+      "arch_parameters": {
+        "rvv": {
+          "lmul": 8,
+          "sew": 64,
+          "vector_len": 32
+        },
+        "x86_avx2": {
+          "vector_width": 256
+        }
+      },
+      "arches": [
+        "rvv",
+        "x86_avx2"
+      ],
+      "id": "stg:axpy:vectorize_x",
+      "op": "axpy"
+    },
+    {
+      "action": "tile",
+      "arch_evidence_count": 3,
+      "arch_parameters": {
+        "rvv": {
+          "lmul": 8,
+          "reg_block_n": 1,
+          "sew": 64,
+          "vector_len": 32
+        },
+        "x86_avx2": {
+          "reg_block_n": 4
+        }
+      },
+      "arches": [
+        "rvv",
+        "x86_avx2"
+      ],
+      "id": "stg:dot:tile_x",
+      "op": "dot"
+    },
+    {
+      "action": "vectorize",
+      "arch_evidence_count": 3,
+      "arch_parameters": {
+        "rvv": {
+          "lmul": 8,
+          "sew": 64,
+          "vector_len": 32
+        },
+        "x86_avx2": {
+          "vector_width": 256
+        }
+      },
+      "arches": [
+        "rvv",
+        "x86_avx2"
+      ],
+      "id": "stg:dot:vectorize_x",
+      "op": "dot"
+    },
+    {
+      "action": "tile",
+      "arch_evidence_count": 3,
+      "arch_parameters": {
+        "rvv": {
+          "k_unroll": 8,
+          "lmul": 2,
+          "reg_block_n": 8,
+          "sew": 64,
+          "vector_len": 8
+        },
+        "x86_avx2": {
+          "reg_block_m": 16,
+          "reg_block_n": 2
+        }
+      },
+      "arches": [
+        "rvv",
+        "x86_avx2"
+      ],
+      "id": "stg:gemm:tile_x",
+      "op": "gemm"
+    },
+    {
+      "action": "unroll",
+      "arch_evidence_count": 3,
+      "arch_parameters": {
+        "rvv": {
+          "k_unroll": 8
+        },
+        "x86_avx2": {
+          "unroll_factor": 32
+        }
+      },
+      "arches": [
+        "rvv",
+        "x86_avx2"
+      ],
+      "id": "stg:gemm:unroll_x",
+      "op": "gemm"
+    },
+    {
+      "action": "vectorize",
+      "arch_evidence_count": 3,
+      "arch_parameters": {
+        "rvv": {
+          "lmul": 2,
+          "sew": 64,
+          "vector_len": 8
+        },
+        "x86_avx2": {
+          "vector_width": 256
+        }
+      },
+      "arches": [
+        "rvv",
+        "x86_avx2"
+      ],
+      "id": "stg:gemm:vectorize_x",
+      "op": "gemm"
+    },
+    {
+      "action": "vectorize",
+      "arch_evidence_count": 4,
+      "arch_parameters": {
+        "rvv": {
+          "lmul": 8,
+          "sew": 64,
+          "vector_len": 32
+        },
+        "x86_avx2": {
+          "vector_width": 256
+        }
+      },
+      "arches": [
+        "rvv",
+        "x86_avx2"
+      ],
+      "id": "stg:gemv:vectorize_x",
+      "op": "gemv"
+    }
+  ],
+  "cross_arch_shared_count": 7,
+  "implementation_files": 13,
+  "op_arch_count": {
+    "axpy": 2,
+    "dot": 2,
+    "gemm": 2,
+    "gemv": 2
+  },
+  "ops_by_arch": {
+    "rvv": [
+      "axpy",
+      "dot",
+      "gemm",
+      "gemv"
+    ],
+    "x86_avx2": [
+      "axpy",
+      "dot",
+      "gemm",
+      "gemv"
+    ]
+  },
+  "ops_with_multi_arch": 4,
+  "ops_with_multi_arch_list": [
+    "axpy",
+    "dot",
+    "gemm",
+    "gemv"
+  ],
+  "schema_version": "kg-v1.5",
+  "strategies_by_arch": {
+    "rvv": 15,
+    "x86_avx2": 11
+  },
+  "strategies_by_arch_scope": {
+    "arch_agnostic": 16,
+    "arch_specific": 26,
+    "parameterized": 7
+  }
+}

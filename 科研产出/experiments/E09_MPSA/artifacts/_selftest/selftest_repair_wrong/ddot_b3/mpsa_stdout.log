@@ -1,0 +1,64 @@
+{
+  "status": "ok",
+  "op": "ddot",
+  "op_canonical": "dot",
+  "profile": "k1_rvv256",
+  "mode": "b3",
+  "provider": "mock",
+  "model": "mock",
+  "out_dir": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\selftest_repair_wrong\\ddot_b3",
+  "result_path": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\selftest_repair_wrong\\ddot_b3\\mpsa_result.json",
+  "generated_c_path": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\selftest_repair_wrong\\ddot_b3\\generated.c",
+  "retrieved": {
+    "count": 6,
+    "top_k": 6,
+    "strategy_ids": [
+      "stg:dot:specialize_d",
+      "stg:dot:split_d",
+      "stg:dot:tail_handle_d",
+      "stg:dot:tile_d",
+      "stg:dot:vectorize_d",
+      "stg:dot:reduce_register_pressure_s"
+    ],
+    "trace_id": "trace:20261112T205707:dot:k1_rvv256"
+  },
+  "analysis": null,
+  "synthesis": null,
+  "usage": {
+    "calls": 1,
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0,
+    "by_stage": {
+      "analysis": {
+        "calls": 0,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "synthesis": {
+        "calls": 0,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "generate": {
+        "calls": 1,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      }
+    }
+  },
+  "elapsed_s": 0.039,
+  "code_meta": {
+    "signature": "double ddot_k(BLASLONG n, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y)",
+    "function_name": "ddot_k",
+    "wrapped_body": false,
+    "fences_removed": false,
+    "prologue_added": false,
+    "repairs": [],
+    "char_count": 458
+  },
+  "code_preview": "/* E09 修复回路自测夹具：数值错误（wrong_answer 分支）\n * 编译通过、但恒返回 0.0 → driver 的 maxdiff≈8192 / reldiff≈1 → exit 2。\n * 用法（mock 生成用）：run_smoke.py --mock-code selftest/wrong_answer_ddot.c\n *   → 初始 wrong_answer（--erro"
+}

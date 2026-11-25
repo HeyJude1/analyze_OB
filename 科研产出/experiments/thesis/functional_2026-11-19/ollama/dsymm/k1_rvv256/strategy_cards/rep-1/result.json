@@ -1,0 +1,49 @@
+{
+  "analogy_source": "gemm",
+  "card_ids": [
+    "stg:abstract:k_unroll",
+    "stg:abstract:register_blocking",
+    "stg:abstract:vector_fma",
+    "stg:abstract:tail_handling"
+  ],
+  "contract_sha256": "1998f1147530fbd0cb7b46f9e7ca4f7e60d20e9bb8cc625dfde2edb0d39aed1d",
+  "knowledge_bytes": 4560,
+  "method": "strategy_cards",
+  "operator": "dsymm",
+  "profile": "k1_rvv256",
+  "prompt": "dsymm/k1_rvv256/strategy_cards.json",
+  "prompt_sha256": "02e850e8295855472d35581f94480a32fe5d85e16ca2ee4ea1f78a9c4bd121d1",
+  "repetition": 1,
+  "source_sha256": "2b054ea1fb3ef0c2781e028c6d754a08de7d41cf530fe1cbceb1efa19b540ffd",
+  "split": "near_transfer",
+  "status": "prepared",
+  "engine": "ollama",
+  "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+  "repair_attempted": true,
+  "initial": {
+    "status": "compile_failed",
+    "compile_ok": false,
+    "correct": null,
+    "failure_reason": "other_compiler_error",
+    "usage": {
+      "prompt_tokens": 3003,
+      "completion_tokens": 457,
+      "total_tokens": 3460
+    },
+    "diagnostic": "../experiments/thesis/functional_2026-11-19/ollama/dsymm/k1_rvv256/strategy_cards/rep-1/initial/candidate.c: In function ‘op_dsymm’:\n../experiments/thesis/functional_2026-11-19/ollama/dsymm/k1_rvv256/strategy_cards/rep-1/initial/candidate.c:18:36: error: variable-sized object may not be initialized except with an empty initializer\n   18 |             double sum[K_UNROLL] = {0.0};\n      |                                    ^\n",
+    "candidate_sha256": "49e9cc233790db7c61fde1d52a6ab65916f9d12511bf44839ccf81344d099012"
+  },
+  "final": {
+    "status": "wrong_answer",
+    "compile_ok": true,
+    "correct": false,
+    "failure_reason": "numerical_or_memory_contract",
+    "usage": {
+      "prompt_tokens": 2257,
+      "completion_tokens": 479,
+      "total_tokens": 2736
+    },
+    "diagnostic": "Numerical or memory-contract check failed on 3136 cases. Preserve the full public contract.",
+    "candidate_sha256": "806e03b3016d6f45c8e66f116d1f707a322dd2f92e4ebd675e0d8b04287ad67d"
+  }
+}

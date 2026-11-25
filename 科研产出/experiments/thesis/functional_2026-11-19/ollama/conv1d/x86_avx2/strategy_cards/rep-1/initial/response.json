@@ -1,0 +1,9 @@
+{
+  "raw": "```c\n#include \"opbench.h\"\n\nvoid op_conv1d(size_t n, size_t k, const double *x, const double *w, double *y) {\n    if (k == 0 || k > n) return;\n    const size_t len = n - k + 1;\n\n    // Vectorize the convolution with AVX2\n    __m256d v_zero = _mm256_setzero_pd();\n    for (size_t i = 0; i < len; i += 4) {\n        __m256d sum = v_zero;\n        for (size_t j = 0; j < k; ++j) {\n            __m256d vx = _mm256_loadu_pd(&x[i + j]);\n            __m256d vw = _mm256_set1_pd(w[k - 1 - j]);\n            sum = _mm256_add_pd(sum, _mm256_mul_pd(vx, vw));\n        }\n        _mm256_storeu_pd(&y[i], sum);\n    }\n\n    // Handle the tail\n    for (size_t i = len & ~3; i < len; ++i) {\n        double sum = 0.0;\n        for (size_t j = 0; j < k; ++j) {\n            sum += x[i + j] * w[k - 1 - j];\n        }\n        y[i] = sum;\n    }\n}\n```\n\nThis implementation uses AVX2 intrinsics to vectorize the convolution operation. The main loop processes 4 elements at a time, and the tail handles any remaining elements that do not fit into the vectorized loop. This approach ensures efficient use of the CPU's floating-point units while maintaining the required precision and error contract.",
+  "usage": {
+    "prompt_tokens": 2591,
+    "completion_tokens": 384,
+    "total_tokens": 2975
+  },
+  "stop_reason": "stop"
+}

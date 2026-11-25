@@ -1,0 +1,65 @@
+{
+  "status": "ok",
+  "op": "ddot",
+  "op_canonical": "dot",
+  "profile": "k1_rvv256",
+  "mode": "b3",
+  "provider": "mock",
+  "model": "mock",
+  "out_dir": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\selftest_repair_wrong\\ddot_b3\\repair_r1",
+  "result_path": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\selftest_repair_wrong\\ddot_b3\\repair_r1\\repair_result.json",
+  "repaired_c_path": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\selftest_repair_wrong\\ddot_b3\\repair_r1\\repaired.c",
+  "error_source": "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\E09_MPSA\\runs\\selftest_repair_wrong\\ddot_b3\\harness\\qemu.stdout.log",
+  "input_error_preview": "ddot n=16384 maxdiff=8.188e+03 reldiff=1.000e+00 best=0.000000 ms (0.00 GB/s) sink=0.000e+00",
+  "fix_summary": {
+    "changed": true,
+    "original_chars": 458,
+    "repaired_chars": 318,
+    "intrinsics_used": [],
+    "mock": true
+  },
+  "calls": 1,
+  "usage": {
+    "calls": 1,
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0,
+    "by_stage": {
+      "analysis": {
+        "calls": 0,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "synthesis": {
+        "calls": 0,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "generate": {
+        "calls": 0,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "repair": {
+        "calls": 1,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      }
+    }
+  },
+  "elapsed_s": 0.001,
+  "code_meta": {
+    "signature": "double ddot_k(BLASLONG n, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y)",
+    "function_name": "ddot_k",
+    "wrapped_body": false,
+    "fences_removed": false,
+    "prologue_added": true,
+    "repairs": [],
+    "char_count": 318
+  },
+  "code_preview": "typedef long long BLASLONG;\n\ndouble ddot_k(BLASLONG n, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y)\n{\n    BLASLONG i;\n    BLASLONG ix = 0;\n    BLASLONG iy = 0;\n    double acc = 0.0;\n\n    for "
+}

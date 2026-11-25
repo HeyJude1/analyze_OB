@@ -1,0 +1,2113 @@
+{
+  "hardware_feature": [
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [
+          {
+            "canonical_name": "分支预测器与指令流水线协同优化机制",
+            "entities": [
+              {
+                "name": "分支预测器",
+                "uid": "0060c094aa5f322f65f5405ab07fcdb7",
+                "is_primary": true
+              },
+              {
+                "name": "指令流水线",
+                "uid": "4f6d3f4860ad02c0c1f1b017458dc9da",
+                "is_primary": false
+              }
+            ]
+          }
+        ],
+        "remaining_entities": []
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "ALU",
+            "uid": "0459b9aeffc50bb31ba4015d7693c13f",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "通用寄存器文件",
+            "uid": "08454afdb34cfc8fdb686d087643442b",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [
+          {
+            "canonical_name": "浮点流水线",
+            "entities": [
+              {
+                "name": "浮点流水线",
+                "uid": "089cf03a33525c9fda5c702798654881",
+                "is_primary": true
+              },
+              {
+                "name": "浮点执行单元",
+                "uid": "39d8711f34ebbf7668d2eb5d6468b7ac",
+                "is_primary": false
+              }
+            ]
+          }
+        ],
+        "remaining_entities": []
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "标量浮点单元",
+            "uid": "09002b0c6ab02ee5d125289e1961cc62",
+            "is_primary": true
+          },
+          {
+            "name": "标量浮点单元",
+            "uid": "78713e32c197586ed234494364bb8ab6",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "Cache",
+            "uid": "09099823c2e9b576e63d33868cd7dd42",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "内存对齐",
+            "uid": "0b0cda72899f25b4543fdd68a0d4eb51",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "FPU Pipeline",
+            "uid": "0c09ef2936831bf2da6cdaeeeef6df03",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [
+          {
+            "canonical_name": "CPU寄存器与地址生成单元",
+            "entities": [
+              {
+                "name": "寄存器",
+                "uid": "0d6fe0b8c323591df51647449fa7915e",
+                "is_primary": true
+              },
+              {
+                "name": "地址生成单元",
+                "uid": "a452dd5715986b38b7540ee58a876c55",
+                "is_primary": false
+              }
+            ]
+          }
+        ],
+        "remaining_entities": [
+          {
+            "name": "内存带宽",
+            "uid": "39e48a718a6f2dc67f7bdd94021e63d4",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [
+          {
+            "canonical_name": "寄存器文件",
+            "entities": [
+              {
+                "name": "寄存器文件",
+                "uid": "0db9bec94a418342de57a178f247bc0d",
+                "is_primary": true
+              },
+              {
+                "name": "寄存器",
+                "uid": "c50ecc59bfd4be3605d2961b34ceaa2c",
+                "is_primary": false
+              }
+            ]
+          }
+        ],
+        "remaining_entities": [
+          {
+            "name": "内存带宽",
+            "uid": "56419fe505616edf0da39c208a43f750",
+            "is_primary": true
+          },
+          {
+            "name": "ALU",
+            "uid": "99ca963b46b0d7f54c08440fa6262f3a",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "寄存器",
+            "uid": "10daa2693b3f462125f232232d079978",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "SIMD算术指令",
+            "uid": "184649e8d1096736915716e3d4afcf8f",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "内存带宽",
+            "uid": "1ead3407c14c7d16c01684f850f8b27c",
+            "is_primary": true
+          },
+          {
+            "name": "缓存行宽度",
+            "uid": "ccd424ba22c87b05872f6f2bb668370c",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "Cache",
+            "uid": "1fbe10e168966999b9569d432462a629",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [
+          {
+            "canonical_name": "SIMD (Single Instruction, Multiple Data) execution units with aligned memory requirements and parallel arithmetic on floating-point or complex data",
+            "entities": [
+              {
+                "name": "SIMD",
+                "uid": "1fe3c6059d286e42eca77eb9047053c3",
+                "is_primary": true
+              },
+              {
+                "name": "SIMD",
+                "uid": "53405638637c29ccc91a4b3989c53aff",
+                "is_primary": false
+              },
+              {
+                "name": "SIMD",
+                "uid": "2fd1b72f1e48dc1d93bdf9953b25d01f",
+                "is_primary": false
+              },
+              {
+                "name": "SIMD",
+                "uid": "4018427711e4a30efde0233b0eb1dd45",
+                "is_primary": false
+              },
+              {
+                "name": "SIMD",
+                "uid": "388c3434c58bc11eb28a0f2c8b751257",
+                "is_primary": false
+              },
+              {
+                "name": "SIMD",
+                "uid": "8c46f9a9c2ea6058842f3582f6b688ce",
+                "is_primary": false
+              }
+            ]
+          }
+        ],
+        "remaining_entities": []
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "指令流水线",
+            "uid": "204748a2f7c11f7637cfe12d87649dae",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [
+          {
+            "canonical_name": "CPU流水线与超标量执行",
+            "entities": [
+              {
+                "name": "CPU流水线",
+                "uid": "2300958ec83a4df371ec3fe977587d97",
+                "is_primary": true
+              },
+              {
+                "name": "流水线与超标量执行",
+                "uid": "d34f515021ddd36c4603f207ce95771d",
+                "is_primary": false
+              }
+            ]
+          }
+        ],
+        "remaining_entities": []
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [
+          {
+            "canonical_name": "指令流水线",
+            "entities": [
+              {
+                "name": "指令流水线",
+                "uid": "f1f479721d17145c3ed8560275177f32",
+                "is_primary": true
+              },
+              {
+                "name": "指令流水线",
+                "uid": "9cdccb6d564b92c4378e8eb8ac75558c",
+                "is_primary": false
+              }
+            ]
+          }
+        ],
+        "remaining_entities": [
+          {
+            "name": "分支预测器",
+            "uid": "24eb30a9640810dbaadc1aef1307947e",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "内存子系统",
+            "uid": "281e91c3450fbe14b73ee82c7e93ea98",
+            "is_primary": true
+          },
+          {
+            "name": "地址生成单元",
+            "uid": "c90ecc01c15c12092e2f50a2fc6e0efb",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "指令流水线",
+            "uid": "2a6e9423465596addab5bb2b0595b3ab",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "内存子系统",
+            "uid": "2b9de0afc4866b4a6081c4440fade188",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "寄存器",
+            "uid": "2c0a7859cbe4a7f115565b00f26967fc",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "SIMD寄存器",
+            "uid": "2c347cd362d384fcca343eba18572b89",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [
+          {
+            "canonical_name": "地址生成单元",
+            "entities": [
+              {
+                "name": "地址生成单元",
+                "uid": "2f082f7f7edc66ee0451b7dd77f29a63",
+                "is_primary": true
+              },
+              {
+                "name": "地址生成单元",
+                "uid": "fd68a9e2b937f18ca56ffaf92da0a835",
+                "is_primary": false
+              },
+              {
+                "name": "内存带宽与AGU",
+                "uid": "aab367d335e32fc86e9fa24c1dc95d67",
+                "is_primary": false
+              }
+            ]
+          }
+        ],
+        "remaining_entities": []
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "内存带宽",
+            "uid": "318eb330d8a86ca88781dbc2c2cdbf9c",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "寄存器文件",
+            "uid": "363c05ffd74bdb0f12cbaaf02fcdd091",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "ALU",
+            "uid": "3b12ea5d0e4e3fb41bb0c015115b7e44",
+            "is_primary": true
+          },
+          {
+            "name": "整数运算单元",
+            "uid": "c75db86149ef4ee537c6216325e2739c",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "Cache",
+            "uid": "3ff170dbf403a40f446bdd55e774f88c",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [
+          {
+            "canonical_name": "CPU缓存行系统",
+            "entities": [
+              {
+                "name": "缓存行",
+                "uid": "4a9dfbb5f98a64f97edc31b38a17adc5",
+                "is_primary": true
+              },
+              {
+                "name": "缓存",
+                "uid": "bc12ec906fecd3853a3231c9d7306f28",
+                "is_primary": false
+              }
+            ]
+          }
+        ],
+        "remaining_entities": []
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "浮点执行单元",
+            "uid": "4b14e46eb508d51cbdd35d884b066544",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "无",
+            "uid": "4c9012f38e518152d27115f8b25f9654",
+            "is_primary": true
+          },
+          {
+            "name": "通用性保障",
+            "uid": "e96c6199eab2b7a5b04a1bcde61c4606",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "CPU寄存器文件",
+            "uid": "4fdc65cff094f80277773d97ab3b33f9",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "内存管理单元",
+            "uid": "51146bf971ce5b0d86c803ab75d4b826",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "深度流水线与乱序执行",
+            "uid": "526c857c58b5b33bf173c8f9eb9b40b3",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "SIMD",
+            "uid": "5a29869cb74e22567261a03bc844c5f7",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "指令流水线",
+            "uid": "5b3ec6cc82e7857cee095486818ae930",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "内存子系统",
+            "uid": "62474e8c46d86791c4e62af713304a34",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "Memory Bandwidth",
+            "uid": "648405eb9b2d258e02916c85b0e47147",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "x86_64汇编指令集",
+            "uid": "67b584776d1af3150426b0d9b6e51bf6",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "执行单元",
+            "uid": "67e31fc46467dd7dfcea46277679965e",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "乱序执行与超标量流水线",
+            "uid": "7077d2928274d3f988eef34f3a5c0100",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "超标量架构",
+            "uid": "7956a8512b3aff7f986631b6b3666c61",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "分支预测器",
+            "uid": "7e35db0a118038a1531f5d80f1321d3b",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "FMA单元",
+            "uid": "8ac8d03bef81cbc024309bcb26155447",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "分支预测器",
+            "uid": "8bfa2582985849ca118d44043b2562a5",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "缓存局部性",
+            "uid": "8de20327d9bab5b7ca7c74019372b8b9",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "Cache",
+            "uid": "9a2f7fb3005c42819dc780ab8e35cd76",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "SIMD寄存器结构",
+            "uid": "b08160690a548eca218c1fe0526fcc3d",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "内存子系统",
+            "uid": "b1940714d326ad27a9b51ebce234e073",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "内存带宽",
+            "uid": "bee6f4f443424a37063defb178d0fa27",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "分支预测器",
+            "uid": "c115ffb5e573ed6e3ae9972f651b845e",
+            "is_primary": true
+          },
+          {
+            "name": "分支预测器",
+            "uid": "c60cac96a44dece4c88caa4b6d97b0d3",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "x86-64汇编指令集",
+            "uid": "c83232b705dd0be8e78c6c04e2ea7192",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "内存对齐与预取",
+            "uid": "c9a79b56b1542c90978b829d4dc183a4",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "Cache",
+            "uid": "cbbbedcd9dc3782b586bb63c814d95b3",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "浮点运算单元",
+            "uid": "cc4bacd9805685236f483081f1759741",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "多发射与乱序执行",
+            "uid": "de3b150eb8f0231b6f200915d75d8487",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "浮点寄存器文件",
+            "uid": "e73e34e0337990ef7d00e3e19d0f6728",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "指令流水线",
+            "uid": "ecc714a32465d500b21bb2a24cefe0be",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "浮点运算单元",
+            "uid": "ef22cc3b8b09e7fc408b514a6529bc0c",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "SIMD内存加载",
+            "uid": "f421263b42c3d7fb30f7717344194e67",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "内存子系统",
+            "uid": "f727cbe72198ba7a538a093be49f2733",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "写合并缓冲区",
+            "uid": "f77a10843a63232779cb9e0efe6548e6",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "超标量架构",
+            "uid": "fcdebd3cd33ca6c0478aa10d18bf6b8e",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "乱序执行引擎",
+            "uid": "fe473079e9de8c721ed4907241ba6c70",
+            "is_primary": true
+          }
+        ]
+      }
+    }
+  ],
+  "optimization_strategy": [
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [
+          {
+            "canonical_name": "索引步长预缩放与循环不变量外提",
+            "entities": [
+              {
+                "name": "循环不变量外提",
+                "uid": "b7905437f874d22735cb33368840a5b1",
+                "is_primary": true
+              },
+              {
+                "name": "索引步长预缩放",
+                "uid": "2587fc789857f42e4782aafed10ea4a1",
+                "is_primary": false
+              }
+            ]
+          },
+          {
+            "canonical_name": "循环内索引增量展开与指针优化",
+            "entities": [
+              {
+                "name": "循环内索引增量展开",
+                "uid": "00009e903cbc1119cc3b6824eb36f756",
+                "is_primary": true
+              },
+              {
+                "name": "指针优化",
+                "uid": "576886ffa109c60377ce1b5f0c42669c",
+                "is_primary": false
+              }
+            ]
+          },
+          {
+            "canonical_name": "四重循环展开与循环展开与指针预计算",
+            "entities": [
+              {
+                "name": "四重循环展开",
+                "uid": "b3c0f6131b5d9d55133e1b21c7c41dd5",
+                "is_primary": true
+              },
+              {
+                "name": "循环展开与指针预计算",
+                "uid": "7e7f13bcef9513ab30251a8ff6031469",
+                "is_primary": false
+              }
+            ]
+          },
+          {
+            "canonical_name": "条件分支消除与归约路径合并与条件分支合并与指针重定向",
+            "entities": [
+              {
+                "name": "条件分支消除与归约路径合并",
+                "uid": "36262e35b261ea31d7f19ab4dd629e22",
+                "is_primary": true
+              },
+              {
+                "name": "条件分支合并与指针重定向",
+                "uid": "b47da76166b0d39ed6ad758f0bca54f5",
+                "is_primary": false
+              }
+            ]
+          }
+        ],
+        "remaining_entities": [
+          {
+            "name": "内存访问与算术操作重叠设计",
+            "uid": "0ad5432f7acf2b2e2e618d310216dad8",
+            "is_primary": true
+          },
+          {
+            "name": "标量循环的指令级并行利用",
+            "uid": "5b497ef491c98a92c0ddbcb7c0bae7ed",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "循环分块与固定大小迭代",
+            "uid": "024ab9bd43b00181959bcae8b44bed4e",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [
+          {
+            "canonical_name": "寄存器变量显式驻留与复用优化",
+            "entities": [
+              {
+                "name": "寄存器累积变量分组布局",
+                "uid": "02ac627c31428b9d7b26772c1227184f",
+                "is_primary": true
+              },
+              {
+                "name": "中间变量复用与强制驻留",
+                "uid": "a13f203ffa775ae9fae6740d298b43b4",
+                "is_primary": false
+              }
+            ]
+          }
+        ],
+        "remaining_entities": []
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "分支消除与短路返回",
+            "uid": "02c3072945af12c082997f8c97ce5d6d",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [
+          {
+            "canonical_name": "对称结构感知计算",
+            "entities": [
+              {
+                "name": "对称结构感知计算",
+                "uid": "0ed6bb2411785cc48e7f030b3594ae01",
+                "is_primary": true
+              },
+              {
+                "name": "对称结构展开",
+                "uid": "20fb27a11557ad3e8c06a7e492388eb0",
+                "is_primary": false
+              }
+            ]
+          }
+        ],
+        "remaining_entities": []
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "内存访问对齐强制以支持SIMD加载",
+            "uid": "10ed13b3de63ecfeca4dee46eef7d56f",
+            "is_primary": true
+          },
+          {
+            "name": "跨步内存访问的向量友好布局适配",
+            "uid": "3b8a43646440fb70b7bd9e68eeb08899",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "缓冲区分层管理",
+            "uid": "10f1a6727fad6939a4d179d224731256",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "访存与计算重叠的流水线友好结构",
+            "uid": "110d2b750764fab12a06bfc5cc1f3d84",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "循环不变量外提",
+            "uid": "11ea3c4da3bbd9c81928b26f75484822",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [
+          {
+            "canonical_name": "复数乘法原子操作融合",
+            "entities": [
+              {
+                "name": "复数乘法原子操作融合",
+                "uid": "13c70809b91e59cfa03d706ee851fb9e",
+                "is_primary": true
+              },
+              {
+                "name": "寄存器级复数乘加融合",
+                "uid": "c5c4f7c92272641bc4c936d5a1b35043",
+                "is_primary": false
+              }
+            ]
+          }
+        ],
+        "remaining_entities": [
+          {
+            "name": "复数乘法融合与延迟缩放",
+            "uid": "29bc9c27854e196a2ff422dd12f00cfa",
+            "is_primary": true
+          },
+          {
+            "name": "SIMD向量化处理复数乘加运算",
+            "uid": "4b9485fa25e9a8e535f95a8a92dd6ce2",
+            "is_primary": true
+          },
+          {
+            "name": "复数乘法融合与延迟缩放",
+            "uid": "29bc9c27854e196a2ff422dd12f00cfa",
+            "is_primary": true
+          },
+          {
+            "name": "SIMD向量化处理复数乘加运算",
+            "uid": "4b9485fa25e9a8e535f95a8a92dd6ce2",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "部分累积与延迟归约",
+            "uid": "16a30efcf18dd5a51bb7fe77d4602389",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "数据打包与格式转换",
+            "uid": "1c64ebd1c359e48dead49ec638b291ef",
+            "is_primary": true
+          },
+          {
+            "name": "分块双列预取与和值打包",
+            "uid": "c104b48b7deec49726962b6da0c23309",
+            "is_primary": true
+          },
+          {
+            "name": "分块循环处理",
+            "uid": "8761f11dd7b1394e0225f8879552c011",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [
+          {
+            "canonical_name": "指针递增代替索引计算",
+            "entities": [
+              {
+                "name": "指针算术优化",
+                "uid": "1d03eac350a93a29a4d750ae2181d01a",
+                "is_primary": true
+              },
+              {
+                "name": "指针递增代替索引计算",
+                "uid": "2800b8e14cf746ccd17ca83ff1dedb16",
+                "is_primary": false
+              },
+              {
+                "name": "指针预增量与地址计算优化",
+                "uid": "e0fc18871b92e9a9633fe9cf326fff89",
+                "is_primary": false
+              },
+              {
+                "name": "指针步进与地址预计算",
+                "uid": "e1f758c88dda0fec2fab822da86214f6",
+                "is_primary": false
+              },
+              {
+                "name": "指针重定向优化",
+                "uid": "8e985f3027d0ba48b527cc53fa08387d",
+                "is_primary": false
+              }
+            ]
+          }
+        ],
+        "remaining_entities": [
+          {
+            "name": "双缓冲指针调度",
+            "uid": "3123ad0a63494b21027b6012692a2d8d",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [
+          {
+            "canonical_name": "分支预测友好型循环结构优化",
+            "entities": [
+              {
+                "name": "分支预测优化",
+                "uid": "1f3237efdd12adb193ee7e46cdccc0d3",
+                "is_primary": true
+              },
+              {
+                "name": "分支预测友好设计",
+                "uid": "5dc31dbd44135743bcfb6c4b8c4f151e",
+                "is_primary": false
+              },
+              {
+                "name": "分支预测友好型条件处理",
+                "uid": "294748c4c973e2ce43865b8cca534145",
+                "is_primary": false
+              },
+              {
+                "name": "分支消除与尾部处理分离",
+                "uid": "ecd1a2cf9f16f3de01e984fc98dbca86",
+                "is_primary": false
+              }
+            ]
+          }
+        ],
+        "remaining_entities": []
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "中间结果复用",
+            "uid": "1ff0ab96b43d3a033df3408f54e56fab",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "空引用抑制未使用变量警告",
+            "uid": "23734f5e62c4c82dc8e55f8d6860e91c",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [
+          {
+            "canonical_name": "循环分块与残差奇偶分离处理",
+            "entities": [
+              {
+                "name": "残差处理分离",
+                "uid": "29625a085e26cced64b1a87c4456172a",
+                "is_primary": true
+              },
+              {
+                "name": "循环分块与奇偶分离处理",
+                "uid": "9de91dc181231e5a0debca2ad5a94343",
+                "is_primary": false
+              },
+              {
+                "name": "边界条件融合处理",
+                "uid": "dddf023c8aca2f1e65f93bd530442ef8",
+                "is_primary": false
+              }
+            ]
+          }
+        ],
+        "remaining_entities": []
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "内联汇编实现核心微核",
+            "uid": "2b0ca428ce09e25e077e8051bfd3c073",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [
+          {
+            "canonical_name": "SIMD向量化数据打包与手动SIMD向量化",
+            "entities": [
+              {
+                "name": "SIMD向量化数据打包",
+                "uid": "78c7fba8c57a8964bff8cb93e7700d26",
+                "is_primary": true
+              },
+              {
+                "name": "手动SIMD向量化",
+                "uid": "e8a9f5fd4e956acf8b1805d6d737d462",
+                "is_primary": false
+              }
+            ]
+          },
+          {
+            "canonical_name": "标量模拟双通道SIMD数据提取与内存访问模式规整化以利于SIMD向量化",
+            "entities": [
+              {
+                "name": "标量模拟双通道SIMD数据提取",
+                "uid": "302ca26d6cbb10e5a45d05e7a2df2b87",
+                "is_primary": true
+              },
+              {
+                "name": "内存访问模式规整化以利于SIMD向量化",
+                "uid": "96df9391c5927335294a2808767a3370",
+                "is_primary": false
+              }
+            ]
+          }
+        ],
+        "remaining_entities": [
+          {
+            "name": "SIMD向量化复数点积计算",
+            "uid": "fdc8883dee5324b1b626e05784a20e02",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "双路径非对角块计算",
+            "uid": "312c3b5a2967422ddbb1001d7aeced6c",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [
+          {
+            "canonical_name": "分块矩阵计算与边界优化策略",
+            "entities": [
+              {
+                "name": "分块矩阵计算",
+                "uid": "31ecf9af854aea2663e57d3e3f55688f",
+                "is_primary": true
+              },
+              {
+                "name": "奇偶分离边界处理",
+                "uid": "4617ebe73e160b404756cccdf3d89941",
+                "is_primary": false
+              },
+              {
+                "name": "跨步指针预计算",
+                "uid": "a6b082955f35e8c530908aa6a3f6a72e",
+                "is_primary": false
+              }
+            ]
+          }
+        ],
+        "remaining_entities": []
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "指针重定向与本地缓存",
+            "uid": "36cd3443ac8bcd770b10653b2c35037a",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "计算分解与流水调度",
+            "uid": "3db2dcec8deacb7bd722253769e863c0",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "预复制到连续内存",
+            "uid": "41e5bdeba23066087bc365c53757da24",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "复数格式打包存储以提升SIMD利用率",
+            "uid": "463bba9b50e24063883ffe27ef6d1d97",
+            "is_primary": true
+          },
+          {
+            "name": "标量复数交错加载与解包",
+            "uid": "c5586d00ae5e2d41edcf305ab78caf0f",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "无显式向量化",
+            "uid": "4bbcb48127b149d3c461e5861e34efc6",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [
+          {
+            "canonical_name": "循环不变量外提与强度削弱",
+            "entities": [
+              {
+                "name": "循环不变量外提",
+                "uid": "4fa3651cc1e38306d9ab92e4b5c13626",
+                "is_primary": true
+              },
+              {
+                "name": "循环不变量提升与强度削弱",
+                "uid": "ac2de42e53ff91948318dc335e5a351f",
+                "is_primary": false
+              }
+            ]
+          }
+        ],
+        "remaining_entities": []
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "复数代数融合避免函数调用",
+            "uid": "579aead9727a93afe2135a21ee415c00",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "向量化复数共轭乘加融合",
+            "uid": "67955686dcf6d29c7cc96e2211ea7b9f",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "寄存器变量占位抑制编译警告",
+            "uid": "723c2d118c03bb5ced8fa2097ea21052",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "内联汇编手工调度复数乘法",
+            "uid": "7be432bf626f1d6d628493ba477a61ff",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "索引步长解耦访问",
+            "uid": "7cfefb39f3d2468e581dc204223135e2",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "指针偏移预计算",
+            "uid": "97b47a5ec6140ef309b66eca125e211d",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "循环展开（部分展开）",
+            "uid": "a83ed24d245398cc4356e93a1437d22a",
+            "is_primary": true
+          },
+          {
+            "name": "微内核实例化",
+            "uid": "fbfa32b959f8ab8ae66998b9174022c7",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "奇偶列尾部处理",
+            "uid": "a9fa927ff912f6f7f8942a1405999935",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "双缓冲指针调度",
+            "uid": "c505e62647e8f7490bb464e5085208b3",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "访存对齐与连续写入优化",
+            "uid": "c7a92e61fc6dd64b77846cd10416c9a1",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "循环边界条件融合",
+            "uid": "d7d3cc05355a586a42bf6365f5b133a5",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "无显式指令级优化（标量回退路径）",
+            "uid": "dcea9d6e2bab82279344a45d5074726c",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "内存访问模式优化",
+            "uid": "df07172a4026612a89c066dfd328b8e4",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "访存步长与数据对齐感知设计",
+            "uid": "e415b5964329383835bc8ed435ad2ca6",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "编译器友好的SIMD自动向量化准备",
+            "uid": "e6cc22911563c245d3fc34da12633760",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "标量复数乘法的FMA模式模拟",
+            "uid": "f48269d0253f881766f8c4dac59f3b09",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "循环边界条件合并",
+            "uid": "f6dbb7ca0b6f5c45c193b869f2f3920b",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "内存对齐分配",
+            "uid": "f79f597ea77257276182e76a88195ebd",
+            "is_primary": true
+          }
+        ]
+      }
+    }
+  ],
+  "tunable_parameter": [
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [
+          {
+            "canonical_name": "block_size",
+            "entities": [
+              {
+                "name": "block_size",
+                "uid": "02a61d67d5fa264fd1fed55bcb716b0b",
+                "is_primary": true
+              },
+              {
+                "name": "block_size_n",
+                "uid": "e564f4d4db5330bab45dc4f79913d88b",
+                "is_primary": false
+              },
+              {
+                "name": "block_size_m",
+                "uid": "ca35083c520c0c6d8a955de3910abd49",
+                "is_primary": false
+              }
+            ]
+          }
+        ],
+        "remaining_entities": [
+          {
+            "name": "microkernel_size",
+            "uid": "806e2560aa3b63637add91511c60fa10",
+            "is_primary": true
+          },
+          {
+            "name": "blocking_factor_n",
+            "uid": "7e9973a5ce01bd581337a66ef3e7b3d9",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "vector_register_width",
+            "uid": "077537c5574f032cd3562c7b0712af39",
+            "is_primary": true
+          },
+          {
+            "name": "stride_size",
+            "uid": "1cc8e2494c1b78edc5ced68305d6949c",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "gemvbuffer_offset",
+            "uid": "138cc654d8fb8bf35bd8a1c193f6a0c0",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "alignment_boundary",
+            "uid": "153931a62ade9acf9e51783e03989d4c",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [
+          {
+            "canonical_name": "循环展开因子",
+            "entities": [
+              {
+                "name": "unroll_factor",
+                "uid": "16fa3d5096c6365e7f7fd609549f603a",
+                "is_primary": true
+              },
+              {
+                "name": "展开因子",
+                "uid": "a6330e33f0773a825ed4d7264463dd97",
+                "is_primary": false
+              }
+            ]
+          }
+        ],
+        "remaining_entities": []
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "block_size_n",
+            "uid": "1707735ed2ab8a38f7c103b10236fa64",
+            "is_primary": true
+          },
+          {
+            "name": "block_size_m",
+            "uid": "4722c2865ad28fb27c0ae98d8380f2f6",
+            "is_primary": true
+          },
+          {
+            "name": "block_columns",
+            "uid": "8cde3e375bbb7aca31857d69b3946d73",
+            "is_primary": true
+          },
+          {
+            "name": "register_variable_count",
+            "uid": "42737e41faf83e604a22f21eeb4517b3",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "accumulator_count",
+            "uid": "19cfc8d2edbd61c6e88753119bfca79e",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [
+          {
+            "canonical_name": "inc_x 和 inc_y",
+            "entities": [
+              {
+                "name": "inc_x",
+                "uid": "b79c08698326dd5257c59883cc41c46d",
+                "is_primary": false
+              },
+              {
+                "name": "inc_y",
+                "uid": "524a56dec477123b24d3a2df5e8e8c59",
+                "is_primary": true
+              },
+              {
+                "name": "inc_x 和 inc_y",
+                "uid": "bc531ec958b7b26c845121bec0c85222",
+                "is_primary": false
+              }
+            ]
+          }
+        ],
+        "remaining_entities": [
+          {
+            "name": "inc_y2",
+            "uid": "611545ed9aab8a51d547d7e07afbaf02",
+            "is_primary": true
+          },
+          {
+            "name": "inc_x2",
+            "uid": "81e5bfd5a4aa574d499a7f5f4d46cc3b",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "copy_threshold",
+            "uid": "6614882ad62f47ae60ba52ca972ead57",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "unroll_factor",
+            "uid": "7f0b058d2acb7f823a229a880a634c64",
+            "is_primary": true
+          },
+          {
+            "name": "vectorization_factor",
+            "uid": "c1ede9e30b04c9852cf301bd8837b9bd",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "block_size",
+            "uid": "8461accf37e427f0c02a6bbca1d2de1f",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "symbuffer_size",
+            "uid": "8fe4b3ba317c13bc7bfc94b0f04cdb45",
+            "is_primary": true
+          }
+        ]
+      }
+    },
+    {
+      "status": "success",
+      "analysis": {
+        "similar_groups": [],
+        "remaining_entities": [
+          {
+            "name": "列分块大小",
+            "uid": "919139913bb43cb97d29735eef392fd5",
+            "is_primary": true
+          }
+        ]
+      }
+    }
+  ]
+}

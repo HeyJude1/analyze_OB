@@ -1,0 +1,98 @@
+{
+  "schema_version": "kg-build/v1",
+  "run": {
+    "run_id": "demo-20261116",
+    "created_at": "2026-11-16T02:30:00+08:00",
+    "model": "none (hand-written fixture)",
+    "prompt_version": "kg-build/v1",
+    "source_root": "OpenBLAS/kernel/x86_64",
+    "inputs": [{"path": "kernel/x86_64/daxpy.c", "sha256": "demo"}]
+  },
+  "entities": [
+    {
+      "id": "pat:axpy:core.loop",
+      "type": "SourcePattern",
+      "name": "主循环",
+      "properties": {"stage": "core", "operator": "axpy"},
+      "provenance": {"source_file": "daxpy.c", "line_start": 52, "line_end": 61, "sha256": "demo"},
+      "confidence": 0.9,
+      "status": "verified"
+    },
+    {
+      "id": "stg:axpy:vectorize_x86_avx2",
+      "type": "OptimizationStrategy",
+      "name": "x86 AVX2 向量化内核",
+      "properties": {
+        "level": "code",
+        "action": "vectorize",
+        "conditions": [
+          {"pred": "dtype", "op": "in", "value": ["d"], "hard": true},
+          {"pred": "stride_x", "op": "eq", "value": 1, "hard": true},
+          {"pred": "size_regime", "op": "in", "value": ["medium", "large"], "hard": false}
+        ],
+        "parameters": [
+          {"name": "vector_width", "value": 256, "range": [128, 256, 512], "unit": "bits"}
+        ],
+        "template_id": "tpl:axpy:vectorize_x86_avx2"
+      },
+      "provenance": {"source_file": "daxpy.c", "line_start": 52, "line_end": 78, "sha256": "demo"},
+      "confidence": 0.8,
+      "status": "verified"
+    },
+    {
+      "id": "ch:axpy:stride1",
+      "type": "CodeCharacteristic",
+      "name": "单位步长访问",
+      "properties": {"char_type": "access_pattern", "value": "contiguous", "extraction_method": "static"},
+      "provenance": {"source_file": "daxpy.c", "line_start": 52, "line_end": 55, "sha256": "demo"},
+      "confidence": 1.0,
+      "status": "verified"
+    },
+    {
+      "id": "par:vector_width",
+      "type": "TunableParameter",
+      "name": "vector_width",
+      "properties": {"range": [128, 256, 512], "unit": "bits", "derived_from": "ISA 向量宽度"},
+      "provenance": {"source_file": "daxpy.c", "line_start": 60, "line_end": 60, "sha256": "demo"},
+      "confidence": 0.8,
+      "status": "verified"
+    },
+    {
+      "id": "ex:axpy:vectorize",
+      "type": "CodeExample",
+      "name": "AVX2 向量化片段",
+      "properties": {"snippet": "for (; i + 4 <= n; i += 4) _mm256_storeu_pd(y+i, _mm256_fmadd_pd(a, _mm256_loadu_pd(x+i), _mm256_loadu_pd(y+i)));", "language": "c"},
+      "provenance": {"source_file": "daxpy.c", "line_start": 64, "line_end": 70, "sha256": "demo"},
+      "confidence": 0.9,
+      "status": "verified"
+    },
+    {
+      "id": "isa:avx2",
+      "type": "ArchitectureCapability",
+      "name": "AVX2 + FMA",
+      "properties": {"isa": "AVX2", "feature": "fma", "element_widths": [64]},
+      "provenance": {"source_file": "hardware_manual", "line_start": null, "line_end": null},
+      "confidence": 1.0,
+      "status": "verified"
+    },
+    {
+      "id": "prin:simd",
+      "type": "OptimizationPrinciple",
+      "name": "数据级并行",
+      "properties": {"rationale": "同一指令作用于多个元素，摊薄取指与循环控制开销"},
+      "provenance": {"source_file": "daxpy.c", "line_start": 52, "line_end": 61, "sha256": "demo"},
+      "confidence": 0.7,
+      "status": "raw"
+    }
+  ],
+  "relations": [
+    {"id": "rel:1", "type": "OPTIMIZES_PATTERN", "head": "stg:axpy:vectorize_x86_avx2", "tail": "pat:axpy:core.loop", "properties": {}, "provenance": {"source_file": "daxpy.c", "line_start": 52}},
+    {"id": "rel:2", "type": "APPLIES_WHEN", "head": "stg:axpy:vectorize_x86_avx2", "tail": "ch:axpy:stride1", "properties": {}, "provenance": {"source_file": "daxpy.c", "line_start": 52}},
+    {"id": "rel:3", "type": "HAS_PARAMETER", "head": "stg:axpy:vectorize_x86_avx2", "tail": "par:vector_width", "properties": {"value_in_instance": 256}, "provenance": {"source_file": "daxpy.c", "line_start": 60}},
+    {"id": "rel:4", "type": "IS_ILLUSTRATED_BY", "head": "stg:axpy:vectorize_x86_avx2", "tail": "ex:axpy:vectorize", "properties": {}, "provenance": {"source_file": "daxpy.c", "line_start": 64}},
+    {"id": "rel:5", "type": "REQUIRES", "head": "stg:axpy:vectorize_x86_avx2", "tail": "isa:avx2", "properties": {"hard": true}, "provenance": {"source_file": "daxpy.c", "line_start": 52}},
+    {"id": "rel:6", "type": "TARGETS", "head": "stg:axpy:vectorize_x86_avx2", "tail": "isa:avx2", "properties": {}, "provenance": {"source_file": "daxpy.c", "line_start": 52}},
+    {"id": "rel:7", "type": "GENERALIZES", "head": "stg:axpy:vectorize_x86_avx2", "tail": "prin:simd", "properties": {}, "provenance": {"source_file": "daxpy.c", "line_start": 52}}
+  ],
+  "stats": {"entities": 7, "relations": 7}
+}

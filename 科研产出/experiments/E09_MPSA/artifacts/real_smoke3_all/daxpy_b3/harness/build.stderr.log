@@ -1,0 +1,12 @@
+/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_smoke3_all/daxpy_b3/harness/generated.c: In function ‘daxpy_k’:
+/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_smoke3_all/daxpy_b3/harness/generated.c:26:31: warning: implicit declaration of function ‘__riscv_vlseg1e64_v_f64m8’; did you mean ‘__riscv_vlse64_v_f64m8’? [-Wimplicit-function-declaration]
+   26 |             vfloat64m8_t vx = __riscv_vlseg1e64_v_f64m8(x + ix, vl);
+      |                               ^~~~~~~~~~~~~~~~~~~~~~~~~
+      |                               __riscv_vlse64_v_f64m8
+/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_smoke3_all/daxpy_b3/harness/generated.c:26:31: error: incompatible types when initializing type ‘vfloat64m8_t’ using type ‘int’
+/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_smoke3_all/daxpy_b3/harness/generated.c:41:31: error: incompatible types when initializing type ‘vfloat64m8_t’ using type ‘int’
+   41 |             vfloat64m8_t vx = __riscv_vlseg1e64_v_f64m8(x + ix, vl);
+      |                               ^~~~~~~~~~~~~~~~~~~~~~~~~
+/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/real_smoke3_all/daxpy_b3/harness/generated.c:42:31: error: incompatible types when initializing type ‘vfloat64m8_t’ using type ‘int’
+   42 |             vfloat64m8_t vy = __riscv_vlseg1e64_v_f64m8(y + iy, vl);
+      |                               ^~~~~~~~~~~~~~~~~~~~~~~~~

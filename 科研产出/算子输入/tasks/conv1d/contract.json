@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "task": "conv1d",
+  "symbol": "op_conv1d",
+  "split": "external_holdout",
+  "features": {
+    "dtype": "d",
+    "precision": "double",
+    "loop_depth": 2,
+    "structural": "none",
+    "reduction": true,
+    "layout": "contiguous"
+  },
+  "pattern": "sliding_window_reduction",
+  "dimensions": [
+    "n",
+    "k"
+  ],
+  "semantics": "Valid linear convolution y[i] = sum(x[i+j]*w[k-1-j]) for 0 <= i < n-k+1 and 0 <= j < k. When k==0 or k>n there is no read or write. Uses reversed weights for each sliding window.",
+  "parameters": [
+    "n",
+    "k",
+    "x",
+    "w",
+    "y"
+  ],
+  "benchmark_cases": [
+    {
+      "id": "small",
+      "n": 1009,
+      "k": 7
+    },
+    {
+      "id": "medium",
+      "n": 65537,
+      "k": 31
+    },
+    {
+      "id": "large",
+      "n": 1048583,
+      "k": 63
+    },
+    {
+      "id": "short_kernel",
+      "n": 65537,
+      "k": 3
+    }
+  ],
+  "memory_contract": "Arrays referenced by the same call occupy disjoint storage. Negative increments are valid and the supplied pointer is logical element zero. Increments are nonzero and leading dimensions at least the corresponding row width. Offsets are representable in ptrdiff_t.",
+  "numeric_contract": "FP64 finite inputs in the validation domain; FMA and reassociation in explicit vector reductions permitted within numerical tolerance. Smoke comparator: |observed-reference| <= 2e-12 + 3e-12*|reference|; exact guard/unchanged-input checks where applicable."
+}

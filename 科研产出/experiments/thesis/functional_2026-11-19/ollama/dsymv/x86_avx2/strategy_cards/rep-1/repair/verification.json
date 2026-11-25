@@ -1,0 +1,46 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "amd64",
+  "results": [
+    {
+      "task": "dsymv",
+      "target": "x86",
+      "variant": "candidate",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymv\\x86_avx2\\strategy_cards\\rep-1\\repair\\candidate.c",
+      "source_sha256": "53d9d900465d2c5383e26d03c6fff1c5c2985152e55587a65457b8afe67f67d4",
+      "status": "check_failed",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DSYMV",
+          "driver/check.c",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymv\\x86_avx2\\strategy_cards\\rep-1\\repair\\candidate.c",
+          "-o",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymv\\x86_avx2\\strategy_cards\\rep-1\\repair\\bin\\dsymv-x86-candidate.exe",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "bddebc9893163dc28bcae531fd052d87a635c208b77f570b80577c2434c91c82",
+      "check": {
+        "argv": [
+          "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\thesis\\functional_2026-11-19\\ollama\\dsymv\\x86_avx2\\strategy_cards\\rep-1\\repair\\bin\\dsymv-x86-candidate.exe"
+        ],
+        "exit_code": 1,
+        "stdout": "720 cases, 1108 failures\n",
+        "stderr": "dsymv case 61 modified guard 2\ndsymv case 61 modified guard 3\ndsymv case 61 modified guard 4\ndsymv triangle/stride/alpha/beta case 62 cell 1: got -4.6920294960212203 expected -1.8123713527851459\ndsymv case 62 modified guard 2\ndsymv case 62 modified guard 3\ndsymv case 62 modified guard 4\ndsymv triangle/stride/alpha/beta case 63 cell 1: got -0.035331564986737396 expected 0.058885941644562331\ndsymv case 63 modified guard 2\ndsymv case 63 modified guard 3\n"
+      },
+      "environment": "native"
+    }
+  ]
+}

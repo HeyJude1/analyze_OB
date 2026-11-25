@@ -1,0 +1,16 @@
+dsymm rvv candidate: compile_error 
+
+wsl: �hKm0R localhost �NtM�n�FO*g\��P0R WSL0NAT !j_N�v WSL N/ec localhost �Nt0
+../experiments/thesis/functional_2026-11-19/ollama/dsymm/k1_rvv256/constraint_plan/rep-1/initial/candidate.c: In function ‘op_dsymm’:
+../experiments/thesis/functional_2026-11-19/ollama/dsymm/k1_rvv256/constraint_plan/rep-1/initial/candidate.c:26:43: error: variable-sized object may not be initialized except with an empty initializer
+   26 |             double sum[unroll * unroll] = {0.0};
+      |                                           ^
+../experiments/thesis/functional_2026-11-19/ollama/dsymm/k1_rvv256/constraint_plan/rep-1/initial/candidate.c:22:15: warning: unused variable ‘lmul_max’ [-Wunused-variable]
+   22 |     const int lmul_max = 8;
+      |               ^~~~~~~~
+../experiments/thesis/functional_2026-11-19/ollama/dsymm/k1_rvv256/constraint_plan/rep-1/initial/candidate.c:21:15: warning: unused variable ‘vector_registers’ [-Wunused-variable]
+   21 |     const int vector_registers = 32;
+      |               ^~~~~~~~~~~~~~~~
+../experiments/thesis/functional_2026-11-19/ollama/dsymm/k1_rvv256/constraint_plan/rep-1/initial/candidate.c:20:15: warning: unused variable ‘elements_per_register’ [-Wunused-variable]
+   20 |     const int elements_per_register = vlen_bits / sizeof(double);
+      |               ^~~~~~~~~~~~~~~~~~~~~

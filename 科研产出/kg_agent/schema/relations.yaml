@@ -1,0 +1,75 @@
+# kg_agent 关系定义（Schema v1.5）
+# 14 类关系闭集（SPEC §3 固定）；head/tail 为定义域/值域；attributes 为边 properties 允许键
+# 任一边的 type 不在本表 -> validate 失败
+
+relations:
+  OPERATOR_HAS_PATTERN:
+    head: Operator
+    tail: ComputationPattern
+    attributes: [file, stage]
+    description: "算子由哪些计算流程组成（替代 v1 的 source_algorithm 字符串）"
+  PATTERN_HAS_CHARACTERISTIC:
+    head: ComputationPattern
+    tail: CodeCharacteristic
+    attributes: [role]
+    description: "计算流程的可测特征（静态分析，确定性）"
+  PATTERN_OPTIMIZED_BY:
+    head: ComputationPattern
+    tail: OptimizationStrategy
+    attributes: [stage, support, is_primary, analysis_id]
+    description: "计算流程可被哪些策略优化（检索主通道）"
+  STRATEGY_HAS_PARAMETER:
+    head: OptimizationStrategy
+    tail: TunableParameter
+    attributes: [role, value_in_instance]
+    description: "策略的可调参数"
+  STRATEGY_HAS_TEMPLATE:
+    head: OptimizationStrategy
+    tail: ImplementationTemplate
+    attributes: [is_default]
+    description: "策略对应的实施模板（生成端注入接口）"
+  STRATEGY_APPLIES_WHEN:
+    head: OptimizationStrategy
+    tail: CodeCharacteristic
+    attributes: [pred, op, value, hard, weight, rationale]
+    description: "可执行适用条件（硬过滤/软加权）"
+  STRATEGY_REQUIRES_ISA:
+    head: OptimizationStrategy
+    tail: ISACapability
+    attributes: [hard, min_width, note]
+    description: "策略对指令集能力的要求（硬件约束）"
+  STRATEGY_TARGETS_UARCH:
+    head: OptimizationStrategy
+    tail: Microarchitecture
+    attributes: [fit, parameterization]
+    description: "策略在不同微架构上的适配度与参数化"
+  STRATEGY_EVIDENCED_BY:
+    head: OptimizationStrategy
+    tail: PerformanceEvidence
+    attributes: [role, scope]
+    description: "支撑/反驳策略收益的证据（QEMU 证据只作 operator 级线索）"
+  EVIDENCE_ON:
+    head: PerformanceEvidence
+    tail: HardwareProfile
+    attributes: []
+    description: "证据的测量环境"
+  EVIDENCE_SOURCE:
+    head: PerformanceEvidence
+    tail: SourceArtifact
+    attributes: []
+    description: "证据原始日志/出处"
+  STRATEGY_COMPOSES_WITH:
+    head: OptimizationStrategy
+    tail: OptimizationStrategy
+    attributes: [order, synergy, condition, evidence_id]
+    description: "可组合使用的策略（order 决定生成顺序）"
+  STRATEGY_CONFLICTS_WITH:
+    head: OptimizationStrategy
+    tail: OptimizationStrategy
+    attributes: [resource, reason, severity, condition, evidence_id]
+    description: "互斥策略（对称存储；冲突消解用）"
+  STRATEGY_GENERALIZES:
+    head: OptimizationStrategy
+    tail: OptimizationStrategy
+    attributes: [abstraction_gain, conditions_removed]
+    description: "具体策略 -> 抽象策略（跨算子迁移）"

@@ -1,0 +1,13 @@
+{
+  "status": "compile_failed",
+  "compile_ok": false,
+  "correct": null,
+  "failure_reason": "other_compiler_error",
+  "usage": {
+    "prompt_tokens": 3003,
+    "completion_tokens": 457,
+    "total_tokens": 3460
+  },
+  "diagnostic": "../experiments/thesis/functional_2026-11-19/ollama/dsymm/k1_rvv256/strategy_cards/rep-1/initial/candidate.c: In function ‘op_dsymm’:\n../experiments/thesis/functional_2026-11-19/ollama/dsymm/k1_rvv256/strategy_cards/rep-1/initial/candidate.c:18:36: error: variable-sized object may not be initialized except with an empty initializer\n   18 |             double sum[K_UNROLL] = {0.0};\n      |                                    ^\n",
+  "candidate_sha256": "49e9cc233790db7c61fde1d52a6ab65916f9d12511bf44839ccf81344d099012"
+}

@@ -1,0 +1,7 @@
+/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/selftest_repair_compile/daxpy_b3/harness/generated.c: In function ‘daxpy_k’:
+/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/selftest_repair_compile/daxpy_b3/harness/generated.c:12:5: error: unknown type name ‘vfloat64m8_t’
+   12 |     vfloat64m8_t vx = __riscv_vlseg1e64_v_f64m8(x, 1);
+      |     ^~~~~~~~~~~~
+/mnt/c/Users/MSI/Desktop/开题/科研产出/experiments/E09_MPSA/runs/selftest_repair_compile/daxpy_b3/harness/generated.c:12:23: warning: implicit declaration of function ‘__riscv_vlseg1e64_v_f64m8’ [-Wimplicit-function-declaration]
+   12 |     vfloat64m8_t vx = __riscv_vlseg1e64_v_f64m8(x, 1);
+      |                       ^~~~~~~~~~~~~~~~~~~~~~~~~

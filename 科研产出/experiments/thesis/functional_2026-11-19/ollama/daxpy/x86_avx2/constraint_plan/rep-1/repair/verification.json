@@ -1,0 +1,36 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "amd64",
+  "results": [
+    {
+      "task": "daxpy",
+      "target": "x86",
+      "variant": "candidate",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\daxpy\\x86_avx2\\constraint_plan\\rep-1\\repair\\candidate.c",
+      "source_sha256": "2bc7bb86d58120453b22f9110ad7c9b9cfe789b2f28a49713fa8fbf8f00deb74",
+      "status": "compile_error",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DAXPY",
+          "driver/check.c",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\daxpy\\x86_avx2\\constraint_plan\\rep-1\\repair\\candidate.c",
+          "-o",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\daxpy\\x86_avx2\\constraint_plan\\rep-1\\repair\\bin\\daxpy-x86-candidate.exe",
+          "-lm"
+        ],
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\daxpy\\x86_avx2\\constraint_plan\\rep-1\\repair\\candidate.c: In function 'op_daxpy':\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\daxpy\\x86_avx2\\constraint_plan\\rep-1\\repair\\candidate.c:10:9: error: unknown type name '__m256d'\n   10 |         __m256d v_alpha = _mm256_set1_pd(alpha);\n      |         ^~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\daxpy\\x86_avx2\\constraint_plan\\rep-1\\repair\\candidate.c:10:27: error: implicit declaration of function '_mm256_set1_pd' [-Wimplicit-function-declaration]\n   10 |         __m256d v_alpha = _mm256_set1_pd(alpha);\n      |                           ^~~~~~~~~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\daxpy\\x86_avx2\\constraint_plan\\rep-1\\repair\\candidate.c:12:13: error: unknown type name '__m256d'\n   12 |             __m256d vx = _mm256_loadu_pd(&x[i]);\n      |             ^~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\daxpy\\x86_avx2\\constraint_plan\\rep-1\\repair\\candidate.c:12:26: error: implicit declaration of function '_mm256_loadu_pd' [-Wimplicit-function-declaration]\n   12 |             __m256d vx = _mm256_loadu_pd(&x[i]);\n      |                          ^~~~~~~~~~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\daxpy\\x86_avx2\\constraint_plan\\rep-1\\repair\\candidate.c:13:13: error: unknown type name '__m256d'\n   13 |             __m256d vy = _mm256_loadu_pd(&y[i]);\n      |             ^~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\daxpy\\x86_avx2\\constraint_plan\\rep-1\\repair\\candidate.c:14:18: error: implicit declaration of function '_mm256_add_pd' [-Wimplicit-function-declaration]\n   14 |             vy = _mm256_add_pd(vy, _mm256_mul_pd(v_alpha, vx));\n      |                  ^~~~~~~~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\daxpy\\x86_avx2\\constraint_plan\\rep-1\\repair\\candidate.c:14:36: error: implicit declaration of function '_mm256_mul_pd' [-Wimplicit-function-declaration]\n   14 |             vy = _mm256_add_pd(vy, _mm256_mul_pd(v_alpha, vx));\n      |                                    ^~~~~~~~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\daxpy\\x86_avx2\\constraint_plan\\rep-1\\repair\\candidate.c:15:13: error: implicit declaration of function '_mm256_storeu_pd' [-Wimplicit-function-declaration]\n   15 |             _mm256_storeu_pd(&y[i], vy);\n      |             ^~~~~~~~~~~~~~~~\n"
+      }
+    }
+  ]
+}

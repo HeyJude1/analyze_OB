@@ -1,0 +1,9 @@
+{
+  "raw": "```c\n#include \"opbench.h\"\n\nvoid op_daxpy(size_t n, double alpha, const double *x, ptrdiff_t incx,\n              double *y, ptrdiff_t incy) {\n    if (alpha == 0.0) return;\n\n    // Use SIMD for vectorization\n    #ifdef __AVX2__\n        #include <immintrin.h>\n        __m256d alpha_vec = _mm256_set1_pd(alpha);\n        size_t i;\n        for (i = 0; i + 4 <= n; i += 4) {\n            __m256d x_vec = _mm256_loadu_pd(&x[i * incx]);\n            __m256d y_vec = _mm256_loadu_pd(&y[i * incy]);\n            y_vec = _mm256_add_pd(y_vec, _mm256_mul_pd(alpha_vec, x_vec));\n            _mm256_storeu_pd(&y[i * incy], y_vec);\n        }\n    #endif\n\n    // Handle remaining elements\n    for (; i < n; ++i) {\n        y[(ptrdiff_t)i * incy] += alpha * x[(ptrdiff_t)i * incx];\n    }\n}\n```",
+  "usage": {
+    "prompt_tokens": 3013,
+    "completion_tokens": 274,
+    "total_tokens": 3287
+  },
+  "stop_reason": "stop"
+}

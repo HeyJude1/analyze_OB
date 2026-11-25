@@ -1,0 +1,46 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "amd64",
+  "results": [
+    {
+      "task": "daxpy",
+      "target": "x86",
+      "variant": "candidate",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\daxpy\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c",
+      "source_sha256": "7bcd684ae350d911b723279b4f9760b00d37e342f37cc6e63791827afeb40e77",
+      "status": "check_failed",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DAXPY",
+          "driver/check.c",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\daxpy\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c",
+          "-o",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\daxpy\\x86_avx2\\constraint_plan\\rep-1\\initial\\bin\\daxpy-x86-candidate.exe",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "6ed3f21cd41e5f7e72d6abf20a7c01668928fde7ba76bba04fdb05d58bbb0036",
+      "check": {
+        "argv": [
+          "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\thesis\\functional_2026-11-19\\ollama\\daxpy\\x86_avx2\\constraint_plan\\rep-1\\initial\\bin\\daxpy-x86-candidate.exe"
+        ],
+        "exit_code": 1,
+        "stdout": "60 cases, 741 failures\n",
+        "stderr": "daxpy case 7 cell 1: got -6.4051989389920418 expected -2.4771352785145884\ndaxpy case 9 cell 1: got 8.5223342175066321 expected 5.0715119363395225\ndaxpy case 12 cell 1: got -4.576498673740053 expected -3.2962068965517242\ndaxpy case 12 cell 2: got -9.7816976127320956 expected -5.2157824933687005\ndaxpy case 12 cell 3: got -0.12318302387267921 expected -0.97671087533156509\ndaxpy case 14 cell 1: got -2.4196816976127327 expected -0.55201591511936354\ndaxpy case 14 cell 4: got 6.4701856763925729 expected 4.0335013262599473\ndaxpy case 14 cell 7: got -2.4366047745358093 expected -0.096286472148541205\ndaxpy case 22 cell 5: got -3.4984615384615383 expected -0.96541114058355437\ndaxpy case 22 cell 6: got 4.4617506631299735 expected 1.2587267904509283\n"
+      },
+      "environment": "native"
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+dsymv x86 candidate: compile_error 
+
+..\experiments\thesis\functional_2026-11-19\ollama\dsymv\x86_avx2\strategy_cards\rep-1\initial\candidate.c: In function 'op_dsymv':
+..\experiments\thesis\functional_2026-11-19\ollama\dsymv\x86_avx2\strategy_cards\rep-1\initial\candidate.c:11:32: error: variable-sized object may not be initialized except with an empty initializer
+   11 |         double sum[K_UNROLL] = {0.0, 0.0, 0.0, 0.0};
+      |                                ^

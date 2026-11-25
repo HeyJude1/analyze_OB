@@ -1,0 +1,49 @@
+{
+  "analogy_source": null,
+  "card_ids": [
+    "stg:gemm:fuse_s",
+    "stg:gemm:reorder_s",
+    "stg:gemm:tail_handle_s",
+    "stg:gemm:tile_s"
+  ],
+  "contract_sha256": "629b882715b5cf4421375f8c70f613557d3e51ea148b4bb78f87418dea864178",
+  "knowledge_bytes": 6568,
+  "method": "constraint_plan",
+  "operator": "dgemm",
+  "profile": "x86_avx2",
+  "prompt": "dgemm/x86_avx2/constraint_plan.json",
+  "prompt_sha256": "7dc4a73ab0d7bc219014ca1a57b2d1c1177d468640bdf2e9420ecfb68cf1b2f1",
+  "repetition": 1,
+  "source_sha256": "9a515f9c8ddfdb9047942b6b7d87300ec2857497b9d4c6caafd9871729781720",
+  "split": "build",
+  "status": "prepared",
+  "engine": "ollama",
+  "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+  "repair_attempted": true,
+  "initial": {
+    "status": "compile_failed",
+    "compile_ok": false,
+    "correct": null,
+    "failure_reason": "other_compiler_error",
+    "usage": {
+      "prompt_tokens": 3456,
+      "completion_tokens": 510,
+      "total_tokens": 3966
+    },
+    "diagnostic": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c: In function 'op_dgemm':\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c:25:20: error: 'reg_block_m' undeclared (first use in this function); did you mean 'reg_block_n'?\n   25 |         double acc[reg_block_m][reg_block_n] = {0.0};\n      |                    ^~~~~~~~~~~\n      |                    reg_block_n\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c:25:20: note: each undeclared identifier is reported only once for each function it appears in\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c:25:48: error: variable-sized object may not be initialized except with an empty initializer\n   25 |         double acc[reg_block_m][reg_block_n] = {0.0};\n      |                                                ^\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\constraint_plan\\rep-1\\initial\\candidate.c:25:16: warning: unused variable 'acc' [-Wunused-variable]\n   25 |         double acc[reg_block_m][reg_block_n] = {0.0};\n      |                ^~~\n",
+    "candidate_sha256": "d20f1b7cb264ae67d5cd6fff13dd7e0eee4c3b3580c337f695248c8b37b47161"
+  },
+  "final": {
+    "status": "compile_failed",
+    "compile_ok": false,
+    "correct": null,
+    "failure_reason": "other_compiler_error",
+    "usage": {
+      "prompt_tokens": 2214,
+      "completion_tokens": 478,
+      "total_tokens": 2692
+    },
+    "diagnostic": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\constraint_plan\\rep-1\\repair\\candidate.c: In function 'op_dgemm':\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemm\\x86_avx2\\constraint_plan\\rep-1\\repair\\candidate.c:25:35: error: variable-sized object may not be initialized except with an empty initializer\n   25 |         double acc[reg_block_n] = {0.0};\n      |                                   ^\n",
+    "candidate_sha256": "882f5708c01e194ffd591c274c665326fda3ab4a71f3e2204345f9833e6502cb"
+  }
+}

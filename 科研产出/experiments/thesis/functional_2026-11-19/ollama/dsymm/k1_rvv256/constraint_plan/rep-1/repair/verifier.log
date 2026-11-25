@@ -1,0 +1,13 @@
+dsymm rvv candidate: check_failed 
+
+wsl: �hKm0R localhost �NtM�n�FO*g\��P0R WSL0NAT !j_N�v WSL N/ec localhost �Nt0
+dsymm side/triangle/alpha/beta case 49 cell 1: got nan expected -2.3758416649663334
+dsymm case 49 modified guard 2
+dsymm case 49 modified guard 3
+dsymm case 49 modified guard 4
+dsymm side/triangle/alpha/beta case 50 cell 1: got nan expected -5.7945888594164456
+dsymm case 50 modified guard 2
+dsymm case 50 modified guard 3
+dsymm case 50 modified guard 4
+dsymm case 51 modified guard 2
+dsymm case 51 modified guard 3

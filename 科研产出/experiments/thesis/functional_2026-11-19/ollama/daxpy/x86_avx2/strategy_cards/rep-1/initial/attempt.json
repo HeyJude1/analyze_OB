@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "compile_ok": true,
+  "correct": true,
+  "failure_reason": null,
+  "usage": {
+    "prompt_tokens": 2899,
+    "completion_tokens": 227,
+    "total_tokens": 3126
+  },
+  "diagnostic": "",
+  "candidate_sha256": "720fe2379cbb0b288f93ee20ff3022280dc9d8f3fcc334f139503cba1cafb5c4"
+}

@@ -1,0 +1,13 @@
+{
+  "status": "compile_failed",
+  "compile_ok": false,
+  "correct": null,
+  "failure_reason": "intrinsic_or_target_error",
+  "usage": {
+    "prompt_tokens": 2087,
+    "completion_tokens": 343,
+    "total_tokens": 2430
+  },
+  "diagnostic": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\strategy_cards\\rep-1\\repair\\candidate.c: In function 'op_dscal':\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\strategy_cards\\rep-1\\repair\\candidate.c:8:13: error: unknown type name '__m256d'\n    8 |             __m256d v_x = _mm256_loadu_pd(&x[4 * i]);\n      |             ^~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\strategy_cards\\rep-1\\repair\\candidate.c:8:27: error: implicit declaration of function '_mm256_loadu_pd' [-Wimplicit-function-declaration]\n    8 |             __m256d v_x = _mm256_loadu_pd(&x[4 * i]);\n      |                           ^~~~~~~~~~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\strategy_cards\\rep-1\\repair\\candidate.c:9:13: error: unknown type name '__m256d'\n    9 |             __m256d v_alpha = _mm256_set1_pd(alpha);\n      |             ^~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\strategy_cards\\rep-1\\repair\\candidate.c:9:31: error: implicit declaration of function '_mm256_set1_pd' [-Wimplicit-function-declaration]\n    9 |             __m256d v_alpha = _mm256_set1_pd(alpha);\n      |                               ^~~~~~~~~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\strategy_cards\\rep-1\\repair\\candidate.c:10:19: error: implicit declaration of function '_mm256_mul_pd' [-Wimplicit-function-declaration]\n   10 |             v_x = _mm256_mul_pd(v_x, v_alpha);\n      |                   ^~~~~~~~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\strategy_cards\\rep-1\\repair\\candidate.c:11:13: error: implicit declaration of function '_mm256_storeu_pd' [-Wimplicit-function-declaration]\n   11 |             _mm256_storeu_pd(&x[4 * i], v_x);\n      |             ^~~~~~~~~~~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\strategy_cards\\rep-1\\repair\\candidate.c:20:13: error: unknown type name '__m256d'\n   20 |             __m256d v_x = _mm256_loadu_pd(&x[(ptrdiff_t)i * incx]);\n      |             ^~~~~~~\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dscal\\x86_avx2\\strategy_cards\\rep-1\\repair\\candidate.c:21:13: error: unknown type name '__m256d'\n   21 |             __m256d v_alpha = _mm256_set1_pd(alpha);\n      |             ^~~~~~~\n",
+  "candidate_sha256": "318bda8b53b1a748e9efe0be8f444b6d32069e471d7b77818d9ddd318689e3b4"
+}

@@ -1,0 +1,46 @@
+{
+  "kind": "compile_and_correctness",
+  "host": "amd64",
+  "results": [
+    {
+      "task": "dgemv",
+      "target": "x86",
+      "variant": "candidate",
+      "compiler_version": "gcc (Rev2, Built by MSYS2 project) 14.2.0",
+      "source": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemv\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c",
+      "source_sha256": "44a86fcf69c54b00bbfb0546e87b09fc3a00f4da45c14cbd1d37cbee44c98a55",
+      "status": "check_failed",
+      "compile": {
+        "argv": [
+          "gcc",
+          "-std=c11",
+          "-O3",
+          "-Wall",
+          "-Wextra",
+          "-mavx2",
+          "-mfma",
+          "-Iinclude",
+          "-DOPBENCH_TASK_DGEMV",
+          "driver/check.c",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemv\\x86_avx2\\text_rag\\rep-1\\repair\\candidate.c",
+          "-o",
+          "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemv\\x86_avx2\\text_rag\\rep-1\\repair\\bin\\dgemv-x86-candidate.exe",
+          "-lm"
+        ],
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "binary_sha256": "6ee17952a669292057a04278aa1bebae73fdb8ede7f1734a00edfa9f6ac6b940",
+      "check": {
+        "argv": [
+          "C:\\Users\\MSI\\Desktop\\开题\\科研产出\\experiments\\thesis\\functional_2026-11-19\\ollama\\dgemv\\x86_avx2\\text_rag\\rep-1\\repair\\bin\\dgemv-x86-candidate.exe"
+        ],
+        "exit_code": 1,
+        "stdout": "84 cases, 204 failures\n",
+        "stderr": "dgemv case 13 cell 1: got nan expected 0\ndgemv case 13 cell 2: got nan expected 0\ndgemv case 13 cell 3: got nan expected 0\ndgemv case 13 cell 4: got nan expected 0\ndgemv case 13 cell 5: got nan expected 0\ndgemv case 16 cell 1: got nan expected 0\ndgemv case 16 cell 2: got nan expected 0\ndgemv case 16 cell 3: got nan expected 0\ndgemv case 16 cell 4: got nan expected 0\ndgemv case 16 cell 5: got nan expected 0\n"
+      },
+      "environment": "native"
+    }
+  ]
+}

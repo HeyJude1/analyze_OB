@@ -1,0 +1,6 @@
+dsymm x86 candidate: compile_error 
+
+..\experiments\thesis\functional_2026-11-19\ollama\dsymm\x86_avx2\text_rag\rep-1\initial\candidate.c: In function 'op_dsymm':
+..\experiments\thesis\functional_2026-11-19\ollama\dsymm\x86_avx2\text_rag\rep-1\initial\candidate.c:24:39: error: variable-sized object may not be initialized except with an empty initializer
+   24 |             double sum[reg_block_n] = {0.0};
+      |                                       ^

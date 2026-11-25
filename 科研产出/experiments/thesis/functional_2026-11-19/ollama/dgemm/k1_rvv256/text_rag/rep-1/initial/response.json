@@ -1,0 +1,9 @@
+{
+  "raw": "```c\n#include \"opbench.h\"\n\nvoid op_dgemm(size_t m, size_t n, size_t k, double alpha, const double *a, size_t lda,\n              const double *b, size_t ldb, double beta, double *c, size_t ldc) {\n    if (alpha == 0.0 || k == 0) {\n        if (beta != 0.0) {\n            for (size_t i = 0; i < m; ++i) {\n                for (size_t j = 0; j < n; ++j) {\n                    c[i * ldc + j] *= beta;\n                }\n            }\n        }\n        return;\n    }\n\n    const double *pa = a;\n    double *pc = c;\n\n    if (m % 4 == 0 && n % 4 == 0) {\n        for (size_t j = 0; j < n; j += 4) {\n            for (size_t i = 0; i < m; i++) {\n                double sum1 = pa[i * lda] * b[j * ldb];\n                double sum2 = pa[i * lda + 1] * b[(j + 1) * ldb];\n                double sum3 = pa[i * lda + 2] * b[(j + 2) * ldb];\n                double sum4 = pa[i * lda + 3] * b[(j + 3) * ldb];\n\n                pc[i * ldc + j] += alpha * sum1;\n                pc[i * ldc + j + 1] += alpha * sum2;\n                pc[i * ldc + j + 2] += alpha * sum3;\n                pc[i * ldc + j + 3] += alpha * sum4;\n            }\n            pa += 4 * lda;\n        }\n    } else {\n        for (size_t j = 0; j < n; ++j) {\n            for (size_t i = 0; i < m; i++) {\n                double sum = 0.0;\n                for (size_t p = 0; p < k; ++p) sum += pa[i * lda + p] * b[p * ldb + j];\n                pc[i * ldc + j] += alpha * sum;\n            }\n        }\n    }\n\n    if (beta != 0.0) {\n        for (size_t i = 0; i < m; ++i) {\n            for (size_t j = 0; j < n; ++j) {\n                pc[i * ldc + j] *= beta;\n            }\n        }\n    }\n}\n```",
+  "usage": {
+    "prompt_tokens": 3485,
+    "completion_tokens": 550,
+    "total_tokens": 4035
+  },
+  "stop_reason": "stop"
+}

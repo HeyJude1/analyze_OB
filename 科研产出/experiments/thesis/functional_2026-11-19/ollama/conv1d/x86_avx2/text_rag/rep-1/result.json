@@ -1,0 +1,49 @@
+{
+  "analogy_source": "dot",
+  "card_ids": [
+    "stg:abstract:register_blocking",
+    "stg:abstract:tail_handling",
+    "stg:abstract:stride_dispatch",
+    "stg:abstract:vector_fma"
+  ],
+  "contract_sha256": "9e62426eba09d560fb0ec7aced9891cf8683858e1e989fbaa3becff476df28bb",
+  "knowledge_bytes": 4482,
+  "method": "text_rag",
+  "operator": "conv1d",
+  "profile": "x86_avx2",
+  "prompt": "conv1d/x86_avx2/text_rag.json",
+  "prompt_sha256": "7615fa6cd7f63861ec7aae7a8464ba8f4ce4996e19f3d0fafd6ac6fa6a3ab4f1",
+  "repetition": 1,
+  "source_sha256": "b4dfcd553e1a84044d9fad60edacba88b7ba1b4abdddee5d5c71b992152cc043",
+  "split": "external_holdout",
+  "status": "prepared",
+  "engine": "ollama",
+  "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+  "repair_attempted": true,
+  "initial": {
+    "status": "compile_failed",
+    "compile_ok": false,
+    "correct": null,
+    "failure_reason": "other_compiler_error",
+    "usage": {
+      "prompt_tokens": 2664,
+      "completion_tokens": 382,
+      "total_tokens": 3046
+    },
+    "diagnostic": "..\\experiments\\thesis\\functional_2026-11-19\\ollama\\conv1d\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c: In function 'op_conv1d':\n..\\experiments\\thesis\\functional_2026-11-19\\ollama\\conv1d\\x86_avx2\\text_rag\\rep-1\\initial\\candidate.c:13:39: error: variable-sized object may not be initialized except with an empty initializer\n   13 |             double sum[reg_block_n] = {0.0};\n      |                                       ^\n",
+    "candidate_sha256": "bbf5e9765a3744a2021ff5ef481c8bdcf02989b8d5029520f8dd4b86e8fa40da"
+  },
+  "final": {
+    "status": "compile_failed",
+    "compile_ok": false,
+    "correct": null,
+    "failure_reason": "link_or_missing_symbol",
+    "usage": {
+      "prompt_tokens": 1764,
+      "completion_tokens": 394,
+      "total_tokens": 2158
+    },
+    "diagnostic": "C:/msys64/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: C:\\Users\\MSI\\AppData\\Local\\Temp\\cc7pM1eN.o:candidate.c:(.text+0xdf): undefined reference to `op_dscal'\nC:/msys64/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: C:\\Users\\MSI\\AppData\\Local\\Temp\\cc7pM1eN.o:candidate.c:(.text+0x64a): undefined reference to `op_dscal'\nC:/msys64/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/14.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: C:\\Users\\MSI\\AppData\\Local\\Temp\\cc7pM1eN.o:candidate.c:(.text+0x7f4): undefined reference to `op_dscal'\ncollect2.exe: error: ld returned 1 exit status\n",
+    "candidate_sha256": "3cd5bbe06e9707ef9a707e9ee9646a920c8d90e87e9440f840c30df55d91cbc4"
+  }
+}

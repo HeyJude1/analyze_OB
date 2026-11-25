@@ -1,0 +1,53 @@
+# kg_agent 实体定义（Schema v1.5）
+# 12 类实体（SPEC §3 固定闭集）；prefix 用于 id 生成 {prefix}:{slug}
+# required 表示 properties 中的必需键（id/type/name/properties/provenance 由 node.schema.json 强制）
+
+entities:
+  Operator:
+    prefix: op
+    description: "BLAS 算子（gemm/gemv/axpy/...），跨算子迁移的锚点"
+    required: [blas_level, dtype_variants, op_class]
+  ComputationPattern:
+    prefix: pat
+    description: "算子内部的计算流程阶段（prep/transform/core/post）"
+    required: [stage, category, description]
+  CodeCharacteristic:
+    prefix: ch
+    description: "可静态度量的代码/数据特征，是条件谓词的落点"
+    required: [char_type, value, extraction_method]
+  OptimizationStrategy:
+    prefix: stg
+    description: "可执行的优化策略（条件+模板+参数+证据+溯源）"
+    required: [family, level, action, description, conditions, condition_status, template_id, hardware_profile_ids, status, confidence]
+  ImplementationTemplate:
+    prefix: tpl
+    description: "带槽位的 C 代码骨架，生成端注入接口"
+    required: [strategy_id, language, skeleton, slots]
+  TunableParameter:
+    prefix: par
+    description: "可调参数（blocking/unroll/lmul/sew/vector_len/...）"
+    required: [name, kind, unit, effect_direction]
+  ISACapability:
+    prefix: isa
+    description: "指令集能力（RVV 1.0 / AVX2 / AVX512 的 feature）"
+    required: [isa, feature, element_widths]
+  Microarchitecture:
+    prefix: uarch
+    description: "微架构级硬件参数（VLEN/LMUL/寄存器/cache），硬件数值唯一合法来源"
+    required: [vendor, uarch, vlen_bits, num_vector_regs]
+  HardwareProfile:
+    prefix: hw
+    description: "硬件实例（核数/频率/编译器/测量环境），证据必须绑定"
+    required: [profile_name, uarch_id, isa, measure_env]
+  PerformanceEvidence:
+    prefix: ev
+    description: "可核查的性能证据（metric/value/聚合口径/平台/协议）"
+    required: [metric, value, aggregation, workload, baseline, platform_id, protocol, confidence, rerun_needed]
+  SourceArtifact:
+    prefix: art
+    description: "来源工件（语料文件 + sha256 + commit + 行号）"
+    required: [repo, path, commit_or_tag, sha256, extractor_version]
+  FailureCase:
+    prefix: fail
+    description: "失败案例（P2；本版以 PerformanceEvidence.negative_example 表达）"
+    required: [symptom, trigger, profile_id]

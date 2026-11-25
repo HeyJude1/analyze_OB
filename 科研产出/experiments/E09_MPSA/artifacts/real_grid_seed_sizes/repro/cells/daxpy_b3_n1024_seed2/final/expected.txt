@@ -1,0 +1,2 @@
+op=daxpy mode=b3 seed=2 n=1024
+status=ok compile_ok=True correct=True maxdiff=0.0 reldiff=0.0

@@ -1,0 +1,65 @@
+{
+  "status": "ok",
+  "op": "ddot",
+  "op_canonical": "dot",
+  "profile": "k1_rvv256",
+  "mode": "b3",
+  "provider": "dashscope",
+  "model": "qwen-plus-2025-04-28",
+  "out_dir": "C:\\Users\\MSI\\Desktop\\����\\���в���\\experiments\\E09_MPSA\\runs\\real_grid_seed_sizes\\ddot_b3_n16384\\repair_r1",
+  "result_path": "C:\\Users\\MSI\\Desktop\\����\\���в���\\experiments\\E09_MPSA\\runs\\real_grid_seed_sizes\\ddot_b3_n16384\\repair_r1\\repair_result.json",
+  "repaired_c_path": "C:\\Users\\MSI\\Desktop\\����\\���в���\\experiments\\E09_MPSA\\runs\\real_grid_seed_sizes\\ddot_b3_n16384\\repair_r1\\repaired.c",
+  "error_source": "C:\\Users\\MSI\\Desktop\\����\\���в���\\experiments\\E09_MPSA\\runs\\real_grid_seed_sizes\\ddot_b3_n16384\\harness\\build.stderr.log",
+  "input_error_preview": "/mnt/c/Users/MSI/Desktop/����/���в���/experiments/E09_MPSA/runs/real_grid_seed_sizes/ddot_b3_n16384/harness/generated.c: In function ��ddot_k��:\n/mnt/c/Users/MSI/Desktop/����/���в���/experiments/E09_MPSA/runs/rea",
+  "fix_summary": {
+    "changed": true,
+    "original_chars": 1879,
+    "repaired_chars": 534,
+    "intrinsics_used": [],
+    "mock": false
+  },
+  "calls": 1,
+  "usage": {
+    "calls": 1,
+    "prompt_tokens": 2465,
+    "completion_tokens": 188,
+    "total_tokens": 2653,
+    "by_stage": {
+      "analysis": {
+        "calls": 0,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "synthesis": {
+        "calls": 0,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "generate": {
+        "calls": 0,
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "repair": {
+        "calls": 1,
+        "prompt_tokens": 2465,
+        "completion_tokens": 188,
+        "total_tokens": 2653
+      }
+    }
+  },
+  "elapsed_s": 3.36,
+  "code_meta": {
+    "signature": "double ddot_k(BLASLONG n, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y)",
+    "function_name": "ddot_k",
+    "wrapped_body": false,
+    "fences_removed": false,
+    "prologue_added": true,
+    "repairs": [],
+    "char_count": 534
+  },
+  "code_preview": "typedef long long BLASLONG;\n\ndouble ddot_k(BLASLONG n, double *x, BLASLONG inc_x, double *y, BLASLONG inc_y)\n{\n    if (n <= 0) return 0.0;\n\n    double dot = 0.0;\n    BLASLONG i;\n\n    if (inc_x == 1 &&"
+}

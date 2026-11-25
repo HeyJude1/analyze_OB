@@ -1,0 +1,49 @@
+{
+  "analogy_source": "dot",
+  "card_ids": [
+    "stg:abstract:register_blocking",
+    "stg:abstract:tail_handling",
+    "stg:abstract:stride_dispatch",
+    "stg:abstract:vector_fma"
+  ],
+  "contract_sha256": "9e62426eba09d560fb0ec7aced9891cf8683858e1e989fbaa3becff476df28bb",
+  "knowledge_bytes": 4482,
+  "method": "text_rag",
+  "operator": "conv1d",
+  "profile": "k1_rvv256",
+  "prompt": "conv1d/k1_rvv256/text_rag.json",
+  "prompt_sha256": "5658c577aad1795e39c2e5f042b877312144f60c655ab4b9c42f7a373e661ea5",
+  "repetition": 1,
+  "source_sha256": "b4dfcd553e1a84044d9fad60edacba88b7ba1b4abdddee5d5c71b992152cc043",
+  "split": "external_holdout",
+  "status": "prepared",
+  "engine": "ollama",
+  "model": "qwen2.5-coder:7b-instruct-q4_K_M",
+  "repair_attempted": true,
+  "initial": {
+    "status": "wrong_answer",
+    "compile_ok": true,
+    "correct": false,
+    "failure_reason": "numerical_or_memory_contract",
+    "usage": {
+      "prompt_tokens": 2698,
+      "completion_tokens": 377,
+      "total_tokens": 3075
+    },
+    "diagnostic": "Numerical or memory-contract check failed on 126 cases. Preserve the full public contract.",
+    "candidate_sha256": "984490e1505875981e46043b2818f29ea8ff250a57389ecd0a13ac7cbedef9e0"
+  },
+  "final": {
+    "status": "compile_failed",
+    "compile_ok": false,
+    "correct": null,
+    "failure_reason": "other_compiler_error",
+    "usage": {
+      "prompt_tokens": 1670,
+      "completion_tokens": 338,
+      "total_tokens": 2008
+    },
+    "diagnostic": "../experiments/thesis/functional_2026-11-19/ollama/conv1d/k1_rvv256/text_rag/rep-1/repair/candidate.c: In function ‘op_conv1d’:\n../experiments/thesis/functional_2026-11-19/ollama/conv1d/k1_rvv256/text_rag/rep-1/repair/candidate.c:12:35: error: variable-sized object may not be initialized except with an empty initializer\n   12 |         double sum[reg_block_m] = {0.0};\n      |                                   ^\n../experiments/thesis/functional_2026-11-19/ollama/conv1d/k1_rvv256/text_rag/rep-1/repair/candidate.c:9:18: warning: unused variable ‘reg_block_n’ [-Wunused-variable]\n    9 |     const size_t reg_block_n = 4; // Example value, adjust based on actual register availability\n      |                  ^~~~~~~~~~~\n",
+    "candidate_sha256": "b6429fce9eed2fa2bb173b6277c3bd885f0eabab01f1606c80a213bd5fa309ef"
+  }
+}
